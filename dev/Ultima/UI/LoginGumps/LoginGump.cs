@@ -51,8 +51,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                 string.Format(
                 "<left><itemimg src='{2}'/></left>" +
                 "<span color='#400'>{0}<br/>{1}gp, {3} available.</span>" + 
-                "<right><a href='add={4}'><gumpimg src='0x9CF'/></a><span width='4'/><a href='remove={4}'><gumpimg src='0x9CE'/></a></right>",
-                "A magic sword", 200, 5000, 13, 1)));
+                "<right><a href='add={4}'><gumpimg src='0x9CF'/></a>  <a href='remove={4}'><gumpimg src='0x9CE'/></a></right>",
+                "A magic sword", 200, 942, 13, 1)));
             // end debug !!!
 
             // quit button

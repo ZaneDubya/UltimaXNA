@@ -58,7 +58,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         private void AddJournalEntry(string text)
         {
-            m_JournalEntries.AddEntry(string.Format("<left color='#50422D'><span width='14'/>{0}</left><br/>", text));
+            m_JournalEntries.AddEntry(string.Format("<left color='#50422D'>{0}</left><br/>", text));
         }
 
         private void InitializeJournalEntries()

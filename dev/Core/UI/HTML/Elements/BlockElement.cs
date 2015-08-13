@@ -13,7 +13,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
     /// </summary>
     class BlockElement : AElement
     {
-        public List<AElement> Contents = new List<AElement>();
+        public List<AElement> Children = new List<AElement>();
         public BlockElement Parent;
 
         public string Tag;
@@ -52,6 +52,9 @@ namespace UltimaXNA.Core.UI.HTML.Elements
 
         public Alignments Alignment = Alignments.Default;
 
+        public int Layout_MinWidth = 0;
+        public int Layout_MaxWidth = 0;
+
         public BlockElement(string tag, StyleState style)
             : base(style)
         {
@@ -60,7 +63,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
 
         public void AddAtom(AElement atom)
         {
-            Contents.Add(atom);
+            Children.Add(atom);
             if (atom is BlockElement)
                 (atom as BlockElement).Parent = this;
         }

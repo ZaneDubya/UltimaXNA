@@ -17,6 +17,7 @@ using UltimaXNA.Core.UI.HTML.Elements;
 using UltimaXNA.Core.UI.HTML.Parsing;
 using UltimaXNA.Core.UI.HTML.Styles;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.UI.HTML.Elements;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML
@@ -63,9 +64,13 @@ namespace UltimaXNA.Core.UI.HTML
         // Ctor and Dipose
         // ======================================================================
 
-        public HtmlDocument(string html, int maxWidth)
+        public HtmlDocument(string html, int width)
         {
             Root = ParseHtmlToBlocks(html);
+            Images = GetAllImagesInBlock(Root);
+            Regions = new HtmlLinkList();
+
+            DoLayout(Root, width);
         }
 
         public void Dispose()
@@ -150,7 +155,7 @@ namespace UltimaXNA.Core.UI.HTML
                                 case "center":
                                 case "left":
                                 case "right":
-                                case "span":
+                                case "div":
                                     atom = new BlockElement(chunk.sTag, styles.Style);
                                     styles.ParseTag(chunk, atom);
                                     isBlockTag = true;
@@ -158,6 +163,7 @@ namespace UltimaXNA.Core.UI.HTML
                                 // ======================================================================
                                 // These html elements are styles, and are added to the StyleParser.
                                 // ======================================================================
+                                case "span":
                                 case "font":
                                 case "b":
                                 case "i":
@@ -174,13 +180,12 @@ namespace UltimaXNA.Core.UI.HTML
                                 // onto other atoms.
                                 // ======================================================================
                                 case "br":
-                                    currentBlock.AddAtom(new CharacterElement(styles.Style, '\n'));
+                                    atom = new CharacterElement(styles.Style, '\n');
                                     break;
                                 case "gumpimg":
                                     // draw a gump image
                                     atom = new ImageElement(styles.Style, ImageElement.ImageTypes.UI);
                                     styles.ParseTag(chunk, atom);
-                                    currentBlock.AddAtom(atom);
                                     break;
                                 case "itemimg":
                                     // draw a static image
@@ -227,248 +232,68 @@ namespace UltimaXNA.Core.UI.HTML
             SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
             int width, height, ascender;
 
-            Images = GetAllImagesInBlock(Root);
-            Regions.Clear();
-
-            GetTextDimensions(atoms, maxWidth, out width, out height, out ascender);
-            Texture = RenderTexture(sb.GraphicsDevice, atoms, width, height, ascender);
+            
+            // Texture = RenderTexture(sb.GraphicsDevice, atoms, width, height, ascender);
         }
 
-        private HtmlImageList GetAllImagesInBlock(BlockElement block)
+        private void DoLayout(BlockElement root, int width)
         {
-            HtmlImageList images = new HtmlImageList();
-
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-
-            foreach (AElement atom in block.Contents)
-            {
-                if (atom is ImageElement)
-                {
-                    ImageElement img = (ImageElement)atom;
-                    if (img.ImageType == ImageElement.ImageTypes.UI)
-                    {
-                        Texture2D standard = provider.GetUITexture(img.ImgSrc);
-                        Texture2D over = provider.GetUITexture(img.ImgSrcOver);
-                        Texture2D down = provider.GetUITexture(img.ImgSrcDown);
-                        images.AddImage(new Rectangle(), standard, over, down);
-                    }
-                    else if (img.ImageType == ImageElement.ImageTypes.Item)
-                    {
-                        Texture2D standard, over, down;
-                        standard = over = down = provider.GetItemTexture(img.ImgSrc);
-                        images.AddImage(new Rectangle(), standard, over, down);
-                    }
-                    img.AssociatedImage = Images[Images.Count - 1];
-                }
-                else if (atom is BlockElement)
-                {
-                    GetAllImagesInBlock(atom as BlockElement);
-                }
-            }
-
-            return images;
+            CalculateLayoutWidthsRecursive(root);
+            LayoutBlocks(root, width);
         }
 
-        Texture2D RenderTexture(GraphicsDevice graphics, List<AElement> atoms, int width, int height, int ascender)
+        private void CalculateLayoutWidthsRecursive(BlockElement root)
         {
-            if (width == 0) // empty text string
-                return new Texture2D(graphics, 1, 1);
+            int widthMinLongest = 0, widthMin = 0;
+            int widthMaxLongest = 0, widthMax = 0;
 
-            int dy = 0, lineheight = 0;
-
-            if (ascender < 0)
+            foreach (AElement child in root.Children)
             {
-                height = height - ascender;
-                dy = -ascender;
-            }
-
-            uint[] resultData = new uint[width * height];
-            /* DEBUG PURPOSES: Fill background with green.
-             * for (int i = 0; i < resultData.Length; i++)
-                resultData[i] = 0xff00ff00;*/
-
-            unsafe
-            {
-                fixed (uint* rPtr = resultData)
+                if (child is BlockElement)
                 {
-                    int[] alignedTextX = new int[3];
-                    List<AElement>[] alignedAtoms = new List<AElement>[3];
-                    for (int i = 0; i < 3; i++)
-                        alignedAtoms[i] = new List<AElement>();
+                    CalculateLayoutWidthsRecursive(child as BlockElement);
+                    widthMin += (child as BlockElement).Layout_MinWidth;
+                    widthMax += (child as BlockElement).Layout_MaxWidth;
+                }
+                else
+                {
+                    widthMin += child.Width;
+                    widthMax += child.Width;
+                }
 
-                    for (int i = 0; i < atoms.Count; i++)
-                    {
-                        AElement atom = atoms[i];
-                        // !!! alignedAtoms[(int)atom.Style.Alignment].Add(atom);
+                if (child.IsThisAtomALineBreak)
+                {
+                    if (widthMin > widthMinLongest)
+                        widthMinLongest = widthMin;
+                    if (widthMax > widthMaxLongest)
+                        widthMaxLongest = widthMax;
+                    widthMin = 0;
+                    widthMax = 0;
+                }
 
-                        if (atom.IsThisAtomALineBreak || (i == atoms.Count - 1))
-                        {
-                            // write left aligned text.
-                            int dx;
-                            if (alignedAtoms[0].Count > 0)
-                            {
-                                alignedTextX[0] = dx = 0;
-                                RenderTextureLine(alignedAtoms[0], rPtr, ref dx, dy, width, height, ref lineheight, true);
-                            }
-
-                            // centered text. We need to get the width first. Do this by drawing the line with draw = false.
-                            if (alignedAtoms[1].Count > 0)
-                            {
-                                dx = 0;
-                                RenderTextureLine(alignedAtoms[1], rPtr, ref dx, dy, width, height, ref lineheight, false);
-                                alignedTextX[1] = dx = width / 2 - dx / 2;
-                                RenderTextureLine(alignedAtoms[1], rPtr, ref dx, dy, width, height, ref lineheight, true);
-                            }
-
-                            // right aligned text.
-                            if (alignedAtoms[2].Count > 0)
-                            {
-                                dx = 0;
-                                RenderTextureLine(alignedAtoms[2], rPtr, ref dx, dy, width, height, ref lineheight, false);
-                                alignedTextX[2] = dx = width - dx;
-                                RenderTextureLine(alignedAtoms[2], rPtr, ref dx, dy, width, height, ref lineheight, true);
-                            }
-
-                            // get HREF regions for html.
-                            GetHREFRegions(Regions, alignedAtoms, alignedTextX, dy);
-
-                            // clear the aligned text lists so we can fill them up in our next pass.
-                            for (int j = 0; j < 3; j++)
-                            {
-                                alignedAtoms[j].Clear();
-                            }
-
-                            dy += lineheight;
-                        }
-                    }
+                if (child.IsThisAtomABreakingSpace)
+                {
+                    if (widthMin > widthMinLongest)
+                        widthMin = 0;
                 }
             }
 
-            Texture2D result = new Texture2D(graphics, width, height, false, SurfaceFormat.Color);
-            result.SetData<uint>(resultData);
-            return result;
+            root.Layout_MinWidth = (widthMin > widthMinLongest) ? widthMin : widthMinLongest;
+            root.Layout_MaxWidth = (widthMax > widthMaxLongest) ? widthMax : widthMaxLongest;
         }
 
-        // draw = false to get the width of the line to be drawn without actually drawing anything. Useful for aligning text.
-        unsafe void RenderTextureLine(List<AElement> atoms, uint* rPtr, ref int x, int y, int linewidth, int maxHeight, ref int lineheight, bool draw)
+        private void LayoutBlocks(BlockElement root, int width)
         {
-            for (int i = 0; i < atoms.Count; i++)
-            {
-                IFont font = atoms[i].Style.Font;
-                if (lineheight < font.Height)
-                    lineheight = font.Height;
-                if (lineheight < atoms[i].Height)
-                    lineheight = atoms[i].Height;
-
-                if (draw)
-                {
-                    if (atoms[i] is CharacterElement)
-                    {
-                        CharacterElement atom = (CharacterElement)atoms[i];
-                        ICharacter character = font.GetCharacter(atom.Character);
-                        // HREF links should be colored white, because we will hue them at runtime.
-                        uint color = atom.Style.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(atom.Style.Color);
-                        character.WriteToBuffer(rPtr, x, y, linewidth, maxHeight, font.Baseline,
-                            atom.Style.IsBold, atom.Style.IsItalic, atom.Style.IsUnderlined, atom.Style.IsOutlined, color, 0xFF000008);
-                    }
-                    else if (atoms[i] is ImageElement)
-                    {
-                        ImageElement atom = (atoms[i] as ImageElement);
-                        atom.AssociatedImage.Area = new Rectangle(x, y + ((lineheight - atom.Height) / 2), atom.Width, atom.Height);
-                    }
-                }
-                x += atoms[i].Width;
-            }
+            
         }
 
-        void GetHREFRegions(HtmlLinkList regions, List<AElement>[] text, int[] x, int y)
-        {
-            for (int alignment = 0; alignment < 3; alignment++)
-            {
-                // variables for the open href region
-                bool isRegionOpen = false;
-                HtmlLink region = null;
-                int regionHeight = 0;
-                int additionalwidth = 0;
-
-                int dx = x[alignment];
-                for (int i = 0; i < text[alignment].Count; i++)
-                {
-                    AElement atom = text[alignment][i];
-
-                    if ((region == null && atom.Style.HREF != null) ||
-                        (region != null && atom.Style.HREF != region.HREF))
-                    {
-                        // close the current href tag if one is open.
-                        if (isRegionOpen)
-                        {
-                            region.Area.Width = (dx - region.Area.X) + additionalwidth;
-                            region.Area.Height = (y + regionHeight - region.Area.Y);
-                            isRegionOpen = false;
-                            region = null;
-                        }
-
-                        // did we open a href?
-                        if (atom.Style.HREF != null)
-                        {
-                            isRegionOpen = true;
-                            region = regions.AddLink(atom.Style.HREF, atom.Style);
-                            region.Area.X = dx;
-                            region.Area.Y = y;
-                            regionHeight = 0;
-                        }
-                    }
-
-                    if (atom is ImageElement)
-                    {
-                        // we need regions for images so that we can do mouse over images.
-                        // if we're currently in an open href region, we'll use that one.
-                        // if we don't have an open region, we'll create one just for this image.
-                        HtmlImage image = ((ImageElement)atom).AssociatedImage;
-                        if (image != null)
-                        {
-                            if (!isRegionOpen)
-                            {
-                                region = regions.AddLink(atom.Style.HREF, atom.Style);
-                                isRegionOpen = true;
-                                region.Area.X = dx;
-                                region.Area.Y = y;
-                                regionHeight = 0;
-                            }
-
-                            image.RegionIndex = region.Index;
-                        }
-                    }
-
-                    dx += atom.Width;
-
-                    if (atom is CharacterElement && ((CharacterElement)atom).Style.IsItalic)
-                        additionalwidth = 2;
-                    else if (atom is CharacterElement && ((CharacterElement)atom).Style.IsOutlined)
-                        additionalwidth = 2;
-                    else
-                        additionalwidth = 0;
-
-                    if (isRegionOpen && atom.Height > regionHeight)
-                        regionHeight = atom.Height;
-                }
-
-                // we've reached the last atom in this set.
-                // if a href tag is still open, close it.
-                if (isRegionOpen)
-                {
-                    region.Area.Width = (dx - region.Area.X);
-                    region.Area.Height = (y + regionHeight - region.Area.Y);
-                }
-            }
-        }
-
-        void GetTextDimensions(List<AElement> atoms, int maxwidth, out int width, out int height, out int ascender)
+        private void DoLayoutOld(AElement root, int maxwidth, out int width, out int height, out int ascender)
         {
             // default values for out variables.
             width = 0;
             height = 0;
             ascender = 0;
+
             // local variables
             int descenderHeight = 0;
             int lineHeight = 0;
@@ -476,7 +301,9 @@ namespace UltimaXNA.Core.UI.HTML
             int widestLine = maxwidth; // we automatically set the content to fill the specified width.
             int wordWidth = 0;
             bool firstLine = true;
+
             List<AElement> word = new List<AElement>();
+            List<AElement> atoms = null;
 
             for (int i = 0; i < atoms.Count; i++)
             {
@@ -608,5 +435,236 @@ namespace UltimaXNA.Core.UI.HTML
             if (widestLine > width)
                 width = widestLine;
         }
+
+        private HtmlImageList GetAllImagesInBlock(BlockElement block)
+        {
+            HtmlImageList images = new HtmlImageList();
+
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
+            foreach (AElement atom in block.Children)
+            {
+                if (atom is ImageElement)
+                {
+                    ImageElement img = (ImageElement)atom;
+                    if (img.ImageType == ImageElement.ImageTypes.UI)
+                    {
+                        Texture2D standard = provider.GetUITexture(img.ImgSrc);
+                        Texture2D over = provider.GetUITexture(img.ImgSrcOver);
+                        Texture2D down = provider.GetUITexture(img.ImgSrcDown);
+                        images.AddImage(new Rectangle(), standard, over, down);
+                    }
+                    else if (img.ImageType == ImageElement.ImageTypes.Item)
+                    {
+                        Texture2D standard, over, down;
+                        standard = over = down = provider.GetItemTexture(img.ImgSrc);
+                        images.AddImage(new Rectangle(), standard, over, down);
+                    }
+                    img.AssociatedImage = images[images.Count - 1];
+                }
+                else if (atom is BlockElement)
+                {
+                    GetAllImagesInBlock(atom as BlockElement);
+                }
+            }
+
+            return images;
+        }
+
+        private Texture2D RenderTexture(GraphicsDevice graphics, List<AElement> atoms, int width, int height, int ascender)
+        {
+            if (width == 0) // empty text string
+                return new Texture2D(graphics, 1, 1);
+
+            int dy = 0, lineheight = 0;
+
+            if (ascender < 0)
+            {
+                height = height - ascender;
+                dy = -ascender;
+            }
+
+            uint[] resultData = new uint[width * height];
+            /* DEBUG PURPOSES: Fill background with green.
+             * for (int i = 0; i < resultData.Length; i++)
+                resultData[i] = 0xff00ff00;*/
+
+            unsafe
+            {
+                fixed (uint* rPtr = resultData)
+                {
+                    int[] alignedTextX = new int[3];
+                    List<AElement>[] alignedAtoms = new List<AElement>[3];
+                    for (int i = 0; i < 3; i++)
+                        alignedAtoms[i] = new List<AElement>();
+
+                    for (int i = 0; i < atoms.Count; i++)
+                    {
+                        AElement atom = atoms[i];
+                        // !!! alignedAtoms[(int)atom.Style.Alignment].Add(atom);
+
+                        if (atom.IsThisAtomALineBreak || (i == atoms.Count - 1))
+                        {
+                            // write left aligned text.
+                            int dx;
+                            if (alignedAtoms[0].Count > 0)
+                            {
+                                alignedTextX[0] = dx = 0;
+                                RenderTextureLine(alignedAtoms[0], rPtr, ref dx, dy, width, height, ref lineheight, true);
+                            }
+
+                            // centered text. We need to get the width first. Do this by drawing the line with draw = false.
+                            if (alignedAtoms[1].Count > 0)
+                            {
+                                dx = 0;
+                                RenderTextureLine(alignedAtoms[1], rPtr, ref dx, dy, width, height, ref lineheight, false);
+                                alignedTextX[1] = dx = width / 2 - dx / 2;
+                                RenderTextureLine(alignedAtoms[1], rPtr, ref dx, dy, width, height, ref lineheight, true);
+                            }
+
+                            // right aligned text.
+                            if (alignedAtoms[2].Count > 0)
+                            {
+                                dx = 0;
+                                RenderTextureLine(alignedAtoms[2], rPtr, ref dx, dy, width, height, ref lineheight, false);
+                                alignedTextX[2] = dx = width - dx;
+                                RenderTextureLine(alignedAtoms[2], rPtr, ref dx, dy, width, height, ref lineheight, true);
+                            }
+
+                            // get HREF regions for html.
+                            GetHREFRegions(Regions, alignedAtoms, alignedTextX, dy);
+
+                            // clear the aligned text lists so we can fill them up in our next pass.
+                            for (int j = 0; j < 3; j++)
+                            {
+                                alignedAtoms[j].Clear();
+                            }
+
+                            dy += lineheight;
+                        }
+                    }
+                }
+            }
+
+            Texture2D result = new Texture2D(graphics, width, height, false, SurfaceFormat.Color);
+            result.SetData<uint>(resultData);
+            return result;
+        }
+
+        // draw = false to get the width of the line to be drawn without actually drawing anything. Useful for aligning text.
+        private unsafe void RenderTextureLine(List<AElement> atoms, uint* rPtr, ref int x, int y, int linewidth, int maxHeight, ref int lineheight, bool draw)
+        {
+            for (int i = 0; i < atoms.Count; i++)
+            {
+                IFont font = atoms[i].Style.Font;
+                if (lineheight < font.Height)
+                    lineheight = font.Height;
+                if (lineheight < atoms[i].Height)
+                    lineheight = atoms[i].Height;
+
+                if (draw)
+                {
+                    if (atoms[i] is CharacterElement)
+                    {
+                        CharacterElement atom = (CharacterElement)atoms[i];
+                        ICharacter character = font.GetCharacter(atom.Character);
+                        // HREF links should be colored white, because we will hue them at runtime.
+                        uint color = atom.Style.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(atom.Style.Color);
+                        character.WriteToBuffer(rPtr, x, y, linewidth, maxHeight, font.Baseline,
+                            atom.Style.IsBold, atom.Style.IsItalic, atom.Style.IsUnderlined, atom.Style.IsOutlined, color, 0xFF000008);
+                    }
+                    else if (atoms[i] is ImageElement)
+                    {
+                        ImageElement atom = (atoms[i] as ImageElement);
+                        atom.AssociatedImage.Area = new Rectangle(x, y + ((lineheight - atom.Height) / 2), atom.Width, atom.Height);
+                    }
+                }
+                x += atoms[i].Width;
+            }
+        }
+
+        private void GetHREFRegions(HtmlLinkList regions, List<AElement>[] text, int[] x, int y)
+        {
+            for (int alignment = 0; alignment < 3; alignment++)
+            {
+                // variables for the open href region
+                bool isRegionOpen = false;
+                HtmlLink region = null;
+                int regionHeight = 0;
+                int additionalwidth = 0;
+
+                int dx = x[alignment];
+                for (int i = 0; i < text[alignment].Count; i++)
+                {
+                    AElement atom = text[alignment][i];
+
+                    if ((region == null && atom.Style.HREF != null) ||
+                        (region != null && atom.Style.HREF != region.HREF))
+                    {
+                        // close the current href tag if one is open.
+                        if (isRegionOpen)
+                        {
+                            region.Area.Width = (dx - region.Area.X) + additionalwidth;
+                            region.Area.Height = (y + regionHeight - region.Area.Y);
+                            isRegionOpen = false;
+                            region = null;
+                        }
+
+                        // did we open a href?
+                        if (atom.Style.HREF != null)
+                        {
+                            isRegionOpen = true;
+                            region = regions.AddLink(atom.Style.HREF, atom.Style);
+                            region.Area.X = dx;
+                            region.Area.Y = y;
+                            regionHeight = 0;
+                        }
+                    }
+
+                    if (atom is ImageElement)
+                    {
+                        // we need regions for images so that we can do mouse over images.
+                        // if we're currently in an open href region, we'll use that one.
+                        // if we don't have an open region, we'll create one just for this image.
+                        HtmlImage image = ((ImageElement)atom).AssociatedImage;
+                        if (image != null)
+                        {
+                            if (!isRegionOpen)
+                            {
+                                region = regions.AddLink(atom.Style.HREF, atom.Style);
+                                isRegionOpen = true;
+                                region.Area.X = dx;
+                                region.Area.Y = y;
+                                regionHeight = 0;
+                            }
+
+                            image.RegionIndex = region.Index;
+                        }
+                    }
+
+                    dx += atom.Width;
+
+                    if (atom is CharacterElement && ((CharacterElement)atom).Style.IsItalic)
+                        additionalwidth = 2;
+                    else if (atom is CharacterElement && ((CharacterElement)atom).Style.IsOutlined)
+                        additionalwidth = 2;
+                    else
+                        additionalwidth = 0;
+
+                    if (isRegionOpen && atom.Height > regionHeight)
+                        regionHeight = atom.Height;
+                }
+
+                // we've reached the last atom in this set.
+                // if a href tag is still open, close it.
+                if (isRegionOpen)
+                {
+                    region.Area.Width = (dx - region.Area.X);
+                    region.Area.Height = (y + regionHeight - region.Area.Y);
+                }
+            }
+        }
+
+        
     }
 }
