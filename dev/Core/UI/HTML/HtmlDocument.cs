@@ -284,7 +284,24 @@ namespace UltimaXNA.Core.UI.HTML
 
         private void LayoutBlocks(BlockElement root, int width)
         {
-            
+            // 1. Determine if all blocks can fit on one line with max width.
+            //      -> If yes, then place all blocks!
+            // 2. If not 1, can all blocks fit on one line with min width?
+            //      -> If yes, then place all blocks and expand the ones that have additional width until there is no more width to fill.
+            // 3. If not 2, flow blocks to the next y line until all remaining blocks can fit on one line.
+            //      -> Expand remaining blocks, and start all over again.
+            if (root.Layout_MaxWidth <= width) // 1
+            {
+
+            }
+            else if (root.Layout_MinWidth <= width) // 2
+            {
+
+            }
+            else
+            {
+
+            }
         }
 
         private void DoLayoutOld(AElement root, int maxwidth, out int width, out int height, out int ascender)
