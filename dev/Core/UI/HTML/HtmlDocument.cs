@@ -61,12 +61,8 @@ namespace UltimaXNA.Core.UI.HTML
 
         public Texture2D Texture
         {
-            get
-            {
-                if (m_Texture == null)
-                    m_Texture = DoRender(m_Root);
-                return m_Texture;
-            }
+            get;
+            private set;
         }
 
         // ======================================================================
@@ -77,9 +73,10 @@ namespace UltimaXNA.Core.UI.HTML
         {
             m_Root = ParseHtmlToBlocks(html);
             Images = GetAllImagesInBlock(m_Root);
-            Regions = new HtmlLinkList();
+            Regions = GetAllHrefRegionsInBlock(m_Root);
 
             DoLayout(m_Root, width);
+            Texture = DoRender(m_Root);
         }
 
         public void Dispose()
@@ -252,6 +249,7 @@ namespace UltimaXNA.Core.UI.HTML
         {
             int widthMinLongest = 0, widthMin = 0;
             int widthMaxLongest = 0, widthMax = 0;
+            int styleWidth = 0;
 
             foreach (AElement child in root.Children)
             {
@@ -263,8 +261,17 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 else
                 {
+                    // get the child width, add it to the parent width;
                     widthMin += child.Width;
                     widthMax += child.Width;
+                    // get the additional style width.
+                    int styleWidthChild = 0;
+                    if (child.Style.IsItalic)
+                        styleWidthChild = child.Style.Font.Height / 2;
+                    if (child.Style.IsOutlined)
+                        styleWidthChild += 2;
+                    if (styleWidthChild > styleWidth)
+                        styleWidth = styleWidthChild;
                 }
 
                 if (child.IsThisAtomALineBreak)
@@ -301,7 +308,7 @@ namespace UltimaXNA.Core.UI.HTML
                 foreach (AElement element in root.Children)
                     if (element is BlockElement)
                         (element as BlockElement).Width = (element as BlockElement).Layout_MaxWidth;
-                LayoutElementsHorizontal(root);
+                LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y);
             }
             else if (root.Layout_MinWidth <= root.Width) // 2
             {
@@ -321,7 +328,7 @@ namespace UltimaXNA.Core.UI.HTML
                         block.Width = block.Layout_MinWidth + (int)(((float)(block.Layout_MaxWidth - block.Layout_MinWidth) / extraRequestedWidth) * extraRequestedWidth);
                         extraRequestedWidth = block.Layout_MaxWidth - block.Layout_MinWidth;
                     }
-                LayoutElementsHorizontal(root);
+                LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y);
             }
             else // 3
             {
@@ -330,19 +337,18 @@ namespace UltimaXNA.Core.UI.HTML
             }
         }
 
-        private void LayoutElementsHorizontal(BlockElement root)
+        private void LayoutElementsHorizontal(BlockElement root, int x, int y)
         {
-            int x0 = 0, x1 = root.Width;
+            int x0 = x, x1 = x + root.Width;
             int height = 0, lineHeight = 0;
-            int y = 0;
             for (int i = 0; i < root.Children.Count; i++)
             {
                 AElement element = root.Children[i];
                 if (element.IsThisAtomALineBreak)
                 {
                     y += lineHeight;
-                    x0 = 0;
-                    x1 = root.Width;
+                    x0 = x;
+                    x1 = x + root.Width;
                     height += lineHeight;
                     lineHeight = 0;
                 }
@@ -357,7 +363,7 @@ namespace UltimaXNA.Core.UI.HTML
                             x0 += element.Width;
                             break;
                         case Alignments.Center: // centered in the root element, not in the remaining space.
-                            element.Layout_X = (root.Width - element.Width) / 2;
+                            element.Layout_X = (x + root.Width - element.Width) / 2;
                             element.Layout_Y = y;
                             break;
                         case Alignments.Right:
@@ -390,15 +396,58 @@ namespace UltimaXNA.Core.UI.HTML
             SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
             GraphicsDevice graphics = sb.GraphicsDevice;
 
-            if (root.Width == 0) // empty text string
+            if (root.Width == 0 || root.Height == 0) // empty text string
                 return new Texture2D(graphics, 1, 1);
 
-            // Texture = RenderTexture(sb.GraphicsDevice, atoms, width, height, ascender);
-            return null;
+            uint[] pixels = new uint[root.Width * root.Height];
+            /* DEBUG PURPOSES: Fill background with a lovely shade of lime green.
+             * for (int i = 0; i < pixels.Length; i++)
+                pixels[i] = 0xff00ff00;*/
+
+            if (root.Err_Cant_Fit_Children)
+            {
+                for (int i = 0; i < pixels.Length; i++)
+                    pixels[i] = 0xffffff00;
+                Tracer.Error("Err: Block can't fit children.");
+            }
+            else
+            {
+                unsafe
+                {
+                    fixed (uint* ptr = pixels)
+                    {
+                        DoRenderBlock(root, ptr, root.Width, root.Height);
+                    }
+                }
+            }
+
+            Texture2D texture = new Texture2D(graphics, root.Width, root.Height, false, SurfaceFormat.Color);
+            texture.SetData<uint>(pixels);
+            return texture;
+        }
+
+        unsafe private void DoRenderBlock(BlockElement root, uint* ptr, int width, int height)
+        {
+            foreach (AElement element in root.Children)
+            {
+                if (element is CharacterElement)
+                {
+                    IFont font = element.Style.Font;
+                    ICharacter character = font.GetCharacter((element as CharacterElement).Character);
+                    // HREF links should be colored white, because we will hue them at runtime.
+                    uint color = element.Style.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(element.Style.Color);
+                    character.WriteToBuffer(ptr, element.Layout_X, element.Layout_Y, width, height, font.Baseline,
+                        element.Style.IsBold, element.Style.IsItalic, element.Style.IsUnderlined, element.Style.IsOutlined, color, 0xFF000008);
+                }
+                else if (element is BlockElement)
+                {
+                    DoRenderBlock(element as BlockElement, ptr, width, height);
+                }
+            }
         }
 
         // ======================================================================
-        // Image handling
+        // Image and href link region handling
         // ======================================================================
 
         private HtmlImageList GetAllImagesInBlock(BlockElement block)
@@ -434,6 +483,11 @@ namespace UltimaXNA.Core.UI.HTML
             }
 
             return images;
+        }
+
+        private HtmlLinkList GetAllHrefRegionsInBlock(BlockElement block)
+        {
+            return new HtmlLinkList();
         }
     }
 }
