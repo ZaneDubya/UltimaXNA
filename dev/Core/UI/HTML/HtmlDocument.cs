@@ -306,8 +306,9 @@ namespace UltimaXNA.Core.UI.HTML
             // 1. Determine if all blocks can fit on one line with max width.
             //      -> If yes, then place all blocks!
             // 2. If not 1, can all blocks fit on one line with min width?
-            //      -> If yes, then place all blocks and expand the ones that have additional width until there is no more width to fill.
-            // 3. If not 2, flow blocks to the next y line until all remaining blocks can fit on one line.
+            //      -> If yes, then place all blocks and expand the ones that want additional width until there is no more width to fill.
+            // 3. If not 2:
+            //      -> Flow blocks to the next y line until all remaining blocks can fit on one line.
             //      -> Expand remaining blocks, and start all over again.
             //      -> Actually, this is not yet implemented. Any takers? :(
             if (root.Layout_MaxWidth <= root.Width) // 1
@@ -361,13 +362,14 @@ namespace UltimaXNA.Core.UI.HTML
         {
             int x0 = x, x1 = x + root.Width;
             int height = 0, lineHeight = 0;
+
             for (int i = 0; i < root.Children.Count; i++)
             {
-                AElement element = root.Children[i];
-                if (element.IsThisAtomALineBreak)
+                AElement e0 = root.Children[i];
+                if (e0.IsThisAtomALineBreak)
                 {
-                    element.Layout_X = x0;
-                    element.Layout_Y = y;
+                    e0.Layout_X = x0;
+                    e0.Layout_Y = y;
                     y += lineHeight;
                     x0 = x;
                     x1 = x + root.Width;
@@ -376,44 +378,124 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 else
                 {
-                    if (x0 + element.Width > x1)
+                    int wordWidth, styleWidth, wordHeight, ascender;
+                    List<AElement> word = LayoutElements_GetWord(root.Children, i, out wordWidth, out styleWidth, out wordHeight, out ascender);
+
+                    if (wordWidth + styleWidth > root.Width)
                     {
-                        root.Children.Insert(i - 1, new CharacterElement(element.Style, '\n'));
-                        i--;
+                        // problem! Can't fit this word. Must break it somewhere.
+                        Tracer.Critical("Can't fit word!");
                     }
-                    else if (element is BlockElement)
+                    else if (x0 + wordWidth + styleWidth > x1)
                     {
-                        Alignments alignment = (element as BlockElement).Alignment;
-                        switch (alignment)
-                        {
-                            case Alignments.Left:
-                                element.Layout_X = x0;
-                                element.Layout_Y = y;
-                                x0 += element.Width;
-                                break;
-                            case Alignments.Center: // centered in the root element, not in the remaining space.
-                                element.Layout_X = (x + root.Width - element.Width) / 2;
-                                element.Layout_Y = y;
-                                break;
-                            case Alignments.Right:
-                                element.Layout_X = x1 - element.Width;
-                                element.Layout_Y = y;
-                                x1 -= element.Width;
-                                break;
-                        }
-                        LayoutElements((element as BlockElement));
+                        // this word is too long for this line. shove it down to the next line.
+                        root.Children.Insert(i, new CharacterElement(e0.Style, '\n'));
+                        i--;
                     }
                     else
                     {
-                        element.Layout_X = x0;
-                        element.Layout_Y = y;
-                        x0 += element.Width;
+                        foreach (AElement e1 in word)
+                        {
+                            if (e1 is BlockElement)
+                            {
+                                Alignments alignment = (e1 as BlockElement).Alignment;
+                                switch (alignment)
+                                {
+                                    case Alignments.Left:
+                                        e1.Layout_X = x0;
+                                        e1.Layout_Y = y;
+                                        x0 += e1.Width;
+                                        break;
+                                    case Alignments.Center: // centered in the root element, not in the remaining space.
+                                        e1.Layout_X = (x + root.Width - e1.Width) / 2;
+                                        e1.Layout_Y = y;
+                                        break;
+                                    case Alignments.Right:
+                                        e1.Layout_X = x1 - e1.Width;
+                                        e1.Layout_Y = y;
+                                        x1 -= e1.Width;
+                                        break;
+                                }
+                                LayoutElements((e1 as BlockElement));
+                            }
+                            else
+                            {
+                                e1.Layout_X = x0;
+                                e1.Layout_Y = y;
+                                x0 += e1.Width;
+                            }
+                        }
+                        if (wordHeight > lineHeight)
+                            lineHeight = wordHeight;
+                        i += word.Count - 1;
                     }
                 }
-                if (element.Height > lineHeight)
-                    lineHeight = element.Height;
+                if (e0.Height > lineHeight)
+                    lineHeight = e0.Height;
             }
             root.Height = height + lineHeight;
+        }
+
+        /// <summary>
+        /// Gets a single word of AElements to lay out.
+        /// </summary>
+        /// <param name="elements">The list of elements to get the word from.</param>
+        /// <param name="start">The index in the elements list to start getting the word.</param>
+        /// <param name="wordWidth">The width of the word of elements.</param>
+        /// <param name="styleWidth">Italic and Outlined characters need more room for the slant/outline (Bold handled differently).</param>
+        /// <param name="wordHeight"></param>
+        /// <param name="ascender">Additional pixels above the top of the word. Affects dimensions of the parent if word is on the first line.</param>
+        /// <returns></returns>
+        List<AElement> LayoutElements_GetWord(List<AElement> elements, int start, out int wordWidth, out int styleWidth, out int wordHeight, out int ascender)
+        {
+            List<AElement> word = new List<Elements.AElement>();
+            wordWidth = 0;
+            wordHeight = 0;
+            styleWidth = 0;
+            ascender = 0;
+
+            for (int i = start; i < elements.Count; i++)
+            {
+                if (elements[i].IsThisAtomALineBreak)
+                {
+                    return word;
+                }
+                else
+                {
+                    word.Add(elements[i]);
+                    wordWidth += elements[i].Width;
+                    styleWidth -= elements[i].Width;
+                    if (styleWidth < 0)
+                        styleWidth = 0;
+                    if (wordHeight < elements[i].Height)
+                        wordHeight = elements[i].Height;
+
+                    // we may need to add additional width for special style characters.
+                    if (elements[i] is CharacterElement)
+                    {
+                        CharacterElement atom = (CharacterElement)elements[i];
+                        IFont font = atom.Style.Font;
+                        ICharacter ch = font.GetCharacter(atom.Character);
+
+                        // italic characters need a little extra width if they are at the end of the line.
+                        if (atom.Style.IsItalic)
+                            styleWidth = font.Height / 2;
+                        if (atom.Style.IsOutlined)
+                            styleWidth += 2;
+                        if (ch.YOffset + ch.Height > wordHeight)
+                            wordHeight = ch.YOffset + ch.Height;
+                        if (ch.YOffset < 0 && ascender > ch.YOffset)
+                            ascender = ch.YOffset;
+                    }
+
+                    if (i == elements.Count - 1 || elements[i].CanBreakAtThisAtom)
+                    {
+                        return word;
+                    }
+                }
+            }
+
+            return word;
         }
 
         // ======================================================================

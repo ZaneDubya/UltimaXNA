@@ -44,21 +44,21 @@ namespace UltimaXNA.Core.UI.HTML
             bool firstLine = true;
 
             List<AElement> word = new List<AElement>();
-            List<AElement> atoms = null;
+            List<AElement> elements = null;
 
-            for (int i = 0; i < atoms.Count; i++)
+            for (int i = 0; i < elements.Count; i++)
             {
-                wordWidth += atoms[i].Width;
-                styleWidth -= atoms[i].Width;
+                wordWidth += elements[i].Width;
+                styleWidth -= elements[i].Width;
                 if (styleWidth < 0)
                     styleWidth = 0;
 
-                if (lineHeight < atoms[i].Height)
+                if (lineHeight < elements[i].Height)
                 {
-                    lineHeight = atoms[i].Height;
+                    lineHeight = elements[i].Height;
                 }
 
-                if (atoms[i].IsThisAtomALineBreak)
+                if (elements[i].IsThisAtomALineBreak)
                 {
                     if (width + styleWidth > widestLine)
                         widestLine = width + styleWidth;
@@ -70,12 +70,12 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 else
                 {
-                    word.Add(atoms[i]);
+                    word.Add(elements[i]);
 
                     // we may need to add additional width for special style characters.
-                    if (atoms[i] is CharacterElement)
+                    if (elements[i] is CharacterElement)
                     {
-                        CharacterElement atom = (CharacterElement)atoms[i];
+                        CharacterElement atom = (CharacterElement)elements[i];
                         IFont font = atom.Style.Font;
                         ICharacter ch = font.GetCharacter(atom.Character);
 
@@ -90,7 +90,7 @@ namespace UltimaXNA.Core.UI.HTML
                             ascender = ch.YOffset;
                     }
 
-                    if (i == atoms.Count - 1 || atoms[i + 1].CanBreakAtThisAtom)
+                    if (i == elements.Count - 1 || elements[i + 1].CanBreakAtThisAtom)
                     {
                         // Now make sure this line can fit the word.
                         if (width + wordWidth + styleWidth <= maxwidth)
@@ -100,9 +100,9 @@ namespace UltimaXNA.Core.UI.HTML
                             wordWidth = 0;
                             word.Clear();
                             // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
-                            if (!(i == atoms.Count - 1) && atoms[i + 1].IsThisAtomABreakingSpace)
+                            if (!(i == elements.Count - 1) && elements[i + 1].IsThisAtomABreakingSpace)
                             {
-                                int charwidth = atoms[i + 1].Width;
+                                int charwidth = elements[i + 1].Width;
                                 if (width + charwidth <= maxwidth)
                                 {
                                     // we can fit an extra space here.
@@ -112,7 +112,7 @@ namespace UltimaXNA.Core.UI.HTML
                                 else
                                 {
                                     // can't fit an extra space on the end of the line. replace the space with a \n.
-                                    ((CharacterElement)atoms[i + 1]).Character = '\n';
+                                    ((CharacterElement)elements[i + 1]).Character = '\n';
                                 }
                             }
                         }
@@ -123,15 +123,15 @@ namespace UltimaXNA.Core.UI.HTML
                             {
                                 // if this is the last word in a line. Replace the last space character with a line break
                                 // and back up to the beginning of this word.
-                                if (atoms[i - word.Count].IsThisAtomABreakingSpace)
+                                if (elements[i - word.Count].IsThisAtomABreakingSpace)
                                 {
-                                    ((CharacterElement)atoms[i - word.Count]).Character = '\n';
+                                    ((CharacterElement)elements[i - word.Count]).Character = '\n';
                                     i = i - word.Count - 1;
                                 }
                                 else
                                 {
-                                    StyleState inheritedStyle = atoms[i - word.Count].Style;
-                                    atoms.Insert(i - word.Count, new CharacterElement(inheritedStyle, '\n'));
+                                    StyleState inheritedStyle = elements[i - word.Count].Style;
+                                    elements.Insert(i - word.Count, new CharacterElement(inheritedStyle, '\n'));
                                     i = i - word.Count;
                                 }
                                 word.Clear();
@@ -148,9 +148,9 @@ namespace UltimaXNA.Core.UI.HTML
                                     int iDashWidth = word[j].Style.Font.GetCharacter('-').Width;
                                     if (iWordWidth + iDashWidth <= maxwidth)
                                     {
-                                        StyleState inheritedStyle = atoms[i - (word.Count - j) + 1].Style;
-                                        atoms.Insert(i - (word.Count - j) + 1, new CharacterElement(inheritedStyle, '\n'));
-                                        atoms.Insert(i - (word.Count - j) + 1, new CharacterElement(inheritedStyle, '-'));
+                                        StyleState inheritedStyle = elements[i - (word.Count - j) + 1].Style;
+                                        elements.Insert(i - (word.Count - j) + 1, new CharacterElement(inheritedStyle, '\n'));
+                                        elements.Insert(i - (word.Count - j) + 1, new CharacterElement(inheritedStyle, '-'));
                                         break;
                                     }
                                     iWordWidth -= word[j].Width;
