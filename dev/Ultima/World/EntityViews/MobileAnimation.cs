@@ -214,12 +214,15 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                     IAnimationFrame[] frames = provider.GetAnimation(
                         Parent.Body, actionIndex, (int)Parent.Facing, Parent.Hue);
-                    m_FrameCount = frames.Length;
-                    m_FrameDelay = delay;
-                    if (repeat == false)
-                        m_repeatCount = 0;
-                    else
-                        m_repeatCount = repeatCount;
+                    if (frames != null)
+                    {
+                        m_FrameCount = frames.Length;
+                        m_FrameDelay = delay;
+                        if (repeat == false)
+                            m_repeatCount = 0;
+                        else
+                            m_repeatCount = repeatCount;
+                    }
                 }
             }
         }

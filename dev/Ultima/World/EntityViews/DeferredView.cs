@@ -19,6 +19,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
+            if (m_BaseView.Entity is Ultima.World.Entities.Mobiles.Mobile && !(m_BaseView.Entity as Ultima.World.Entities.Mobiles.Mobile).IsAlive)
+                return false;
             m_BaseView.SetAllowDefer();
             return m_BaseView.Draw(spriteBatch, m_DrawPosition, mouseOverList, map);
         }
