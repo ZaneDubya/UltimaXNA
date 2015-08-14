@@ -106,7 +106,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
-            m_Texture = new RenderedText(string.Empty, 100);
+            m_Texture = new RenderedText(string.Empty, 100, true);
         }
 
         public override void Update(double totalMS, double frameMS)
