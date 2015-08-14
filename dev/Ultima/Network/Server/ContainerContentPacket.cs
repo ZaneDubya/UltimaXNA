@@ -19,8 +19,6 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class ContainerContentPacket : RecvPacket
     {
-        public static bool NextContainerContentsIsPre6017 = false;
-
         private ItemInContainer[] m_items;
 
         public ItemInContainer[] Items
@@ -35,6 +33,8 @@ namespace UltimaXNA.Ultima.Network.Server
             int itemCount = reader.ReadUInt16();
             List<ItemInContainer> items = new List<ItemInContainer>(itemCount);
 
+            bool PacketIsPre6017 = (reader.Buffer.Length == 5 + (19 * itemCount));
+
             for (int i = 0; i < itemCount; i++)
             {
                 Serial serial = reader.ReadInt32();
@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.Network.Server
                 int iX = reader.ReadInt16();
                 int iY = reader.ReadInt16();
                 int iGridLocation = 0;
-                if (!NextContainerContentsIsPre6017)
+                if (!PacketIsPre6017)
                     iGridLocation = reader.ReadByte(); // always 0 in RunUO.
                 int iContainerSerial = reader.ReadInt32();
                 int iHue = reader.ReadUInt16();
@@ -53,8 +53,6 @@ namespace UltimaXNA.Ultima.Network.Server
             }
 
             m_items = items.ToArray();
-            if (NextContainerContentsIsPre6017)
-                NextContainerContentsIsPre6017 = false;
         }
     }
 }
