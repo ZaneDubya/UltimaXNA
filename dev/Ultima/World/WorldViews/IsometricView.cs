@@ -197,13 +197,13 @@ namespace UltimaXNA.Ultima.World.WorldViews
                         AEntityView view = entities[i].GetView();
 
                         if (view != null)
+                        {
                             if (view.Draw(m_SpriteBatch, drawPosition, overList, map))
                                 CountEntitiesRendered++;
+                        }
 
                         if (entities[i] is DeferredEntity)
-                        {
                             deferredToRemove.Add(entities[i]);
-                        }
                     }
 
                     foreach (AEntity deferred in deferredToRemove)

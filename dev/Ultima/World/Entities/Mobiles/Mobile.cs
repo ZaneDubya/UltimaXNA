@@ -324,5 +324,10 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             m_movement.PlayerMobile_MoveEventRej(sequenceID, x, y, z, direction);
         }
+
+        public override string ToString()
+        {
+            return base.ToString() + " | " + Name;
+        }
     }
 }

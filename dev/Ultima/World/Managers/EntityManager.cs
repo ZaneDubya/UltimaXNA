@@ -78,14 +78,21 @@ namespace UltimaXNA.Ultima.World.Managers
             // redirect any new entities to a queue while we are enumerating the collection.
             m_EntitiesCollectionIsLocked = true;
 
+            Mobile player = GetPlayerEntity();
+
             // Update all other entities.
             foreach (KeyValuePair<int, AEntity> entity in m_Entities)
             {
-                if (!entity.Value.IsDisposed)
-                    entity.Value.Update(frameMS);
-                else
+                entity.Value.Update(frameMS);
+                if (System.Math.Abs(player.Position.X - entity.Value.Position.X) > 17)
+                    entity.Value.Dispose();
+                if (System.Math.Abs(player.Position.Y - entity.Value.Position.Y) > 17)
+                    entity.Value.Dispose();
+                if (entity.Value.IsDisposed)
                     m_SerialsToRemove.Add(entity.Key);
             }
+
+
 
             // Remove disposed entities
             foreach (int i in m_SerialsToRemove)
