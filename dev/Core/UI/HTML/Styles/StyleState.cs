@@ -11,6 +11,7 @@
 
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Core.Extensions;
 
 namespace UltimaXNA.Core.UI.HTML.Styles
 {
@@ -52,21 +53,12 @@ namespace UltimaXNA.Core.UI.HTML.Styles
 
         public IFont Font; // default value set in manager ctor.
         public Color Color = Color.White;
+        public int ColorHue = 2;
+        public int ActiveColorHue = 12;
+        public int HoverColorHue = 24;
 
-        public Alignments Alignment = Alignments.Default;
-        public Layers Layer = Layers.Default;
-
-        public HREFAttributes HREF = null;
+        public string HREF = null;
         public bool IsHREF { get { return HREF != null; } }
-
-        public int ElementWidth = 0;
-        public int ElementHeight = 0;
-        public int ElementTopOffset = 0;
-        public int ElementLeftOffset = 0;
-
-        public int ImgSrc = -1;
-        public int ImgSrcOver = -1;
-        public int ImgSrcDown = -1;
 
         public StyleState(IResourceProvider provider)
         {
@@ -80,16 +72,11 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             IsItalic = parent.IsItalic;
             IsOutlined = parent.IsOutlined;
             Font = parent.Font;
-            Alignment = parent.Alignment;
             Color = parent.Color;
+            ColorHue = parent.ColorHue;
+            ActiveColorHue = parent.ActiveColorHue;
+            HoverColorHue = parent.HoverColorHue;
             HREF = parent.HREF;
-            ElementWidth = parent.ElementWidth;
-            ElementHeight = parent.ElementHeight;
-            ElementTopOffset = parent.ElementTopOffset;
-            ElementLeftOffset = parent.ElementLeftOffset;
-            ImgSrc = parent.ImgSrc;
-            ImgSrcOver = parent.ImgSrcOver;
-            ImgSrcDown = parent.ImgSrcDown;
         }
     }
 }

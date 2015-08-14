@@ -118,7 +118,7 @@ namespace UltimaXNA.Core.UI
                 RenderedText rendered = m_Entries[i];
                 if (rendered.Regions.Count > 0)
                 {
-                    Region region = rendered.Regions.RegionfromPoint(new Point(x, y - height + m_ScrollBar.Value));
+                    HtmlLink region = rendered.Regions.RegionfromPoint(new Point(x, y - height + m_ScrollBar.Value));
                     if (region != null)
                     {
                         m_MouseOverText = i;
@@ -152,7 +152,7 @@ namespace UltimaXNA.Core.UI
                 if (button == MouseButton.Left)
                 {
                     if (m_Entries[m_MouseOverText].Regions.Region(m_MouseOverHREF).HREF != null)
-                        ActivateByHREF(m_Entries[m_MouseOverText].Regions.Region(m_MouseOverHREF).HREF.HREF);
+                        ActivateByHREF(m_Entries[m_MouseOverText].Regions.Region(m_MouseOverHREF).HREF);
                 }
             }
         }

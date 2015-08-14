@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.UI.HTML.Parsing;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Core.UI.HTML.Elements;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML.Styles
@@ -23,28 +24,35 @@ namespace UltimaXNA.Core.UI.HTML.Styles
     /// Style manager. As you parse html tags, add them to a manager TagCollection.
     /// Then, when you add an element, use the manager to generate an object that will contain all the styles for that element.
     /// </summary>
-    public class StyleManager
+    public class StyleParser
     {
         public StyleState Style;
 
         private IResourceProvider m_Provider;
         private List<OpenTag> m_OpenTags;
 
-        public StyleManager(IResourceProvider provider)
+        public StyleParser(IResourceProvider provider)
         {
             m_Provider = provider;
             m_OpenTags = new List<OpenTag>();
             RecalculateStyle();
         }
 
-        public void OpenTag(HTMLchunk chunk)
+        public void ParseTag(HTMLchunk chunk, AElement atom)
         {
-            OpenTag tag = new OpenTag(chunk);
-
             if (!chunk.bClosure || chunk.bEndClosure)
             {
+                // create the tag and add it to the list of open tags.
+                OpenTag tag = new OpenTag(chunk);
                 m_OpenTags.Add(tag);
-                ParseTag(tag);
+                // parse the tag (which will update the StyleParser's current style
+                ParseTag(tag, atom);
+                // if the style has changed and atom is not null, set the atom's style to the current style.
+                if (atom != null)
+                    atom.Style = Style;
+                // if this is a self-closing tag (<br/>) close it!
+                if (chunk.bEndClosure)
+                    CloseOneTag(chunk);
             }
             else
             {
@@ -92,7 +100,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             }
         }
 
-        public void InterpretHREF(HTMLchunk chunk)
+        public void InterpretHREF(HTMLchunk chunk, AElement atom)
         {
             if (chunk.bEndClosure)
             {
@@ -101,14 +109,15 @@ namespace UltimaXNA.Core.UI.HTML.Styles
 
             if (!chunk.bClosure)
             {
-                // hyperlink with attributes
-                Style.HREF = new HREFAttributes();
+                // opening a hyperlink!
+                RecalculateStyle();
                 OpenTag tag = new OpenTag(chunk);
-                ParseTag(tag);
+                m_OpenTags.Add(tag);
+                ParseTag(tag, atom);
             }
             else
             {
-                // closing a hyperlink. NOTE: Recalculating the styles will NOT restore the previous link. Is this worth fixing?
+                // closing a hyperlink.
                 RecalculateStyle();
             }
         }
@@ -122,7 +131,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             }
         }
 
-        private void ParseTag(OpenTag tag)
+        private void ParseTag(OpenTag tag, AElement atom = null)
         {
             switch (tag.sTag)
             {
@@ -149,13 +158,16 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                     Style.Font = m_Provider.GetUnicodeFont((int)Fonts.UnicodeSmall);
                     break;
                 case "left":
-                    Style.Alignment = Alignments.Left;
+                    if (atom != null && atom is BlockElement)
+                        (atom as BlockElement).Alignment = Alignments.Left;
                     break;
                 case "center":
-                    Style.Alignment = Alignments.Center;
+                    if (atom != null && atom is BlockElement)
+                        (atom as BlockElement).Alignment = Alignments.Center;
                     break;
                 case "right":
-                    Style.Alignment = Alignments.Right;
+                    if (atom != null && atom is BlockElement)
+                        (atom as BlockElement).Alignment = Alignments.Right;
                     break;
             }
 
@@ -176,7 +188,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                         // href paramater can only be used on 'anchor' tags.
                         if (tag.sTag == "a")
                         {
-                            Style.HREF.HREF = value;
+                            Style.HREF = value;
                         }
                         break;
                     case "color":
@@ -202,19 +214,25 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                         if (c.HasValue)
                         {
                             if (key == "color")
+                            {
                                 Style.Color = c.Value;
+                            }
                             if (tag.sTag == "a")
                             {
+                                // a tag colors are override, they are rendered white and then hued with a websafe hue.
                                 switch (key)
                                 {
                                     case "color":
-                                        Style.HREF.UpHue = m_Provider.GetWebSafeHue(c.Value);
+                                        Style.ColorHue = m_Provider.GetWebSafeHue(c.Value);
                                         break;
                                     case "hovercolor":
-                                        Style.HREF.OverHue = m_Provider.GetWebSafeHue(c.Value);
+                                        Style.HoverColorHue = m_Provider.GetWebSafeHue(c.Value);
                                         break;
                                     case "activecolor":
-                                        Style.HREF.DownHue = m_Provider.GetWebSafeHue(c.Value);
+                                        Style.ActiveColorHue = m_Provider.GetWebSafeHue(c.Value);
+                                        break;
+                                    default:
+                                        Tracer.Warn("Only anchor <a> tags can have attribute {0}.", key);
                                         break;
                                 }
                             }
@@ -225,46 +243,43 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                     case "src":
                     case "hoversrc":
                     case "activesrc":
-                        switch (tag.sTag)
+                        if (atom is ImageElement)
                         {
-                            case "gumpimg":
-                            case "itemimg":
-                                if (key == "src")
-                                    Style.ImgSrc = int.Parse(value);
-                                else if (key == "hoversrc")
-                                    Style.ImgSrcOver = int.Parse(value);
-                                else if (key == "activesrc")
-                                    Style.ImgSrcDown = int.Parse(value);
-                                break;
-                            default:
-                                Tracer.Warn("{0} param encountered within {1} tag which does not use this param.", key, tag.sTag);
-                                break;
+                            if (key == "src")
+                                (atom as ImageElement).ImgSrc = int.Parse(value);
+                            else if (key == "hoversrc")
+                                (atom as ImageElement).ImgSrcOver = int.Parse(value);
+                            else if (key == "activesrc")
+                                (atom as ImageElement).ImgSrcDown = int.Parse(value);
+                            break;
+                        }
+                        else
+                        {
+                            Tracer.Warn("{0} param encountered within {1} tag which does not use this param.", key, tag.sTag);
                         }
                         break;
                     case "width":
-                        switch (tag.sTag)
                         {
-                            case "gumpimg":
-                            case "itemimg":
-                            case "span":
-                                Style.ElementWidth = int.Parse(value);
-                                break;
-                            default:
+                            if (atom is ImageElement || atom is BlockElement)
+                            {
+                                atom.Width = int.Parse(value);
+                            }
+                            else
+                            {
                                 Tracer.Warn("width param encountered within " + tag.sTag + " which does not use this param.");
-                                break;
+                            }
                         }
                         break;
                     case "height":
-                        switch (tag.sTag)
                         {
-                            case "gumpimg":
-                            case "itemimg":
-                            case "span":
-                                Style.ElementHeight = int.Parse(value);
-                                break;
-                            default:
-                                Tracer.Warn("height param encountered within " + tag.sTag + " which does not use this param.");
-                                break;
+                            if (atom is ImageElement || atom is BlockElement)
+                            {
+                                atom.Height = int.Parse(value);
+                            }
+                            else
+                            {
+                                Tracer.Warn("width param encountered within " + tag.sTag + " which does not use this param.");
+                            }
                         }
                         break;
                     case "style":
@@ -367,41 +382,6 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                         {
                             // other possibilities? overline|line-through|initial|inherit;
                             Tracer.Warn("Unknown text-decoration parameter:{0}", param[i]);
-                        }
-                    }
-                    break;
-                case "layer":
-                    {
-                        if (value == "default")
-                        {
-                            Style.Layer = Layers.Default;
-                        }
-                        else if (value == "background")
-                        {
-                            Style.Layer = Layers.Background;
-                        }
-                        else
-                        {
-                            // other possibilities? fixed|relative|initial|inherit;
-                            Tracer.Warn("Unknown position parameter:{0}", value);
-                        }
-                    }
-                    break;
-                case "top":
-                    {
-                        int topValue = 0;
-                        if (int.TryParse(value, out topValue))
-                        {
-                            Style.ElementTopOffset = topValue;
-                        }
-                    }
-                    break;
-                case "left":
-                    {
-                        int leftValue = 0;
-                        if (int.TryParse(value, out leftValue))
-                        {
-                            Style.ElementLeftOffset = leftValue;
                         }
                     }
                     break;

@@ -45,6 +45,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new ResizePic(this, 128, 285, 0x13BE, 520, 190));
             AddControl(new GumpPic(this, 0, 0, 0x157C, 0)); // 0x2329
             AddControl(new GumpPic(this, 354, 42, 0x058A, 0)); // 0x2329
+
             // quit button
             AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
@@ -69,7 +70,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new Button(this, 610, 439, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
             ((Button)LastControl).GumpOverID = 5541;
             // Version information
-            AddControl(new HtmlGumpling(this, 220, 440, 400, 20, 0, 0, "<medium><outline><font color='#CCDDCC'>" + Utility.VersionString));
+            AddControl(new HtmlGumpling(this, 180, 440, 400, 20, 0, 0, "<center><medium><outline><font color='#CCDDCC'>" + Utility.VersionString));
 
             IsUncloseableWithRMB = true;
         }

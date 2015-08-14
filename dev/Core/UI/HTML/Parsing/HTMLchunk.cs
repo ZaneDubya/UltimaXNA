@@ -543,6 +543,10 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 				oParams=new Hashtable();
 		}
 
+        public override string ToString()
+        {
+            return sTag;
+        }
 	}
 
 }

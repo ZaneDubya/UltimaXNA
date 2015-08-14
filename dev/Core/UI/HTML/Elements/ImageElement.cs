@@ -11,26 +11,32 @@
 
 using UltimaXNA.Core.UI.HTML.Styles;
 
-namespace UltimaXNA.Core.UI.HTML.Atoms
+namespace UltimaXNA.Core.UI.HTML.Elements
 {
-    public class ImageAtom : AAtom
+    public class ImageElement : AElement
     {
-        public Image AssociatedImage
+        public HtmlImage AssociatedImage
         {
             get;
             set;
         }
 
+        public int ImgSrc = -1;
+        public int ImgSrcOver = -1;
+        public int ImgSrcDown = -1;
+
+        private int m_Width = 0, m_Height = 0;
+
         public override int Width
         {
             set
             {
-                Style.ElementWidth = value;
+                m_Width = value;
             }
             get
             {
-                if (Style.ElementWidth != 0)
-                    return Style.ElementWidth;
+                if (m_Width != 0)
+                    return m_Width;
                 return AssociatedImage.Texture.Width;
             }
         }
@@ -39,12 +45,12 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
         {
             set
             {
-                Style.ElementHeight = value;
+                m_Height = value;
             }
             get
             {
-                if (Style.ElementHeight != 0)
-                    return Style.ElementHeight;
+                if (m_Height != 0)
+                    return m_Height;
                 return AssociatedImage.Texture.Height;
             }
         }
@@ -55,7 +61,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
             private set;
         }
 
-        public ImageAtom(StyleState style, ImageTypes imageType = ImageTypes.UI)
+        public ImageElement(StyleState style, ImageTypes imageType = ImageTypes.UI)
             : base(style)
         {
             ImageType = imageType;
@@ -63,7 +69,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
 
         public override string ToString()
         {
-            return string.Format("<img {0} {1}>", Style.ImgSrc, ImageType.ToString());
+            return string.Format("<img {0} {1}>", ImgSrc, ImageType.ToString());
         }
 
         public enum ImageTypes
