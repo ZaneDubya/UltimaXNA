@@ -110,12 +110,14 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             if (!chunk.bClosure)
             {
                 // opening a hyperlink!
+                RecalculateStyle();
                 OpenTag tag = new OpenTag(chunk);
                 ParseTag(tag, atom);
             }
             else
             {
-                // closing a hyperlink. NOTE: Recalculating the styles will NOT restore the previous link. Is this worth fixing?
+                // closing a hyperlink. NOTE: Recalculating the styles will NOT restore the previous link because we do not store open a tags.
+                // Is this worth fixing?
                 RecalculateStyle();
             }
         }

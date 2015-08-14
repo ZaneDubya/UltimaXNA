@@ -95,7 +95,7 @@ namespace UltimaXNA.Core.UI
         // !!!! Do these need to be exposed????
         public HtmlLinkList Regions
         {
-            get { return m_Document.Regions; }
+            get { return m_Document.Links; }
         }
         public Texture2D Texture
         {
@@ -161,26 +161,26 @@ namespace UltimaXNA.Core.UI
 
             sb.Draw2D(m_Document.Texture, destRectangle, sourceRectangle, hueVector.HasValue ? hueVector.Value : Vector3.Zero);
 
-            for (int i = 0; i < m_Document.Regions.Count; i++)
+            for (int i = 0; i < m_Document.Links.Count; i++)
             {
-                HtmlLink r = m_Document.Regions[i];
+                HtmlLink link = m_Document.Links[i];
                 Point position;
                 Rectangle sourceRect;
-                if (ClipRectangle(new Point(xScroll, yScroll), r.Area, destRectangle, out position, out sourceRect))
+                if (ClipRectangle(new Point(xScroll, yScroll), link.Area, destRectangle, out position, out sourceRect))
                 {
                     // only draw the font in a different color if this is a HREF region.
                     // otherwise it is a dummy region used to notify images that they are
                     // being mouse overed.
-                    if (r.HREF != null)
+                    if (link.HREF != null)
                     {
                         int linkHue = 0;
-                        if (r.Index == MouseOverRegionID)
+                        if (link.Index == MouseOverRegionID)
                             if (IsMouseDown)
-                                linkHue = r.Style.ActiveColorHue;
+                                linkHue = link.Style.ActiveColorHue;
                             else
-                                linkHue = r.Style.HoverColorHue;
+                                linkHue = link.Style.HoverColorHue;
                         else
-                            linkHue = r.Style.ColorHue;
+                            linkHue = link.Style.ColorHue;
 
                         sb.Draw2D(m_Document.Texture, new Vector3(position.X, position.Y, 0),
                             sourceRect, Utility.GetHueVector(linkHue));

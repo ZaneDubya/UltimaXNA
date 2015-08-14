@@ -50,8 +50,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new HtmlGumpling(this, 100, 100, 300, 200, 0, 0, 
                 string.Format(
                 "<left><itemimg width=20 src='{2}'/></left>" +
-                "<left color='#400'>{0}<br/>{1}gp, {3} available.</left>" + 
-                "<right><a href='add={4}'><gumpimg src='0x9CF'/></a>  <a href='remove={4}'><gumpimg src='0x9CE'/></a></right>",
+                "<left color='#400'><a href='nothing' style='text-decoration: none;'>{0}<br/>{1}gp, {3} available.</a></left>" + 
+                "<right><a href='add={4}'><gumpimg src='0x9CF'/></a> <a href='remove={4}'><gumpimg src='0x9CE'/></a></right>",
                 "A magic sword", 200, 942, 13, 1)));
             // end debug !!!
 

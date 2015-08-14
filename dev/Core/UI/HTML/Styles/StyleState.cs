@@ -53,9 +53,9 @@ namespace UltimaXNA.Core.UI.HTML.Styles
 
         public IFont Font; // default value set in manager ctor.
         public Color Color = Color.White;
-        public int ColorHue = 0;
-        public int ActiveColorHue = 0;
-        public int HoverColorHue = 0;
+        public int ColorHue = 2;
+        public int ActiveColorHue = 12;
+        public int HoverColorHue = 24;
 
         public string HREF = null;
         public bool IsHREF { get { return HREF != null; } }

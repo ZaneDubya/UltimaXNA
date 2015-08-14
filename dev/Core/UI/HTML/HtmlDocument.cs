@@ -54,7 +54,7 @@ namespace UltimaXNA.Core.UI.HTML
             private set;
         }
 
-        public HtmlLinkList Regions
+        public HtmlLinkList Links
         {
             get;
             private set;
@@ -78,7 +78,7 @@ namespace UltimaXNA.Core.UI.HTML
             Images = new HtmlImageList();
             GetAllImages(Images, m_Root);
 
-            Regions = GetAllHrefRegionsInBlock(m_Root);
+            Links = GetAllHrefRegionsInBlock(m_Root);
 
             DoLayout(m_Root, width);
             Texture = DoRender(m_Root);
@@ -86,11 +86,11 @@ namespace UltimaXNA.Core.UI.HTML
 
         public void Dispose()
         {
-            // !!! we need to handle disposing the ImageList better.
+            // !!! we need to handle disposing the ImageList better, it references textures.
             Images.Clear();
             Images = null;
-            Regions.Clear();
-            Regions = null;
+            Links.Clear();
+            Links = null;
             if (Texture != null)
                 Texture.Dispose();
         }
@@ -141,6 +141,7 @@ namespace UltimaXNA.Core.UI.HTML
                         {
                             if (currentBlock.Tag == chunk.sTag)
                             {
+                                styles.CloseOneTag(chunk);
                                 currentBlock = currentBlock.Parent;
                             }
                         }
@@ -308,11 +309,14 @@ namespace UltimaXNA.Core.UI.HTML
             //      -> If yes, then place all blocks and expand the ones that have additional width until there is no more width to fill.
             // 3. If not 2, flow blocks to the next y line until all remaining blocks can fit on one line.
             //      -> Expand remaining blocks, and start all over again.
+            //      -> Actually, this is not yet implemented. Any takers? :(
             if (root.Layout_MaxWidth <= root.Width) // 1
             {
                 foreach (AElement element in root.Children)
+                {
                     if (element is BlockElement)
                         (element as BlockElement).Width = (element as BlockElement).Layout_MaxWidth;
+                }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y);
             }
             else if (root.Layout_MinWidth <= root.Width) // 2
@@ -320,19 +324,23 @@ namespace UltimaXNA.Core.UI.HTML
                 // get the amount of extra width that we could fill.
                 int extraRequestedWidth = 0;
                 foreach (AElement element in root.Children)
+                {
                     if (element is BlockElement)
                     {
                         BlockElement block = (element as BlockElement);
                         extraRequestedWidth = block.Layout_MaxWidth - block.Layout_MinWidth;
                     }
+                }
                 // distribute the extra width.
                 foreach (AElement element in root.Children)
+                {
                     if (element is BlockElement)
                     {
                         BlockElement block = (element as BlockElement);
                         block.Width = block.Layout_MinWidth + (int)(((float)(block.Layout_MaxWidth - block.Layout_MinWidth) / extraRequestedWidth) * extraRequestedWidth);
                         extraRequestedWidth = block.Layout_MaxWidth - block.Layout_MinWidth;
                     }
+                }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y);
             }
             else // 3
@@ -351,6 +359,8 @@ namespace UltimaXNA.Core.UI.HTML
                 AElement element = root.Children[i];
                 if (element.IsThisAtomALineBreak)
                 {
+                    element.Layout_X = x0;
+                    element.Layout_Y = y;
                     y += lineHeight;
                     x0 = x;
                     x1 = x + root.Width;
@@ -378,7 +388,6 @@ namespace UltimaXNA.Core.UI.HTML
                             break;
                     }
                     LayoutElements((element as BlockElement));
-
                 }
                 else
                 {
@@ -396,6 +405,11 @@ namespace UltimaXNA.Core.UI.HTML
         // Render methods
         // ======================================================================
 
+        /// <summary>
+        /// Renders all the elements in the root branch. At the same time, also sets areas for regions and href links.
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
         private Texture2D DoRender(BlockElement root)
         {
             SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
@@ -452,6 +466,12 @@ namespace UltimaXNA.Core.UI.HTML
                 else if (element is BlockElement)
                 {
                     DoRenderBlock(element as BlockElement, ptr, width, height);
+                }
+
+                // set href link regions
+                if (element.Style.IsHREF)
+                {
+                    Links.AddLink(element.Style, new Rectangle(element.Layout_X, element.Layout_Y, element.Width, element.Height));
                 }
             }
         }

@@ -14,11 +14,11 @@ namespace UltimaXNA.Core.UI.HTML
         public string HREF;
         public StyleState Style;
 
-        public HtmlLink(int i, string href, StyleState style)
+        public HtmlLink(int i, StyleState style)
         {
             Area = new Rectangle();
             Index = i;
-            HREF = href;
+            HREF = style.HREF;
             Style = style;
         }
     }

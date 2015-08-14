@@ -355,10 +355,10 @@ namespace UltimaXNA.Core.UI.HTML
                         if (atom.Style.HREF != null)
                         {
                             isRegionOpen = true;
-                            region = regions.AddLink(atom.Style.HREF, atom.Style);
-                            region.Area.X = dx;
-                            region.Area.Y = y;
-                            regionHeight = 0;
+                            //region = regions.AddLink(atom.Style.HREF, atom.Style);
+                            //region.Area.X = dx;
+                            //region.Area.Y = y;
+                            //regionHeight = 0;
                         }
                     }
 
@@ -372,11 +372,11 @@ namespace UltimaXNA.Core.UI.HTML
                         {
                             if (!isRegionOpen)
                             {
-                                region = regions.AddLink(atom.Style.HREF, atom.Style);
-                                isRegionOpen = true;
-                                region.Area.X = dx;
-                                region.Area.Y = y;
-                                regionHeight = 0;
+                                //region = regions.AddLink(atom.Style.HREF, atom.Style);
+                                //isRegionOpen = true;
+                                //region.Area.X = dx;
+                                //region.Area.Y = y;
+                                //regionHeight = 0;
                             }
 
                             image.RegionIndex = region.Index;
