@@ -186,6 +186,11 @@ namespace UltimaXNA.Core.Network
 
         public bool Connect(string ipAddressOrHostName, int port)
         {
+            m_QueuedPackets.Clear();
+            Array.Clear(m_ReceiveBuffer, 0, m_ReceiveBuffer.Length);
+            m_ReceiveBufferPosition = 0;
+            m_AppendNextMessage = false;
+
             if (IsConnected)
             {
                 Disconnect();

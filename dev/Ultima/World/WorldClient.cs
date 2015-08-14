@@ -324,6 +324,11 @@ namespace UltimaXNA.Ultima.World
 
         private Item add_Item(Serial serial, int itemID, int nHue, Serial parentSerial, int amount)
         {
+            if (itemID >= 0x4000)
+            {
+                itemID &= 0x3fff;
+            }
+
             Item item;
             if (itemID == 0x2006)
             {
