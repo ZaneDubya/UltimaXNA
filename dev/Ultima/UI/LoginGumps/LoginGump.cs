@@ -46,15 +46,6 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new GumpPic(this, 0, 0, 0x157C, 0)); // 0x2329
             AddControl(new GumpPic(this, 354, 42, 0x058A, 0)); // 0x2329
 
-            // debug !!!!
-            AddControl(new HtmlGumpling(this, 100, 100, 260, 200, 0, 0, 
-                string.Format(
-                "<right><a href='add={4}'><gumpimg src='0x9CF'/></a><a href='remove={4}'><gumpimg src='0x9CE'/></a></right>" +
-                "<left><itemimg src='{2}'/></left>" +
-                "<left color='#400'><a href='nothing' style='text-decoration: none;'>{0}<br/>{1}gp,</a> {3} available.</left>",
-                "ÃÃSupercalifragilisticexpia: <i>SupercalifragilisticexpialidociousSupercalifragilisticexpialidocious</i> A magic sword which is somewhat magic and also powerful; did I mention it was magic?", 200, 942, 13, 1)));
-            // end debug !!!
-
             // quit button
             AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
@@ -79,7 +70,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new Button(this, 610, 439, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
             ((Button)LastControl).GumpOverID = 5541;
             // Version information
-            AddControl(new HtmlGumpling(this, 220, 440, 400, 20, 0, 0, "<medium><outline><font color='#CCDDCC'>" + Utility.VersionString));
+            AddControl(new HtmlGumpling(this, 180, 440, 400, 20, 0, 0, "<center><medium><outline><font color='#CCDDCC'>" + Utility.VersionString));
 
             IsUncloseableWithRMB = true;
         }

@@ -290,12 +290,13 @@ namespace UltimaXNA.Core.UI.HTML
 
                 if (child.IsThisAtomALineBreak)
                 {
-                    if (widthMin > widthMinLongest)
-                        widthMinLongest = widthMin;
-                    if (widthMax > widthMaxLongest)
-                        widthMaxLongest = widthMax;
+                    if (widthMin + styleWidth > widthMinLongest)
+                        widthMinLongest = widthMin + styleWidth;
+                    if (widthMax + styleWidth > widthMaxLongest)
+                        widthMaxLongest = widthMax + styleWidth;
                     widthMin = 0;
                     widthMax = 0;
+                    styleWidth = 0;
                 }
 
                 if (child.IsThisAtomABreakingSpace)
@@ -305,8 +306,9 @@ namespace UltimaXNA.Core.UI.HTML
                 }
             }
 
-            root.Layout_MinWidth = (widthMin > widthMinLongest) ? widthMin : widthMinLongest;
-            root.Layout_MaxWidth = (widthMax > widthMaxLongest) ? widthMax : widthMaxLongest;
+
+            root.Layout_MinWidth = (widthMin + styleWidth > widthMinLongest) ? widthMin + styleWidth : widthMinLongest;
+            root.Layout_MaxWidth = (widthMax + styleWidth > widthMaxLongest) ? widthMax + styleWidth : widthMaxLongest;
         }
 
         private void LayoutElements(BlockElement root)
@@ -560,8 +562,8 @@ namespace UltimaXNA.Core.UI.HTML
 
             uint[] pixels = new uint[root.Width * root.Height];
             /* DEBUG PURPOSES: Fill background with a lovely shade of lime green. */
-            for (int i = 0; i < pixels.Length; i++)
-                pixels[i] = 0xff00ff00;
+            // for (int i = 0; i < pixels.Length; i++)
+            //    pixels[i] = 0xff00ff00;
 
             if (root.Err_Cant_Fit_Children)
             {
