@@ -385,7 +385,7 @@ namespace UltimaXNA.Core.UI.HTML
                     {
                         // can't fit this word on even a full line.
                         /// Must break it somewhere; might as well break it as close to the line end as possible.
-                        LayoutElements_BreakWord(root.Children, i, x1 - x0, word, wordWidth, styleWidth);
+                        LayoutElements_BreakWordAtLineEnd(root.Children, i, x1 - x0, word, wordWidth, styleWidth);
                         i--;
                     }
                     else if (x0 + wordWidth + styleWidth > x1)
@@ -503,18 +503,18 @@ namespace UltimaXNA.Core.UI.HTML
         /// <summary>
         /// Breaks a word at its max value.
         /// </summary>
-        private void LayoutElements_BreakWord(List<AElement> elements, int start, int lineWidth, List<AElement> word, int wordWidth, int styleWidth)
+        private void LayoutElements_BreakWordAtLineEnd(List<AElement> elements, int start, int lineWidth, List<AElement> word, int wordWidth, int styleWidth)
         {
             CharacterElement dash = new Elements.CharacterElement(word[0].Style, '-');
-            CharacterElement space = new Elements.CharacterElement(word[0].Style, ' ');
-            int width = dash.Width + space.Width + styleWidth + 2;
+            CharacterElement lineend = new Elements.CharacterElement(word[0].Style, '\n');
+            int width = dash.Width + lineend.Width + styleWidth + 2;
             for (int i = 0; i < word.Count; i++)
             {
                 width += word[i].Width;
-                if (width > lineWidth)
+                if (width >= lineWidth)
                 {
                     elements.Insert(start + i, dash);
-                    elements.Insert(start + i +1 , space);
+                    elements.Insert(start + i + 1, lineend);
                     return;
                 }
             }

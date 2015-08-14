@@ -52,7 +52,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                 "<right><a href='add={4}'><gumpimg src='0x9CF'/></a><a href='remove={4}'><gumpimg src='0x9CE'/></a></right>" +
                 "<left><itemimg src='{2}'/></left>" +
                 "<left color='#400'><a href='nothing' style='text-decoration: none;'>{0}<br/>{1}gp,</a> {3} available.</left>",
-                "<i>Supercalifragilisticexpialidociouiiistrocious:</i> A magic sword which is somewhat magic and also powerful; did I mention it was magic?", 200, 942, 13, 1)));
+                "Supercalifragilisticexpia: <i>SupercalifragilisticexpialidociousSupercalifragilisticexpialidocious</i> A magic sword which is somewhat magic and also powerful; did I mention it was magic?", 200, 942, 13, 1)));
             // end debug !!!
 
             // quit button
