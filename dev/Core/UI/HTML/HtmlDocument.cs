@@ -48,6 +48,12 @@ namespace UltimaXNA.Core.UI.HTML
             }
         }
 
+        public int Ascender
+        {
+            get;
+            private set;
+        }
+
         public HtmlImageList Images
         {
             get;
@@ -81,6 +87,8 @@ namespace UltimaXNA.Core.UI.HTML
             Links = GetAllHrefRegionsInBlock(m_Root);
 
             DoLayout(m_Root, width);
+            if (Ascender != 0)
+                m_Root.Height -= Ascender;
             Texture = DoRender(m_Root);
         }
 
@@ -311,6 +319,9 @@ namespace UltimaXNA.Core.UI.HTML
             //      -> Flow blocks to the next y line until all remaining blocks can fit on one line.
             //      -> Expand remaining blocks, and start all over again.
             //      -> Actually, this is not yet implemented. Any takers? :(
+
+            int ascender = 0;
+
             if (root.Layout_MaxWidth <= root.Width) // 1
             {
                 if (m_CollapseToContent)
@@ -323,7 +334,7 @@ namespace UltimaXNA.Core.UI.HTML
                     if (element is BlockElement)
                         (element as BlockElement).Width = (element as BlockElement).Layout_MaxWidth;
                 }
-                LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y);
+                LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y, out ascender);
             }
             else if (root.Layout_MinWidth <= root.Width) // 2
             {
@@ -349,19 +360,23 @@ namespace UltimaXNA.Core.UI.HTML
                         extraAllowedWidth -= block.Layout_MaxWidth - block.Layout_MinWidth;
                     }
                 }
-                LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y);
+                LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y, out ascender);
             }
             else // 3
             {
                 // just display an error message and call it a day?
                 root.Err_Cant_Fit_Children = true;
             }
+
+            if (ascender < Ascender)
+                Ascender = ascender;
         }
 
-        private void LayoutElementsHorizontal(BlockElement root, int x, int y)
+        private void LayoutElementsHorizontal(BlockElement root, int x, int y, out int ascenderDelta)
         {
             int x0 = x, x1 = x + root.Width;
             int height = 0, lineHeight = 0;
+            ascenderDelta = 0;
 
             for (int i = 0; i < root.Children.Count; i++)
             {
@@ -383,19 +398,23 @@ namespace UltimaXNA.Core.UI.HTML
 
                     if (wordWidth + styleWidth > root.Width)
                     {
-                        // can't fit this word on even a full line.
-                        /// Must break it somewhere; might as well break it as close to the line end as possible.
+                        // Can't fit this word on even a full line. Must break it somewhere. 
+                        // might as well break it as close to the line end as possible.
+                        // TODO: For words VERY near the end of the line, we should not break it, but flow to the next line.
                         LayoutElements_BreakWordAtLineEnd(root.Children, i, x1 - x0, word, wordWidth, styleWidth);
                         i--;
                     }
                     else if (x0 + wordWidth + styleWidth > x1)
                     {
-                        // this word is too long for this line. shove it down to the next line.
+                        // This word is too long for this line. Flow it to the next line without breaking.
+                        // TODO: we should introduce some heuristic that that super long words aren't flowed. Perhaps words 
+                        // longer than 8 chars, where the break would be after character 3 and before 3 characters from the end?
                         root.Children.Insert(i, new CharacterElement(e0.Style, '\n'));
                         i--;
                     }
                     else
                     {
+                        // This word can fit on the current line without breaking. Lay it out!
                         foreach (AElement e1 in word)
                         {
                             if (e1 is BlockElement)
@@ -423,10 +442,12 @@ namespace UltimaXNA.Core.UI.HTML
                             else
                             {
                                 e1.Layout_X = x0;
-                                e1.Layout_Y = y;
+                                e1.Layout_Y = y; // -ascender;
                                 x0 += e1.Width;
                             }
                         }
+                        if (y + ascender < ascenderDelta)
+                            ascenderDelta = y + ascender;
                         if (wordHeight > lineHeight)
                             lineHeight = wordHeight;
                         i += word.Count - 1;
@@ -568,19 +589,27 @@ namespace UltimaXNA.Core.UI.HTML
         {
             foreach (AElement element in root.Children)
             {
+                int x = element.Layout_X;
+                int y = element.Layout_Y - Ascender;
                 if (element is CharacterElement)
                 {
                     IFont font = element.Style.Font;
                     ICharacter character = font.GetCharacter((element as CharacterElement).Character);
                     // HREF links should be colored white, because we will hue them at runtime.
                     uint color = element.Style.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(element.Style.Color);
-                    character.WriteToBuffer(ptr, element.Layout_X, element.Layout_Y, width, height, font.Baseline,
+                    character.WriteToBuffer(ptr, x, y, width, height, font.Baseline,
                         element.Style.IsBold, element.Style.IsItalic, element.Style.IsUnderlined, element.Style.IsOutlined, color, 0xFF000008);
+                    // offset y by ascender for links...
+                    if (character.YOffset < 0)
+                    {
+                        y += character.YOffset;
+                        height -= character.YOffset;
+                    }
                 }
                 else if (element is ImageElement)
                 {
                     ImageElement image = (element as ImageElement);
-                    image.AssociatedImage.Area = new Rectangle(image.Layout_X, image.Layout_Y, image.Width, image.Height);
+                    image.AssociatedImage.Area = new Rectangle(x, y, image.Width, image.Height);
                 }
                 else if (element is BlockElement)
                 {
@@ -590,7 +619,7 @@ namespace UltimaXNA.Core.UI.HTML
                 // set href link regions
                 if (element.Style.IsHREF)
                 {
-                    Links.AddLink(element.Style, new Rectangle(element.Layout_X, element.Layout_Y, element.Width, element.Height));
+                    Links.AddLink(element.Style, new Rectangle(x, y, element.Width, element.Height));
                 }
             }
         }
