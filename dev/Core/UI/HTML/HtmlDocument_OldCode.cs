@@ -11,17 +11,16 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI.HTML.Elements;
-using UltimaXNA.Core.UI.HTML.Parsing;
 using UltimaXNA.Core.UI.HTML.Styles;
-using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.UI.HTML.Elements;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML
 {
+    /// <summary>
+    /// This is the old html layout engine. I am including it in case any of this old code proves useful.
+    /// It will be removed when Milestone 0.7 is completed.
+    /// </summary>
     class HtmlDocument_OldCode
     {
         // ======================================================================
