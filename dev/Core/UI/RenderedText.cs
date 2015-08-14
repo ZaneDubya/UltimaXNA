@@ -100,7 +100,11 @@ namespace UltimaXNA.Core.UI
         }
         public Texture2D Texture
         {
-            get { return m_Document.Texture; }
+            get
+            {
+                RenderIfNecessary();
+                return m_Document.Texture;
+            }
         }
         // !!!! Do these need to be exposed????
 
