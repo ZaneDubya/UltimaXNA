@@ -72,7 +72,10 @@ namespace UltimaXNA.Core.UI.HTML
         public HtmlDocument(string html, int width)
         {
             m_Root = ParseHtmlToBlocks(html);
-            Images = GetAllImagesInBlock(m_Root);
+
+            Images = new HtmlImageList();
+            GetAllImages(Images, m_Root);
+
             Regions = GetAllHrefRegionsInBlock(m_Root);
 
             DoLayout(m_Root, width);
@@ -400,9 +403,9 @@ namespace UltimaXNA.Core.UI.HTML
                 return new Texture2D(graphics, 1, 1);
 
             uint[] pixels = new uint[root.Width * root.Height];
-            /* DEBUG PURPOSES: Fill background with a lovely shade of lime green.
-             * for (int i = 0; i < pixels.Length; i++)
-                pixels[i] = 0xff00ff00;*/
+            /* DEBUG PURPOSES: Fill background with a lovely shade of lime green. */
+            for (int i = 0; i < pixels.Length; i++)
+                pixels[i] = 0xff00ff00;
 
             if (root.Err_Cant_Fit_Children)
             {
@@ -450,10 +453,8 @@ namespace UltimaXNA.Core.UI.HTML
         // Image and href link region handling
         // ======================================================================
 
-        private HtmlImageList GetAllImagesInBlock(BlockElement block)
+        private void GetAllImages(HtmlImageList images, BlockElement block)
         {
-            HtmlImageList images = new HtmlImageList();
-
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
             foreach (AElement atom in block.Children)
@@ -478,11 +479,14 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 else if (atom is BlockElement)
                 {
-                    GetAllImagesInBlock(atom as BlockElement);
+                    GetAllImages(images, atom as BlockElement);
                 }
             }
+        }
 
-            return images;
+        private void SetAllImageAreas()
+        {
+
         }
 
         private HtmlLinkList GetAllHrefRegionsInBlock(BlockElement block)
