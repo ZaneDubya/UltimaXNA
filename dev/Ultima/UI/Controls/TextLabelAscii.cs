@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             : base(parent)
         {
             m_Width = width;
-            m_Rendered = new RenderedText(string.Empty, m_Width);
+            m_Rendered = new RenderedText(string.Empty, m_Width, true);
         }
 
         public TextLabelAscii(AControl parent, int x, int y, int hue, int fontid, string text, int width = 400)

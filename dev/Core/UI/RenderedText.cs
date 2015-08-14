@@ -27,6 +27,7 @@ namespace UltimaXNA.Core.UI
         private string m_Text = null;
         private HtmlDocument m_Document;
         private bool m_MustRender = true;
+        private bool m_CollapseContent = false;
         private int m_MaxWidth;
 
         // public properties
@@ -103,10 +104,11 @@ namespace UltimaXNA.Core.UI
         }
         // !!!! Do these need to be exposed????
 
-        public RenderedText(string text, int maxWidth = DefaultRenderedTextWidth)
+        public RenderedText(string text, int maxWidth = DefaultRenderedTextWidth, bool collapseContent = false)
         {
             Text = text;
             MaxWidth = maxWidth;
+            m_CollapseContent = collapseContent;
         }
 
         // ======================================================================
@@ -275,7 +277,7 @@ namespace UltimaXNA.Core.UI
 
                 if (Text != null)
                 {
-                    m_Document = new HtmlDocument(Text, MaxWidth);
+                    m_Document = new HtmlDocument(Text, MaxWidth, m_CollapseContent);
                     m_MustRender = false;
                 }
             }

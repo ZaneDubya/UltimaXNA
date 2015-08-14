@@ -26,7 +26,7 @@ namespace UltimaXNA.Core.UI.HTML
     {
         private BlockElement m_Root = null;
         private Texture2D m_Texture = null;
-        private bool m_CollapseBlocks = false;
+        private bool m_CollapseToContent = false;
 
         // ======================================================================
         // Public properties
@@ -73,7 +73,7 @@ namespace UltimaXNA.Core.UI.HTML
         public HtmlDocument(string html, int width, bool collapseBlocks = false)
         {
             m_Root = ParseHtmlToBlocks(html);
-            m_CollapseBlocks = collapseBlocks;
+            m_CollapseToContent = collapseBlocks;
 
             Images = new HtmlImageList();
             GetAllImages(Images, m_Root);
@@ -312,6 +312,11 @@ namespace UltimaXNA.Core.UI.HTML
             //      -> Actually, this is not yet implemented. Any takers? :(
             if (root.Layout_MaxWidth <= root.Width) // 1
             {
+                if (m_CollapseToContent)
+                {
+                    root.Width = root.Layout_MaxWidth;
+                }
+
                 foreach (AElement element in root.Children)
                 {
                     if (element is BlockElement)
@@ -323,12 +328,14 @@ namespace UltimaXNA.Core.UI.HTML
             {
                 // get the amount of extra width that we could fill.
                 int extraRequestedWidth = 0;
+                int extraAllowedWidth = root.Width;
                 foreach (AElement element in root.Children)
                 {
                     if (element is BlockElement)
                     {
                         BlockElement block = (element as BlockElement);
                         extraRequestedWidth = block.Layout_MaxWidth - block.Layout_MinWidth;
+                        extraAllowedWidth -= block.Layout_MinWidth;
                     }
                 }
                 // distribute the extra width.
@@ -337,8 +344,8 @@ namespace UltimaXNA.Core.UI.HTML
                     if (element is BlockElement)
                     {
                         BlockElement block = (element as BlockElement);
-                        block.Width = block.Layout_MinWidth + (int)(((float)(block.Layout_MaxWidth - block.Layout_MinWidth) / extraRequestedWidth) * extraRequestedWidth);
-                        extraRequestedWidth = block.Layout_MaxWidth - block.Layout_MinWidth;
+                        block.Width = block.Layout_MinWidth + (int)(((float)(block.Layout_MaxWidth - block.Layout_MinWidth) / extraRequestedWidth) * extraAllowedWidth);
+                        extraAllowedWidth -= block.Layout_MaxWidth - block.Layout_MinWidth;
                     }
                 }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y);
@@ -367,33 +374,41 @@ namespace UltimaXNA.Core.UI.HTML
                     height += lineHeight;
                     lineHeight = 0;
                 }
-                else if (element is BlockElement)
-                {
-                    Alignments alignment = (element as BlockElement).Alignment;
-                    switch (alignment)
-                    {
-                        case Alignments.Left:
-                            element.Layout_X = x0;
-                            element.Layout_Y = y;
-                            x0 += element.Width;
-                            break;
-                        case Alignments.Center: // centered in the root element, not in the remaining space.
-                            element.Layout_X = (x + root.Width - element.Width) / 2;
-                            element.Layout_Y = y;
-                            break;
-                        case Alignments.Right:
-                            element.Layout_X = x1 - element.Width;
-                            element.Layout_Y = y;
-                            x1 -= element.Width;
-                            break;
-                    }
-                    LayoutElements((element as BlockElement));
-                }
                 else
                 {
-                    element.Layout_X = x0;
-                    element.Layout_Y = y;
-                    x0 += element.Width;
+                    if (x0 + element.Width > x1)
+                    {
+                        root.Children.Insert(i - 1, new CharacterElement(element.Style, '\n'));
+                        i--;
+                    }
+                    else if (element is BlockElement)
+                    {
+                        Alignments alignment = (element as BlockElement).Alignment;
+                        switch (alignment)
+                        {
+                            case Alignments.Left:
+                                element.Layout_X = x0;
+                                element.Layout_Y = y;
+                                x0 += element.Width;
+                                break;
+                            case Alignments.Center: // centered in the root element, not in the remaining space.
+                                element.Layout_X = (x + root.Width - element.Width) / 2;
+                                element.Layout_Y = y;
+                                break;
+                            case Alignments.Right:
+                                element.Layout_X = x1 - element.Width;
+                                element.Layout_Y = y;
+                                x1 -= element.Width;
+                                break;
+                        }
+                        LayoutElements((element as BlockElement));
+                    }
+                    else
+                    {
+                        element.Layout_X = x0;
+                        element.Layout_Y = y;
+                        x0 += element.Width;
+                    }
                 }
                 if (element.Height > lineHeight)
                     lineHeight = element.Height;

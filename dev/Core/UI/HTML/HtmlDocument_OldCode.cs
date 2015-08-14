@@ -177,41 +177,6 @@ namespace UltimaXNA.Core.UI.HTML
                 width = widestLine;
         }
 
-        private HtmlImageList GetAllImagesInBlock(BlockElement block)
-        {
-            HtmlImageList images = new HtmlImageList();
-
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-
-            foreach (AElement atom in block.Children)
-            {
-                if (atom is ImageElement)
-                {
-                    ImageElement img = (ImageElement)atom;
-                    if (img.ImageType == ImageElement.ImageTypes.UI)
-                    {
-                        Texture2D standard = provider.GetUITexture(img.ImgSrc);
-                        Texture2D over = provider.GetUITexture(img.ImgSrcOver);
-                        Texture2D down = provider.GetUITexture(img.ImgSrcDown);
-                        images.AddImage(new Rectangle(), standard, over, down);
-                    }
-                    else if (img.ImageType == ImageElement.ImageTypes.Item)
-                    {
-                        Texture2D standard, over, down;
-                        standard = over = down = provider.GetItemTexture(img.ImgSrc);
-                        images.AddImage(new Rectangle(), standard, over, down);
-                    }
-                    img.AssociatedImage = images[images.Count - 1];
-                }
-                else if (atom is BlockElement)
-                {
-                    GetAllImagesInBlock(atom as BlockElement);
-                }
-            }
-
-            return images;
-        }
-
         private Texture2D RenderTexture(GraphicsDevice graphics, List<AElement> atoms, int width, int height, int ascender)
         {
             if (width == 0) // empty text string
