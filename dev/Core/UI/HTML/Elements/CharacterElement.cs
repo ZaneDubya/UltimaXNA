@@ -50,7 +50,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         public override string ToString()
         {
             if (IsThisAtomALineBreak)
-                return "\n";
+                return @"\n";
             return Character.ToString();
         }
     }

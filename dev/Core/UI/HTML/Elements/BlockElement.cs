@@ -72,5 +72,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         {
             return Tag;
         }
+
+        public bool Err_Cant_Fit_Children = false;
     }
 }
