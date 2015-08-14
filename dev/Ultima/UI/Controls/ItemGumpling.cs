@@ -88,10 +88,10 @@ namespace UltimaXNA.Ultima.UI.Controls
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
             Vector3 hue = Utility.GetHueVector(IsMouseOver && HighlightOnMouseOver ? WorldView.MouseOverHue : Item.Hue);
-            if (Item.Amount > 1 && Item.ItemData.IsGeneric)
+            if (Item.Amount > 1 && Item.ItemData.IsGeneric && Item.DisplayItemID == Item.ItemID)
             {
                 int offset = Item.ItemData.Unknown4;
-                spriteBatch.Draw2D(m_texture, new Vector3(position.X - offset, position.Y - offset, 0), hue);
+                spriteBatch.Draw2D(m_texture, new Vector3(position.X - 5, position.Y - 5, 0), hue);
             }
             spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), hue);
             base.Draw(spriteBatch, position);

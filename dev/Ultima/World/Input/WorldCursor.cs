@@ -301,10 +301,10 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     m_ItemSprite.Hue = HeldItem.Hue;
                     m_ItemSprite.Offset = m_HeldItemOffset;
-                    if (HeldItem.Amount > 1 && HeldItem.ItemData.IsGeneric && HeldItem.ItemData.Unknown4 > 0)
+                    if (HeldItem.Amount > 1 && HeldItem.ItemData.IsGeneric && HeldItem.DisplayItemID == HeldItem.ItemID)
                     {
                         int offset = HeldItem.ItemData.Unknown4;
-                        m_ItemSprite.Draw(spritebatch, new Point(position.X - offset, position.Y - offset));
+                        m_ItemSprite.Draw(spritebatch, new Point(position.X - 5, position.Y - 5));
                     }
                     m_ItemSprite.Draw(spritebatch, position);
                 }
