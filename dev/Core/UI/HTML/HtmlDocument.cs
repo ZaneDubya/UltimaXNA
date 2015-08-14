@@ -26,6 +26,7 @@ namespace UltimaXNA.Core.UI.HTML
     {
         private BlockElement m_Root = null;
         private Texture2D m_Texture = null;
+        private bool m_CollapseBlocks = false;
 
         // ======================================================================
         // Public properties
@@ -69,9 +70,10 @@ namespace UltimaXNA.Core.UI.HTML
         // Ctor and Dipose
         // ======================================================================
 
-        public HtmlDocument(string html, int width)
+        public HtmlDocument(string html, int width, bool collapseBlocks = false)
         {
             m_Root = ParseHtmlToBlocks(html);
+            m_CollapseBlocks = collapseBlocks;
 
             Images = new HtmlImageList();
             GetAllImages(Images, m_Root);
@@ -442,6 +444,11 @@ namespace UltimaXNA.Core.UI.HTML
                     character.WriteToBuffer(ptr, element.Layout_X, element.Layout_Y, width, height, font.Baseline,
                         element.Style.IsBold, element.Style.IsItalic, element.Style.IsUnderlined, element.Style.IsOutlined, color, 0xFF000008);
                 }
+                else if (element is ImageElement)
+                {
+                    ImageElement image = (element as ImageElement);
+                    image.AssociatedImage.Area = new Rectangle(image.Layout_X, image.Layout_Y, image.Width, image.Height);
+                }
                 else if (element is BlockElement)
                 {
                     DoRenderBlock(element as BlockElement, ptr, width, height);
@@ -482,11 +489,6 @@ namespace UltimaXNA.Core.UI.HTML
                     GetAllImages(images, atom as BlockElement);
                 }
             }
-        }
-
-        private void SetAllImageAreas()
-        {
-
         }
 
         private HtmlLinkList GetAllHrefRegionsInBlock(BlockElement block)
