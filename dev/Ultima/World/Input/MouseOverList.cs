@@ -248,7 +248,7 @@ namespace UltimaXNA.Ultima.World.Input
                     else
                     {
                         ushort[] pixelData = new ushort[1];
-                        Texture.GetData<ushort>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 9);
+                        Texture.GetData<ushort>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
                         if (pixelData[0] > 0)
                         {
                             InTexturePosition = new Vector2(x, y);
