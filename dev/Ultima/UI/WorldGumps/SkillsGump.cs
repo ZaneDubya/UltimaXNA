@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 200));
             m_Background.TitleGumpID = 0x834;
 
-            AddControl(m_SkillsHtml = new HtmlGumpling(this, 36, 35, 230, 200 - 100, 0, 2, string.Empty));
+            AddControl(m_SkillsHtml = new HtmlGumpling(this, 32, 32, 240, 200 - 92, 0, 2, string.Empty));
             m_SkillsHtml.OnDragHRef += OnSkillDrag;
         }
 
@@ -55,7 +55,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 InitializeSkillsList();
                 m_MustUpdateSkills = false;
             }
-            m_SkillsHtml.Height = Height - 100;
+            m_SkillsHtml.Height = Height - 92;
         }
 
         public override void ActivateByHREF(string href)
