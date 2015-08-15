@@ -50,7 +50,7 @@ namespace UltimaXNA.Ultima
 
         public Texture2D GetUITexture(int textureIndex, bool replaceMask080808 = false)
         {
-            return m_Gumps.GetGumpXNA(textureIndex);
+            return m_Gumps.GetGumpXNA(textureIndex, replaceMask080808);
         }
 
         public Texture2D GetItemTexture(int itemIndex)
