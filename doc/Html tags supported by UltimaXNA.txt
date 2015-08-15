@@ -4,29 +4,31 @@ of HTML implemented by the legacy UO client. In addition, I've added some tags
 to help prettify text and layout, but these are VERY basic. For better or worse,
 the parser will ignore almost anything that it doesn't understand.
 
-HtmlGumpling controls support a very limited subset of Html tags:
+The html parser and layout engine is implemented by the
+UltimaXNA.Core.UI.HTML.HtmlDocument class, which takes the following variables
+as input: (1) input html, (2) render window width, and (3) boolean to collapse
+elements.
 
-<b>
+The layout engine works as follows:
+1. Html is parsed and a tree of elements is created.
+    left, center, right, and div elements are parsed and laid out as
+    Block elements. Not only can these impart style onto their children (through
+    attributes), but they are laid out as contiguous rectangular elements.
+    
+    b, i, u, outline, a, big, basefont/medium, and small elements impart style,
+    but are not laid out as contiguous blocks.
+    
+    gumpimg and itemimg elements can impart style (placing text in an img tag
+    will just follow the image with text).
+    
+2. Layout
 
-<i>
+3. Rendering
 
-<u>
 
-<outline>
 
-<big>
 
-<basefont> / <medium>
-
-<small>
-
-<left>
-
-<center>
-
-<right>
-
-<div>
+Attributes:
 
 <a>
     supported attribute: href
@@ -35,6 +37,7 @@ HtmlGumpling controls support a very limited subset of Html tags:
     supported attributes: src, hoversrc, activesrc, width, height
 
 <itemimg>
+    supported attribute: src
     
 All tags support the color, hovercolor, and activecolor attributes. However,
 note that ASCII fonts do not support coloring with these attributes.
@@ -45,8 +48,3 @@ attribute:
     "text-decoration: none / underline;"
     "top/left: 5;" sets the initial position of this element. Kinda like margin.
     "layer: background;" takes the element out of the layout engine.
-
-Ideally, the HTML renderer, which is very limited at the moment, will lay out
-things in a new (but still limited) box model. In this model, there will be
-content tags and box tags. Box tags will effect layout; content tags will be
-moved inside the boxes.

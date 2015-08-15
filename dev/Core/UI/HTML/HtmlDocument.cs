@@ -306,7 +306,10 @@ namespace UltimaXNA.Core.UI.HTML
                 }
             }
 
-
+            if (widthMinLongest < root.Width)
+                widthMinLongest = root.Width;
+            if (widthMaxLongest < root.Width)
+                widthMaxLongest = root.Width;
             root.Layout_MinWidth = (widthMin + styleWidth > widthMinLongest) ? widthMin + styleWidth : widthMinLongest;
             root.Layout_MaxWidth = (widthMax + styleWidth > widthMaxLongest) ? widthMax + styleWidth : widthMaxLongest;
         }
