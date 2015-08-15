@@ -11,13 +11,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI.HTML.Elements;
 using UltimaXNA.Core.UI.HTML.Parsing;
 using UltimaXNA.Core.UI.HTML.Styles;
-using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.UI.HTML.Elements;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML
@@ -127,7 +126,7 @@ namespace UltimaXNA.Core.UI.HTML
                 HTMLparser parser = new HTMLparser(html);
                 HTMLchunk chunk;
 
-                while ((chunk = parser.ParseNext()) != null)
+                while ((chunk = ParseNext(parser)) != null)
                 {
                     if (!(chunk.oHTML == string.Empty))
                     {
@@ -241,6 +240,12 @@ namespace UltimaXNA.Core.UI.HTML
             }
 
             return root;
+        }
+
+        private HTMLchunk ParseNext(HTMLparser parser)
+        {
+            HTMLchunk chunk = parser.ParseNext();
+            return chunk;
         }
 
         // ======================================================================
