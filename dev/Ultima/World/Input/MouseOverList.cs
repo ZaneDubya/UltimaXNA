@@ -214,33 +214,46 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else if (Entity is Item)
             {
-                // Allow selection if there is a non-transparent pixel below the mouse cursor or at an offset of
-                // (-1,0), (0,-1), (1,0), or (1,1). This will allow selection even when the mouse cursor is directly
-                // over a transparent pixel, and will also increase the 'selection space' of an item by one pixel in
-                // each dimension - thus a very thin object (2-3 pixels wide) will be increased.
-
                 int x = (int)(mousePosition.X - Position.X);
                 int y = (int)(mousePosition.Y - Position.Y);
 
                 if (Texture.Bounds.Contains(new Point(x, y)))
                 {
-                    if (x == 0)
-                        x++;
-                    if (x == Texture.Width - 1)
-                        x--;
-                    if (y == 0)
-                        y++;
-                    if (y == Texture.Height - 1)
-                        y--;
-
-                    ushort[] pixelData = new ushort[9];
-                    Texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
-                    if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
-                        (pixelData[4] > 0) || (pixelData[5] > 0) ||
-                        (pixelData[7] > 0))
+                    if (Texture.Width >= 3 && Texture.Height >= 3)
                     {
-                        InTexturePosition = new Vector2(x, y);
-                        return true;
+                        // Allow selection if there is a non-transparent pixel below the mouse cursor or at an offset of
+                        // (-1,0), (0,-1), (1,0), or (1,1). This will allow selection even when the mouse cursor is directly
+                        // over a transparent pixel, and will also increase the 'selection space' of an item by one pixel in
+                        // each dimension - thus a very thin object (2-3 pixels wide) will be increased.
+
+                        if (x == 0)
+                            x++;
+                        if (x == Texture.Width - 1)
+                            x--;
+                        if (y == 0)
+                            y++;
+                        if (y == Texture.Height - 1)
+                            y--;
+
+                        ushort[] pixelData = new ushort[9];
+                        Texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
+                        if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
+                            (pixelData[4] > 0) || (pixelData[5] > 0) ||
+                            (pixelData[7] > 0))
+                        {
+                            InTexturePosition = new Vector2(x, y);
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        ushort[] pixelData = new ushort[1];
+                        Texture.GetData<ushort>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 9);
+                        if (pixelData[0] > 0)
+                        {
+                            InTexturePosition = new Vector2(x, y);
+                            return true;
+                        }
                     }
                 }
             }
