@@ -39,6 +39,7 @@ namespace UltimaXNA.Ultima.Audio
         {
             m_Repeat = loop;
             m_Playing = false;
+            Channels = AudioChannels.Stereo;
         }
 
         protected override byte[] GetBuffer()
@@ -86,7 +87,6 @@ namespace UltimaXNA.Ultima.Audio
 
             m_Stream = new MP3Stream(Path, NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK);
             Frequency = m_Stream.Frequency;
-            Channels = AudioChannels.Stereo;
 
             m_Playing = true;
         }
@@ -96,7 +96,6 @@ namespace UltimaXNA.Ultima.Audio
             if (m_Playing)
             {
                 m_Playing = false;
-
                 m_Stream.Close();
                 m_Stream = null;
             }

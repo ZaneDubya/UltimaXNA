@@ -77,8 +77,9 @@ namespace UltimaXNA.Ultima.Audio
                 {
                     // stop the current song
                     StopMusic();
+                    // play the new song!
                     m_MusicCurrentlyPlaying = toPlay;
-                    m_MusicCurrentlyPlaying.Play();
+                    m_MusicCurrentlyPlaying.Play(false);
                 }
             }
         }
