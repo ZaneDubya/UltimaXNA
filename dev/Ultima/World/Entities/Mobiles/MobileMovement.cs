@@ -44,8 +44,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             get { return m_entity.Position; }
         }
 
-        private Position3D m_goalPosition;
-        
+        private Position3D m_GoalPosition;
+
         Direction m_playerMobile_NextMove = Direction.Nothing;
         Direction m_Facing = Direction.Up;
         public Direction Facing
@@ -58,9 +58,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             get
             {
-                if (m_goalPosition == null)
+                if (m_GoalPosition == null)
                     return false;
-                if ((CurrentPosition.Tile == m_goalPosition.Tile) &&
+                if ((CurrentPosition.Tile == m_GoalPosition.Tile) &&
                     !CurrentPosition.IsOffset)
                     return false;
                 return true;
@@ -71,27 +71,27 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         internal Position3D Position { get { return CurrentPosition; } }
 
-        MoveEvents m_moveEvents;
+        MobileMoveEvents m_MoveEvents;
         AEntity m_entity;
 
         public MobileMovement(AEntity entity)
         {
             m_entity = entity;
-            m_moveEvents = new MoveEvents();
+            m_MoveEvents = new MobileMoveEvents();
         }
 
         public void PlayerMobile_MoveEventAck(int nSequence)
         {
-            m_moveEvents.MoveRequestAcknowledge(nSequence);
+            m_MoveEvents.MoveRequestAcknowledge(nSequence);
         }
 
         public void PlayerMobile_MoveEventRej(int sequenceID, int x, int y, int z, int direction)
         {
             // immediately return to the designated tile.
             int ax, ay, az, af;
-            m_moveEvents.MoveRequestReject(sequenceID, out ax, out ay, out az, out af);
+            m_MoveEvents.MoveRequestReject(sequenceID, out ax, out ay, out az, out af);
             Move_Instant(x, y, z, direction);
-            m_moveEvents.ResetMoveSequence();
+            m_MoveEvents.ResetMoveSequence();
         }
 
         public void PlayerMobile_ChangeFacing(Direction facing)
@@ -112,7 +112,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             if ((Facing & Direction.FacingMask) != (facing & Direction.FacingMask))
             {
-                m_moveEvents.AddMoveEvent(
+                m_MoveEvents.AddMoveEvent(
                     CurrentPosition.X,
                     CurrentPosition.Y,
                     CurrentPosition.Z,
@@ -128,22 +128,15 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public void Mobile_ServerAddMoveEvent(int x, int y, int z, int facing)
         {
-            m_moveEvents.AddMoveEvent(x, y, z, facing, false);
+            m_MoveEvents.AddMoveEvent(x, y, z, facing, false);
         }
 
         public void Move_Instant(int x, int y, int z, int facing)
         {
-            m_moveEvents.ResetMoveSequence();
+            m_MoveEvents.ResetMoveSequence();
             Facing = (Direction)facing;
             CurrentPosition.Set(x, y, z);
-            if (Settings.Debug.IsMovementLogged)
-            {
-                if (m_entity.IsClientEntity)
-                    Tracer.Debug(string.Format("XNA: move instant. {0}", CurrentPosition), ConsoleColor.Yellow);
-                else
-                    Tracer.Debug(string.Format("OTH: move instant. {0}", CurrentPosition), ConsoleColor.DarkYellow);
-            }
-            m_goalPosition = null;
+            m_GoalPosition = null;
         }
 
         public void Update(double frameMS)
@@ -151,44 +144,39 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             if (!IsMoving)
             {
                 if (m_entity.IsClientEntity && m_playerMobile_NextMoveInMS <= 0d)
-                {
-                    if (PlayerMobile_CheckForMoveEvent())
-                    {
-                        if (Settings.Debug.IsMovementLogged)
-                            Tracer.Debug("XNA: new move event queued.", ConsoleColor.Blue);
-                    }
-                }
+                    PlayerMobile_CheckForMoveEvent();
 
-                MoveEvent moveEvent;
+                MobileMoveEvent moveEvent;
                 int sequence;
 
-                while ((moveEvent = m_moveEvents.GetMoveEvent(out sequence)) != null)
+                if (m_entity.IsClientEntity)
                 {
-                    if (m_entity.IsClientEntity && moveEvent.CreatedByPlayerInput)
+                    while ((moveEvent = m_MoveEvents.GetMoveEvent(out sequence)) != null)
                     {
-                        SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
-                        if (Settings.Debug.IsMovementLogged)
-                            Tracer.Debug("XNA: sent move event.", ConsoleColor.Blue);
+                        if (moveEvent.CreatedByPlayerInput)
+                            SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
+                        Facing = (Direction)moveEvent.Facing;
+                        Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
+                        if (p != CurrentPosition)
+                        {
+                            m_GoalPosition = p;
+                            break;
+                        }
                     }
-                    else if (m_entity.IsClientEntity && !moveEvent.CreatedByPlayerInput)
+                }
+                else
+                {
+                    moveEvent = m_MoveEvents.GetFinalMoveEvent(out sequence);
+                    if (moveEvent != null)
                     {
-                        if (Settings.Debug.IsMovementLogged)
-                            Tracer.Debug("XNA: recieved move event.", ConsoleColor.Green);
-                    }
-                    else
-                    {
-                        if (Settings.Debug.IsMovementLogged)
-                            Tracer.Debug("OTH: recieved move event.", ConsoleColor.DarkGreen);
-                    }
-                    Facing = (Direction)moveEvent.Facing;
-                    Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
-                    if (p != CurrentPosition)
-                    {
-                        m_goalPosition = p;
-                        break;
+                        Facing = (Direction)moveEvent.Facing;
+                        Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
+                        if (p != CurrentPosition)
+                            m_GoalPosition = p;
                     }
                 }
             }
+
 
             // Are we moving? (if our current location != our destination, then we are moving)
             if (IsMoving)
@@ -202,28 +190,14 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 if (MoveSequence < 1f)
                 {
                     CurrentPosition.Offset = new Vector3(
-                        m_goalPosition.X - CurrentPosition.X,
-                        m_goalPosition.Y - CurrentPosition.Y,
-                        m_goalPosition.Z - CurrentPosition.Z) * (float)MoveSequence;
-                    if (Settings.Debug.IsMovementLogged)
-                    {
-                        if (m_entity.IsClientEntity)
-                            Tracer.Debug(string.Format("XNA: Moving: {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS), ConsoleColor.Cyan);
-                        else
-                            Tracer.Debug(string.Format("OTH: Moving: {0:0.000}", MoveSequence), ConsoleColor.DarkCyan);
-                    }
+                        m_GoalPosition.X - CurrentPosition.X,
+                        m_GoalPosition.Y - CurrentPosition.Y,
+                        m_GoalPosition.Z - CurrentPosition.Z) * (float)MoveSequence;
                 }
                 else
                 {
-                    CurrentPosition.Set(m_goalPosition.X, m_goalPosition.Y, m_goalPosition.Z);
+                    CurrentPosition.Set(m_GoalPosition.X, m_GoalPosition.Y, m_GoalPosition.Z);
                     CurrentPosition.Offset = Vector3.Zero;
-                    if (Settings.Debug.IsMovementLogged)
-                    {
-                        if (m_entity.IsClientEntity)
-                            Tracer.Debug(string.Format("XNA: Move complete: {2} {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS, CurrentPosition), ConsoleColor.Green);
-                        else
-                            Tracer.Debug(string.Format("OTH: Move complete: {1:0.000} {0:0.000}", MoveSequence, CurrentPosition), ConsoleColor.DarkGreen);
-                    }
                     MoveSequence = 0f;
                     if (m_entity.IsClientEntity)
                         m_playerMobile_NextMoveInMS = 0;
@@ -268,7 +242,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                         (CurrentPosition.Y != nextTile.Y) ||
                         (CurrentPosition.Z != nextZ))
                     {
-                        m_moveEvents.AddMoveEvent(nextTile.X, nextTile.Y, nextZ, (int)(facing), true);
+                        m_MoveEvents.AddMoveEvent(nextTile.X, nextTile.Y, nextZ, (int)(facing), true);
                         return true;
                     }
                 }
@@ -363,117 +337,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
 
             return facing;
-        }
-
-
-    }
-
-    
-
-    // This class queues moves and maintains the fastwalk key and current sequence value.
-    class MoveEvents
-    {
-        private int m_lastSequenceAck;
-        private int m_sequenceQueued;
-        private int m_sequenceNextSend;
-        private int m_FastWalkKey;
-        MoveEvent[] m_history;
-
-        public bool SlowSync
-        {
-            get
-            {
-                if (m_sequenceNextSend > m_lastSequenceAck + 4)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
-        public MoveEvents()
-        {
-            ResetMoveSequence();
-        }
-
-        public void ResetMoveSequence()
-        {
-            m_sequenceQueued = 0;
-            m_lastSequenceAck = -1;
-            m_sequenceNextSend = 0;
-            m_FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
-            m_history = new MoveEvent[256];
-        }
-
-        public void AddMoveEvent(int x, int y, int z, int facing, bool createdByPlayerInput)
-        {
-            MoveEvent moveEvent = new MoveEvent(x, y, z, facing, m_FastWalkKey);
-            moveEvent.CreatedByPlayerInput = createdByPlayerInput;
-
-            m_history[m_sequenceQueued] = moveEvent;
-
-            m_sequenceQueued += 1;
-            if (m_sequenceQueued > byte.MaxValue)
-                m_sequenceQueued = 1;
-        }
-
-        public MoveEvent GetMoveEvent(out int sequence)
-        {
-            if (m_history[m_sequenceNextSend] != null)
-            {
-                MoveEvent m = m_history[m_sequenceNextSend];
-                m_history[m_sequenceNextSend] = null;
-                sequence = m_sequenceNextSend;
-                m_sequenceNextSend++;
-                if (m_sequenceNextSend > byte.MaxValue)
-                    m_sequenceNextSend = 1;
-                return m;
-            }
-            else
-            {
-                sequence = 0;
-                return null;
-            }
-        }
-
-        public void MoveRequestAcknowledge(int sequence)
-        {
-            m_history[sequence] = null;
-            m_lastSequenceAck = sequence;
-        }
-
-        public void MoveRequestReject(int sequence, out int x, out int y, out int z, out int facing)
-        {
-            if (m_history[sequence] != null)
-            {
-                MoveEvent e = m_history[sequence];
-                x = e.X;
-                y = e.Y;
-                z = e.Z;
-                facing = e.Facing;
-            }
-            else
-            {
-                x = y = z = facing = -1;
-            }
-            ResetMoveSequence();
-        }
-    }
-
-    class MoveEvent
-    {
-        public bool CreatedByPlayerInput = false;
-        public readonly int X, Y, Z, Facing, Fastwalk;
-        public MoveEvent(int x, int y, int z, int facing, int fastwalk)
-        {
-            X = x;
-            Y = y;
-            Z = z;
-            Facing = facing;
-            Fastwalk = fastwalk;
         }
     }
 }

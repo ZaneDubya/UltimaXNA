@@ -297,6 +297,7 @@
     <Compile Include="Ultima\World\Direction.cs" />
     <Compile Include="Ultima\Data\MessageTypes.cs" />
     <Compile Include="Ultima\Data\TileFlags.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\MobileMoveEvents.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\MobileSounds.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\MovementSpeed.cs" />
     <Compile Include="Ultima\Resources\StaticTile.cs" />
