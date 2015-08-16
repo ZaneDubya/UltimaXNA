@@ -44,8 +44,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             get { return m_entity.Position; }
         }
 
-        private Position3D m_goalPosition;
-        
+        private Position3D m_GoalPosition;
+
         Direction m_playerMobile_NextMove = Direction.Nothing;
         Direction m_Facing = Direction.Up;
         public Direction Facing
@@ -58,9 +58,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             get
             {
-                if (m_goalPosition == null)
+                if (m_GoalPosition == null)
                     return false;
-                if ((CurrentPosition.Tile == m_goalPosition.Tile) &&
+                if ((CurrentPosition.Tile == m_GoalPosition.Tile) &&
                     !CurrentPosition.IsOffset)
                     return false;
                 return true;
@@ -136,14 +136,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             m_MoveEvents.ResetMoveSequence();
             Facing = (Direction)facing;
             CurrentPosition.Set(x, y, z);
-            if (Settings.Debug.IsMovementLogged)
-            {
-                if (m_entity.IsClientEntity)
-                    Tracer.Debug(string.Format("XNA: move instant. {0}", CurrentPosition), ConsoleColor.Yellow);
-                else
-                    Tracer.Debug(string.Format("OTH: move instant. {0}", CurrentPosition), ConsoleColor.DarkYellow);
-            }
-            m_goalPosition = null;
+            m_GoalPosition = null;
         }
 
         public void Update(double frameMS)
@@ -151,44 +144,39 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             if (!IsMoving)
             {
                 if (m_entity.IsClientEntity && m_playerMobile_NextMoveInMS <= 0d)
-                {
-                    if (PlayerMobile_CheckForMoveEvent())
-                    {
-                        if (Settings.Debug.IsMovementLogged)
-                            Tracer.Debug("XNA: new move event queued.", ConsoleColor.Blue);
-                    }
-                }
+                    PlayerMobile_CheckForMoveEvent();
 
                 MobileMoveEvent moveEvent;
                 int sequence;
 
-                while ((moveEvent = m_MoveEvents.GetMoveEvent(out sequence)) != null)
+                if (m_entity.IsClientEntity)
                 {
-                    if (m_entity.IsClientEntity && moveEvent.CreatedByPlayerInput)
+                    while ((moveEvent = m_MoveEvents.GetMoveEvent(out sequence)) != null)
                     {
-                        SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
-                        if (Settings.Debug.IsMovementLogged)
-                            Tracer.Debug("XNA: sent move event.", ConsoleColor.Blue);
+                        if (moveEvent.CreatedByPlayerInput)
+                            SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
+                        Facing = (Direction)moveEvent.Facing;
+                        Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
+                        if (p != CurrentPosition)
+                        {
+                            m_GoalPosition = p;
+                            break;
+                        }
                     }
-                    else if (m_entity.IsClientEntity && !moveEvent.CreatedByPlayerInput)
+                }
+                else
+                {
+                    moveEvent = m_MoveEvents.GetFinalMoveEvent(out sequence);
+                    if (moveEvent != null)
                     {
-                        if (Settings.Debug.IsMovementLogged)
-                            Tracer.Debug("XNA: recieved move event.", ConsoleColor.Green);
-                    }
-                    else
-                    {
-                        if (Settings.Debug.IsMovementLogged)
-                            Tracer.Debug("OTH: recieved move event.", ConsoleColor.DarkGreen);
-                    }
-                    Facing = (Direction)moveEvent.Facing;
-                    Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
-                    if (p != CurrentPosition)
-                    {
-                        m_goalPosition = p;
-                        break;
+                        Facing = (Direction)moveEvent.Facing;
+                        Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
+                        if (p != CurrentPosition)
+                            m_GoalPosition = p;
                     }
                 }
             }
+
 
             // Are we moving? (if our current location != our destination, then we are moving)
             if (IsMoving)
@@ -202,28 +190,14 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 if (MoveSequence < 1f)
                 {
                     CurrentPosition.Offset = new Vector3(
-                        m_goalPosition.X - CurrentPosition.X,
-                        m_goalPosition.Y - CurrentPosition.Y,
-                        m_goalPosition.Z - CurrentPosition.Z) * (float)MoveSequence;
-                    if (Settings.Debug.IsMovementLogged)
-                    {
-                        if (m_entity.IsClientEntity)
-                            Tracer.Debug(string.Format("XNA: Moving: {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS), ConsoleColor.Cyan);
-                        else
-                            Tracer.Debug(string.Format("OTH: Moving: {0:0.000}", MoveSequence), ConsoleColor.DarkCyan);
-                    }
+                        m_GoalPosition.X - CurrentPosition.X,
+                        m_GoalPosition.Y - CurrentPosition.Y,
+                        m_GoalPosition.Z - CurrentPosition.Z) * (float)MoveSequence;
                 }
                 else
                 {
-                    CurrentPosition.Set(m_goalPosition.X, m_goalPosition.Y, m_goalPosition.Z);
+                    CurrentPosition.Set(m_GoalPosition.X, m_GoalPosition.Y, m_GoalPosition.Z);
                     CurrentPosition.Offset = Vector3.Zero;
-                    if (Settings.Debug.IsMovementLogged)
-                    {
-                        if (m_entity.IsClientEntity)
-                            Tracer.Debug(string.Format("XNA: Move complete: {2} {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS, CurrentPosition), ConsoleColor.Green);
-                        else
-                            Tracer.Debug(string.Format("OTH: Move complete: {1:0.000} {0:0.000}", MoveSequence, CurrentPosition), ConsoleColor.DarkGreen);
-                    }
                     MoveSequence = 0f;
                     if (m_entity.IsClientEntity)
                         m_playerMobile_NextMoveInMS = 0;
@@ -364,7 +338,5 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
             return facing;
         }
-
-
     }
 }

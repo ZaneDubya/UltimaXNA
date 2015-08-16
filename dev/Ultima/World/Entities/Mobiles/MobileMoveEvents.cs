@@ -73,6 +73,17 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
+        public MobileMoveEvent GetFinalMoveEvent(out int sequence)
+        {
+            MobileMoveEvent moveEvent = null, moveEventNext;
+
+            while ((moveEventNext = GetMoveEvent(out sequence)) != null)
+            {
+                moveEvent = moveEventNext;
+            }
+            return moveEvent;
+        }
+
         public void MoveRequestAcknowledge(int sequence)
         {
             m_History[sequence] = null;

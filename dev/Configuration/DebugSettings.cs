@@ -67,11 +67,5 @@ namespace UltimaXNA.Configuration
             get { return m_IsConsoleEnabled; }
             set { SetProperty(ref m_IsConsoleEnabled, value); }
         }
-
-        public bool IsMovementLogged
-        {
-            get { return m_IsMovementLogged; }
-            set { SetProperty(ref m_IsMovementLogged, value); }
-        }
     }
 }
