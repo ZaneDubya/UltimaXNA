@@ -145,6 +145,7 @@
     <Compile Include="Core\Diagnostics\Profiler.cs" />
     <Compile Include="Core\DpiManager.cs" />
     <Compile Include="Core\Extensions\ColorExtensions.cs" />
+    <Compile Include="Core\Extensions\PointExtensions.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
     <Compile Include="Core\Graphics\Techniques.cs" />
     <Compile Include="Core\Audio\MP3Sharp\Buffer16BitStereo.cs" />

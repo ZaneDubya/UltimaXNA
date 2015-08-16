@@ -23,6 +23,7 @@ using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Core.Extensions;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -158,6 +159,8 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     MousePick.PickOnly = PickType.PickEverything;
                     MousePick.Position = MouseOverWorldPosition;
+                    if (Settings.World.PlayWindowPixelDoubling)
+                        MousePick.Position = MousePick.Position.DivideBy(2);
                 }
                 else
                 {
