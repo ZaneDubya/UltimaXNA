@@ -22,6 +22,7 @@ namespace UltimaXNA.Configuration
         private ResolutionConfig m_FullScreenResolution;
         private ResolutionConfig m_WindowResolution;
         private ResolutionConfig m_WorldGumpResolution;
+        private bool m_PlayWindowPixelDoubling;
         private bool m_IsFullScreen;
         private MouseConfig m_Mouse;
         private bool m_AlwaysRun;
@@ -66,6 +67,12 @@ namespace UltimaXNA.Configuration
         {
             get { return m_WorldGumpResolution; }
             set { SetProperty(ref m_WorldGumpResolution, value); }
+        }
+
+        public bool PlayWindowPixelDoubling
+        {
+            get { return m_PlayWindowPixelDoubling; }
+            set { SetProperty(ref m_PlayWindowPixelDoubling, value); }
         }
 
         public bool AlwaysRun
