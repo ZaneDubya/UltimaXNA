@@ -23,8 +23,8 @@ namespace UltimaXNA.Ultima.Resources
     {
         public static int DefaultLength = 55;
 
-        private static FileIndex m_FileIndex = new FileIndex("Skills.idx", "Skills.mul", DefaultLength, -1);
-        public static FileIndex FileIndex { get { return m_FileIndex; } }
+        private static FileIndexBase m_FileIndex = FileManager.CreateFileIndex("Skills.idx", "Skills.mul", DefaultLength, -1);
+        public static FileIndexBase FileIndex { get { return m_FileIndex; } }
 
         private static Skill[] m_List = new Skill[DefaultLength];
         public static Skill[] List { get { return m_List; } }

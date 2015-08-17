@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.Resources
     class TexmapResource
     {
         private Texture2D[] m_Cache = new Texture2D[0x4000];
-        private FileIndex m_Index = new FileIndex("texidx.mul", "texmaps.mul", 0x4000, -1); // !!! must find patch file reference for texmap.
+        private FileIndexBase m_Index = FileManager.CreateFileIndex("texidx.mul", "texmaps.mul", 0x4000, -1); // !!! must find patch file reference for texmap.
         private GraphicsDevice m_Graphics;
 
         public TexmapResource(GraphicsDevice graphics)

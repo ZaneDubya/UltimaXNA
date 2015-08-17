@@ -12,8 +12,10 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Ultima.IO.UOP;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
@@ -48,7 +50,9 @@ namespace UltimaXNA.Ultima.IO
                 @"Electronic Arts\EA Games\"
             };
 
+        private static readonly Version _convertedToUOPVersion = new Version("7.0.24.0");
         private static string m_FileDirectory;
+        private static Version m_Version;
 
         public static string DataPath
         {
@@ -58,6 +62,38 @@ namespace UltimaXNA.Ultima.IO
         public static bool Is64Bit
         {
             get { return IntPtr.Size == 8; } 
+        }
+
+        public static Version Version
+        {
+            get
+            {
+                if (m_Version == null)
+                {
+                    var clientExe = GetPath("client.exe");
+
+                    if (File.Exists(clientExe))
+                    {
+                        var fileVersionInfo = FileVersionInfo.GetVersionInfo(clientExe);
+                        m_Version = new Version(
+                            fileVersionInfo.FileMajorPart,
+                            fileVersionInfo.FileMinorPart,
+                            fileVersionInfo.FileBuildPart,
+                            fileVersionInfo.FilePrivatePart);
+                    }
+                    else
+                    {
+                        m_Version = new Version("0.0.0.0");
+                    }
+                }
+
+                return m_Version;
+            }
+        }
+
+        public static bool IsUopFormat
+        {
+            get { return Version >= _convertedToUOPVersion; }
         }
 
         static FileManager()
@@ -256,6 +292,30 @@ namespace UltimaXNA.Ultima.IO
         public static string GetPath(string name)
         {
             return Path.Combine(m_FileDirectory, name);
+        }
+
+
+        public static FileIndexBase CreateFileIndex(string uopFile, int length, bool hasExtra, string extension)
+        {
+            uopFile = GetPath(uopFile);
+
+            FileIndexBase fileIndex = new UopFileIndex(uopFile, length, hasExtra, extension);
+
+
+            fileIndex.Open();
+
+            return fileIndex;
+        }
+
+        public static FileIndexBase CreateFileIndex(string idxFile, string mulFile, int length, int patch_file)
+        {
+            idxFile = GetPath(idxFile);
+            mulFile = GetPath(mulFile);
+
+            FileIndexBase fileIndex = new MulFileIndex(idxFile, mulFile, length, patch_file);
+            fileIndex.Open();
+
+            return fileIndex;
         }
     }
 }
