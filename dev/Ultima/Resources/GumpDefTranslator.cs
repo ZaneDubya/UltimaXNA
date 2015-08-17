@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.IO;
 #endregion
 
@@ -23,28 +24,45 @@ namespace UltimaXNA.Ultima.Resources
         static GumpDefTranslator()
         {
             m_Translations = new Dictionary<int, Tuple<int, int>>();
-            StreamReader gumpDefFile = new StreamReader(FileManager.GetFile("gump.def"));
+            StreamReader gumpDefFile = null;
 
-            string line;
-            while ((line = gumpDefFile.ReadLine()) != null)
+            try
             {
-                line = line.Trim();
-                if (line.Length <= 0)
-                    continue;
-                if (line[0] == '#')
-                    continue;
-                string[] defs = line.Replace('\t', ' ').Split(' ');
-                if (defs.Length != 3)
-                    continue;
+                gumpDefFile = new StreamReader(FileManager.GetFile("gump.def"));
+            }
+            catch
+            {
+                Tracer.Warn("GumpDefTranslator: unable to open gump.def file. No item/itemgumpling translations are available.");
+                return;
+            }
 
-                int inGump = int.Parse(defs[0]);
-                int outGump = int.Parse(defs[1].Replace("{", string.Empty).Replace("}", string.Empty));
-                int outHue = int.Parse(defs[2]);
+            try
+            {
+                string line;
+                while ((line = gumpDefFile.ReadLine()) != null)
+                {
+                    line = line.Trim();
+                    if (line.Length <= 0)
+                        continue;
+                    if (line[0] == '#')
+                        continue;
+                    string[] defs = line.Replace('\t', ' ').Split(' ');
+                    if (defs.Length != 3)
+                        continue;
 
-                if (m_Translations.ContainsKey(inGump))
-                    m_Translations.Remove(inGump);
+                    int inGump = int.Parse(defs[0]);
+                    int outGump = int.Parse(defs[1].Replace("{", string.Empty).Replace("}", string.Empty));
+                    int outHue = int.Parse(defs[2]);
 
-                m_Translations.Add(inGump, new Tuple<int, int>(outGump, outHue));
+                    if (m_Translations.ContainsKey(inGump))
+                        m_Translations.Remove(inGump);
+
+                    m_Translations.Add(inGump, new Tuple<int, int>(outGump, outHue));
+                }
+            }
+            catch
+            {
+                Tracer.Warn("GumpDefTranslator: unable to parse gump.def file. No item/itemgumpling translations are available.");
             }
 
             gumpDefFile.Close();
