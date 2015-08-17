@@ -9,13 +9,8 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
-using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
+using UltimaXNA.Ultima.World;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps

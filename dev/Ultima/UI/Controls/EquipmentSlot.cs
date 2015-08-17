@@ -13,7 +13,7 @@ using System;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 

@@ -9,12 +9,13 @@
  *
  ***************************************************************************/
 #region usings
+using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Core.Network;
-using UltimaXNA.Ultima.Network.Client;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps

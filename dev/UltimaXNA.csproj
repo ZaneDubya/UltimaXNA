@@ -303,7 +303,7 @@
     <Compile Include="Ultima\World\Entities\Mobiles\MobileSounds.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\MovementSpeed.cs" />
     <Compile Include="Ultima\Resources\StaticTile.cs" />
-    <Compile Include="Ultima\LoginModel.cs" />
+    <Compile Include="Ultima\Login\LoginModel.cs" />
     <Compile Include="Ultima\Network\Client\SetSkillLockPacket.cs" />
     <Compile Include="Ultima\Network\Client\UOSEKeepAlivePacket.cs" />
     <Compile Include="Ultima\Player\PlayerState.cs" />
@@ -618,7 +618,7 @@
     <Compile Include="Ultima\World\WorldViews\OverheadsView.cs" />
     <Compile Include="Ultima\World\WorldView.cs" />
     <Compile Include="Utility.cs" />
-    <Compile Include="Ultima\WorldModel.cs" />
+    <Compile Include="Ultima\World\WorldModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">

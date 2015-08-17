@@ -16,7 +16,7 @@ using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.Login.States;
 using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.Ultima
+namespace UltimaXNA.Ultima.Login
 {
     class LoginModel : AUltimaModel
     {

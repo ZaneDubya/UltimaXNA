@@ -12,12 +12,13 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps

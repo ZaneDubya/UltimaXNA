@@ -8,14 +8,10 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.IO;
-using UltimaXNA.Ultima.IO;
-using System.IO;
-using System.Collections.Generic;
-using System.Collections;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources

@@ -15,6 +15,7 @@ using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps

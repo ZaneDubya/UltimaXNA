@@ -14,6 +14,7 @@ using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 #endregion
 

@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   MiniMap.cs
+ *   MiniMapGump.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -9,13 +9,13 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities;
 #endregion
 

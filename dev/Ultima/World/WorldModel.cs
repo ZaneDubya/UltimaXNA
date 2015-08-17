@@ -11,22 +11,21 @@
 #region usings
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Ultima.Login;
+using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
-using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Managers;
 using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Ultima.UI;
 #endregion
 
-namespace UltimaXNA.Ultima
+namespace UltimaXNA.Ultima.World
 {
     class WorldModel : AUltimaModel
     {

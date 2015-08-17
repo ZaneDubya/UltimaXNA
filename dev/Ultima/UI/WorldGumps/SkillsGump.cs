@@ -14,6 +14,7 @@ using System.Text;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
