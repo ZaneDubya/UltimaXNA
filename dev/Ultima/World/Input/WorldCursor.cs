@@ -287,8 +287,10 @@ namespace UltimaXNA.Ultima.World.Input
 
         protected override void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
+            Mobile player = WorldModel.Entities.GetPlayerEntity();
+
             // Hue the cursor if not in warmode and in trammel.
-            if (WorldModel.IsInWorld && !WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode && (m_World.MapIndex == 1))
+            if (WorldModel.IsInWorld && !player.Flags.IsWarMode && (m_World.MapIndex == 1))
                 CursorHue = 2414;
             else
                 CursorHue = 0;
@@ -316,7 +318,7 @@ namespace UltimaXNA.Ultima.World.Input
             {
                 int artworkIndex = 8310;
 
-                if (WorldModel.IsInWorld && WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode)
+                if (WorldModel.IsInWorld && player.Flags.IsWarMode)
                 {
                     // Over the interface or not in world. Display a default cursor.
                     artworkIndex -= 23;
@@ -376,7 +378,7 @@ namespace UltimaXNA.Ultima.World.Input
                         break;
                 }
 
-                if (WorldModel.IsInWorld && WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode)
+                if (WorldModel.IsInWorld && player.Flags.IsWarMode)
                 {
                     // Over the interface or not in world. Display a default cursor.
                     artIndex -= 23;

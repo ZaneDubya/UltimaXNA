@@ -173,6 +173,10 @@ namespace UltimaXNA.Ultima.World.Input
 
         private void doMouseMovement(double frameMS)
         {
+            Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();
+            if (player == null)
+                return;
+
             // if the move button is pressed, change facing and move based on mouse cursor direction.
             if(ContinuousMouseMovementCheck)
             {
@@ -195,20 +199,16 @@ namespace UltimaXNA.Ultima.World.Input
                         moveDirection |= Direction.Running;
                     }
 
-                    // Tell the player to Move.
-                    Mobile m = (Mobile)WorldModel.Entities.GetPlayerEntity();
-                    m.PlayerMobile_Move(moveDirection);
+                    player.PlayerMobile_Move(moveDirection);
                 }
                 else
                 {
                     // Get the move direction.
                     Direction facing = mouseDirection;
-
-                    Mobile m = (Mobile)WorldModel.Entities.GetPlayerEntity();
-                    if(m.Facing != facing)
+                    if(player.Facing != facing)
                     {
                         // Tell the player entity to change facing to this direction.
-                        m.PlayerMobile_ChangeFacing(facing);
+                        player.PlayerMobile_ChangeFacing(facing);
                         // reset the time since the mouse cursor was pressed - allows multiple facing changes.
                         m_TimeSinceMovementButtonPressed = 0d;
                     }
@@ -218,13 +218,16 @@ namespace UltimaXNA.Ultima.World.Input
             {
                 m_TimeSinceMovementButtonPressed = 0d;
                 // Tell the player to stop moving.
-                Mobile m = (Mobile)WorldModel.Entities.GetPlayerEntity();
-                m.PlayerMobile_Move(Direction.Nothing);
+                player.PlayerMobile_Move(Direction.Nothing);
             }
         }
 
         private void doKeyboardMovement(double frameMS)
         {
+            Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();
+            if (player == null)
+                return;
+
             if(m_PauseBeforeKeyboardMovementMS < c_PauseBeforeKeyboardMovementMS)
             {
                 if(m_Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Up, false, false, false))
@@ -245,7 +248,6 @@ namespace UltimaXNA.Ultima.World.Input
                 }
             }
 
-            Mobile m = (Mobile)WorldModel.Entities.GetPlayerEntity();
             bool up = m_Input.IsKeyDown(WinKeys.Up);
             bool left = m_Input.IsKeyDown(WinKeys.Left);
             bool right = m_Input.IsKeyDown(WinKeys.Right);
@@ -303,17 +305,17 @@ namespace UltimaXNA.Ultima.World.Input
                     }
 
                     // only send messages if we're not moving.
-                    if(!m.IsMoving)
+                    if(!player.IsMoving)
                     {
                         if(m_PauseBeforeKeyboardMovementMS >= c_PauseBeforeKeyboardMovementMS)
                         {
-                            m.PlayerMobile_Move(facing);
+                            player.PlayerMobile_Move(facing);
                         }
                         else
                         {
-                            if(m.Facing != facing)
+                            if(player.Facing != facing)
                             {
-                                m.PlayerMobile_ChangeFacing(facing);
+                                player.PlayerMobile_ChangeFacing(facing);
                             }
                         }
                     }
