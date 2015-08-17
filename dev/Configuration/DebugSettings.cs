@@ -24,7 +24,6 @@ namespace UltimaXNA.Configuration
         private bool m_ShowDataReadBreakdown;
         private bool m_ShowUIOutlines;
         private bool m_LogPackets;
-        private bool m_IsMovementLogged;
 
         public DebugSettings()
         {

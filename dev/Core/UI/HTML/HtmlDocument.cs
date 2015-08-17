@@ -24,7 +24,6 @@ namespace UltimaXNA.Core.UI.HTML
     class HtmlDocument
     {
         private BlockElement m_Root = null;
-        private Texture2D m_Texture = null;
         private bool m_CollapseToContent = false;
 
         // ======================================================================
