@@ -198,7 +198,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                         ReplaceDefaultTextOnFirstKeypress = false;
                     }
 
-                    if (e.IsChar)
+                    if (e.IsChar && e.KeyChar >= 32)
                     {
                         string escapedCharacter;
                         if (EscapeCharacters.TryMatchChar(e.KeyChar, out escapedCharacter))
