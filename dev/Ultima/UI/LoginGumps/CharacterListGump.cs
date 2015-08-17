@@ -14,6 +14,7 @@ using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Core.Graphics;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.LoginGumps
@@ -41,6 +42,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         int m_charListUpdate = -1;
         HtmlGumpling[] m_characterNames;
 
+        private GumpPicTiled m_Background;
+
         public CharacterListGump()
             : base(0, 0)
         {
@@ -48,7 +51,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 9274));
+            AddControl(m_Background = new GumpPicTiled(this, 0, 0, 800, 600, 9274));
             AddControl(new GumpPic(this, 0, 0, 5500, 0));
             // quit button
             AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
@@ -88,6 +91,13 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
 
         public override void Update(double totalMS, double frameMS)
         {
+            SpriteBatch3D sb = ServiceRegistry.GetService<SpriteBatch3D>();
+            if (m_Background.Width != sb.GraphicsDevice.Viewport.Width || m_Background.Height != sb.GraphicsDevice.Viewport.Height)
+            {
+                m_Background.Width = sb.GraphicsDevice.Viewport.Width;
+                m_Background.Height = sb.GraphicsDevice.Viewport.Height;
+            }
+
             if (Characters.UpdateValue != m_charListUpdate)
             {
                 int entryIndex = 0;
