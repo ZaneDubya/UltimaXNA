@@ -23,9 +23,10 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class ItemGumpling : AControl
     {
-        protected Texture2D m_texture = null;
         public bool CanPickUp = true;
         public bool HighlightOnMouseOver = true;
+
+        protected Texture2D m_Texture = null;
 
         bool clickedCanDrag = false;
         float pickUpTime;
@@ -81,19 +82,19 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            if (m_texture == null)
+            if (m_Texture == null)
             {
                 IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                m_texture = provider.GetItemTexture(Item.DisplayItemID);
-                Size = new Point(m_texture.Width, m_texture.Height);
+                m_Texture = provider.GetItemTexture(Item.DisplayItemID);
+                Size = new Point(m_Texture.Width, m_Texture.Height);
             }
             Vector3 hue = Utility.GetHueVector(IsMouseOver && HighlightOnMouseOver ? WorldView.MouseOverHue : Item.Hue);
             if (Item.Amount > 1 && Item.ItemData.IsGeneric && Item.DisplayItemID == Item.ItemID)
             {
                 int offset = Item.ItemData.Unknown4;
-                spriteBatch.Draw2D(m_texture, new Vector3(position.X - 5, position.Y - 5, 0), hue);
+                spriteBatch.Draw2D(m_Texture, new Vector3(position.X - 5, position.Y - 5, 0), hue);
             }
-            spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), hue);
+            spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), hue);
             base.Draw(spriteBatch, position);
         }
 
@@ -121,15 +122,15 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (x <= 0)
                 x = 1;
-            if (x >= m_texture.Width - 1)
-                x = m_texture.Width - 2;
+            if (x >= m_Texture.Width - 1)
+                x = m_Texture.Width - 2;
             if (y <= 0)
                 y = 1;
-            if (y >= m_texture.Height - 1)
-                y = m_texture.Height - 2;
+            if (y >= m_Texture.Height - 1)
+                y = m_Texture.Height - 2;
 
             ushort[] pixelData = new ushort[9];
-            m_texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
+            m_Texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
             if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
                 (pixelData[4] > 0) || (pixelData[5] > 0) ||
                 (pixelData[7] > 0))

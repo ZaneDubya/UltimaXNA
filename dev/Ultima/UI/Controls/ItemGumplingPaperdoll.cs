@@ -23,7 +23,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool IsFemale = false;
 
         private int m_x, m_y;
-        private bool m_isBuilt = false;
+        private bool m_isBuilt = false; // what is this doing?
+        private int m_HueOverride = 0;
 
         public ItemGumplingPaperdoll(AControl parent, int x, int y, Item item)
             : base(parent, item)
@@ -50,16 +51,37 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            if (m_texture == null)
+            if (m_Texture == null)
             {
                 IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                 if (IsFemale)
-                    m_texture = provider.GetUITexture(Item.ItemData.AnimID + 60000);
-                if (m_texture == null)
-                    m_texture = provider.GetUITexture(Item.ItemData.AnimID + 50000);
-                Size = new Point(m_texture.Width, m_texture.Height);
+                {
+                    int index = Item.ItemData.AnimID + 60000;
+                    int indexTranslated, hueTranslated;
+                    if (GumpDefTranslator.ItemHasGumpTranslation(index, out indexTranslated, out hueTranslated))
+                    {
+                        index = indexTranslated;
+                        m_HueOverride = hueTranslated;
+                        m_Texture = provider.GetUITexture(index);
+                    }
+                }
+                if (m_Texture == null)
+                {
+                    int index = Item.ItemData.AnimID + 50000;
+                    int indexTranslated, hueTranslated;
+                    if (GumpDefTranslator.ItemHasGumpTranslation(index, out indexTranslated, out hueTranslated))
+                    {
+                        index = indexTranslated;
+                        m_HueOverride = hueTranslated;
+                        m_Texture = provider.GetUITexture(index);
+                    }
+                    m_Texture = provider.GetUITexture(index);
+                }
+                Size = new Point(m_Texture.Width, m_Texture.Height);
             }
-            spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(Item.Hue));
+
+            int hue = (Item.Hue == 0 & m_HueOverride != 0) ? m_HueOverride : Item.Hue;
+            spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue));
             base.Draw(spriteBatch, position);
         }
     }

@@ -279,6 +279,7 @@
     <Compile Include="Ultima\Network\Client\QuestGumpRequestPacket.cs" />
     <Compile Include="Ultima\Network\Client\SellItemsPacket.cs" />
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
+    <Compile Include="Ultima\Resources\GumpDefTranslator.cs" />
     <Compile Include="Ultima\UI\Controls\AGumpPic.cs" />
     <Compile Include="Ultima\UI\Controls\ColorPickerBox.cs" />
     <Compile Include="Ultima\UI\Controls\EquipmentSlot.cs" />
