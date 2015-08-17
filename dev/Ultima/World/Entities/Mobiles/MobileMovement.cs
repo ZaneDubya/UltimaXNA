@@ -82,14 +82,14 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public void PlayerMobile_MoveEventAck(int nSequence)
         {
-            m_MoveEvents.MoveRequestAcknowledge(nSequence);
+            m_MoveEvents.AcknowledgemMoveRequest(nSequence);
         }
 
         public void PlayerMobile_MoveEventRej(int sequenceID, int x, int y, int z, int direction)
         {
             // immediately return to the designated tile.
             int ax, ay, az, af;
-            m_MoveEvents.MoveRequestReject(sequenceID, out ax, out ay, out az, out af);
+            m_MoveEvents.RejectMoveRequest(sequenceID, out ax, out ay, out az, out af);
             Move_Instant(x, y, z, direction);
             m_MoveEvents.ResetMoveSequence();
         }
@@ -151,7 +151,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
                 if (m_entity.IsClientEntity)
                 {
-                    while ((moveEvent = m_MoveEvents.GetMoveEvent(out sequence)) != null)
+                    while ((moveEvent = m_MoveEvents.GetNextMoveEvent(out sequence)) != null)
                     {
                         if (moveEvent.CreatedByPlayerInput)
                             SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));

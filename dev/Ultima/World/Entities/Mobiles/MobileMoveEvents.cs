@@ -54,7 +54,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 m_SequenceQueued = 1;
         }
 
-        public MobileMoveEvent GetMoveEvent(out int sequence)
+        public MobileMoveEvent GetNextMoveEvent(out int sequence)
         {
             if (m_History[m_SequenceNextSend] != null)
             {
@@ -73,24 +73,52 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
+        public MobileMoveEvent PeekNextMoveEvent()
+        {
+            if (m_History[m_SequenceNextSend] != null)
+            {
+                MobileMoveEvent m = m_History[m_SequenceNextSend];
+                return m;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public MobileMoveEvent GetFinalMoveEvent(out int sequence)
         {
-            MobileMoveEvent moveEvent = null, moveEventNext;
+            MobileMoveEvent moveEvent = null;
+            MobileMoveEvent moveEventNext, moveEventLast;
 
-            while ((moveEventNext = GetMoveEvent(out sequence)) != null)
+            while ((moveEventNext = GetNextMoveEvent(out sequence)) != null)
             {
+                // save the last moveEvent.
+                moveEventLast = moveEvent;
+                // get the next move event, erasing it from the queued move events.
                 moveEvent = moveEventNext;
+                // get the next move event, peeking to see if it is null (this does not erase it from the queue).
+                moveEventNext = PeekNextMoveEvent();
+                // we want to save move events that are the last move event in the queue, and are only facing changes.
+                if ((moveEventNext == null) && (moveEventLast != null) &&
+                    (moveEvent.X == moveEventLast.X) && (moveEvent.Y == moveEventLast.Y) && (moveEventLast.Z == moveEvent.Z) &&
+                    (moveEvent.Facing != moveEventLast.Facing))
+                {
+                    // re-queue the final facing change, and return the second-to-last move event.
+                    AddMoveEvent(moveEvent.X, moveEvent.Y, moveEvent.Z, moveEvent.Facing, false);
+                    return moveEventLast;
+                }
             }
             return moveEvent;
         }
 
-        public void MoveRequestAcknowledge(int sequence)
+        public void AcknowledgemMoveRequest(int sequence)
         {
             m_History[sequence] = null;
             m_LastSequenceAck = sequence;
         }
 
-        public void MoveRequestReject(int sequence, out int x, out int y, out int z, out int facing)
+        public void RejectMoveRequest(int sequence, out int x, out int y, out int z, out int facing)
         {
             if (m_History[sequence] != null)
             {
@@ -112,6 +140,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
     {
         public bool CreatedByPlayerInput = false;
         public readonly int X, Y, Z, Facing, Fastwalk;
+
         public MobileMoveEvent(int x, int y, int z, int facing, int fastwalk)
         {
             X = x;
