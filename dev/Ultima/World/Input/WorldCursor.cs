@@ -172,6 +172,7 @@ namespace UltimaXNA.Ultima.World.Input
                             if (mouseOverEntity is StaticItem)
                             {
                                 z += ((StaticItem)mouseOverEntity).ItemData.Height;
+                                DropHeldItemToWorld(x, y, z);
                             }
                             else if (mouseOverEntity is Item)
                             {
