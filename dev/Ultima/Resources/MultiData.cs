@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.Resources
         {
             MultiComponentList mcl;
 
-            index &= 0x3FFF;
+            index &= 0xFFFF;
 
             if (index >= 0 && index < m_Components.Length)
             {

@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             : base(effect)
         {
             m_Animated = true;
-            m_Animated = TileData.ItemData[Effect.ItemID & 0x3fff].IsAnimation;
+            m_Animated = TileData.ItemData[Effect.ItemID & 0xffff].IsAnimation;
             if (m_Animated)
             {
                 IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
