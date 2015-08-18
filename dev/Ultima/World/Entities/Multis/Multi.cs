@@ -134,5 +134,13 @@ namespace UltimaXNA.Ultima.World.Entities.Multis
                 }
             }
         }
+
+        public override int GetMaxUpdateRange()
+        {
+            if (m_customHouse == null)
+                return 22;
+            else
+                return 24;
+        }
     }
 }

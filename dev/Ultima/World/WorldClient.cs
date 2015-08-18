@@ -406,6 +406,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveWorldItem(IRecvPacket packet)
         {
             WorldItemPacket p = (WorldItemPacket)packet;
+
             // Now create the GameObject.
             // If the iItemID < 0x4000, this is a regular game object.
             // If the iItemID >= 0x4000, then this is a multiobject.

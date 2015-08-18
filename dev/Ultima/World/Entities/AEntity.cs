@@ -250,5 +250,11 @@ namespace UltimaXNA.Ultima.World.Entities
                 }
             }
         }
+
+        // Update range
+        public virtual int GetMaxUpdateRange()
+        {
+            return 18;
+        }
     }
 }
