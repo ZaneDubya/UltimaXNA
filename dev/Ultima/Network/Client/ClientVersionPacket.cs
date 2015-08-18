@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.Network.Client
             : base(0xBD, "Client Version")
         {
             if (version.Length != 4)
-                Tracer.Critical("SeedPacket: Incorrect length of version.");
+                Tracer.Critical("SeedPacket: Incorrect length of version array.");
             Stream.WriteAsciiNull(string.Format("{0}.{1}.{2}.{3}", version[0], version[1], version[2], version[3]));
         }
     }

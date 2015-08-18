@@ -68,7 +68,8 @@ namespace UltimaXNA.Ultima.World
             Register<MoveAcknowledgePacket>(0x22, "Move Acknowledged", 3, new TypedPacketReceiveHandler(ReceiveMoveAck));
             Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
             Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
-            Register<ContainerContentUpdatePacket>(0x25, "Container Content Update", 21, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
+            Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 20, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
+            Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 21, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
             Register<LiftRejectionPacket>(0x27, "Lift Rejection", 2, new TypedPacketReceiveHandler(ReceiveRejectMoveItemRequest));
             Register<ResurrectionMenuPacket>(0x2C, "Resurect menu", 2, new TypedPacketReceiveHandler(ReceiveResurrectionMenu));
             Register<MobileAttributesPacket>(0x2D, "Mob Attributes", 17, new TypedPacketReceiveHandler(ReceiveMobileAttributes));
@@ -286,6 +287,20 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveAddMultipleItemsToContainer(IRecvPacket packet)
         {
             ContainerContentPacket p = (ContainerContentPacket)packet;
+            if (p.Items.Length == 0)
+                return;
+
+            // special handling for spellbook contents
+            if (p.AllItemsInSameContainer)
+            {
+                Container container = WorldModel.Entities.GetObject<Container>(p.Items[0].ContainerSerial, true);
+                if (SpellbookData.GetSpellBookTypeFromItemID(container.ItemID) != SpellBookTypes.Unknown)
+                {
+                    SpellbookData data = new SpellbookData(container, p);
+                    (container as SpellBook).ReceiveSpellData(data.BookType, data.SpellsBitfield);
+                }
+            }
+
             foreach (ItemInContainer i in p.Items)
             {
                 // Add the item...
@@ -300,7 +315,7 @@ namespace UltimaXNA.Ultima.World
 
         private void ReceiveAddSingleItemToContainer(IRecvPacket packet)
         {
-            ContainerContentUpdatePacket p = (ContainerContentUpdatePacket)packet;
+            AddSingleItemToContainerPacket p = (AddSingleItemToContainerPacket)packet;
 
             // Add the item...
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);

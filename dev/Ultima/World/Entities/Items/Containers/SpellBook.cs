@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
         private ulong m_SpellsBitfield;
         public bool HasSpell(int index)
         {
-            ulong flag = 1U << index;
+            ulong flag = ((ulong)1) << index;
             return (m_SpellsBitfield & flag) == flag;
         }
 
@@ -48,7 +48,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 
         public void ReceiveSpellData(SpellBookTypes sbType, ulong sbBitfield)
         {
-            bool entityUpdated = false;
+            bool entityUpdated = true;
 
             if (BookType != sbType)
             {

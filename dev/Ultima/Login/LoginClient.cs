@@ -81,6 +81,7 @@ namespace UltimaXNA.Ultima.Login
             Register<ServerListPacket>(0xA8, "Game Server List", -1, ReceiveServerList);
             Register<CharacterCityListPacket>(0xA9, "Characters / Starting Locations", -1, ReceiveCharacterList);
             Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, ReceiveEnableFeatures);
+            Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
             Register<VersionRequestPacket>(0xBD, "Version Request", -1, ReceiveVersionRequest);
         }
 

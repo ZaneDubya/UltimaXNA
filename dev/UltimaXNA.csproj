@@ -447,7 +447,7 @@
     <Compile Include="Ultima\Network\Server\ChatPacket.cs" />
     <Compile Include="Ultima\Network\Server\CompressedGumpPacket.cs" />
     <Compile Include="Ultima\Network\Server\ContainerContentPacket.cs" />
-    <Compile Include="Ultima\Network\Server\ContainerContentUpdatePacket.cs" />
+    <Compile Include="Ultima\Network\Server\AddSingleItemToContainerPacket.cs" />
     <Compile Include="Ultima\Network\Server\ContainerPacket.cs" />
     <Compile Include="Ultima\Network\Server\CorpseClothingPacket.cs" />
     <Compile Include="Ultima\Network\Server\CustomHousePacket.cs" />
