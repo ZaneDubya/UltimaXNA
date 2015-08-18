@@ -285,7 +285,16 @@ namespace UltimaXNA.Ultima.World
 
         private void ReceiveAddMultipleItemsToContainer(IRecvPacket packet)
         {
+            //SpellbookData spellbook = p.Spellbook;
+            //WorldModel.Entities.GetObject<SpellBook>(spellbook.Serial, true).ReceiveSpellData(spellbook.BookType, spellbook.SpellsBitfield);
+
             ContainerContentPacket p = (ContainerContentPacket)packet;
+            // first check to see if this a spell packet.
+            if (p.Items.Length > 0 && p.AllItemsInSameContainer)
+            {
+
+            }
+
             foreach (ItemInContainer i in p.Items)
             {
                 // Add the item...

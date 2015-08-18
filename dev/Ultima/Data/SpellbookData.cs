@@ -9,6 +9,10 @@
  *
  ***************************************************************************/
 
+using UltimaXNA.Ultima.World.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
+using UltimaXNA.Ultima.Network.Server;
+
 namespace UltimaXNA.Ultima.Data
 {
     sealed class SpellbookData
@@ -48,6 +52,41 @@ namespace UltimaXNA.Ultima.Data
                 default:
                     BookType = SpellBookTypes.Unknown;
                     return;
+            }
+        }
+
+        public SpellbookData(Serial serial, Container spellbook, ContainerContentPacket contents)
+        {
+            Serial = serial;
+            ItemID = (ushort)spellbook.ItemID;
+
+            switch (spellbook.ItemID)
+            {
+                case 0x0E3B: // spellbook
+                case 0x0EFA:
+                    BookType = SpellBookTypes.Magic;
+                    break;
+                case 0x2252: // paladin spellbook
+                    BookType = SpellBookTypes.Chivalry;
+                    break;
+                case 0x2253: // necromancer book
+                    BookType = SpellBookTypes.Necromancer;
+                    break;
+                case 0x238C: // book of bushido
+                    BookType = SpellBookTypes.Bushido;
+                    break;
+                case 0x23A0: // book of ninjitsu
+                    BookType = SpellBookTypes.Ninjitsu;
+                    break;
+                case 0x2D50: // spell weaving book
+                    BookType = SpellBookTypes.Chivalry;
+                    break;
+            }
+
+            foreach (ItemInContainer i in contents.Items)
+            {
+                ulong spellBit = (ulong)0x1 << ((i.Serial - 1) & 0x0000003F);
+                SpellsBitfield |= spellBit;
             }
         }
     }

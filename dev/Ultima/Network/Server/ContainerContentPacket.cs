@@ -54,5 +54,19 @@ namespace UltimaXNA.Ultima.Network.Server
 
             m_items = items.ToArray();
         }
+
+        public bool AllItemsInSameContainer
+        {
+            get
+            {
+                if (Items.Length == 0)
+                    return true;
+                Serial containerSerial = Items[0].ContainerSerial;
+                for (int i = 1; i < Items.Length; i++)
+                    if (Items[i].ContainerSerial != containerSerial)
+                        return false;
+                return true;
+            }
+        }
     }
 }

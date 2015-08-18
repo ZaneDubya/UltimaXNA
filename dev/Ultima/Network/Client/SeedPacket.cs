@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.Network.Client
 {
     public class SeedPacket : SendPacket
     {
-        public SeedPacket(int seed, byte[] version)
+        public SeedPacket(int seed, char[] version)
             : base(0xEF, "Seed", 21)
         {
             Stream.Write(seed);
