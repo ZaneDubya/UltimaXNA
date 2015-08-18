@@ -97,7 +97,10 @@ namespace UltimaXNA.Ultima.World.Input
                     // mouse over ui
                     AControl target = m_UserInterface.MouseOverControl;
                     // attempt to drop the item onto an interface. The only acceptable targets for dropping items are:
-                    // 1. ItemGumplings that represent containers (like a bag icon)
+                    // 1. ItemGumplings that...
+                    //    a. ...represent containers (like a bag icon)
+                    //    b. ...are of the same itemType and are generic, and can thus be merged.
+                    //    c. ...are neither of the above; we attempt to drop the held item on top of the targeted item, if the targeted item is within a container.
                     // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
                     // 3. Paperdolls for my character and equipment slots.
                     // 4. Backpack gumppics (seen in paperdolls).
@@ -106,13 +109,22 @@ namespace UltimaXNA.Ultima.World.Input
                         Item targetItem = ((ItemGumpling)target).Item;
                         MouseOverItem = targetItem;
 
-                        if (targetItem.ItemData.IsContainer)
+                        if (targetItem.ItemData.IsContainer) // 1.a.
                         {
                             DropHeldItemToContainer((Container)targetItem);
                         }
-                        else if (HeldItem.ItemID == targetItem.ItemID && HeldItem.ItemData.IsGeneric)
+                        else if (HeldItem.ItemID == targetItem.ItemID && HeldItem.ItemData.IsGeneric) // 1.b.
                         {
                             MergeHeldItem(targetItem);
+                        }
+                        else // 1.c.
+                        {
+                            if (targetItem.Parent != null && targetItem.Parent is Container)
+                            {
+                                DropHeldItemToContainer(targetItem.Parent as Container,
+                                    target.X + (m_Input.MousePosition.X - target.ScreenX) - m_HeldItemOffset.X,
+                                    target.Y + (m_Input.MousePosition.Y - target.ScreenY) - m_HeldItemOffset.Y);
+                            }
                         }
                     }
                     else if (target is GumpPicContainer)
