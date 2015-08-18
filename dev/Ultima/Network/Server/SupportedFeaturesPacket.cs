@@ -8,6 +8,7 @@
  *
  ***************************************************************************/
 #region usings
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Ultima.Data;
@@ -17,8 +18,6 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class SupportedFeaturesPacket : RecvPacket
     {
-        readonly FeatureFlags m_flags;
-
         /// <summary>
         /// From POLServer packet docs: http://docs.polserver.com/packets/index.php?Packet=0xB9
         /// 0x01: enable T2A features: chat, regions
@@ -41,13 +40,22 @@ namespace UltimaXNA.Ultima.Network.Server
         /// </summary>
         public FeatureFlags Flags
         {
-            get { return m_flags; }
+            get;
+            private set;
         }
 
         public SupportedFeaturesPacket(PacketReader reader)
             : base(0xB9, "Enable Features")
         {
-            m_flags = (FeatureFlags)reader.ReadInt16();
+            if (reader.Buffer.Length == 3)
+                Flags = (FeatureFlags)reader.ReadInt16();
+            else if (reader.Buffer.Length == 5)
+                Flags = (FeatureFlags)reader.ReadInt32();
+            else
+            {
+                Flags = (FeatureFlags)reader.ReadInt16();
+                Tracer.Error("Bad feature flag size in SupportedFeaturesPacket; expected 16 or 32 bit features, received {0} bits.", (reader.Buffer.Length - 1) * 8);
+            }
         }
     }
 }
