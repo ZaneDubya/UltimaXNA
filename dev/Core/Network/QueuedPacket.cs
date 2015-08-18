@@ -15,15 +15,15 @@ namespace UltimaXNA.Core.Network
 {
     class QueuedPacket
     {
-        public List<PacketHandler> PacketHandlers;
+        public PacketHandler PacketHandler;
         public byte[] PacketBuffer;
         public int RealLength;
         public string Name;
 
-        public QueuedPacket(string name, List<PacketHandler> packetHandlers, byte[] packetBuffer, int realLength)
+        public QueuedPacket(string name, PacketHandler packetHandler, byte[] packetBuffer, int realLength)
         {
             Name = name;
-            PacketHandlers = packetHandlers;
+            PacketHandler = packetHandler;
             PacketBuffer = packetBuffer;
             RealLength = realLength;
         }

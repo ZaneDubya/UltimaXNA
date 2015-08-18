@@ -23,7 +23,7 @@ namespace UltimaXNA.Configuration
 
         public UltimaOnlineSettings()
         {
-            ClientVersion = new byte[] {4, 0, 0, 0};
+            ClientVersion = new byte[] {6, 0, 6, 2};
         }
 
         public byte[] ClientVersion

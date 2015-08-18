@@ -21,7 +21,7 @@ using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Server
 {
-    public class ContainerContentUpdatePacket : RecvPacket
+    public class AddSingleItemToContainerPacket : RecvPacket
     {
         public int ItemId
         {
@@ -71,7 +71,7 @@ namespace UltimaXNA.Ultima.Network.Server
             private set;
         }
 
-        public ContainerContentUpdatePacket(PacketReader reader)
+        public AddSingleItemToContainerPacket(PacketReader reader)
             : base(0x25, "Add Single Item")
         {
             Serial = reader.ReadInt32();
@@ -80,7 +80,10 @@ namespace UltimaXNA.Ultima.Network.Server
             Amount = reader.ReadUInt16();
             X = reader.ReadInt16();
             Y = reader.ReadInt16();
-            GridLocation = reader.ReadByte(); // always 0 in RunUO.
+            if (reader.Buffer.Length == 21)
+                GridLocation = reader.ReadByte(); // always 0 in RunUO.
+            else
+                GridLocation = 0;
             ContainerSerial = (Serial)reader.ReadInt32();
             Hue = reader.ReadUInt16();
         }
