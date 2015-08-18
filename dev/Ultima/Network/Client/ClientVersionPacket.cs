@@ -16,7 +16,7 @@ namespace UltimaXNA.Ultima.Network.Client
 {
     public class ClientVersionPacket : SendPacket
     {
-        public ClientVersionPacket(char[] version)
+        public ClientVersionPacket(byte[] version)
             : base(0xBD, "Client Version")
         {
             if (version.Length != 4)

@@ -19,14 +19,14 @@ namespace UltimaXNA.Configuration
         public const string SectionName = "ultimaOnline";
 
         private string m_DataDirectory;
-        private char[] m_ClientVersion;
+        private byte[] m_ClientVersion;
 
         public UltimaOnlineSettings()
         {
-            ClientVersion = new char[] {'5', '0', '0', '0'};
+            ClientVersion = new byte[] {4, 0, 0, 0};
         }
 
-        public char[] ClientVersion
+        public byte[] ClientVersion
         {
             get { return m_ClientVersion; }
             set { SetProperty(ref m_ClientVersion, value); }
