@@ -74,6 +74,9 @@ namespace UltimaXNA.Ultima.Resources
             m_LandPatchPtrs = new Dictionary<uint, uint>();
 
             m_LandPatchStream = FileManager.GetFile(landPath);
+            if (m_LandPatchStream == null)
+                return 0;
+
 
             using (FileStream fsIndex = FileManager.GetFile(indexPath))
             {
@@ -146,6 +149,8 @@ namespace UltimaXNA.Ultima.Resources
             m_StaticPatchPtrs = new Dictionary<uint, Tuple<int, int>>();
 
             m_StaticPatchStream = FileManager.GetFile(dataPath);
+            if (m_StaticPatchStream == null)
+                return 0;
 
             using (FileStream fsIndex = FileManager.GetFile(indexPath))
             {
