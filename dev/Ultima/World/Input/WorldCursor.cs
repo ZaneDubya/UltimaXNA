@@ -430,6 +430,15 @@ namespace UltimaXNA.Ultima.World.Input
                     m_Tooltip.UpdateEntity(MouseOverItem);
                 m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
             }
+            else if (m_World.Input.MousePick.MouseOverObject != null && m_World.Input.MousePick.MouseOverObject is Mobile && m_World.Input.MousePick.MouseOverObject.PropertyList.HasProperties)
+            {
+                AEntity entity = m_World.Input.MousePick.MouseOverObject;
+                if (m_Tooltip == null)
+                    m_Tooltip = new Tooltip(entity);
+                else
+                    m_Tooltip.UpdateEntity(entity);
+                m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
+            }
             else if (m_UserInterface.IsMouseOverUI && m_UserInterface.MouseOverControl != null &&
                 m_UserInterface.MouseOverControl is ItemGumpling && (m_UserInterface.MouseOverControl as ItemGumpling).Item.PropertyList.HasProperties)
             {
