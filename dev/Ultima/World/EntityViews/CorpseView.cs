@@ -30,10 +30,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             IAnimationFrame animationFrame = getFrame(Entity.Body, facing, frameIndex, Entity.Hue);
 
+            DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
+
             DrawTexture = animationFrame.Texture;
-            DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
+
+            DrawArea = new Rectangle(
+                -22 + animationFrame.Center.X, 
+                DrawTexture.Height - 22 + (Entity.Z * 4) + animationFrame.Center.Y, DrawTexture.Width, DrawTexture.Height);
             // DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
-            DrawFlip = false;
 
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
         }
