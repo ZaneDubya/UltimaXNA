@@ -69,6 +69,9 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
         public MovingEffect(Map map,int sourceSerial, int targetSerial, int xSource, int ySource, int zSource, int xTarget, int yTarget, int zTarget, int itemID, int hue)
             : this(map, itemID, hue)
         {
+            sbyte zSrcByte = (sbyte)zSource;
+            sbyte zTarByte = (sbyte)zTarget;
+
             AEntity source = WorldModel.Entities.GetObject<AEntity>(sourceSerial, false);
             if (source != null)
             {
@@ -78,7 +81,7 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
                     Mobile mobile = source as Mobile;
                     if ((!mobile.IsClientEntity && !mobile.IsMoving) && ((xSource | ySource | zSource) != 0))
                     {
-                        source.Position.Set(xSource, ySource, zSource);
+                        source.Position.Set(xSource, ySource, zSrcByte);
                     }
                 }
                 else if (source is Item)
@@ -87,12 +90,12 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
                     Item item = source as Item;
                     if ((xSource | ySource | zSource) != 0)
                     {
-                        item.Position.Set(xSource, ySource, zSource);
+                        item.Position.Set(xSource, ySource, zSrcByte);
                     }
                 }
                 else
                 {
-                    base.SetSource(xSource, ySource, zSource);
+                    base.SetSource(xSource, ySource, zSrcByte);
                 }
             }
             else
@@ -108,7 +111,7 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
                     Mobile mobile = target as Mobile;
                     if ((!mobile.IsClientEntity && !mobile.IsMoving) && ((xTarget | yTarget | zTarget) != 0))
                     {
-                        mobile.Position.Set(xTarget, yTarget, zTarget);
+                        mobile.Position.Set(xTarget, yTarget, zTarByte);
                     }
                 }
                 else if (target is Item)
@@ -117,12 +120,12 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
                     Item item = target as Item;
                     if ((xTarget | yTarget | zTarget) != 0)
                     {
-                        item.Position.Set(xTarget, yTarget, zTarget);
+                        item.Position.Set(xTarget, yTarget, zTarByte);
                     }
                 }
                 else
                 {
-                    base.SetSource(xTarget, yTarget, zTarget);
+                    base.SetSource(xTarget, yTarget, zTarByte);
                 }
             }
         }
