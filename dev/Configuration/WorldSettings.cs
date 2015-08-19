@@ -10,7 +10,7 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.Core.Configuration;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Input;
 #endregion
 
 namespace UltimaXNA.Configuration

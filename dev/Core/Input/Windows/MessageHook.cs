@@ -14,8 +14,7 @@ using System.Windows.Forms;
 
 namespace UltimaXNA.Core.Input.Windows
 {
-    public delegate IntPtr WndProcHandler(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
+    
     public abstract class MessageHook : IDisposable
     {
         public abstract int HookType { get; }

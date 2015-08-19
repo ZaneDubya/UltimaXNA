@@ -9,11 +9,12 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 #endregion
 

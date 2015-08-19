@@ -1,4 +1,4 @@
-﻿using UltimaXNA.Core.Input.Windows;
+﻿using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls

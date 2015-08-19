@@ -328,7 +328,7 @@ namespace UltimaXNA.Core.Input.Windows
                 // Is this extra information necessary?
                 // wm_(sys)char: http://msdn.microsoft.com/en-us/library/ms646276(VS.85).aspx
 
-                InputEventKeyboard e = new InputEventKeyboard(KeyboardEventType.Press,
+                InputEventKeyboard e = new InputEventKeyboard(KeyboardEvent.Press,
                     (WinKeys)(int)(long)message.WParam,
                     (int)(long)message.LParam,
                     ModifierKeys
@@ -344,7 +344,7 @@ namespace UltimaXNA.Core.Input.Windows
 
                 if ((message.Id == NativeConstants.WM_KEYDOWN) || (message.Id == NativeConstants.WM_SYSKEYDOWN))
                 {
-                    InputEventKeyboard e = new InputEventKeyboard(KeyboardEventType.Down,
+                    InputEventKeyboard e = new InputEventKeyboard(KeyboardEvent.Down,
                         (WinKeys)(int)(long)message.WParam,
                         (int)(long)message.LParam,
                         ModifierKeys
@@ -353,7 +353,7 @@ namespace UltimaXNA.Core.Input.Windows
                 }
                 else if ((message.Id == NativeConstants.WM_KEYUP) || (message.Id == NativeConstants.WM_SYSKEYUP))
                 {
-                    InputEventKeyboard e = new InputEventKeyboard(KeyboardEventType.Up,
+                    InputEventKeyboard e = new InputEventKeyboard(KeyboardEvent.Up,
                         (WinKeys)(int)(long)message.WParam,
                         (int)(long)message.LParam,
                         ModifierKeys

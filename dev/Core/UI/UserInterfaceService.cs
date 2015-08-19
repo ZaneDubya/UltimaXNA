@@ -269,7 +269,7 @@ namespace UltimaXNA.Core.UI
                     List<InputEventKeyboard> k_events = m_Input.GetKeyboardEvents();
                     foreach (InputEventKeyboard e in k_events)
                     {
-                        if (e.EventType == KeyboardEventType.Press)
+                        if (e.EventType == KeyboardEvent.Press)
                             m_keyboardFocusControl.KeyboardInput(e);
                     }
                 }

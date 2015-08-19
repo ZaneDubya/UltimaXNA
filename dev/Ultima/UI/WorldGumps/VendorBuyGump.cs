@@ -12,7 +12,7 @@
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;

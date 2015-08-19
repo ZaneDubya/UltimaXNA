@@ -78,14 +78,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             // Ctrl-Q = Cycle backwards through the things you have said today
             // Ctrl-W = Cycle forwards through the things you have said today
-            if (m_Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true) && m_MessageHistoryIndex > -1)
+            if (m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Q, false, false, true) && m_MessageHistoryIndex > -1)
             {
                 if (m_MessageHistoryIndex > 0)
                     m_MessageHistoryIndex -= 1;
                 m_TextEntry.Text = m_MessageHistory[m_MessageHistoryIndex];
 
             }
-            else if (m_Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.W, false, false, true))
+            else if (m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.W, false, false, true))
             {
                 if (m_MessageHistoryIndex < m_MessageHistory.Count - 1)
                 {

@@ -9,12 +9,12 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
-using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Core.Resources;
-using UltimaXNA.Core.Graphics;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.LoginGumps
@@ -67,8 +67,6 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // center message window backdrop
             AddControl(new ResizePic(this, 160, 70, 2600, 408, 390), 1);
             AddControl(new TextLabelAscii(this, 266, 112, 2016, 2, provider.GetString(3000050)), 1);
-            // display the character list.
-            ReloadCharList();
             // delete button
             AddControl(new Button(this, 224, 398, 5530, 5532, ButtonTypes.Activate, 0, (int)Buttons.DeleteCharacterButton), 1);
             ((Button)LastControl).GumpOverID = 5531;
@@ -82,11 +80,6 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new TextLabelAscii(this, 166, 143, 2016, 2, provider.GetString(3000001)), 2);
 
             IsUncloseableWithRMB = true;
-        }
-
-        public void ReloadCharList()
-        {
-            
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -114,6 +107,14 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                 }
                 m_charListUpdate = Characters.UpdateValue;
             }
+
+            InputManager input = ServiceRegistry.GetService<InputManager>();
+            if (input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Enter, false, false, false))
+            {
+                if (m_characterNames.Length > 0)
+                    OnLoginWithCharacter(0);
+            }
+
             base.Update(totalMS, frameMS);
         }
 

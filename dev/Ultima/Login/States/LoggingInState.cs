@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.Login.States
         UserInterfaceService m_UserInterface;
         LoginModel m_Login;
 
-        private LoggingInGump m_Gump;
+        private LoginStatusGump m_Gump;
         
         private bool m_ErrorReceived = false;
 
@@ -38,7 +38,7 @@ namespace UltimaXNA.Ultima.Login.States
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_Login = ServiceRegistry.GetService<LoginModel>();
 
-            m_Gump = (LoggingInGump)m_UserInterface.AddControl(new LoggingInGump(), 0, 0);
+            m_Gump = (LoginStatusGump)m_UserInterface.AddControl(new LoginStatusGump(), 0, 0);
             m_Gump.OnCancelLogin += OnCancelLogin;
 
             m_Login.Client.Disconnect();

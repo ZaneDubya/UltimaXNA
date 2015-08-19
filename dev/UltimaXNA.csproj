@@ -192,7 +192,11 @@
     <Compile Include="Core\Audio\MP3Sharp\MP3Stream.cs" />
     <Compile Include="Core\Audio\MP3Sharp\SoundFormat.cs" />
     <Compile Include="Core\Audio\MP3Sharp\Support\SupportClass.cs" />
+    <Compile Include="Core\Input\KeyboardEvent.cs" />
+    <Compile Include="Core\Input\MouseButton.cs" />
+    <Compile Include="Core\Input\MouseEvent.cs" />
     <Compile Include="Core\Input\Windows\CultureHandler.cs" />
+    <Compile Include="Core\NativeMethods.cs" />
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\DelayedAction.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
@@ -241,7 +245,7 @@
     <Compile Include="Core\IO\BinaryFileWriter.cs" />
     <Compile Include="Core\IO\GenericReader.cs" />
     <Compile Include="Core\IO\GenericWriter.cs" />
-    <Compile Include="Core\NativeMethods.cs" />
+    <Compile Include="Core\Input\Windows\NativeMethods.cs" />
     <Compile Include="Core\Input\Windows\WndProc.cs" />
     <Compile Include="Core\Patterns\MVC\AController.cs" />
     <Compile Include="Core\Patterns\MVC\AModel.cs" />
@@ -551,7 +555,7 @@
     <Compile Include="Ultima\UI\LoginGumps\CreateCharSkillsGump.cs" />
     <Compile Include="Ultima\UI\LoginGumps\CreateCharAppearanceGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\DebugGump.cs" />
-    <Compile Include="Ultima\UI\LoginGumps\LoggingInGump.cs" />
+    <Compile Include="Ultima\UI\LoginGumps\LoginStatusGump.cs" />
     <Compile Include="Ultima\UI\LoginGumps\LoginGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\MiniMapGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\SkillsGump.cs" />

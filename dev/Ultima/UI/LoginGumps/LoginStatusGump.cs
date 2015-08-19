@@ -25,11 +25,11 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         OKNoLoginButton
     }
 
-    class LoggingInGump : Gump
+    class LoginStatusGump : Gump
     {
         public CancelLoginEvent OnCancelLogin;
 
-        public LoggingInGump()
+        public LoginStatusGump()
             : base(0, 0)
         {
             // get the resource provider

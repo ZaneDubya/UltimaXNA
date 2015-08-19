@@ -208,7 +208,7 @@ namespace UltimaXNA.Ultima.World.Input
 
             if (IsTargeting)
             {
-                if (m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.Escape, false, false, false))
+                if (m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.Escape, false, false, false))
                 {
                     SetTargeting(TargetType.Nothing, 0);
                 }

@@ -12,7 +12,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.UI.HTML;
 #endregion

@@ -160,16 +160,16 @@ namespace UltimaXNA.Core.Input
                 }
             }
 
-            internal void ReceiveKeyboardEvent(KeyboardEventType ke)
+            internal void ReceiveKeyboardEvent(KeyboardEvent ke)
             {
                 switch (ke)
                 {
-                    case KeyboardEventType.Down:
+                    case KeyboardEvent.Down:
                         m_InInitialRepeatPeriod = true;
                         m_State = ActionState.Press;
                         m_SecondsSincePress = 0f;
                         break;
-                    case KeyboardEventType.Up:
+                    case KeyboardEvent.Up:
                         m_State = ActionState.Release;
                         break;
                     // ignore press events - we handle our own presses.

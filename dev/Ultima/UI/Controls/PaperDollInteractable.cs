@@ -9,7 +9,7 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities;

@@ -13,8 +13,8 @@ namespace UltimaXNA.Core.Input.Windows
 {
     public class InputEventKeyboard : InputEvent
     {
-        protected readonly KeyboardEventType m_eventType;
-        public KeyboardEventType EventType
+        protected readonly KeyboardEvent m_eventType;
+        public KeyboardEvent EventType
         {
             get { return m_eventType; }
         }
@@ -110,7 +110,7 @@ namespace UltimaXNA.Core.Input.Windows
             get { return ((m_keyDataExtra >> 31) & 0x00000001); }
         }
 
-        public InputEventKeyboard(KeyboardEventType eventType, WinKeys wParam_VirtKeyCode, int lParam_KeyData, WinKeys modifiers)
+        public InputEventKeyboard(KeyboardEvent eventType, WinKeys wParam_VirtKeyCode, int lParam_KeyData, WinKeys modifiers)
             : base(modifiers)
         {
             m_eventType = eventType;
@@ -118,19 +118,12 @@ namespace UltimaXNA.Core.Input.Windows
             m_keyDataExtra = lParam_KeyData;
         }
 
-        public InputEventKeyboard(KeyboardEventType eventType, InputEventKeyboard parent)
+        public InputEventKeyboard(KeyboardEvent eventType, InputEventKeyboard parent)
             : base(parent)
         {
             m_eventType = eventType;
             m_keyCode = parent.m_keyCode;
             m_keyDataExtra = parent.m_keyDataExtra;
         }
-    }
-
-    public enum KeyboardEventType
-    {
-        Down,
-        Up,
-        Press
     }
 }

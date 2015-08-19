@@ -45,7 +45,7 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Update(totalTime, frameTime);
 
-            if (m_Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.D, false, false, true))
+            if (m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.D, false, false, true))
             {
                 Manager.CurrentState = new LoggingInState();
             }

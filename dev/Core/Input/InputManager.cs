@@ -9,12 +9,13 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Input.Windows;
+using NativeInput = UltimaXNA.Core.Input.Windows.NativeMethods;
 #endregion
 
 namespace UltimaXNA.Core.Input
@@ -59,7 +60,7 @@ namespace UltimaXNA.Core.Input
         {
             get
             {
-                if(NativeMethods.GetKeyState((int)WinKeys.ControlKey) < 0)
+                if (NativeInput.GetKeyState((int)WinKeys.ControlKey) < 0)
                 {
                     return true;
                 }
@@ -71,7 +72,7 @@ namespace UltimaXNA.Core.Input
         {
             get
             {
-                if(NativeMethods.GetKeyState((int)WinKeys.ShiftKey) < 0)
+                if (NativeInput.GetKeyState((int)WinKeys.ShiftKey) < 0)
                 {
                     return true;
                 }
@@ -116,7 +117,7 @@ namespace UltimaXNA.Core.Input
                 for(int i = list.Count; i > 0; i--)
                 {
                     InputEvent e = list[i - 1];
-                    if((e is InputEventKeyboard) && (((InputEventKeyboard)e).EventType == KeyboardEventType.Press))
+                    if((e is InputEventKeyboard) && (((InputEventKeyboard)e).EventType == KeyboardEvent.Press))
                     {
                         return (InputEventKeyboard)e;
                     }
@@ -127,7 +128,7 @@ namespace UltimaXNA.Core.Input
 
         public bool IsKeyDown(WinKeys key)
         {
-            if(NativeMethods.GetKeyState((int)key) < 0)
+            if (NativeInput.GetKeyState((int)key) < 0)
             {
                 return true;
             }
@@ -194,7 +195,7 @@ namespace UltimaXNA.Core.Input
             return newstate;
         }
 
-        public bool HandleKeyboardEvent(KeyboardEventType type, WinKeys key, bool shift, bool alt, bool ctrl)
+        public bool HandleKeyboardEvent(KeyboardEvent type, WinKeys key, bool shift, bool alt, bool ctrl)
         {
             foreach(InputEvent e in m_EventsThisFrame)
             {
@@ -292,18 +293,18 @@ namespace UltimaXNA.Core.Input
             // handle the initial key down
             if(e.Data_PreviousState == 0)
             {
-                addEvent(new InputEventKeyboard(KeyboardEventType.Down, e));
+                addEvent(new InputEventKeyboard(KeyboardEvent.Down, e));
             }
             // handle the key presses. Possibly multiple per keydown message.
             for(int i = 0; i < e.Data_RepeatCount; i++)
             {
-                addEvent(new InputEventKeyboard(KeyboardEventType.Press, e));
+                addEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
             }
         }
 
         private void onKeyUp(InputEventKeyboard e)
         {
-            addEvent(new InputEventKeyboard(KeyboardEventType.Up, e));
+            addEvent(new InputEventKeyboard(KeyboardEvent.Up, e));
         }
 
         private void onKeyChar(InputEventKeyboard e)

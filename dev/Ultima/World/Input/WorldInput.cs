@@ -230,19 +230,19 @@ namespace UltimaXNA.Ultima.World.Input
 
             if(m_PauseBeforeKeyboardMovementMS < c_PauseBeforeKeyboardMovementMS)
             {
-                if(m_Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Up, false, false, false))
+                if(m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Up, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
-                if(m_Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Down, false, false, false))
+                if(m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Down, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
-                if(m_Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Left, false, false, false))
+                if(m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Left, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
-                if(m_Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Right, false, false, false))
+                if(m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Right, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
@@ -463,7 +463,7 @@ namespace UltimaXNA.Ultima.World.Input
             WorldView.AllLabels = (m_Input.IsShiftDown && m_Input.IsCtrlDown);
 
             // Warmode toggle:
-            if(m_Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
+            if(m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Tab, false, false, false))
             {
                 m_Network.Send(new RequestWarModePacket(!WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode));
             }
@@ -475,7 +475,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
 
             // debug variables.
-            if(m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.D, false, false, true))
+            if(m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.D, false, false, true))
             {
                 if(!Settings.Debug.ShowDataRead)
                 {
@@ -496,19 +496,19 @@ namespace UltimaXNA.Ultima.World.Input
             }
 
             // FPS limiting
-            if(m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, false))
+            if(m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.F, false, true, false))
             {
                 Settings.Game.IsFixedTimeStep = !Settings.Game.IsFixedTimeStep;
             }
 
             // Display FPS
-            if(m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, true))
+            if(m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.F, false, true, true))
             {
                 Settings.Debug.ShowFps = !Settings.Debug.ShowFps;
             }
 
             // Mouse enable / disable
-            if(m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.M, false, true, false))
+            if(m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.M, false, true, false))
             {
                 Settings.World.Mouse.IsEnabled = !Settings.World.Mouse.IsEnabled;
             }
