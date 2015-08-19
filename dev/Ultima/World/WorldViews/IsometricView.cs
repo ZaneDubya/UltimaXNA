@@ -192,7 +192,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
                                 break;
                         }
 
-                        if (entities[i].Z >= m_DrawMaxItemAltitude && !(entities[i] is Ground))
+                        if ((entities[i].Z >= m_DrawMaxItemAltitude || (m_DrawMaxItemAltitude != 255 && entities[i] is Item && (entities[i] as Item).ItemData.IsRoof)) && !(entities[i] is Ground))
                             continue;
 
                         AEntityView view = entities[i].GetView();
