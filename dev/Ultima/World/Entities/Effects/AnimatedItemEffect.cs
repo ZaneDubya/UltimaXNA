@@ -51,6 +51,8 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
         public AnimatedItemEffect(Map map, int sourceSerial, int xSource, int ySource, int zSource, int ItemID, int Hue, int duration)
             : this(map, ItemID, Hue, duration)
         {
+            sbyte zSrcByte = (sbyte)zSource;
+
             AEntity source = WorldModel.Entities.GetObject<AEntity>(sourceSerial, false);
             if (source != null)
             {
@@ -59,7 +61,7 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
                     Mobile mobile = source as Mobile;
                     if ((!mobile.IsClientEntity && !mobile.IsMoving) && (((xSource != 0) || (ySource != 0)) || (zSource != 0)))
                     {
-                        mobile.Position.Set(xSource, ySource, zSource);
+                        mobile.Position.Set(xSource, ySource, zSrcByte);
                     }
                     SetSource(mobile);
                 }
@@ -68,7 +70,7 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
                     Item item = source as Item;
                     if (((xSource != 0) || (ySource != 0)) || (zSource != 0))
                     {
-                        item.Position.Set(xSource, ySource, zSource);
+                        item.Position.Set(xSource, ySource, zSrcByte);
                     }
                     SetSource(item);
                 }
