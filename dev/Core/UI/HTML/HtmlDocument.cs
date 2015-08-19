@@ -383,15 +383,39 @@ namespace UltimaXNA.Core.UI.HTML
 
         private void LayoutElementsHorizontal(BlockElement root, int x, int y, out int ascenderDelta)
         {
-            int x0 = x, x1 = x + root.Width;
+            int x0 = x;
+            int x1 = x + root.Width;
             int height = 0, lineHeight = 0;
             ascenderDelta = 0;
+            int lineBeganAtElementIndex = 0;
 
             for (int i = 0; i < root.Children.Count; i++)
             {
                 AElement e0 = root.Children[i];
                 if (e0.IsThisAtomALineBreak)
                 {
+                    // root alignments align children elements within the root width.
+                    if (root.Alignment == Alignments.Center)
+                    {
+                        int centerX = x + (x1 - x0) / 2;
+                        for (int j = lineBeganAtElementIndex; j < i; j++)
+                        {
+                            AElement e1 = root.Children[j];
+                            e1.Layout_X = centerX;
+                            centerX += e1.Width;
+                        }
+                    }
+                    else if (root.Alignment == Alignments.Right)
+                    {
+                        int rightX = x1 - x0;
+                        for (int j = lineBeganAtElementIndex; j < i; j++)
+                        {
+                            AElement e1 = root.Children[j];
+                            e1.Layout_X = rightX;
+                            rightX += e1.Width;
+                        }
+                    }
+
                     e0.Layout_X = x0;
                     e0.Layout_Y = y;
                     y += lineHeight;
@@ -399,6 +423,7 @@ namespace UltimaXNA.Core.UI.HTML
                     x1 = x + root.Width;
                     height += lineHeight;
                     lineHeight = 0;
+                    lineBeganAtElementIndex = i + 1;
                 }
                 else
                 {

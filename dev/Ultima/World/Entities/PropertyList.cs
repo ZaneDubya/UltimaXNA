@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.World.Entities
                     iPropertyConcat += mPropertyList[i];
                     if (i < mPropertyList.Count - 1)
                     {
-                        iPropertyConcat += Environment.NewLine;
+                        iPropertyConcat += '\n';
                     }
                 }
                 return iPropertyConcat;
