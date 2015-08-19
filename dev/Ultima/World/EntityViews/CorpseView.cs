@@ -6,6 +6,7 @@ using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Ultima.World.WorldViews;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -29,9 +30,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             IAnimationFrame animationFrame = getFrame(Entity.Body, facing, frameIndex, Entity.Hue);
 
+            DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
+
             DrawTexture = animationFrame.Texture;
-            DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
-            DrawFlip = false;
+
+            DrawArea = new Rectangle(
+                -22 + animationFrame.Center.X, 
+                DrawTexture.Height - 22 + (Entity.Z * 4) + animationFrame.Center.Y, DrawTexture.Width, DrawTexture.Height);
+            // DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
 
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
         }
