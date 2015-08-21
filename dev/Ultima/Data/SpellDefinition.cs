@@ -4,6 +4,8 @@ namespace UltimaXNA.Ultima.Data
 {
     public struct SpellDefinition
     {
+        public static SpellDefinition EmptySpell = new SpellDefinition();
+
         public readonly string Name;
         public readonly int ID;
         public readonly int GumpIconID;

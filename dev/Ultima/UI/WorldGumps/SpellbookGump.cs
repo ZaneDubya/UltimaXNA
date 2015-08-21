@@ -142,15 +142,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             bool isRightPage = false;
             for (int spellCircle = 0; spellCircle < 8; spellCircle++)
             {
-                for (int spellIndex = 0; spellIndex < 8; spellIndex++)
+                for (int spellIndex = 1; spellIndex <= 8; spellIndex++)
                 {
                     int spellIndexAll = spellCircle * 8 + spellIndex;
                     if (m_Spellbook.HasSpell(spellIndexAll))
                     {
                         m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#532' hovercolor='#800' activecolor='#611' style='font-family=uni0; text-decoration=none;'>{0}</a><br/>",
-                            Magery.Spells[spellIndexAll].Name, 
+                            Magery.GetSpell(spellIndexAll).Name, 
                             currentSpellPage);
-                        CreateSpellPage(currentSpellPage, isRightPage, spellCircle, Magery.Spells[spellIndexAll]);
+                        CreateSpellPage(currentSpellPage, isRightPage, spellCircle, Magery.GetSpell(spellIndexAll));
                         if (isRightPage)
                         {
                             currentSpellPage++;
@@ -225,11 +225,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 int spellIndex;
                 if (!int.TryParse(hrefs[1], out spellIndex))
                     return;
-                SpellDefinition spell = Magery.Spells[spellIndex];
-                InputManager input = ServiceRegistry.GetService<InputManager>();
-                UseSpellButtonGump gump = new UseSpellButtonGump(spell);
-                UserInterface.AddControl(gump, input.MousePosition.X - 22, input.MousePosition.Y - 22);
-                UserInterface.AttemptDragControl(gump, input.MousePosition, true);
+                SpellDefinition spell = Magery.GetSpell(spellIndex);
+                if (spell.ID == spellIndex)
+                {
+                    InputManager input = ServiceRegistry.GetService<InputManager>();
+                    UseSpellButtonGump gump = new UseSpellButtonGump(spell);
+                    UserInterface.AddControl(gump, input.MousePosition.X - 22, input.MousePosition.Y - 22);
+                    UserInterface.AttemptDragControl(gump, input.MousePosition, true);
+                }
             }
         }
 
