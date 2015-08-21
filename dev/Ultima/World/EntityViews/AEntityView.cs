@@ -170,6 +170,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     {
                         item = new MouseOverItem(DrawTexture, vertexBuffer[2].Position, Entity);
                         item.Vertices = new Vector3[4] { vertexBuffer[2].Position, vertexBuffer[0].Position, vertexBuffer[3].Position, vertexBuffer[1].Position };
+                        item.FlippedTexture = true;
                     }
                     mouseOverList.Add2DItem(item);
                 }

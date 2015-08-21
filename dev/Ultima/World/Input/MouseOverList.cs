@@ -196,6 +196,7 @@ namespace UltimaXNA.Ultima.World.Input
         public Vector3 Position;
         public Vector2 InTexturePosition;
         public AEntity Entity;
+        public bool FlippedTexture = false;
 
         internal MouseOverItem(Texture2D texture, Vector3 position, AEntity entity)
         {
@@ -259,7 +260,9 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else if (Entity is Mobile)
             {
-                Rectangle pRect = new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1);
+                Rectangle pRect = FlippedTexture ?
+                    new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1) :
+                    new Rectangle((int)mousePosition.X - Texture.Width + (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1);
                 if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
                 {
                     ushort[] pixelData = new ushort[1];
