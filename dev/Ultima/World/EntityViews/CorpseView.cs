@@ -35,8 +35,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             DrawTexture = animationFrame.Texture;
 
             DrawArea = new Rectangle(
-                -22 + animationFrame.Center.X, 
-                DrawTexture.Height - 22 + (Entity.Z * 4) + animationFrame.Center.Y, DrawTexture.Width, DrawTexture.Height);
+                animationFrame.Center.X - IsometricRenderer.TILE_SIZE_INTEGER_HALF,
+                DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER_HALF + (Entity.Z * 4) + animationFrame.Center.Y, DrawTexture.Width, DrawTexture.Height);
             // DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
 
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map);

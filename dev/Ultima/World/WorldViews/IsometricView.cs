@@ -27,7 +27,9 @@ namespace UltimaXNA.Ultima.World.WorldViews
     public class IsometricRenderer
     {
         public const float TILE_SIZE_FLOAT = 44.0f;
+        public const float TILE_SIZE_FLOAT_HALF = 22.0f;
         public const int TILE_SIZE_INTEGER = 44;
+        public const int TILE_SIZE_INTEGER_HALF = 22;
 
         /// <summary>
         /// The number of entities drawn in the previous frame.
@@ -166,8 +168,8 @@ namespace UltimaXNA.Ultima.World.WorldViews
             for (int y = 0; y < renderDimensions.Y * 2 + 1 + overDrawAdditionalTilesOnBottom; y++)
             {
                 Vector3 drawPosition = new Vector3();
-                drawPosition.X = (firstTile.X - firstTile.Y + (y % 2)) * 22 + renderOffset.X;
-                drawPosition.Y = (firstTile.X + firstTile.Y + y) * 22 + renderOffset.Y;
+                drawPosition.X = (firstTile.X - firstTile.Y + (y % 2)) * TILE_SIZE_FLOAT_HALF + renderOffset.X;
+                drawPosition.Y = (firstTile.X + firstTile.Y + y) * TILE_SIZE_FLOAT_HALF + renderOffset.Y;
 
                 Point firstTileInRow = new Point(firstTile.X + ((y + 1) / 2), firstTile.Y + (y / 2));
 
@@ -249,17 +251,17 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 firstTile.Y -= renderDimensionsDiff / 2;
             }
 
-            renderOffset.X = (((Settings.World.PlayWindowGumpResolution.Width / pixelScale) + ((renderDimensions.Y) * TILE_SIZE_INTEGER)) / 2) - 22;
-            renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
-            renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
-            renderOffset.X += renderDimensionsDiff * 22;
+            renderOffset.X = (((Settings.World.PlayWindowGumpResolution.Width / pixelScale) + ((renderDimensions.Y) * TILE_SIZE_INTEGER)) / 2) - TILE_SIZE_FLOAT_HALF;
+            renderOffset.X -= (int)((center.X_offset - center.Y_offset) * TILE_SIZE_FLOAT_HALF);
+            renderOffset.X -= (firstTile.X - firstTile.Y) * TILE_SIZE_FLOAT_HALF;
+            renderOffset.X += renderDimensionsDiff * TILE_SIZE_FLOAT_HALF;
 
             renderOffset.Y = ((Settings.World.PlayWindowGumpResolution.Height / pixelScale) / 2 - (renderDimensions.Y * TILE_SIZE_INTEGER / 2));
             renderOffset.Y += ((center.Z + center.Z_offset) * 4);
-            renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
-            renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
-            renderOffset.Y -= 22;
-            renderOffset.Y -= firstZOffset * 44;
+            renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * TILE_SIZE_FLOAT_HALF);
+            renderOffset.Y -= (firstTile.X + firstTile.Y) * TILE_SIZE_FLOAT_HALF;
+            renderOffset.Y -= TILE_SIZE_FLOAT_HALF;
+            renderOffset.Y -= firstZOffset * TILE_SIZE_FLOAT;
         }
     }
 }

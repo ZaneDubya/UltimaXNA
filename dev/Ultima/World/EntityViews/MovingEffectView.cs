@@ -56,13 +56,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 m_DisplayItemID = displayItemdID;
                 IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                 DrawTexture = provider.GetItemTexture(m_DisplayItemID);
-                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER, DrawTexture.Width, DrawTexture.Height);
+                DrawArea = new Rectangle(DrawTexture.Width / 2 - IsometricRenderer.TILE_SIZE_INTEGER_HALF, DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER, DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;
                 DrawFlip = false;
             }
 
-            DrawArea.X = 0 - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22);
-            DrawArea.Y = 0 + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
+            DrawArea.X = 0 - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
+            DrawArea.Y = 0 + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
 
             Rotation = Effect.AngleToTarget;
 

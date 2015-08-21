@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     return false;
                 }
 
-                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
+                DrawArea = new Rectangle(DrawTexture.Width / 2 - IsometricRenderer.TILE_SIZE_INTEGER_HALF, DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickObjects;
                 DrawFlip = false;
             }
@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             bool drawn = base.Draw(spriteBatch, drawPosition, mouseOverList, map);
 
 
-            DrawOverheads(spriteBatch, drawPosition, mouseOverList, map, (int)DrawArea.Y - 22);
+            DrawOverheads(spriteBatch, drawPosition, mouseOverList, map, (int)DrawArea.Y - IsometricRenderer.TILE_SIZE_INTEGER_HALF);
 
             return drawn;
         }

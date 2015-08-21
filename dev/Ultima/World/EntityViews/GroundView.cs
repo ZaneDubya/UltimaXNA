@@ -100,10 +100,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         private void updateVertexBuffer()
         {
-            m_vertex0_yOffset = new Vector3(22, -(Entity.Z * 4), 0);
-            m_vertex1_yOffset = new Vector3(IsometricRenderer.TILE_SIZE_FLOAT, 22 - (m_SurroundingTiles.East * 4), 0);
-            m_vertex2_yOffset = new Vector3(0, 22 - (m_SurroundingTiles.South * 4), 0);
-            m_vertex3_yOffset = new Vector3(22, IsometricRenderer.TILE_SIZE_FLOAT - (m_SurroundingTiles.Down * 4), 0);
+            m_vertex0_yOffset = new Vector3(IsometricRenderer.TILE_SIZE_INTEGER_HALF, -(Entity.Z * 4), 0);
+            m_vertex1_yOffset = new Vector3(IsometricRenderer.TILE_SIZE_FLOAT, IsometricRenderer.TILE_SIZE_INTEGER_HALF - (m_SurroundingTiles.East * 4), 0);
+            m_vertex2_yOffset = new Vector3(0, IsometricRenderer.TILE_SIZE_INTEGER_HALF - (m_SurroundingTiles.South * 4), 0);
+            m_vertex3_yOffset = new Vector3(IsometricRenderer.TILE_SIZE_INTEGER_HALF, IsometricRenderer.TILE_SIZE_FLOAT - (m_SurroundingTiles.Down * 4), 0);
 
             m_vertexBufferAlternate[0].Normal = m_Normals[0];
             m_vertexBufferAlternate[1].Normal = m_Normals[1];
