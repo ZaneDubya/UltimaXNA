@@ -260,9 +260,9 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else if (Entity is Mobile)
             {
-                Rectangle pRect = FlippedTexture ?
+                Rectangle pRect = !FlippedTexture ?
                     new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1) :
-                    new Rectangle((int)mousePosition.X - Texture.Width + (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1);
+                    new Rectangle(Texture.Width - ((int)mousePosition.X - (int)Position.X), (int)mousePosition.Y - (int)Position.Y, 1, 1);
                 if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
                 {
                     ushort[] pixelData = new ushort[1];
