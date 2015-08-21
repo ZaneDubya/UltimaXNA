@@ -122,6 +122,28 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 0, 320, 236, 236, ButtonTypes.SwitchPage, 4, (int)Buttons.Macros),4);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Macro Options"), 4);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @""), 4);
+            AddControl(new Button(this, 180, 110, 2460, 2461, ButtonTypes.SwitchPage, 4, (int)Buttons.Macros), 4); // add
+            AddControl(new Button(this, 234, 110, 2463, 2464, ButtonTypes.SwitchPage, 4, (int)Buttons.Macros), 4); // delete
+            AddControl(new Button(this, 302, 110, 2466, 2467, ButtonTypes.SwitchPage, 4, (int)Buttons.Macros), 4); // previous
+            AddControl(new Button(this, 386, 110, 2469, 2470, ButtonTypes.SwitchPage, 4, (int)Buttons.Macros), 4); // next
+            AddControl(new TextLabelAscii(this, 160, 150, 1, 9, @"Keystroke"), 4);
+            AddControl(new GumpPic(this, 155, 175, 2444, 0), 4); // macro key input
+            AddControl(new TextLabelAscii(this, 225, 180, 1, 9, @"Key"), 4);
+
+            AddControl(new CheckBox(this, 270, 140, 2151, 2153, Settings.Audio.FootStepSoundOn, 62), 4); //shift
+            AddControl(new CheckBox(this, 270, 170, 2151, 2153, Settings.Audio.FootStepSoundOn, 62), 4); //alt
+            AddControl(new CheckBox(this, 270, 200, 2151, 2153, Settings.Audio.FootStepSoundOn, 62), 4); //ctrl
+            AddControl(new TextLabelAscii(this, 307, 150, 1, 9, @"Shift"), 4);
+            AddControl(new TextLabelAscii(this, 307, 180, 1, 9, @"Alt"), 4);
+            AddControl(new TextLabelAscii(this, 307, 210, 1, 9, @"Ctrl"), 4);
+
+
+            AddControl(new TextLabelAscii(this, 160, 225, 1, 9, @"Actions"), 4);
+            AddControl(new GumpPic(this, 155, 245, 2445, 0), 4); // action type
+            AddControl(new GumpPic(this, 267, 245, 2446, 0), 4); // action
+
+            AddControl(new GumpPic(this, 155, 272, 2445, 0), 4); // action type
+
 
             // page 5 Interface
             AddControl(new Button(this, 576, 40, 225, 225, ButtonTypes.SwitchPage, 5, (int)Buttons.Interface),5);
