@@ -89,7 +89,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private GumpPic m_PageCornerLeft;
         private GumpPic m_PageCornerRight;
         private int m_MaxPage = 0;
-        private bool m_RenderedSpellInfoPages = false;
+        private bool m_RenderedSpellInfoPage = false;
 
         private void CreateMageryGumplings()
         {
@@ -279,7 +279,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 page = 1;
             if (page > m_MaxPage)
                 page = m_MaxPage;
-            if (page > 4 && m_RenderedSpellInfoPages == false)
+            if (page > 4 && m_RenderedSpellInfoPage == false)
             {
                 int currentSpellPage = 5;
                 bool isRightPage = false;
@@ -304,7 +304,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                         }
                     }
                 }
-                m_RenderedSpellInfoPages = true;
+                m_RenderedSpellInfoPage = true;
             }
             ActivePage = page;
             // hide the page corners if we're at the first or final page.
