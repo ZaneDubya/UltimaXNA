@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             m_SpellButton = (GumpPic)AddControl(new GumpPic(this, 0, 0, spell.GumpIconSmallID, 0));
             LastControl.HandlesMouseInput = true;
-            LastControl.MouseClickEvent += EventMouseClick;
+            LastControl.MouseDoubleClickEvent += EventMouseDoubleClick;
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
@@ -52,11 +52,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Draw(spriteBatch, position);
         }
 
-        private void EventMouseClick(AControl sender, int x, int y, MouseButton button)
+        private void EventMouseDoubleClick(AControl sender, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
                 return;
-            m_World.Interaction.CastSpell(m_Spell.ID);
+            m_World.Interaction.CastSpell(m_Spell.ID+1);
         }
     }
 }
