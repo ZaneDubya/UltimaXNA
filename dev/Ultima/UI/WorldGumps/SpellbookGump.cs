@@ -205,13 +205,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 int spell;
                 if (int.TryParse(hrefs[1], out spell))
-                    m_World.Interaction.CastSpell(spell + 1);
+                    m_World.Interaction.CastSpell(spell);
             }
             else if (hrefs[0] == "spellicon")
             {
                 int spell;
                 if (int.TryParse(hrefs[1], out spell))
-                    m_World.Interaction.CastSpell(spell + 1);
+                    m_World.Interaction.CastSpell(spell);
             }
         }
 
