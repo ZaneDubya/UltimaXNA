@@ -56,7 +56,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (button != MouseButton.Left)
                 return;
-            m_World.Interaction.CastSpell(m_Spell.ID+1);
+            m_World.Interaction.CastSpell(m_Spell.ID);
         }
     }
 }
