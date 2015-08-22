@@ -507,16 +507,16 @@ namespace UltimaXNA.Core.UI
                 Parent.ActivateByButton(buttonID);
         }
 
-        public virtual void ActivateByHREF(string href)
-        {
-            if (Parent != null)
-                Parent.ActivateByHREF(href);
-        }
-
         public virtual void ActivateByKeyboardReturn(int textID, string text)
         {
             if (Parent != null)
                 Parent.ActivateByKeyboardReturn(textID, text);
+        }
+
+        public virtual void ActivateByHtml(string href, MouseEvent e)
+        {
+            if (Parent != null)
+                Parent.ActivateByHtml(href, e);
         }
 
         public virtual void ChangePage(int pageIndex)
