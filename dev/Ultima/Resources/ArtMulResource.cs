@@ -25,21 +25,21 @@ namespace UltimaXNA.Ultima.Resources
         private Pair<int>[] m_StaticDimensions;
 
         private GraphicsDevice m_Graphics;
-        private FileIndex m_FileIndex;
+        private AFileIndex m_FileIndex;
 
         public ArtMulResource(GraphicsDevice graphics)
         {
             m_Graphics = graphics;
-            m_FileIndex = new FileIndex("artidx.mul", "art.mul", 0x10000, -1); // !!! must find patch file reference for artdata.
+            m_FileIndex = FileManager.IsUopFormat ? FileManager.CreateFileIndex("artLegacyMUL.uop", 0x10000, false, ".tga") : FileManager.CreateFileIndex("artidx.mul", "art.mul", 0x10000, -1); // !!! must find patch file reference for artdata.
 
-            m_LandTileTextureCache = new Texture2D[0x4000];
-            m_StaticTileTextureCache = new Texture2D[0x4000];
-            m_StaticDimensions = new Pair<int>[0x4000];
+            m_LandTileTextureCache = new Texture2D[0x10000];
+            m_StaticTileTextureCache = new Texture2D[0x10000];
+            m_StaticDimensions = new Pair<int>[0x10000];
         }
 
         public Texture2D GetLandTexture(int index)
         {
-            index &= 0x3FFF;
+            index &= 0xFFFF;
 
             if (m_LandTileTextureCache[index] == null)
             {
@@ -51,7 +51,7 @@ namespace UltimaXNA.Ultima.Resources
 
         public Texture2D GetStaticTexture(int index)
         {
-            index &= 0x3FFF;
+            index &= 0xFFFF;
             if (m_StaticTileTextureCache[index] == null)
             {
                 Texture2D texture;
@@ -66,7 +66,7 @@ namespace UltimaXNA.Ultima.Resources
 
         public void GetStaticDimensions(int index, out int width, out int height)
         {
-            index &= 0x3FFF;
+            index &= 0xFFFF;
             if (m_StaticTileTextureCache[index] == null)
             {
                 GetStaticTexture(index);

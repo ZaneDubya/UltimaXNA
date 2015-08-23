@@ -14,6 +14,8 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.IO;
 using UltimaXNA.Ultima.IO;
 #endregion
 
@@ -21,8 +23,8 @@ namespace UltimaXNA.Ultima.Resources
 {
     public static class SoundData
     {
-        private static BinaryReader m_Index;
-        private static Stream m_Stream;
+        private static AFileIndex m_Index;
+        //private static Stream m_Stream;
         private static Dictionary<int, int> m_Translations;
         
         private static bool m_filesPrepared = false;
@@ -41,24 +43,23 @@ namespace UltimaXNA.Ultima.Resources
                 return false;
             else
             {
-                m_Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
+                int length, extra;
+                bool is_patched;
 
-                int streamStart = (int)m_Index.BaseStream.Position;
-
-                int offset = m_Index.ReadInt32();
-                int length = m_Index.ReadInt32();
-                int extra = m_Index.ReadInt32();
+                BinaryFileReader reader = m_Index.Seek(soundID, out length, out extra, out is_patched);
+                int streamStart = (int)reader.Position;
+                int offset = (int)reader.Position;
+                
 
                 if ((offset < 0) || (length <= 0))
                 {
                     if (!m_Translations.TryGetValue(soundID, out soundID))
                         return false;
 
-                    m_Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
 
-                    offset = m_Index.ReadInt32();
-                    length = m_Index.ReadInt32();
-                    extra = m_Index.ReadInt32();
+                    reader = m_Index.Seek(soundID, out length, out extra, out is_patched);
+                    streamStart = (int)reader.Position;
+                    offset = (int)reader.Position;
                 }
 
                 if ((offset < 0) || (length <= 0))
@@ -67,13 +68,14 @@ namespace UltimaXNA.Ultima.Resources
                 byte[] stringBuffer = new byte[40];
                 data = new byte[length - 40];
 
-                m_Stream.Seek((long)(offset), SeekOrigin.Begin);
-                m_Stream.Read(stringBuffer, 0, 40);
-                m_Stream.Read(data, 0, length - 40);
+                reader.Seek((long)(offset), SeekOrigin.Begin);
+                stringBuffer = reader.ReadBytes(40);
+                data = reader.ReadBytes(length - 40);
 
-                name = Encoding.ASCII.GetString(stringBuffer);
-
-                Metrics.ReportDataRead((int)m_Index.BaseStream.Position - streamStart);
+                name = Encoding.ASCII.GetString(stringBuffer).Trim();
+                var end = name.IndexOf("\0");
+                name = name.Substring(0, end);
+                Metrics.ReportDataRead((int)reader.Position - streamStart);
 
                 return true;
             }
@@ -83,8 +85,8 @@ namespace UltimaXNA.Ultima.Resources
         {
             try
             {
-                m_Index = new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
-                m_Stream = new FileStream(FileManager.GetFilePath("sound.mul"), FileMode.Open);
+                m_Index = FileManager.IsUopFormat ? FileManager.CreateFileIndex("soundLegacyMUL.uop", 0xFFF, false, ".dat") : FileManager.CreateFileIndex("soundidx.mul", "sound.mul", 0x1000, -1); // new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
+               // m_Stream = new FileStream(FileManager.GetFilePath("sound.mul"), FileMode.Open);
                 m_filesPrepared = true;
             }
             catch

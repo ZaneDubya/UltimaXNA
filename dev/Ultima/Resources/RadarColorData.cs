@@ -18,7 +18,7 @@ namespace UltimaXNA.Ultima.Resources
 {
     class RadarColorData
     {
-        public static uint[] Colors = new uint[0x10000];
+        public static uint[] Colors = new uint[0x20000];
 
         const int multiplier = 0xFF / 0x1F;
 
