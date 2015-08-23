@@ -42,15 +42,15 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             int hue = 902; // dark grey
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 0x0588));
-            AddControl(new ResizePic(this, 128, 285, 0x13BE, 520, 190));
-            AddControl(new GumpPic(this, 0, 0, 0x157C, 0)); // 0x2329
-            AddControl(new GumpPic(this, 354, 42, 0x058A, 0)); // 0x2329
+            AddControl(new ResizePic(this, 68, 285, 0x13BE, 520, 190));
+            AddControl(new GumpPic(this, 0, 0, 0x157C, 0)); // 0x2329 - upper-left border graphic
+            AddControl(new GumpPic(this, 294, 42, 0x058A, 0)); // 0x2329 - castle graphic
 
             // quit button
             AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
             // Log in to Ultima Online
-            AddControl(new TextLabelAscii(this, 254, 305, hue, 2, provider.GetString(3000038)));
+            AddControl(new TextLabelAscii(this, 230, 305, hue, 2, provider.GetString(3000038)));
             // Account Name
             AddControl(new TextLabelAscii(this, 181, 346, hue, 2, provider.GetString(3000099)));
             // Password
@@ -67,10 +67,10 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new ResizePic(this, g2));
             AddControl(g2);
             // login button
-            AddControl(new Button(this, 610, 439, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
+            AddControl(new Button(this, 550, 439, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
             ((Button)LastControl).GumpOverID = 5541;
             // Version information
-            AddControl(new HtmlGumpling(this, 180, 440, 400, 20, 0, 0, "<center><medium><outline><font color='#DDDDDD'>" + Utility.VersionString));
+            AddControl(new HtmlGumpling(this, 120, 440, 400, 20, 0, 0, "<center><medium><outline><font color='#DDDDDD'>" + Utility.VersionString));
 
             IsUncloseableWithRMB = true;
         }
