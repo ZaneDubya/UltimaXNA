@@ -7,7 +7,7 @@ using UltimaXNA.Core.IO;
 
 namespace UltimaXNA.Ultima.IO
 {
-    public abstract class FileIndexBase
+    public abstract class AFileIndex
     {
         protected FileIndexEntry[] m_Index;
         protected Stream m_Stream;
@@ -20,12 +20,12 @@ namespace UltimaXNA.Ultima.IO
 
         protected abstract FileIndexEntry[] ReadEntries();
 
-        protected FileIndexBase(string dataPath)
+        protected AFileIndex(string dataPath)
         {
             DataPath = dataPath;
         }
 
-        protected FileIndexBase(string dataPath, int length)
+        protected AFileIndex(string dataPath, int length)
         {
             Length = length;
             DataPath = dataPath;

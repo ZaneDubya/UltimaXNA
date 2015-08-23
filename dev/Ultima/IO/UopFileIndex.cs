@@ -32,17 +32,17 @@ namespace UltimaXNA.Ultima.IO.UOP
     //Credit goes to Wyatt of RUOSI http://ruosi.org/load/ultima_sdk_with_uop_support/3-1-0-8
     //Thanks Wyatt, i definately didnt have time to figure this all out, was a great help, 
     //thanks for updating the ultima sdk for others like myself to reference.
-    public class UopFileIndex : FileIndexBase
+    public class UopFileIndex : AFileIndex
     {
         public const int UOP_MAGIC_NUMBER = 0x50594D;
-        private readonly string _extension;
-        private readonly bool _hasExtra;
+        private readonly string m_Extension;
+        private readonly bool m_HasExtra;
 
         public UopFileIndex(string uopPath, int length, bool hasExtra, string extension)
             : base(uopPath, length)
         {
-            _extension = extension;
-            _hasExtra = hasExtra;
+            m_Extension = extension;
+            m_HasExtra = hasExtra;
         }
 
         protected override FileIndexEntry[] ReadEntries()
@@ -81,7 +81,7 @@ namespace UltimaXNA.Ultima.IO.UOP
 
                     for (var i = 0; i < length; i++)
                     {
-                        var entryName = string.Format("build/{0}/{1:D8}{2}", uopPattern, i, _extension);
+                        var entryName = string.Format("build/{0}/{1:D8}{2}", uopPattern, i, m_Extension);
                         var hash = CreateHash(entryName);
 
                         if (!hashes.ContainsKey(hash))
@@ -125,7 +125,7 @@ namespace UltimaXNA.Ultima.IO.UOP
                                 entries[idx].lookup = (int)(offset + headerLength);
                                 entries[idx].length = entryLength;
 
-                                if (_hasExtra)
+                                if (m_HasExtra)
                                 {
                                     var curPos = br.BaseStream.Position;
 

@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.Resources
         private Pair<int>[] m_StaticDimensions;
 
         private GraphicsDevice m_Graphics;
-        private FileIndexBase m_FileIndex;
+        private AFileIndex m_FileIndex;
 
         public ArtMulResource(GraphicsDevice graphics)
         {

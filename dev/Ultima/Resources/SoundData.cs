@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.Resources
 {
     public static class SoundData
     {
-        private static FileIndexBase m_Index;
+        private static AFileIndex m_Index;
         //private static Stream m_Stream;
         private static Dictionary<int, int> m_Translations;
         

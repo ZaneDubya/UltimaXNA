@@ -295,11 +295,11 @@ namespace UltimaXNA.Ultima.IO
         }
 
 
-        public static FileIndexBase CreateFileIndex(string uopFile, int length, bool hasExtra, string extension)
+        public static AFileIndex CreateFileIndex(string uopFile, int length, bool hasExtra, string extension)
         {
             uopFile = GetPath(uopFile);
 
-            FileIndexBase fileIndex = new UopFileIndex(uopFile, length, hasExtra, extension);
+            AFileIndex fileIndex = new UopFileIndex(uopFile, length, hasExtra, extension);
 
 
             fileIndex.Open();
@@ -307,12 +307,12 @@ namespace UltimaXNA.Ultima.IO
             return fileIndex;
         }
 
-        public static FileIndexBase CreateFileIndex(string idxFile, string mulFile, int length, int patch_file)
+        public static AFileIndex CreateFileIndex(string idxFile, string mulFile, int length, int patch_file)
         {
             idxFile = GetPath(idxFile);
             mulFile = GetPath(mulFile);
 
-            FileIndexBase fileIndex = new MulFileIndex(idxFile, mulFile, length, patch_file);
+            AFileIndex fileIndex = new MulFileIndex(idxFile, mulFile, length, patch_file);
             fileIndex.Open();
 
             return fileIndex;

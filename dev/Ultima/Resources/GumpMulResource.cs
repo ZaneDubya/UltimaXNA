@@ -21,8 +21,8 @@ namespace UltimaXNA.Ultima.Resources
     {
         private GraphicsDevice m_graphicsDevice;
 
-        private FileIndexBase m_FileIndex = FileManager.IsUopFormat ? FileManager.CreateFileIndex("gumpartLegacyMUL.uop", 0xFFFF, true, ".tga") : FileManager.CreateFileIndex("Gumpidx.mul", "Gumpart.mul", 0x10000, 12);
-        public FileIndexBase FileIndex { get { return m_FileIndex; } }
+        private AFileIndex m_FileIndex = FileManager.IsUopFormat ? FileManager.CreateFileIndex("gumpartLegacyMUL.uop", 0xFFFF, true, ".tga") : FileManager.CreateFileIndex("Gumpidx.mul", "Gumpart.mul", 0x10000, 12);
+        public AFileIndex FileIndex { get { return m_FileIndex; } }
 
         private Texture2D[] m_TextureCache = new Texture2D[0x10000];
 

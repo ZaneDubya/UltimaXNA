@@ -23,20 +23,20 @@ namespace UltimaXNA.Ultima.Resources
 {
     internal sealed class AnimationResource
     {
-        private FileIndexBase m_FileIndex = (FileIndexBase) FileManager.CreateFileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
-        public FileIndexBase FileIndex { get { return m_FileIndex; } }
+        private AFileIndex m_FileIndex = (AFileIndex) FileManager.CreateFileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
+        public AFileIndex FileIndex { get { return m_FileIndex; } }
 
-        private FileIndexBase m_FileIndex2 = (FileIndexBase)FileManager.CreateFileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
-        public FileIndexBase FileIndex2 { get { return m_FileIndex2; } }
+        private AFileIndex m_FileIndex2 = (AFileIndex)FileManager.CreateFileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
+        public AFileIndex FileIndex2 { get { return m_FileIndex2; } }
 
-        private FileIndexBase m_FileIndex3 = (FileIndexBase)FileManager.CreateFileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
-        public FileIndexBase FileIndex3 { get { return m_FileIndex3; } }
+        private AFileIndex m_FileIndex3 = (AFileIndex)FileManager.CreateFileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
+        public AFileIndex FileIndex3 { get { return m_FileIndex3; } }
 
-        private FileIndexBase m_FileIndex4 = (FileIndexBase)FileManager.CreateFileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
-        public FileIndexBase FileIndex4 { get { return m_FileIndex4; } }
+        private AFileIndex m_FileIndex4 = (AFileIndex)FileManager.CreateFileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
+        public AFileIndex FileIndex4 { get { return m_FileIndex4; } }
 
-        private FileIndexBase m_FileIndex5 = (FileIndexBase) FileManager.CreateFileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
-        public FileIndexBase FileIndex5 { get { return m_FileIndex5; } }
+        private AFileIndex m_FileIndex5 = (AFileIndex) FileManager.CreateFileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
+        public AFileIndex FileIndex5 { get { return m_FileIndex5; } }
 
         private IAnimationFrame[][][][] m_Cache;
         private GraphicsDevice m_Graphics;
@@ -58,7 +58,7 @@ namespace UltimaXNA.Ultima.Resources
         public IAnimationFrame[] GetAnimation(int body, int action, int direction, int hue)
         {
             int animIndex;
-            FileIndexBase fileIndex;
+            AFileIndex fileIndex;
             int length, extra;
             bool patched;
 
@@ -147,7 +147,7 @@ namespace UltimaXNA.Ultima.Resources
                 return null;
         }
 
-        private void GetIndexes(ref int body, ref int hue, int action, int direction, out int index, out FileIndexBase fileIndex)
+        private void GetIndexes(ref int body, ref int hue, int action, int direction, out int index, out AFileIndex fileIndex)
         {
             Translate(ref body, ref hue);
 

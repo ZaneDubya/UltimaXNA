@@ -6,7 +6,7 @@ using System.Text;
 
 namespace UltimaXNA.Ultima.IO
 {
-    class MulFileIndex : FileIndexBase
+    class MulFileIndex : AFileIndex
     {
         private string idxPath;
         public int patchFile { get; set; }
