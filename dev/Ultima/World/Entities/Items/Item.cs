@@ -89,7 +89,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             set
             {
 				m_ItemID = value;
-                ItemData = TileData.ItemData[m_ItemID & 0x3FFF];
+                ItemData = TileData.ItemData[m_ItemID & 0xFFFF];
             }
         }
 

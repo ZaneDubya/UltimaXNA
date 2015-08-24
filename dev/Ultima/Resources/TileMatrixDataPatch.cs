@@ -51,6 +51,9 @@ namespace UltimaXNA.Ultima.Resources
 
         public unsafe bool TryGetLandPatch(uint blockX, uint blockY, ref byte[] landData)
         {
+            if (FileManager.IsUopFormat)
+                return false;
+
             uint key = MakeChunkKey(blockX, blockY);
             uint ptr;
 
@@ -72,6 +75,9 @@ namespace UltimaXNA.Ultima.Resources
         private unsafe int LoadLandPatches(TileMatrixData tileMatrix, string landPath, string indexPath)
         {
             m_LandPatchPtrs = new Dictionary<uint, uint>();
+
+            if (FileManager.IsUopFormat)
+                return 0;
 
             m_LandPatchStream = FileManager.GetFile(landPath);
             if (m_LandPatchStream == null)
@@ -111,6 +117,13 @@ namespace UltimaXNA.Ultima.Resources
         {
             try
             {
+
+                if (FileManager.IsUopFormat)
+                {
+                    length = 0;
+                    return false;
+                }
+
                 uint key = MakeChunkKey(blockX, blockY);
                 Tuple<int, int> ptr; // offset, length
                 if (m_StaticPatchPtrs.TryGetValue(key, out ptr))

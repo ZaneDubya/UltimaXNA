@@ -59,72 +59,189 @@ namespace UltimaXNA.Ultima.Resources
         {
             using (FileStream fileStream = FileManager.GetFile("tiledata.mul"))
             {
-                BinaryReader binaryReader = new BinaryReader(fileStream);
+                BinaryReader bin = new BinaryReader(fileStream);
 
                 LandData landData;
-
-                for (int i = 0; i < 0x4000; i++)
-                {
-                    landData = new LandData();
-
-                    if ((i & 0x1F) == 0)
-                    {
-                        binaryReader.ReadInt32();
-                    }
-
-                    TileFlag flags = (TileFlag)binaryReader.ReadInt32();
-
-                    int iTextureID = binaryReader.ReadInt16();
-
-                    binaryReader.BaseStream.Seek(20, SeekOrigin.Current);
-
-                    landData.Flags = flags;
-                    landData.TextureID = iTextureID;
-
-                    LandData[i] = landData;
-                }
-
                 ItemData itemData;
 
-                for (int i = 0; i < 0x4000; i++)
-                {
-                    itemData = new ItemData();
+                if (fileStream.Length == 3188736)
+                { // 7.0.9.0
+                    LandData = new LandData[0x4000];
 
-                    if ((i & 0x1F) == 0)
+                    for (int i = 0; i < 0x4000; ++i)
                     {
-                        binaryReader.ReadInt32();
+                        landData = new LandData();
+
+                        if (i == 1 || (i > 0 && (i & 0x1F) == 0))
+                        {
+                            bin.ReadInt32();
+                        }
+
+                        TileFlag flags = (TileFlag)bin.ReadInt64();
+
+                        int iTextureID = bin.ReadInt16();
+
+                        bin.BaseStream.Seek(20, SeekOrigin.Current);
+
+                        landData.Flags = flags;
+                        landData.TextureID = iTextureID;
+
+                        LandData[i] = landData;
                     }
 
-                    itemData.Flags = (TileFlag)binaryReader.ReadInt32();
-                    itemData.Weight = binaryReader.ReadByte();
-                    itemData.Quality = binaryReader.ReadByte();
+                    ItemData = new ItemData[0x10000];
 
-                    itemData.Unknown1 = binaryReader.ReadByte();
-                    itemData.Unknown2 = binaryReader.ReadByte();
-                    itemData.Unknown3 = binaryReader.ReadByte();
+                    for (int i = 0; i < 0x10000; ++i)
+                    {
+                        itemData = new ItemData();
 
-                    itemData.Quantity = binaryReader.ReadByte();
-                    itemData.AnimID = binaryReader.ReadInt16();
+                        if ((i & 0x1F) == 0)
+                        {
+                            bin.ReadInt32();
+                        }
 
-                    binaryReader.BaseStream.Seek(2, SeekOrigin.Current); // hue?
-                    itemData.Unknown4 = binaryReader.ReadByte();
+                        itemData.Flags = (TileFlag)bin.ReadInt64();
+                        itemData.Weight = bin.ReadByte();
+                        itemData.Quality = bin.ReadByte();
 
-                    itemData.Value = binaryReader.ReadByte();
-                    itemData.Height = binaryReader.ReadByte();
+                        itemData.Unknown1 = bin.ReadByte();
+                        itemData.Unknown2 = bin.ReadByte();
+                        itemData.Unknown3 = bin.ReadByte();
 
-                    itemData.Name = ASCIIEncoding.ASCII.GetString((binaryReader.ReadBytes(20)));
-                    itemData.Name = itemData.Name.Trim('\0');
-                    // binaryReader.BaseStream.Seek(20, SeekOrigin.Current);
+                        itemData.Quantity = bin.ReadByte();
+                        itemData.AnimID = bin.ReadInt16();
 
-					// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
-					if(i > 1005 && i < 7640)
-                        itemData.IsStairs = !(Array.BinarySearch(m_StairsID, i) < 0);
-					// Issue 5 - End
+                        bin.BaseStream.Seek(2, SeekOrigin.Current); // hue?
+                        itemData.Unknown4 = bin.ReadByte();
 
-                    ItemData[i] = itemData;
+                        itemData.Value = bin.ReadByte();
+                        itemData.Height = bin.ReadByte();
+
+                        itemData.Name = ASCIIEncoding.ASCII.GetString((bin.ReadBytes(20)));
+                        itemData.Name = itemData.Name.Trim('\0');
+                        // binaryReader.BaseStream.Seek(20, SeekOrigin.Current);
+
+                        // Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
+                        if (i > 1005 && i < 7640)
+                            itemData.IsStairs = !(Array.BinarySearch(m_StairsID, i) < 0);
+                        // Issue 5 - End
+
+                        ItemData[i] = itemData;
+                    }
+                }
+                else
+                {
+                    LandData = new LandData[0x4000];
+
+                    for (int i = 0; i < 0x4000; ++i)
+                    {
+
+                        landData = new LandData();
+
+                        if ((i & 0x1F) == 0)
+                        {
+                            bin.ReadInt32();
+                        }
+
+                        TileFlag flags = (TileFlag)bin.ReadInt32();
+
+                        int iTextureID = bin.ReadInt16();
+
+                        bin.BaseStream.Seek(20, SeekOrigin.Current);
+
+                        landData.Flags = flags;
+                        landData.TextureID = iTextureID;
+
+                        LandData[i] = landData;
+                    }
+
+                    if (fileStream.Length == 1644544)
+                    { // 7.0.0.0
+                        ItemData = new ItemData[0x8000];
+
+                        for (int i = 0; i < 0x8000; ++i)
+                        {
+                            itemData = new ItemData();
+
+                            if ((i & 0x1F) == 0)
+                            {
+                                bin.ReadInt32();
+                            }
+
+                            itemData.Flags = (TileFlag)bin.ReadInt32();
+                            itemData.Weight = bin.ReadByte();
+                            itemData.Quality = bin.ReadByte();
+
+                            itemData.Unknown1 = bin.ReadByte();
+                            itemData.Unknown2 = bin.ReadByte();
+                            itemData.Unknown3 = bin.ReadByte();
+
+                            itemData.Quantity = bin.ReadByte();
+                            itemData.AnimID = bin.ReadInt16();
+
+                            bin.BaseStream.Seek(2, SeekOrigin.Current); // hue?
+                            itemData.Unknown4 = bin.ReadByte();
+
+                            itemData.Value = bin.ReadByte();
+                            itemData.Height = bin.ReadByte();
+
+                            itemData.Name = ASCIIEncoding.ASCII.GetString((bin.ReadBytes(20)));
+                            itemData.Name = itemData.Name.Trim('\0');
+                            // binaryReader.BaseStream.Seek(20, SeekOrigin.Current);
+
+                            // Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
+                            if (i > 1005 && i < 7640)
+                                itemData.IsStairs = !(Array.BinarySearch(m_StairsID, i) < 0);
+                            // Issue 5 - End
+
+                            ItemData[i] = itemData;
+                        }
+                    }
+                    else
+                    {
+                        ItemData = new ItemData[0x4000];
+
+                        for (int i = 0; i < 0x4000; ++i)
+                        {
+                            itemData = new ItemData();
+
+                            if ((i & 0x1F) == 0)
+                            {
+                                bin.ReadInt32();
+                            }
+
+                            itemData.Flags = (TileFlag)bin.ReadInt32();
+                            itemData.Weight = bin.ReadByte();
+                            itemData.Quality = bin.ReadByte();
+
+                            itemData.Unknown1 = bin.ReadByte();
+                            itemData.Unknown2 = bin.ReadByte();
+                            itemData.Unknown3 = bin.ReadByte();
+
+                            itemData.Quantity = bin.ReadByte();
+                            itemData.AnimID = bin.ReadInt16();
+
+                            bin.BaseStream.Seek(2, SeekOrigin.Current); // hue?
+                            itemData.Unknown4 = bin.ReadByte();
+
+                            itemData.Value = bin.ReadByte();
+                            itemData.Height = bin.ReadByte();
+
+                            itemData.Name = ASCIIEncoding.ASCII.GetString((bin.ReadBytes(20)));
+                            itemData.Name = itemData.Name.Trim('\0');
+                            // binaryReader.BaseStream.Seek(20, SeekOrigin.Current);
+
+                            // Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
+                            if (i > 1005 && i < 7640)
+                                itemData.IsStairs = !(Array.BinarySearch(m_StairsID, i) < 0);
+                            // Issue 5 - End
+
+                            ItemData[i] = itemData;
+                        }
+                    }
                 }
 
-                Metrics.ReportDataRead((int)binaryReader.BaseStream.Position);
+                Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
         }
     }

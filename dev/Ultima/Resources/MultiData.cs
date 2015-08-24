@@ -23,14 +23,14 @@ namespace UltimaXNA.Ultima.Resources
         private static MultiComponentList[] m_Components = new MultiComponentList[0x4000];
         public static MultiComponentList[] Cache { get { return m_Components; } }
 
-        private static FileIndex m_FileIndex = new FileIndex("Multi.idx", "Multi.mul", 0x4000, 14);
-        public static FileIndex FileIndex { get { return m_FileIndex; } }
+        private static AFileIndex m_FileIndex = new MulFileIndex("Multi.idx", "Multi.mul", 0x4000, 14);
+        public static AFileIndex FileIndex { get { return m_FileIndex; } }
 
         public static MultiComponentList GetComponents(int index)
         {
             MultiComponentList mcl;
 
-            index &= 0x3FFF;
+            index &= 0xFFFF;
 
             if (index >= 0 && index < m_Components.Length)
             {
