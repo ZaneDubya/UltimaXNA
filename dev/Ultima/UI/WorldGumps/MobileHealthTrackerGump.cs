@@ -15,6 +15,8 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.Input;
+using UltimaXNA.Core.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -40,13 +42,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             IsMoveable = true;
-            HandlesMouseInput = true;
 
             Mobile = mobile;
 
             if (Mobile.IsClientEntity)
             {
                 AddControl(m_Background = new GumpPic(this, 0, 0, 0x0803, 0));
+                m_Background.MouseDoubleClickEvent += Background_MouseDoubleClickEvent;
                 m_BarBGs = new GumpPic[3];
                 AddControl(m_BarBGs[0] = new GumpPic(this, 34, 10, 0x0805, 0));
                 AddControl(m_BarBGs[1] = new GumpPic(this, 34, 24, 0x0805, 0));
@@ -64,6 +66,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 m_Bars = new GumpPicWithWidth[1];
                 AddControl(m_Bars[0] = new GumpPicWithWidth(this, 34, 38, 0x0806, 0, 1f));
                 AddControl(new HtmlGumpling(this, 17, 13, 120, 20, 0, 0, String.Format("<span color='#000' style='font-family:uni0;'>{0}", mobile.Name)));
+            }
+
+            // bars should not handle mouse input, pass it to the background gump.
+            for (int i = 0; i < m_BarBGs.Length; i++)
+            {
+                m_BarBGs[i].HandlesMouseInput = false;
+                m_Bars[i].HandlesMouseInput = false;
             }
         }
 
@@ -92,6 +101,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             base.Update(totalMS, frameMS);
+        }
+
+        void Background_MouseDoubleClickEvent(AControl caller, int x, int y, MouseButton button)
+        {
+            if (Mobile.IsClientEntity)
+            {
+                StatusGump.Toggle(Mobile.Serial);
+            }
         }
     }
 }

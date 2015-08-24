@@ -11,15 +11,31 @@
 #region usings
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Ultima.Network.Client;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class StatusGump : Gump
     {
+        public static void Toggle(Serial serial)
+        {
+            UserInterfaceService ui = ServiceRegistry.GetService<UserInterfaceService>();
+            if (ui.GetControl<StatusGump>() == null)
+            {
+                INetworkClient client = ServiceRegistry.GetService<INetworkClient>();
+                client.Send(new GetPlayerStatusPacket(0x04, serial));
+                ui.AddControl(new StatusGump(), 200, 400);
+            }
+            else
+                ui.RemoveControl<StatusGump>();
+        }
+
         private Mobile m_Mobile = WorldModel.Entities.GetPlayerEntity();
         double m_RefreshTime = 0d;
 

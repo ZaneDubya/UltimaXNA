@@ -239,13 +239,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     m_World.Interaction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    if (m_UserInterface.GetControl<StatusGump>() == null)
-                    {
-                        m_Client.Send(new GetPlayerStatusPacket(0x04, Mobile.Serial));
-                        m_UserInterface.AddControl(new StatusGump(), 200, 400);
-                    }
-                    else
-                        m_UserInterface.RemoveControl<StatusGump>();
+                    StatusGump.Toggle(Mobile.Serial);
                     break;
             }
         }
