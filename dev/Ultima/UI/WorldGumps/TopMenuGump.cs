@@ -76,10 +76,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Map:
-                    if (m_UserInterface.GetControl<MiniMapGump>() == null)
-                        m_UserInterface.AddControl(new MiniMapGump(), 566, 25);
-                    else
-                        m_UserInterface.RemoveControl<MiniMapGump>();
+                    MiniMapGump.Toggle();
                     break;
                 case Buttons.Paperdoll:
                     Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();

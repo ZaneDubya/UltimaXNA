@@ -17,6 +17,7 @@ using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Core.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -32,6 +33,27 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             get;
             set;
+        }
+
+        public static void Toggle()
+        {
+            UserInterfaceService ui = ServiceRegistry.GetService<UserInterfaceService>();
+            if (ui.GetControl<MiniMapGump>() == null)
+            {
+                ui.AddControl(new MiniMapGump(), 566, 25);
+            }
+            else
+            {
+                if (MiniMapGump.MiniMap_LargeFormat == false)
+                {
+                    MiniMapGump.MiniMap_LargeFormat = true;
+                }
+                else
+                {
+                    ui.RemoveControl<MiniMapGump>();
+                    MiniMapGump.MiniMap_LargeFormat = false;
+                }
+            }
         }
 
         public MiniMapGump()

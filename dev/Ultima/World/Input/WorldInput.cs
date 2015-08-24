@@ -468,6 +468,12 @@ namespace UltimaXNA.Ultima.World.Input
                 m_Network.Send(new RequestWarModePacket(!WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode));
             }
 
+            // Toggle minimap. Default is Alt-R.
+            if (m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.R, false, true, false))
+            {
+                MiniMapGump.Toggle();
+            }
+
             // movement with arrow keys if the player is not moving and the mouse isn't moving the player.
             if(!ContinuousMouseMovementCheck)
             {
