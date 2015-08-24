@@ -1,4 +1,14 @@
-﻿#region usings
+﻿/***************************************************************************
+ *   BodyData.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using System.Collections;
 using System.IO;
@@ -21,7 +31,6 @@ namespace UltimaXNA.Ultima.Resources
         private static int[] m_Table3 = new int[0];
         private static int[] m_Table4 = new int[0];
 
-        // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
         // MountItemID , BodyID
         private static int[][] m_MountIDConv = new int[][]
 	{
