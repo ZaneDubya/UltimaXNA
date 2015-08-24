@@ -1,24 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/***************************************************************************
+ *   FileIndexEntry5D.cs
+ *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System.IO;
-using System.Linq;
-using System.Text;
 using UltimaXNA.Core.IO;
+#endregion
 
 namespace UltimaXNA.Ultima.IO
 {
     public abstract class AFileIndex
     {
-        protected FileIndexEntry[] m_Index;
+        protected FileIndexEntry3D[] m_Index;
         protected Stream m_Stream;
 
-        public FileIndexEntry[] Index { get { return m_Index; } }
+        public FileIndexEntry3D[] Index { get { return m_Index; } }
         public Stream Stream { get { return m_Stream; } }
 
         public string DataPath { get; private set; }
         public int Length { get; set; }
 
-        protected abstract FileIndexEntry[] ReadEntries();
+        protected abstract FileIndexEntry3D[] ReadEntries();
 
         protected AFileIndex(string dataPath)
         {
@@ -51,7 +59,7 @@ namespace UltimaXNA.Ultima.IO
                 return null;
             }
 
-            FileIndexEntry e = m_Index[index];
+            FileIndexEntry3D e = m_Index[index];
 
             if (e.lookup < 0)
             {

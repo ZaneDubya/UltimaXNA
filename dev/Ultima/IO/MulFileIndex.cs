@@ -1,8 +1,22 @@
-﻿using System;
+﻿/***************************************************************************
+ *   MulFileIndex.cs
+ *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
+ *   And on code from OpenUO: https://github.com/jeffboulanger/OpenUO
+ *      Copyright (c) 2011 OpenUO Software Team.
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+#endregion
 
 namespace UltimaXNA.Ultima.IO
 {
@@ -26,22 +40,22 @@ namespace UltimaXNA.Ultima.IO
             patchFile = patch_file;  
         }
 
-        protected override FileIndexEntry[] ReadEntries()
+        protected override FileIndexEntry3D[] ReadEntries()
         {
 
-            var entries = new List<FileIndexEntry>();
+            List<FileIndexEntry3D> entries = new List<FileIndexEntry3D>();
 
-            var length = (int)((new FileInfo(idxPath).Length / 3) / 4);
+            int length = (int)((new FileInfo(idxPath).Length / 3) / 4);
 
-            using (var index = new FileStream(idxPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream index = new FileStream(idxPath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                var bin = new BinaryReader(index);
+                BinaryReader bin = new BinaryReader(index);
 
-                var count = (int)(index.Length / 12);
+                int count = (int)(index.Length / 12);
 
-                for (var i = 0; i < count && i < length; ++i)
+                for (int i = 0; i < count && i < length; ++i)
                 {
-                    var entry = new FileIndexEntry
+                    FileIndexEntry3D entry = new FileIndexEntry3D
                     {
                         lookup = bin.ReadInt32(),
                         length = bin.ReadInt32(),
@@ -51,9 +65,9 @@ namespace UltimaXNA.Ultima.IO
                     entries.Add(entry);
                 }
 
-                for (var i = count; i < length; ++i)
+                for (int i = count; i < length; ++i)
                 {
-                    var entry = new FileIndexEntry
+                    FileIndexEntry3D entry = new FileIndexEntry3D
                     {
                         lookup = -1,
                         length = -1,
@@ -64,15 +78,15 @@ namespace UltimaXNA.Ultima.IO
                 }
             }
 
-            Entry5D[] patches = VerData.Patches;
+            FileIndexEntry5D[] patches = VerData.Patches;
 
             for (int i = 0; i < patches.Length; ++i)
             {
-                Entry5D patch = patches[i];
+                FileIndexEntry5D patch = patches[i];
 
                 if (patch.file == patchFile && patch.index >= 0 && patch.index < entries.Count)
                 {
-                    var entry = entries.ElementAt(patch.index);
+                    FileIndexEntry3D entry = entries.ElementAt(patch.index);
                     entry.lookup = patch.lookup;
                     entry.length = patch.length | (1 << 31);
                     entry.extra = patch.extra;

@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Verdata.cs
+ *   FileIndexEntry5D.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -9,12 +9,13 @@
  *
  ***************************************************************************/
 #region usings
-
+using System.Runtime.InteropServices;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
 {
-    public struct Entry5D
+    [StructLayout(LayoutKind.Sequential, Pack = 0x1)]
+    public struct FileIndexEntry5D
     {
         public int file;
         public int index;

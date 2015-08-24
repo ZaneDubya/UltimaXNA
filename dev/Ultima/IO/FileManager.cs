@@ -1,6 +1,8 @@
 ﻿/***************************************************************************
  *   FileManager.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
+ *   And on code from OpenUO: https://github.com/jeffboulanger/OpenUO
+ *      Copyright (c) 2011 OpenUO Software Team.
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -50,7 +52,7 @@ namespace UltimaXNA.Ultima.IO
                 @"Electronic Arts\EA Games\"
             };
 
-        private static readonly Version _convertedToUOPVersion = new Version("7.0.24.0");
+        private static readonly Version m_ConvertedToUOPVersion = new Version("7.0.24.0");
         private static string m_FileDirectory;
         private static Version m_Version;
 
@@ -93,7 +95,7 @@ namespace UltimaXNA.Ultima.IO
 
         public static bool IsUopFormat
         {
-            get { return Version >= _convertedToUOPVersion; }
+            get { return Version >= m_ConvertedToUOPVersion; }
         }
 
         static FileManager()

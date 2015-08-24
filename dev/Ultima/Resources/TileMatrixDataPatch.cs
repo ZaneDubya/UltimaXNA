@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   TileMatrixDataPatch.cs
- *   Based on TileMatrixPatch.cs (c) The RunUO Software Team
+ *   Based on TileMatrixPatch.cs from RunUO
+ *      (c) The RunUO Software Team
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
