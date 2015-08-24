@@ -1,6 +1,9 @@
 ﻿/***************************************************************************
  *   TileMatrixData.cs
- *   Based on TileMatrix.cs (c) The RunUO Software Team
+ *   Based on TileMatrix.cs from RunUO
+ *      (c) The RunUO Software Team
+ *   And on code from OpenUO: https://github.com/jeffboulanger/OpenUO
+ *      Copyright (c) 2011 OpenUO Software Team.
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
