@@ -1,34 +1,23 @@
-﻿using System;
+﻿/***************************************************************************
+ *   UopFileIndex.cs
+ *   Based on code from OpenUO: https://github.com/jeffboulanger/OpenUO
+ *      Copyright (c) 2011 OpenUO Software Team.
+ *      All Rights Reserved.
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region Usings
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
+#endregion
 
 namespace UltimaXNA.Ultima.IO.UOP
 {
-    #region License Header
-
-    // /***************************************************************************
-    //  *   Copyright (c) 2011 OpenUO Software Team.
-    //  *   All Right Reserved.
-    //  *
-    //  *   UopFileIndex.cs
-    //  *
-    //  *   This program is free software; you can redistribute it and/or modify
-    //  *   it under the terms of the GNU General Public License as published by
-    //  *   the Free Software Foundation; either version 3 of the License, or
-    //  *   (at your option) any later version.
-    //  ***************************************************************************/
-
-    #endregion
-
-    #region Usings
-
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-
-    #endregion
-
     //Credit goes to Wyatt of RUOSI http://ruosi.org/load/ultima_sdk_with_uop_support/3-1-0-8
     //Thanks Wyatt, i definately didnt have time to figure this all out, was a great help, 
     //thanks for updating the ultima sdk for others like myself to reference.
@@ -45,25 +34,25 @@ namespace UltimaXNA.Ultima.IO.UOP
             m_HasExtra = hasExtra;
         }
 
-        protected override FileIndexEntry[] ReadEntries()
+        protected override FileIndexEntry3D[] ReadEntries()
         {
-            var length = Length;
-            var dataPath = DataPath;
-            var entries = new FileIndexEntry[length];
+            int length = Length;
+            string dataPath = DataPath;
+            FileIndexEntry3D[] entries = new FileIndexEntry3D[length];
 
             // In the mul file index, we read everything sequentially, and -1 is applied to invalid lookups.
             // UOP does not do this, so we need to do it ourselves.
-            for (var i = 0; i < entries.Length; i++)
+            for (int i = 0; i < entries.Length; i++)
             {
                 entries[i].lookup = -1;
             }
 
-            using (var index = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream index = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                var fi = new FileInfo(dataPath);
-                var uopPattern = Path.GetFileNameWithoutExtension(fi.Name).ToLowerInvariant();
+                FileInfo fi = new FileInfo(dataPath);
+                string uopPattern = Path.GetFileNameWithoutExtension(fi.Name).ToLowerInvariant();
 
-                using (var br = new BinaryReader(index))
+                using (BinaryReader br = new BinaryReader(index))
                 {
                     br.BaseStream.Seek(0, SeekOrigin.Begin);
 
@@ -73,16 +62,16 @@ namespace UltimaXNA.Ultima.IO.UOP
                     }
 
                     br.ReadInt64(); // version + signature
-                    var nextBlock = br.ReadInt64();
+                    long nextBlock = br.ReadInt64();
                     br.ReadInt32(); // block capacity
-                    var count = br.ReadInt32();
+                    int count = br.ReadInt32();
 
-                    var hashes = new Dictionary<ulong, int>();
+                    Dictionary<ulong, int> hashes = new Dictionary<ulong, int>();
 
-                    for (var i = 0; i < length; i++)
+                    for (int i = 0; i < length; i++)
                     {
-                        var entryName = string.Format("build/{0}/{1:D8}{2}", uopPattern, i, m_Extension);
-                        var hash = CreateHash(entryName);
+                        string entryName = string.Format("build/{0}/{1:D8}{2}", uopPattern, i, m_Extension);
+                        ulong hash = CreateHash(entryName);
 
                         if (!hashes.ContainsKey(hash))
                         {
@@ -94,20 +83,20 @@ namespace UltimaXNA.Ultima.IO.UOP
 
                     do
                     {
-                        var filesCount = br.ReadInt32();
+                        int filesCount = br.ReadInt32();
                         nextBlock = br.ReadInt64();
 
-                        for (var i = 0; i < filesCount; i++)
+                        for (int i = 0; i < filesCount; i++)
                         {
-                            var offset = br.ReadInt64();
-                            var headerLength = br.ReadInt32();
-                            var compressedLength = br.ReadInt32();
-                            var decompressedLength = br.ReadInt32();
-                            var hash = br.ReadUInt64();
-                            br.ReadUInt32(); // Adler32
-                            var flag = br.ReadInt16();
+                            long offset = br.ReadInt64();
+                            int headerLength = br.ReadInt32();
+                            int compressedLength = br.ReadInt32();
+                            int decompressedLength = br.ReadInt32();
+                            ulong hash = br.ReadUInt64();
+                            br.ReadUInt32();
+                            short flag = br.ReadInt16();
 
-                            var entryLength = flag == 1 ? compressedLength : decompressedLength;
+                            int entryLength = flag == 1 ? compressedLength : decompressedLength;
 
                             if (offset == 0)
                             {
@@ -127,14 +116,14 @@ namespace UltimaXNA.Ultima.IO.UOP
 
                                 if (m_HasExtra)
                                 {
-                                    var curPos = br.BaseStream.Position;
+                                    long curPos = br.BaseStream.Position;
 
                                     br.BaseStream.Seek(offset + headerLength, SeekOrigin.Begin);
 
-                                    var extra = br.ReadBytes(8);
+                                    byte[] extra = br.ReadBytes(8);
 
-                                    var extra1 = (ushort)((extra[3] << 24) | (extra[2] << 16) | (extra[1] << 8) | extra[0]);
-                                    var extra2 = (ushort)((extra[7] << 24) | (extra[6] << 16) | (extra[5] << 8) | extra[4]);
+                                    ushort extra1 = (ushort)((extra[3] << 24) | (extra[2] << 16) | (extra[1] << 8) | extra[0]);
+                                    ushort extra2 = (ushort)((extra[7] << 24) | (extra[6] << 16) | (extra[5] << 8) | extra[4]);
 
                                     entries[idx].lookup += 8;
                                     entries[idx].extra = extra1 << 16 | extra2;
@@ -157,7 +146,7 @@ namespace UltimaXNA.Ultima.IO.UOP
             eax = ecx = edx = ebx = esi = edi = 0;
             ebx = edi = esi = (uint)s.Length + 0xDEADBEEF;
 
-            var i = 0;
+            int i = 0;
 
             for (i = 0; i + 12 < s.Length; i += 12)
             {

@@ -4,11 +4,11 @@ namespace UltimaXNA.Ultima.IO
 {
     public class VerData
     {
-        private static Entry5D[] m_Patches;
+        private static FileIndexEntry5D[] m_Patches;
         private static Stream m_Stream;
 
         public static Stream Stream { get { return m_Stream; } }
-        public static Entry5D[] Patches { get { return m_Patches; } }
+        public static FileIndexEntry5D[] Patches { get { return m_Patches; } }
 
         static VerData()
         {
@@ -16,7 +16,7 @@ namespace UltimaXNA.Ultima.IO
 
             if (!File.Exists(path))
             {
-                m_Patches = new Entry5D[0];
+                m_Patches = new FileIndexEntry5D[0];
                 m_Stream = Stream.Null;
             }
             else
@@ -24,7 +24,7 @@ namespace UltimaXNA.Ultima.IO
                 m_Stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
                 BinaryReader bin = new BinaryReader(m_Stream);
 
-                m_Patches = new Entry5D[bin.ReadInt32()];
+                m_Patches = new FileIndexEntry5D[bin.ReadInt32()];
 
                 for (int i = 0; i < m_Patches.Length; ++i)
                 {
