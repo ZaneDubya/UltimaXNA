@@ -86,7 +86,14 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
-        public MobileMoveEvent GetFinalMoveEvent(out int sequence)
+        /// <summary>
+        /// Retrieves the last move event received. If more than one move event is in the queue, forwards the mobile to the
+        /// second-to-last move event destination.
+        /// </summary>
+        /// <param name="sequence">The sequence index of the final move event. The player mobile needs to track this so
+        /// it can send it with each move event and keep in sync with the server.</param>
+        /// <returns>The final move event! Null if no move events in the queue</returns>
+        public MobileMoveEvent GetAndForwardToFinalMoveEvent(out int sequence)
         {
             MobileMoveEvent moveEvent = null;
             MobileMoveEvent moveEventNext, moveEventLast;
@@ -99,6 +106,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 moveEvent = moveEventNext;
                 // get the next move event, peeking to see if it is null (this does not erase it from the queue).
                 moveEventNext = PeekNextMoveEvent();
+
                 // we want to save move events that are the last move event in the queue, and are only facing changes.
                 if ((moveEventNext == null) && (moveEventLast != null) &&
                     (moveEvent.X == moveEventLast.X) && (moveEvent.Y == moveEventLast.Y) && (moveEventLast.Z == moveEvent.Z) &&
@@ -112,7 +120,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             return moveEvent;
         }
 
-        public void AcknowledgemMoveRequest(int sequence)
+        public void AcknowledgeMoveRequest(int sequence)
         {
             m_History[sequence] = null;
             m_LastSequenceAck = sequence;
@@ -133,21 +141,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 x = y = z = facing = -1;
             }
             ResetMoveSequence();
-        }
-    }
-
-    class MobileMoveEvent
-    {
-        public bool CreatedByPlayerInput = false;
-        public readonly int X, Y, Z, Facing, Fastwalk;
-
-        public MobileMoveEvent(int x, int y, int z, int facing, int fastwalk)
-        {
-            X = x;
-            Y = y;
-            Z = z;
-            Facing = facing;
-            Fastwalk = fastwalk;
         }
     }
 }

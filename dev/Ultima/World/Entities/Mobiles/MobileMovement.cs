@@ -82,7 +82,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public void PlayerMobile_MoveEventAck(int nSequence)
         {
-            m_MoveEvents.AcknowledgemMoveRequest(nSequence);
+            m_MoveEvents.AcknowledgeMoveRequest(nSequence);
         }
 
         public void PlayerMobile_MoveEventRej(int sequenceID, int x, int y, int z, int direction)
@@ -166,7 +166,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 }
                 else
                 {
-                    moveEvent = m_MoveEvents.GetFinalMoveEvent(out sequence);
+                    moveEvent = m_MoveEvents.GetAndForwardToFinalMoveEvent(out sequence);
                     if (moveEvent != null)
                     {
                         Facing = (Direction)moveEvent.Facing;
@@ -186,6 +186,26 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 MoveSequence += diff;
                 if (m_entity.IsClientEntity)
                     m_playerMobile_NextMoveInMS -= frameMS;
+
+                if (Math.Abs(m_GoalPosition.X - CurrentPosition.X) > 1 || Math.Abs(m_GoalPosition.Y - CurrentPosition.Y) > 1)
+                {
+                    int x, y;
+                    if (CurrentPosition.X < m_GoalPosition.X)
+                        x = m_GoalPosition.X - 1;
+                    else if (CurrentPosition.X > m_GoalPosition.X)
+                        x = m_GoalPosition.X + 1;
+                    else
+                        x = m_GoalPosition.X;
+
+                    if (CurrentPosition.Y < m_GoalPosition.Y)
+                        y = m_GoalPosition.Y - 1;
+                    else if (CurrentPosition.Y > m_GoalPosition.Y)
+                        y = m_GoalPosition.Y + 1;
+                    else
+                        y = m_GoalPosition.Y;
+
+                    CurrentPosition.Set(x, y, CurrentPosition.Z);
+                }
 
                 if (MoveSequence < 1f)
                 {
