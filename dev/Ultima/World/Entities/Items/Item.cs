@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
@@ -132,6 +133,11 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 
         public override void Update(double frameMS)
         {
+            if (WorldView.AllLabels && !(this is StaticItem))
+            {
+                AddOverhead(MessageTypes.Label, "<outline>" + Name, 0, 0);
+            }
+
             base.Update(frameMS);
         }
 
