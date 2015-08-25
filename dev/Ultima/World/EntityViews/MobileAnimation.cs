@@ -71,7 +71,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 if (Parent.IsClientEntity)
                     return 100;
                 else
-                    return 250;
+                    return 350;
             }
         }
 
@@ -389,7 +389,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     case MobileAction.Walk:
                         return (int)ActionIndexMonster.Walk;
                     case MobileAction.Run:
-                        return (int)ActionIndexMonster.Run;
+                        return (int)ActionIndexMonster.Walk;
                     case MobileAction.Stand:
                         return (int)ActionIndexMonster.Stand;
                     case MobileAction.Death:

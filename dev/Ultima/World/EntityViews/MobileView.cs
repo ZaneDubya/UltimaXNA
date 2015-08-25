@@ -326,6 +326,11 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 Hue = hue;
                 Frame = frame;
             }
+
+            public override string ToString()
+            {
+                return string.Format("Body:{0}", BodyID);
+            }
         }
     }
 }
