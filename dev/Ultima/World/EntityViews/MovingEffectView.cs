@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities.Effects;
 using UltimaXNA.Ultima.World.Input;
@@ -28,7 +29,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
             : base(effect)
         {
             m_Animated = true;
-            m_Animated = TileData.ItemData[Effect.ItemID & 0xffff].IsAnimation;
+
+            int mask = FileManager.IsUopFormat ? 0xffff : 0x3fff;
+            m_Animated = TileData.ItemData[Effect.ItemID & mask].IsAnimation;
             if (m_Animated)
             {
                 IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();

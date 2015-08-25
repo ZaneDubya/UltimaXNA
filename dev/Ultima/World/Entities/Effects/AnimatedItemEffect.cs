@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
         public AnimatedItemEffect(Map map, int itemID, int hue, int duration)
             : base(map)
         {
-            ItemID = (itemID & 0x3fff) | 0x4000;
+            ItemID = (itemID & 0x3fff);
             Hue = hue;
             Duration = duration;
         }

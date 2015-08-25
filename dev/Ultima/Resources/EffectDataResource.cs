@@ -60,7 +60,8 @@ namespace UltimaXNA.Ultima.Resources
 
         public EffectData GetResource(int itemID)
         {
-            itemID &= 0xffff;
+            int mask = FileManager.IsUopFormat ? 0xffff : 0x3fff;
+            itemID &= mask;
             return m_AnimData[(itemID >> 3)][itemID & 0x07];
         }
     }

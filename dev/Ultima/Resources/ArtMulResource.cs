@@ -39,7 +39,8 @@ namespace UltimaXNA.Ultima.Resources
 
         public Texture2D GetLandTexture(int index)
         {
-            index &= 0xFFFF;
+            int mask = FileManager.IsUopFormat ? 0xffff : 0x3fff;
+            index &= mask;
 
             if (m_LandTileTextureCache[index] == null)
             {
@@ -51,7 +52,9 @@ namespace UltimaXNA.Ultima.Resources
 
         public Texture2D GetStaticTexture(int index)
         {
-            index &= 0xFFFF;
+            int mask = FileManager.IsUopFormat ? 0xffff : 0x3fff;
+            index &= mask;
+
             if (m_StaticTileTextureCache[index] == null)
             {
                 Texture2D texture;
@@ -66,7 +69,9 @@ namespace UltimaXNA.Ultima.Resources
 
         public void GetStaticDimensions(int index, out int width, out int height)
         {
-            index &= 0xFFFF;
+            int mask = FileManager.IsUopFormat ? 0xffff : 0x3fff;
+            index &= mask;
+
             if (m_StaticTileTextureCache[index] == null)
             {
                 GetStaticTexture(index);

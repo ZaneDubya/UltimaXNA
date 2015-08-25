@@ -30,7 +30,8 @@ namespace UltimaXNA.Ultima.Resources
         {
             MultiComponentList mcl;
 
-            index &= 0x3FFF;
+            int mask = FileManager.IsUopFormat ? 0xffff : 0x3fff;
+            index &= mask;
 
             if (index >= 0 && index < m_Components.Length)
             {
