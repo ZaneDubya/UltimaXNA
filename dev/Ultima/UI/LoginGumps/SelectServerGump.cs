@@ -9,10 +9,10 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Core.Input;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.Login.Servers;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Core.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.LoginGumps
@@ -92,8 +92,11 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             }
         }
 
-        public override void ActivateByHREF(string href)
+        public override void ActivateByHtml(string href, MouseEvent e)
         {
+            if (e != MouseEvent.Click)
+                return;
+
             if (href.Length > 6 && href.StartsWith("SHARD="))
             {
                 int serverIndex = int.Parse(href.Substring(6));

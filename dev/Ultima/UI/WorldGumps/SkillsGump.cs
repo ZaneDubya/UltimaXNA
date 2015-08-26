@@ -39,7 +39,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Background.TitleGumpID = 0x834;
 
             AddControl(m_SkillsHtml = new HtmlGumpling(this, 32, 32, 240, 200 - 92, 0, 2, string.Empty));
-            m_SkillsHtml.OnDragHRef += OnSkillDrag;
         }
 
         protected override void OnInitialize()
@@ -59,21 +58,38 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_SkillsHtml.Height = Height - 92;
         }
 
-        public override void ActivateByHREF(string href)
+        public override void ActivateByHtml(string href, MouseEvent e)
         {
-            if (href.Substring(0, 6) == "skill=" || href.Substring(0, 9) == "skillbtn=")
+            if (e == MouseEvent.Click)
             {
-                int skillIndex;
-                if (!int.TryParse(href.Substring(href.IndexOf('=') + 1), out skillIndex))
+                if (href.Substring(0, 6) == "skill=" || href.Substring(0, 9) == "skillbtn=")
+                {
+                    int skillIndex;
+                    if (!int.TryParse(href.Substring(href.IndexOf('=') + 1), out skillIndex))
                         return;
-                m_World.Interaction.UseSkill(skillIndex);
+                    m_World.Interaction.UseSkill(skillIndex);
+                }
+                else if (href.Substring(0, 10) == "skilllock=")
+                {
+                    int skillIndex;
+                    if (!int.TryParse(href.Substring(10), out skillIndex))
+                        return;
+                    m_World.Interaction.ChangeSkillLock(PlayerState.Skills.SkillEntryByIndex(skillIndex));
+                }
             }
-            else if (href.Substring(0, 10) == "skilllock=")
+            else if (e == MouseEvent.DragBegin)
             {
-                int skillIndex;
-                if (!int.TryParse(href.Substring(10), out skillIndex))
-                    return;
-                m_World.Interaction.ChangeSkillLock(PlayerState.Skills.SkillEntryByIndex(skillIndex));
+                if (href.Length >= 9 && href.Substring(0, 9) == "skillbtn=")
+                {
+                    int skillIndex;
+                    if (!int.TryParse(href.Substring(9), out skillIndex))
+                        return;
+                    SkillEntry skill = PlayerState.Skills.SkillEntryByIndex(skillIndex);
+                    InputManager input = ServiceRegistry.GetService<InputManager>();
+                    UseSkillButtonGump gump = new UseSkillButtonGump(skill);
+                    UserInterface.AddControl(gump, input.MousePosition.X - 60, input.MousePosition.Y - 20);
+                    UserInterface.AttemptDragControl(gump, input.MousePosition, true);
+                }
             }
         }
 
@@ -92,21 +108,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private void OnSkillChanged(SkillEntry entry)
         {
             m_MustUpdateSkills = true;
-        }
-
-        private void OnSkillDrag(string href)
-        {
-            if (href.Length >= 9 && href.Substring(0, 9) == "skillbtn=")
-            {
-                int skillIndex;
-                if (!int.TryParse(href.Substring(9), out skillIndex))
-                    return;
-                SkillEntry skill = PlayerState.Skills.SkillEntryByIndex(skillIndex);
-                InputManager input = ServiceRegistry.GetService<InputManager>();
-                UseSkillButtonGump gump = new UseSkillButtonGump(skill);
-                UserInterface.AddControl(gump, input.MousePosition.X - 60, input.MousePosition.Y - 20);
-                UserInterface.AttemptDragControl(gump, input.MousePosition, true);
-            }
         }
 
         // 0 = skill index, 1 = skill name

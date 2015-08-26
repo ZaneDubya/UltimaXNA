@@ -30,8 +30,6 @@ namespace UltimaXNA.Ultima.UI.Controls
         // public variables
         public int ScrollX = 0;
         public int ScrollY = 0;
-        // public events
-        public Action<string> OnDragHRef;
 
         public string Text
         {
@@ -208,7 +206,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (button == MouseButton.Left)
                 {
                     if (m_RenderedText.Regions.Region(m_MouseOverHREF).HREF != null)
-                        ActivateByHREF(m_RenderedText.Regions.Region(m_MouseOverHREF).HREF);
+                        ActivateByHtml(m_RenderedText.Regions.Region(m_MouseOverHREF).HREF, MouseEvent.Click);
                 }
             }
         }
@@ -217,8 +215,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_IsMouseDown && m_MouseDownHREF != -1 && m_MouseDownHREF != m_MouseOverHREF)
             {
-                if (OnDragHRef != null)
-                    OnDragHRef(m_RenderedText.Regions.Region(m_MouseDownHREF).HREF);
+                ActivateByHtml(m_RenderedText.Regions.Region(m_MouseOverHREF).HREF, MouseEvent.DragBegin);
             }
         }
     }
