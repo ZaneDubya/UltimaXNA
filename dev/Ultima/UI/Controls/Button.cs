@@ -192,7 +192,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                         break;
                     case ButtonTypes.Activate:
                         // send response
-                        ActivateByButton(ButtonID);
+                        OnButtonClick(ButtonID);
                         break;
                 }
             }

@@ -93,7 +93,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             IsUncloseableWithRMB = true;
         }
 
-        public override void ActivateByButton(int buttonID)
+        public override void OnButtonClick(int buttonID)
         {
             switch ((LoggingInGumpButtons)buttonID)
             {

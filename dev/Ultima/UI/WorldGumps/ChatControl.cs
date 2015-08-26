@@ -110,7 +110,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Draw(spriteBatch, position);
         }
 
-        public override void ActivateByKeyboardReturn(int textID, string text)
+        public override void OnKeyboardReturn(int textID, string text)
         {
             m_TextEntry.Text = string.Empty;
             m_MessageHistory.Add(text);

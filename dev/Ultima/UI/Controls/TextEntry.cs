@@ -167,7 +167,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     Parent.KeyboardTabToNextFocus(this);
                     break;
                 case WinKeys.Enter:
-                    Parent.ActivateByKeyboardReturn(EntryID, Text);
+                    Parent.OnKeyboardReturn(EntryID, Text);
                     break;
                 case WinKeys.Back:
                     if (ReplaceDefaultTextOnFirstKeypress)

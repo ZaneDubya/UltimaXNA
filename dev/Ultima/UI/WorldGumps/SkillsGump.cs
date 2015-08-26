@@ -58,7 +58,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_SkillsHtml.Height = Height - 92;
         }
 
-        public override void ActivateByHtml(string href, MouseEvent e)
+        public override void OnHtmlInputEvent(string href, MouseEvent e)
         {
             if (e == MouseEvent.Click)
             {

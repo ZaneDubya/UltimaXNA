@@ -81,7 +81,7 @@ namespace UltimaXNA.Ultima.UI
             base.Update(totalMS, frameMS);
         }
 
-        public override void ActivateByButton(int buttonID)
+        public override void OnButtonClick(int buttonID)
         {
             switch (buttonID)
             {

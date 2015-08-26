@@ -28,10 +28,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         public MovingEffectView(MovingEffect effect)
             : base(effect)
         {
-            m_Animated = true;
-
-            int mask = FileManager.IsUopFormat ? 0xffff : 0x3fff;
-            m_Animated = TileData.ItemData[Effect.ItemID & mask].IsAnimation;
+            m_Animated = TileData.ItemData[Effect.ItemID & FileManager.ItemIDMask].IsAnimation;
             if (m_Animated)
             {
                 IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
