@@ -98,6 +98,14 @@ namespace UltimaXNA.Ultima.IO
             get { return Version >= m_ConvertedToUOPVersion; }
         }
 
+        /// <summary>
+        /// Returns 0xffff if the client files are UOP format, 0x3fff otherwise.
+        /// </summary>
+        public static int ItemIDMask
+        {
+            get { return IsUopFormat ? 0xffff : 0x3fff; }
+        }
+
         static FileManager()
         {
             Tracer.Debug("Initializing UOData. Is64Bit = {0}", Is64Bit);
