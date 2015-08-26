@@ -17,6 +17,7 @@ using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Resources.Fonts;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -57,8 +58,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Dispose();
         }
 
-        public override void ActivateByHREF(string href)
+        public override void ActivateByHtml(string href, MouseEvent e)
         {
+            if (e != MouseEvent.Click)
+                return;
+
             int contextMenuItemSelected;
             if (int.TryParse(href, out contextMenuItemSelected))
             {

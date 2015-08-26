@@ -140,8 +140,11 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             }
         }
 
-        public override void ActivateByHREF(string href)
+        public override void ActivateByHtml(string href, MouseEvent e)
         {
+            if (e != MouseEvent.Click)
+                return;
+
             if (href.Length > 5 && href.StartsWith("CHAR="))
             {
                 int charIndex = int.Parse(href.Substring(5));

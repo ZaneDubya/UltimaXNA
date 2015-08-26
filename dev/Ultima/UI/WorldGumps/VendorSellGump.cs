@@ -121,8 +121,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             "<right><a href='add={4}'><gumpimg src='0x9CF'/></a><div width='4'/><a href='remove={4}'><gumpimg src='0x9CE'/></a></right>" +
             "<left><itemimg src='{2}' width='52' height='44'/></left><left><span color='#400'>{0}<br/>{1}gp, {3} to sell.</span></left>";
 
-        public override void ActivateByHREF(string href)
+        public override void ActivateByHtml(string href, MouseEvent e)
         {
+            if (e != MouseEvent.Click)
+                return;
+
             string[] hrefs = href.Split('=');
             bool isAdd;
             int index;
