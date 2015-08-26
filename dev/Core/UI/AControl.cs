@@ -501,22 +501,22 @@ namespace UltimaXNA.Core.UI
             IsMoveable = true;
         }
 
-        public virtual void ActivateByButton(int buttonID)
+        public virtual void OnButtonClick(int buttonID)
         {
             if (Parent != null)
-                Parent.ActivateByButton(buttonID);
+                Parent.OnButtonClick(buttonID);
         }
 
-        public virtual void ActivateByKeyboardReturn(int textID, string text)
+        public virtual void OnKeyboardReturn(int textID, string text)
         {
             if (Parent != null)
-                Parent.ActivateByKeyboardReturn(textID, text);
+                Parent.OnKeyboardReturn(textID, text);
         }
 
-        public virtual void ActivateByHtml(string href, MouseEvent e)
+        public virtual void OnHtmlInputEvent(string href, MouseEvent e)
         {
             if (Parent != null)
-                Parent.ActivateByHtml(href, e);
+                Parent.OnHtmlInputEvent(href, e);
         }
 
         public virtual void ChangePage(int pageIndex)

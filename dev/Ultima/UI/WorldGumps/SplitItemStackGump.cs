@@ -110,7 +110,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Dispose();
         }
 
-        public override void ActivateByKeyboardReturn(int textID, string text)
+        public override void OnKeyboardReturn(int textID, string text)
         {
             if (m_Slider.Value > 0)
             {

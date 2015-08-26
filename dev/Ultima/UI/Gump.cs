@@ -102,7 +102,7 @@ namespace UltimaXNA.Ultima.UI
             CheckRestoreSavedPosition();
         }
 
-        public override void ActivateByButton(int buttonID)
+        public override void OnButtonClick(int buttonID)
         {
             if (GumpLocalID != 0)
             {
@@ -142,7 +142,7 @@ namespace UltimaXNA.Ultima.UI
                 return;
             // send cancel message for server gump
             if (GumpServerTypeID != 0)
-                ActivateByButton(0);
+                OnButtonClick(0);
             base.CloseWithRightMouseButton();
         }
 

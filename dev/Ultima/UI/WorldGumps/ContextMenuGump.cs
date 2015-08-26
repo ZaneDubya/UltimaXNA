@@ -58,7 +58,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Dispose();
         }
 
-        public override void ActivateByHtml(string href, MouseEvent e)
+        public override void OnHtmlInputEvent(string href, MouseEvent e)
         {
             if (e != MouseEvent.Click)
                 return;

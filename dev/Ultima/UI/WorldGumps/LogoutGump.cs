@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             CenterThisControlOnScreen();
         }
 
-        public override void ActivateByButton(int buttonID)
+        public override void OnButtonClick(int buttonID)
         {
             switch (buttonID)
             {

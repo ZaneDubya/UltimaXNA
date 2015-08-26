@@ -118,7 +118,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void ActivateByButton(int buttonID)
+        public override void OnButtonClick(int buttonID)
         {
             switch ((Buttons)buttonID)
             {
@@ -140,7 +140,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             }
         }
 
-        public override void ActivateByHtml(string href, MouseEvent e)
+        public override void OnHtmlInputEvent(string href, MouseEvent e)
         {
             if (e != MouseEvent.Click)
                 return;

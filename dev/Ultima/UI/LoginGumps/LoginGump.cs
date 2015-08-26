@@ -75,7 +75,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             IsUncloseableWithRMB = true;
         }
 
-        public override void ActivateByButton(int buttonID)
+        public override void OnButtonClick(int buttonID)
         {
             string accountName = GetTextEntry((int)LoginGumpTextFields.AccountName);
             string password = GetTextEntry((int)LoginGumpTextFields.Password);
@@ -104,9 +104,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
 
             Settings.Server.UserName = accountName;
         }
-        public override void ActivateByKeyboardReturn(int textID, string text)
+        public override void OnKeyboardReturn(int textID, string text)
         {
-            ActivateByButton((int)LoginGumpButtons.LoginButton);
+            OnButtonClick((int)LoginGumpButtons.LoginButton);
         }
     }
 }
