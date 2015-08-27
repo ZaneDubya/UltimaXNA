@@ -136,28 +136,6 @@ namespace UltimaXNA.Core.Graphics
                 vertexList.Add(vertices[i]);
         }
 
-        public void FlushShadows()
-        {
-            //set up depth/stencil buffer
-            DepthStencilState depthDefault = new DepthStencilState();
-            depthDefault.DepthBufferEnable = true;
-            depthDefault.DepthBufferWriteEnable = true;
-
-            // set up graphics device and texture sampling.
-            GraphicsDevice.BlendState = BlendState.Opaque;
-            GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-            GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp; // the sprite texture sampler.
-            // We use lighting parameters to shade vertexes when we're drawing the world.
-            m_Effect.Parameters["DrawLighting"].SetValue(false);
-            // set up viewport.
-            m_Effect.Parameters["ProjectionMatrix"].SetValue(ProjectionMatrixScreen);
-            m_Effect.Parameters["WorldMatrix"].SetValue(ProjectionMatrixWorld);
-            m_Effect.Parameters["Viewport"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
-
-            GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
-            DrawAllVertices(Techniques.FirstShadow, Techniques.LastShadow);
-        }
-
         public void FlushSprites(bool doLighting)
         {
             //set up depth/stencil buffer
@@ -180,7 +158,7 @@ namespace UltimaXNA.Core.Graphics
             m_Effect.Parameters["Viewport"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
 
             GraphicsDevice.DepthStencilState = depthDefault;
-            DrawAllVertices(Techniques.FirstDrawn, Techniques.FirstShadow);
+            DrawAllVertices(Techniques.FirstDrawn, Techniques.LastDrawn);
         }
 
         private void DrawAllVertices(Techniques first, Techniques last)
@@ -201,9 +179,6 @@ namespace UltimaXNA.Core.Graphics
                         break;
                     case Techniques.ShadowSet:
                         m_Effect.CurrentTechnique = m_Effect.Techniques["ShadowSetTechnique"];
-                        break;
-                    case Techniques.ShadowClear:
-                        m_Effect.CurrentTechnique = m_Effect.Techniques["ShadowClearTechnique"];
                         break;
                     default:
                         Tracer.Critical("Unknown effect in SpriteBatch3D.Flush(). Effect index is {0}", effect);

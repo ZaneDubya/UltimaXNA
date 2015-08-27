@@ -18,18 +18,14 @@ namespace UltimaXNA.Core.Graphics
         Hued = 0,
         MiniMap = 1,
         Grayscale = 2,
-        // shadow effects
         ShadowSet = 3,
-        ShadowClear = 4,
         // stencil effects ( not currently used )
-        StencilSet = 5, 
-        StencilClear = 6,
+        StencilSet = 4, 
+        StencilClear = 5,
 
         Default = Hued,
         FirstDrawn = Hued,
-        LastDrawn = Grayscale,
-        FirstShadow = ShadowSet,
-        LastShadow = ShadowClear,
+        LastDrawn = ShadowSet,
         FirstStencil = StencilSet,
         LastStencil = StencilClear,
         All = StencilClear
