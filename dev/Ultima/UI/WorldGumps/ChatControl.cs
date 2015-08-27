@@ -60,6 +60,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 IFont font = provider.GetUnicodeFont(0);
                 m_TextEntry = new TextEntry(this, 1, Height - font.Height, Width, font.Height, 0, 0, MaxChatMessageLength, string.Empty);
                 m_TextEntry.LegacyCarat = true;
+                m_TextEntry.HtmlTag = "<basefont color='#fff'>";
 
                 AddControl(new CheckerTrans(this, 0, Height - 20, Width, 20));
                 AddControl(m_TextEntry);
