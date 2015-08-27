@@ -136,10 +136,22 @@ namespace UltimaXNA.Core.UI
             m_IsMouseDown = true;
             m_MouseDownText = m_MouseOverText;
             m_MouseDownHREF = m_MouseOverHREF;
+
+            if (button == MouseButton.Left)
+            {
+                if (m_Entries[m_MouseDownText].Regions.Region(m_MouseDownHREF).HREF != null)
+                    OnHtmlInputEvent(m_Entries[m_MouseDownText].Regions.Region(m_MouseDownHREF).HREF, MouseEvent.Down);
+            }
         }
 
         protected override void OnMouseUp(int x, int y, MouseButton button)
         {
+            if (button == MouseButton.Left)
+            {
+                if (m_Entries[m_MouseDownText].Regions.Region(m_MouseDownHREF).HREF != null)
+                    OnHtmlInputEvent(m_Entries[m_MouseDownText].Regions.Region(m_MouseDownHREF).HREF, MouseEvent.Up);
+            }
+
             m_IsMouseDown = false;
             m_MouseDownText = -1;
             m_MouseDownHREF = -1;
@@ -161,9 +173,7 @@ namespace UltimaXNA.Core.UI
         {
             if (m_IsMouseDown && m_MouseDownText != -1 && m_MouseDownHREF != -1 && m_MouseDownHREF != m_MouseOverHREF)
             {
-                // no need for dragging in this control - yet. Wouldn't be too hard to add. See HtmlGumpling for how to do it.
-                /*if (OnDragHRef != null)
-                    OnDragHRef(m_RenderedText.Regions.Region(m_MouseDownHREF).HREF.HREF);*/
+                OnHtmlInputEvent(m_Entries[m_MouseDownText].Regions.Region(m_MouseDownHREF).HREF, MouseEvent.DragBegin);
             }
         }
 

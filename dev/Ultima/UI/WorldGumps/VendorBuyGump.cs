@@ -37,6 +37,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private VendorItemInfo[] m_Items;
         private RenderedTextList m_ShopContents;
 
+        private MouseState m_MouseState = MouseState.None;
+        private int m_MouseDownOnIndex = 0;
+        private double m_MouseDownMS = 0;
+
         public VendorBuyGump(AEntity vendorBackpack, VendorBuyListPacket packet)
             : base(0, 0)
         {
@@ -57,14 +61,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             BuildShopContents(vendorBackpack, packet);
 
             AddControl(m_TotalCost = new HtmlGumpling(this, 44, 334, 200, 30, 0, 0, string.Empty));
-            UpdateCost();
+            UpdateEntryAndCost();
 
             Button okButton = (Button)AddControl(new Button(this, 220, 333, 0x907, 0x908, ButtonTypes.Activate, 0, 0));
             okButton.GumpOverID = 0x909;
             okButton.MouseClickEvent += okButton_MouseClickEvent;
         }
 
-        void okButton_MouseClickEvent(AControl control, int x, int y, MouseButton button)
+        private void okButton_MouseClickEvent(AControl control, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
                 return;
@@ -90,6 +94,23 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             m_ShopContents.Height = Height - 69;
             base.Update(totalMS, frameMS);
+
+            if (m_MouseState != MouseState.None)
+            {
+                m_MouseDownMS += frameMS;
+                if (m_MouseDownMS >= 350d)
+                {
+                    m_MouseDownMS -= 120d;
+                    if (m_MouseState == MouseState.MouseDownOnAdd)
+                    {
+                        AddItem(m_MouseDownOnIndex);
+                    }
+                    else
+                    {
+                        RemoveItem(m_MouseDownOnIndex);
+                    }
+                }
+            }
         }
 
         private void BuildShopContents(AEntity vendorBackpack, VendorBuyListPacket packet)
@@ -150,12 +171,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void OnHtmlInputEvent(string href, MouseEvent e)
         {
-            if (e != MouseEvent.Click)
-                return;
-
             string[] hrefs = href.Split('=');
             bool isAdd;
             int index;
+
+            // parse add/remove
             if (hrefs[0] == "add")
             {
                 isAdd = true;
@@ -170,33 +190,60 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 return;
             }
 
+            // parse item index
             if (!(int.TryParse(hrefs[1], out index)))
             {
                 Tracer.Error("Unknown vendor item index in VendorBuyGump: {0}", href);
                 return;
             }
 
-            if (isAdd)
+            if (e == MouseEvent.Down)
             {
-                if (m_Items[index].AmountToBuy < m_Items[index].AmountTotal)
-                    m_Items[index].AmountToBuy++;
+                if (isAdd)
+                {
+                    AddItem(index);
+                }
+                else
+                {
+                    RemoveItem(index);
+                }
+                m_MouseState = isAdd ? MouseState.MouseDownOnAdd : MouseState.MouseDownOnRemove;
+                m_MouseDownMS = 0;
+                m_MouseDownOnIndex = index;
             }
-            else
+            else if (e == MouseEvent.Up)
             {
-                if (m_Items[index].AmountToBuy > 0)
-                    m_Items[index].AmountToBuy--;
+                m_MouseState = MouseState.None;
             }
 
-            m_ShopContents.UpdateEntry(index, string.Format(c_Format, 
-                m_Items[index].Description, 
-                m_Items[index].Price.ToString(), 
-                m_Items[index].Item.DisplayItemID,
-                m_Items[index].AmountTotal - m_Items[index].AmountToBuy, index));
-            UpdateCost();
+            UpdateEntryAndCost(index);
         }
 
-        private void UpdateCost()
+        private void AddItem(int index)
         {
+            if (m_Items[index].AmountToBuy < m_Items[index].AmountTotal)
+                m_Items[index].AmountToBuy++;
+            UpdateEntryAndCost(index);
+        }
+
+        private void RemoveItem(int index)
+        {
+            if (m_Items[index].AmountToBuy > 0)
+                m_Items[index].AmountToBuy--;
+            UpdateEntryAndCost(index);
+        }
+
+        private void UpdateEntryAndCost(int index = -1)
+        {
+            if (index >= 0)
+            {
+                m_ShopContents.UpdateEntry(index, string.Format(c_Format,
+                    m_Items[index].Description,
+                    m_Items[index].Price.ToString(),
+                    m_Items[index].Item.DisplayItemID,
+                    m_Items[index].AmountTotal - m_Items[index].AmountToBuy, index));
+            }
+
             int totalCost = 0;
             if (m_Items != null)
             {
@@ -224,6 +271,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 AmountTotal = amount;
                 AmountToBuy = 0;
             }
+        }
+
+        enum MouseState
+        {
+            None,
+            MouseDownOnAdd,
+            MouseDownOnRemove
         }
     }
 }

@@ -215,7 +215,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_IsMouseDown && m_MouseDownHREF != -1 && m_MouseDownHREF != m_MouseOverHREF)
             {
-                OnHtmlInputEvent(m_RenderedText.Regions.Region(m_MouseOverHREF).HREF, MouseEvent.DragBegin);
+                OnHtmlInputEvent(m_RenderedText.Regions.Region(m_MouseDownHREF).HREF, MouseEvent.DragBegin);
             }
         }
     }
