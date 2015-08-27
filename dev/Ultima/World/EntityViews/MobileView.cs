@@ -50,6 +50,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 m_AllowDefer = false;
             }
 
+            DrawShadowZ = spriteBatch.GetNextUniqueZ();
             DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
 
             if (Entity.IsMoving)

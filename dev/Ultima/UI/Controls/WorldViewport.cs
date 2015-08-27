@@ -53,6 +53,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             Texture2D worldTexture = (m_Model.GetView() as WorldView).Isometric.Texture;
+
             m_InputMultiplier = new Vector2((float)worldTexture.Width / Width, (float)worldTexture.Height / Height);
 
             spriteBatch.Draw2D(worldTexture, new Rectangle(position.X, position.Y, Width, Height), Vector3.Zero);

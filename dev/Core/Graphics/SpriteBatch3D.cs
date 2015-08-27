@@ -22,6 +22,12 @@ namespace UltimaXNA.Core.Graphics
     public class SpriteBatch3D
     {
         private static float Z; // shared between all spritebatches.
+        public float GetNextUniqueZ()
+        {
+            return Z++;
+        }
+
+
         private static BoundingBox ViewportArea;
         private static Game Game;
 
@@ -114,29 +120,47 @@ namespace UltimaXNA.Core.Graphics
             return true;
         }
 
-        public void DrawShadow(Texture2D texture, VertexPositionNormalTextureHue[] vertices, bool useVertex02 = false)
+        public void DrawShadow(Texture2D texture, VertexPositionNormalTextureHue[] vertices, bool useVertex02 = false, float z = 0)
         {
             // Sanity: do not draw if there is no texture to draw with.
             if (texture == null)
                 return;
 
             List<VertexPositionNormalTextureHue> vertexList;
+            vertices[0].Position.Z = vertices[1].Position.Z = vertices[2].Position.Z = vertices[3].Position.Z = z;
+            vertices[0].Position.X += 30; // skew texture
+            vertices[useVertex02 ? 2 : 1].Position.X += 30; // skew texture
 
-            vertexList = GetVertexList(texture, Techniques.StencilClear);
-            for (int i = 0; i < vertices.Length; i++)
-                vertexList.Add(vertices[i]);
-
-            vertices[0].Position.X += 50; // skew texture
-            vertices[useVertex02 ? 2 : 1].Position.X += 50; // skew texture
-
-            vertexList = GetVertexList(texture, Techniques.StencilSet);
+            vertexList = GetVertexList(texture, Techniques.ShadowSet);
             for (int i = 0; i < vertices.Length; i++)
                 vertexList.Add(vertices[i]);
         }
 
-        public void Flush(bool doLighting)
+        public void FlushShadows()
         {
-            //set up depth buffers
+            //set up depth/stencil buffer
+            DepthStencilState depthDefault = new DepthStencilState();
+            depthDefault.DepthBufferEnable = true;
+            depthDefault.DepthBufferWriteEnable = true;
+
+            // set up graphics device and texture sampling.
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp; // the sprite texture sampler.
+            // We use lighting parameters to shade vertexes when we're drawing the world.
+            m_Effect.Parameters["DrawLighting"].SetValue(false);
+            // set up viewport.
+            m_Effect.Parameters["ProjectionMatrix"].SetValue(ProjectionMatrixScreen);
+            m_Effect.Parameters["WorldMatrix"].SetValue(ProjectionMatrixWorld);
+            m_Effect.Parameters["Viewport"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
+
+            GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+            DrawAllVertices(Techniques.FirstShadow, Techniques.LastShadow);
+        }
+
+        public void FlushSprites(bool doLighting)
+        {
+            //set up depth/stencil buffer
             DepthStencilState depthDefault = new DepthStencilState();
             depthDefault.DepthBufferEnable = true;
             depthDefault.DepthBufferWriteEnable = true;
@@ -156,63 +180,13 @@ namespace UltimaXNA.Core.Graphics
             m_Effect.Parameters["Viewport"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
 
             GraphicsDevice.DepthStencilState = depthDefault;
-            DrawAllVertices();
+            DrawAllVertices(Techniques.FirstDrawn, Techniques.FirstShadow);
         }
 
-        private List<VertexPositionNormalTextureHue> GetVertexList(Texture2D texture, Techniques effect)
+        private void DrawAllVertices(Techniques first, Techniques last)
         {
-            List<VertexPositionNormalTextureHue> vertexList;
-            if (m_drawQueue[(int)effect].ContainsKey(texture))
-            {
-                vertexList = m_drawQueue[(int)effect][texture];
-            }
-            else
-            {
-                if (m_vertexListQueue.Count > 0)
-                {
-                    vertexList = m_vertexListQueue.Dequeue();
-                    vertexList.Clear();
-                }
-                else
-                {
-                    vertexList = new List<VertexPositionNormalTextureHue>(1024);
-                }
-                m_drawQueue[(int)effect].Add(texture, vertexList);
-            }
-            return vertexList;
-        }
-
-        private void DrawAllVertices()
-        {
-            // draw stencil objects (set and clear).
-            m_Effect.CurrentTechnique = m_Effect.Techniques["SimpleTechnique"];
-            m_Effect.CurrentTechnique.Passes[0].Apply();
-
-            for (Techniques effect = Techniques.FirstStencil; effect <= Techniques.LastStencil; effect += 1)
-            {
-                switch (effect)
-                {
-                    case Techniques.StencilSet: // happens first
-                        break;
-                    case Techniques.StencilClear: // happens second
-                        break;
-                }
-
-                IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> vertexEnumerator = m_drawQueue[(int)effect].GetEnumerator();
-                while (vertexEnumerator.MoveNext())
-                {
-                    Texture2D texture = vertexEnumerator.Current.Key;
-                    List<VertexPositionNormalTextureHue> vertexList = vertexEnumerator.Current.Value;
-                    GraphicsDevice.Textures[0] = texture;
-                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_indexBuffer, 0, vertexList.Count / 2);
-                    vertexList.Clear();
-                    m_vertexListQueue.Enqueue(vertexList);
-                }
-                m_drawQueue[(int)effect].Clear();
-            }
-
             // draw normal objects
-            for (Techniques effect = Techniques.FirstDrawn; effect <= Techniques.LastDrawn; effect += 1)
+            for (Techniques effect = first; effect <= last; effect += 1)
             {
                 switch (effect)
                 {
@@ -224,6 +198,12 @@ namespace UltimaXNA.Core.Graphics
                         break;
                     case Techniques.Grayscale:
                         m_Effect.CurrentTechnique = m_Effect.Techniques["GrayscaleTechnique"];
+                        break;
+                    case Techniques.ShadowSet:
+                        m_Effect.CurrentTechnique = m_Effect.Techniques["ShadowSetTechnique"];
+                        break;
+                    case Techniques.ShadowClear:
+                        m_Effect.CurrentTechnique = m_Effect.Techniques["ShadowClearTechnique"];
                         break;
                     default:
                         Tracer.Critical("Unknown effect in SpriteBatch3D.Flush(). Effect index is {0}", effect);
@@ -253,6 +233,29 @@ namespace UltimaXNA.Core.Graphics
         public void SetLightIntensity(float intensity)
         {
             m_Effect.Parameters["lightIntensity"].SetValue(intensity);
+        }
+
+        private List<VertexPositionNormalTextureHue> GetVertexList(Texture2D texture, Techniques effect)
+        {
+            List<VertexPositionNormalTextureHue> vertexList;
+            if (m_drawQueue[(int)effect].ContainsKey(texture))
+            {
+                vertexList = m_drawQueue[(int)effect][texture];
+            }
+            else
+            {
+                if (m_vertexListQueue.Count > 0)
+                {
+                    vertexList = m_vertexListQueue.Dequeue();
+                    vertexList.Clear();
+                }
+                else
+                {
+                    vertexList = new List<VertexPositionNormalTextureHue>(1024);
+                }
+                m_drawQueue[(int)effect].Add(texture, vertexList);
+            }
+            return vertexList;
         }
 
         private short[] CreateIndexBuffer(int primitiveCount)

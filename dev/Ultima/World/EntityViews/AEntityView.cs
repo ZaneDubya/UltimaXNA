@@ -49,6 +49,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         protected Texture2D DrawTexture = null;
 
         protected bool DrawShadow = false;
+        protected float DrawShadowZ = 0;
 
         public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
@@ -138,7 +139,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             if (DrawShadow)
             {
-                spriteBatch.DrawShadow(DrawTexture, vertexBuffer, DrawFlip);
+                spriteBatch.DrawShadow(DrawTexture, vertexBuffer, DrawFlip, DrawShadowZ);
             }
 
             Pick(mouseOverList, vertexBuffer);

@@ -253,7 +253,7 @@ namespace UltimaXNA.Core.UI
             if (Cursor != null)
                 Cursor.Draw(m_SpriteBatch, m_Input.MousePosition);
 
-            m_SpriteBatch.Flush(false);
+            m_SpriteBatch.FlushSprites(false);
         }
 
         private void InternalHandleKeyboardInput()
