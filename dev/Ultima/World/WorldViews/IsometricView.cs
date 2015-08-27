@@ -47,7 +47,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
         {
             get
             {
-                return m_RenderTarget;
+                return m_RenderTargetSprites;
             }
         }
 
@@ -57,7 +57,8 @@ namespace UltimaXNA.Ultima.World.WorldViews
             private set;
         }
 
-        private RenderTarget2D m_RenderTarget;
+        private RenderTarget2D m_RenderTargetSprites;
+
         private SpriteBatch3D m_SpriteBatch;
         private bool m_DrawTerrain = true;
         private int m_DrawMaxItemAltitude;
@@ -72,21 +73,23 @@ namespace UltimaXNA.Ultima.World.WorldViews
         public void Update(Map map, Position3D center, MousePicking mousePick)
         {
             int pixelScale = (Settings.World.PlayWindowPixelDoubling) ? 2 : 1;
-            if (m_RenderTarget == null || m_RenderTarget.Width != Settings.World.PlayWindowGumpResolution.Width / pixelScale || m_RenderTarget.Height != Settings.World.PlayWindowGumpResolution.Height / pixelScale)
+            if (m_RenderTargetSprites == null || m_RenderTargetSprites.Width != Settings.World.PlayWindowGumpResolution.Width / pixelScale || m_RenderTargetSprites.Height != Settings.World.PlayWindowGumpResolution.Height / pixelScale)
             {
-                if (m_RenderTarget != null)
-                    m_RenderTarget.Dispose();
-                m_RenderTarget = new RenderTarget2D(m_SpriteBatch.GraphicsDevice, Settings.World.PlayWindowGumpResolution.Width / pixelScale, Settings.World.PlayWindowGumpResolution.Height / pixelScale, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
+                if (m_RenderTargetSprites != null)
+                    m_RenderTargetSprites.Dispose();
+                m_RenderTargetSprites = new RenderTarget2D(
+                    m_SpriteBatch.GraphicsDevice, 
+                    Settings.World.PlayWindowGumpResolution.Width / pixelScale, 
+                    Settings.World.PlayWindowGumpResolution.Height / pixelScale, 
+                    false, 
+                    SurfaceFormat.Color, 
+                    DepthFormat.Depth24Stencil8, 
+                    0, 
+                    RenderTargetUsage.DiscardContents);
             }
 
             DetermineIfClientIsUnderEntity(map, center);
-
-            m_SpriteBatch.GraphicsDevice.SetRenderTarget(m_RenderTarget);
-            m_SpriteBatch.GraphicsDevice.Clear(Color.Black);  
-
             DrawEntities(map, center, mousePick, out m_DrawOffset);
-
-            m_SpriteBatch.GraphicsDevice.SetRenderTarget(null);
         }
 
         private void DetermineIfClientIsUnderEntity(Map map, Position3D center)
@@ -223,7 +226,10 @@ namespace UltimaXNA.Ultima.World.WorldViews
             mousePicking.UpdateOverEntities(overList, mousePicking.Position);
 
             // Draw the objects we just send to the spritebatch.
-            m_SpriteBatch.Flush(true);
+            m_SpriteBatch.GraphicsDevice.SetRenderTarget(m_RenderTargetSprites);
+            m_SpriteBatch.GraphicsDevice.Clear(Color.Black);
+            m_SpriteBatch.FlushSprites(true);
+            m_SpriteBatch.GraphicsDevice.SetRenderTarget(null);
         }
 
         private void CalculateViewport(Position3D center, int overDrawTilesOnSides, int overDrawTilesOnTopAndBottom, out Point firstTile, out Vector2 renderOffset, out Point renderDimensions)

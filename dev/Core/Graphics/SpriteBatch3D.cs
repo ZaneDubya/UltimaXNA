@@ -22,6 +22,12 @@ namespace UltimaXNA.Core.Graphics
     public class SpriteBatch3D
     {
         private static float Z; // shared between all spritebatches.
+        public float GetNextUniqueZ()
+        {
+            return Z++;
+        }
+
+
         private static BoundingBox ViewportArea;
         private static Game Game;
 
@@ -37,9 +43,9 @@ namespace UltimaXNA.Core.Graphics
         {
             Game = game;
 
-            m_drawQueue = new List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>>(1024);
-            for (int i = 0; i <= (int)Techniques.Max; i++)
-                m_drawQueue.Add(new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>());
+            m_drawQueue = new List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>>((int)Techniques.All);
+            for (int i = 0; i <= (int)Techniques.All; i++)
+                m_drawQueue.Add(new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(1024));
 
             m_indexBuffer = CreateIndexBuffer(0x2000);
             m_vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
@@ -81,11 +87,11 @@ namespace UltimaXNA.Core.Graphics
         /// <param name="texture"></param>
         /// <param name="vertices"></param>
         /// <returns>True if the object was drawn, false otherwise.</returns>
-        public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Techniques effects = Techniques.Default)
+        public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Techniques effect = Techniques.Default)
         {
             bool draw = false;
 
-            // Check: do not draw if there is no texture to draw with.
+            // Sanity: do not draw if there is no texture to draw with.
             if (texture == null)
                 return false;
 
@@ -104,25 +110,8 @@ namespace UltimaXNA.Core.Graphics
             // Set the draw position's z value, and increment the z value for the next drawn object.
             vertices[0].Position.Z = vertices[1].Position.Z = vertices[2].Position.Z = vertices[3].Position.Z = Z++;
 
-            // Get the vertex list for this texture. if none exists, dequeue or create a new vertex list.
-            List<VertexPositionNormalTextureHue> vertexList;
-            if(m_drawQueue[(int)effects].ContainsKey(texture))
-            {
-                vertexList = m_drawQueue[(int)effects][texture];
-            }
-            else
-            {
-                if(m_vertexListQueue.Count > 0)
-                {
-                    vertexList = m_vertexListQueue.Dequeue();
-                    vertexList.Clear();
-                }
-                else
-                {
-                    vertexList = new List<VertexPositionNormalTextureHue>(1024);
-                }
-                m_drawQueue[(int)effects].Add(texture, vertexList);
-            }
+            // Get the vertex list for this texture. if none exists, dequeue existing or create a new vertex list.
+            List<VertexPositionNormalTextureHue> vertexList = GetVertexList(texture, effect);
 
             // Add the drawn object to the vertex list.
             for(int i = 0; i < vertices.Length; i++)
@@ -131,9 +120,34 @@ namespace UltimaXNA.Core.Graphics
             return true;
         }
 
-        public void Flush(bool doLighting)
+        public void DrawShadow(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Vector2 drawPosition, bool useVertex02, float z)
         {
-            //set up depth buffers
+            // Sanity: do not draw if there is no texture to draw with.
+            if (texture == null)
+                return;
+            // set proper z depth for this shadow.
+            vertices[0].Position.Z = vertices[1].Position.Z = vertices[2].Position.Z = vertices[3].Position.Z = z;
+            // skew texture
+            float skewHorizTop = (vertices[0].Position.Y - drawPosition.Y) * .5f;
+            float skewHorizBottom = (vertices[3].Position.Y - drawPosition.Y) * .5f;
+            vertices[0].Position.X -= skewHorizTop;
+            vertices[0].Position.Y -= skewHorizTop;
+            vertices[useVertex02 ? 2 : 1].Position.X -= skewHorizTop;
+            vertices[useVertex02 ? 2 : 1].Position.Y -= skewHorizTop;
+            vertices[useVertex02 ? 1 : 2].Position.X -= skewHorizBottom;
+            vertices[useVertex02 ? 1 : 2].Position.Y -= skewHorizBottom;
+            vertices[3].Position.X -= skewHorizBottom; 
+            vertices[3].Position.Y -= skewHorizBottom;
+
+            List<VertexPositionNormalTextureHue> vertexList;
+            vertexList = GetVertexList(texture, Techniques.ShadowSet);
+            for (int i = 0; i < vertices.Length; i++)
+                vertexList.Add(vertices[i]);
+        }
+
+        public void FlushSprites(bool doLighting)
+        {
+            //set up depth/stencil buffer
             DepthStencilState depthDefault = new DepthStencilState();
             depthDefault.DepthBufferEnable = true;
             depthDefault.DepthBufferWriteEnable = true;
@@ -153,15 +167,13 @@ namespace UltimaXNA.Core.Graphics
             m_Effect.Parameters["Viewport"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
 
             GraphicsDevice.DepthStencilState = depthDefault;
-            DrawAllVertices(true);
+            DrawAllVertices(Techniques.FirstDrawn, Techniques.LastDrawn);
         }
 
-        private void DrawAllVertices(bool clearAfterDraw)
+        private void DrawAllVertices(Techniques first, Techniques last)
         {
-            Texture2D texture;
-            List<VertexPositionNormalTextureHue> vertexList;
-
-            for (Techniques effect = 0; effect <= Techniques.Max; effect += 1)
+            // draw normal objects
+            for (Techniques effect = first; effect <= last; effect += 1)
             {
                 switch (effect)
                 {
@@ -174,29 +186,26 @@ namespace UltimaXNA.Core.Graphics
                     case Techniques.Grayscale:
                         m_Effect.CurrentTechnique = m_Effect.Techniques["GrayscaleTechnique"];
                         break;
+                    case Techniques.ShadowSet:
+                        m_Effect.CurrentTechnique = m_Effect.Techniques["ShadowSetTechnique"];
+                        break;
                     default:
                         Tracer.Critical("Unknown effect in SpriteBatch3D.Flush(). Effect index is {0}", effect);
                         break;
                 }
                 m_Effect.CurrentTechnique.Passes[0].Apply();
 
-                IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_drawQueue[(int)effect].GetEnumerator();
-                while (keyValuePairs.MoveNext())
+                IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> vertexEnumerator = m_drawQueue[(int)effect].GetEnumerator();
+                while (vertexEnumerator.MoveNext())
                 {
-                    texture = keyValuePairs.Current.Key;
-                    vertexList = keyValuePairs.Current.Value;
+                    Texture2D texture = vertexEnumerator.Current.Key;
+                    List<VertexPositionNormalTextureHue> vertexList = vertexEnumerator.Current.Value;
                     GraphicsDevice.Textures[0] = texture;
                     GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_indexBuffer, 0, vertexList.Count / 2);
-                    if (clearAfterDraw)
-                    {
-                        vertexList.Clear();
-                        m_vertexListQueue.Enqueue(vertexList);
-                    }
+                    vertexList.Clear();
+                    m_vertexListQueue.Enqueue(vertexList);
                 }
-                if (clearAfterDraw)
-                {
-                    m_drawQueue[(int)effect].Clear();
-                }
+                m_drawQueue[(int)effect].Clear();
             }
         }
 
@@ -208,6 +217,29 @@ namespace UltimaXNA.Core.Graphics
         public void SetLightIntensity(float intensity)
         {
             m_Effect.Parameters["lightIntensity"].SetValue(intensity);
+        }
+
+        private List<VertexPositionNormalTextureHue> GetVertexList(Texture2D texture, Techniques effect)
+        {
+            List<VertexPositionNormalTextureHue> vertexList;
+            if (m_drawQueue[(int)effect].ContainsKey(texture))
+            {
+                vertexList = m_drawQueue[(int)effect][texture];
+            }
+            else
+            {
+                if (m_vertexListQueue.Count > 0)
+                {
+                    vertexList = m_vertexListQueue.Dequeue();
+                    vertexList.Clear();
+                }
+                else
+                {
+                    vertexList = new List<VertexPositionNormalTextureHue>(1024);
+                }
+                m_drawQueue[(int)effect].Add(texture, vertexList);
+            }
+            return vertexList;
         }
 
         private short[] CreateIndexBuffer(int primitiveCount)

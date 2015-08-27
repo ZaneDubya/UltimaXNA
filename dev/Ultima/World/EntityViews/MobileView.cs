@@ -1,35 +1,53 @@
-﻿using Microsoft.Xna.Framework;
+﻿/***************************************************************************
+ *   MobileView.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.WorldViews;
-using UltimaXNA.Core.Resources;
+#endregion
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
+    /// <summary>
+    /// A representation of a mobile object within the isometric world. Draws a separate sprite for each worn item.
+    /// </summary>
     public class MobileView : AEntityView
     {
-        new Mobile Entity
-        {
-            get { return (Mobile)base.Entity; }
-        }
+        // ======================================================================
+        // Public methods and properties: ctr, update, draw, and Animation property.
+        // ======================================================================
+
+        /// <summary>
+        /// Manages the animation state (what animation is playing, how far along is the animation, etc.) for this
+        /// mobile view. Exposed as public so that we can receive animations from the server (e.g. emotes).
+        /// </summary>
+        public readonly MobileAnimation Animation;
 
         public MobileView(Mobile mobile)
             : base(mobile)
         {
-            m_Animation = new MobileAnimation(mobile);
-
+            Animation = new MobileAnimation(mobile);
             m_MobileLayers = new MobileViewLayer[(int)EquipLayer.LastUserValid];
             PickType = PickType.PickObjects;
-        }
 
-        public MobileAnimation m_Animation;
+            DrawShadow = true;
+        }
 
         public void Update(double frameMS)
         {
-            m_Animation.Update(frameMS);
+            Animation.Update(frameMS);
         }
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
@@ -44,35 +62,35 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 m_AllowDefer = false;
             }
 
+            DrawShadowZ = spriteBatch.GetNextUniqueZ();
             DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
 
             if (Entity.IsMoving)
             {
                 if (Entity.IsRunning)
-                    m_Animation.Animate(MobileAction.Run);
+                    Animation.Animate(MobileAction.Run);
                 else
-                    m_Animation.Animate(MobileAction.Walk);
+                    Animation.Animate(MobileAction.Walk);
             }
             else
             {
-                if (!m_Animation.IsAnimating)
-                    m_Animation.Animate(MobileAction.Stand);
+                if (!Animation.IsAnimating)
+                    Animation.Animate(MobileAction.Stand);
             }
 
             InternalSetupLayers();
 
-            int drawCenterX = m_MobileLayers[0].Frame.Center.X;
             int drawCenterY = m_MobileLayers[0].Frame.Center.Y;
 
             int drawX, drawY;
             if (DrawFlip)
             {
-                drawX = drawCenterX - IsometricRenderer.TILE_SIZE_INTEGER_HALF + (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
+                drawX = -IsometricRenderer.TILE_SIZE_INTEGER_HALF + (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
                 drawY = drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
             }
             else
             {
-                drawX = drawCenterX - IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
+                drawX = -IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
                 drawY = drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
             }
 
@@ -83,7 +101,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             {
                 if (m_MobileLayers[i].Frame != null)
                 {
-                    float x = -drawCenterX + (drawX + m_MobileLayers[i].Frame.Center.X);
+                    float x = (drawX + m_MobileLayers[i].Frame.Center.X);
                     float y = -drawY - (m_MobileLayers[i].Frame.Texture.Height + m_MobileLayers[i].Frame.Center.Y) + drawCenterY;
 
                     if (yOffset > y)
@@ -94,10 +112,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
 
                     Rectangle screenDest = new Rectangle(
-                        DrawFlip ? (int)drawPosition.X + DrawArea.X - DrawArea.Width + IsometricRenderer.TILE_SIZE_INTEGER : (int)drawPosition.X - DrawArea.X,
-                        (int)drawPosition.Y - DrawArea.Y,
-                        DrawFlip ? DrawArea.Width : DrawArea.Width,
-                        DrawArea.Height);
+                        /* x */ DrawFlip ? (int)drawPosition.X + DrawArea.X - DrawArea.Width + IsometricRenderer.TILE_SIZE_INTEGER : (int)drawPosition.X - DrawArea.X,
+                        /* y */ (int)drawPosition.Y - DrawArea.Y,
+                        /* w */ DrawFlip ? DrawArea.Width : DrawArea.Width,
+                        /* h */ DrawArea.Height);
 
                     base.Draw(spriteBatch, drawPosition, mouseOverList, map);
                 }
@@ -116,9 +134,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 yOffset = -(yOffset + IsometricRenderer.TILE_SIZE_INTEGER);
             }
 
-            DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, (int)yOffset);
+            DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, yOffset);
 
             return true;
+        }
+
+        private new Mobile Entity
+        {
+            get { return (Mobile)base.Entity; }
         }
 
         // ======================================================================
@@ -180,7 +203,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             if (Entity.Body.IsHuman)
             {
-                int[] drawLayers = m_DrawLayerOrder;
+                int[] drawLayers = DrawLayerOrder;
                 bool hasOuterTorso = Entity.Equipment[(int)EquipLayer.OuterTorso] != null && Entity.Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
 
                 for (int i = 0; i < drawLayers.Length; i++)
@@ -210,45 +233,45 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        public void AddLayer(int bodyID, int hue)
+        private void AddLayer(int bodyID, int hue)
         {
             int facing = MirrorFacingForDraw(Entity.Facing);
-            int animation = m_Animation.ActionIndex;
-            float frame = m_Animation.AnimationFrame;
+            int animation = Animation.ActionIndex;
+            float frame = Animation.AnimationFrame;
 
             int frameCount;
             m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, getFrame(bodyID, hue, facing, animation, frame, out frameCount));
             m_FrameCount = frameCount;
         }
 
-        public void ClearLayers()
+        private void ClearLayers()
         {
             m_LayerCount = 0;
         }
 
-        private int[] m_DrawLayerOrder
+        private int[] DrawLayerOrder
         {
             get
             {
                 int direction = MirrorFacingForDraw(Entity.Facing);
                 switch (direction)
                 {
-                    case 0x00: return m_DrawLayerOrderDown;
-                    case 0x01: return m_DrawLayerOrderSouth;
-                    case 0x02: return m_DrawLayerOrderLeft;
-                    case 0x03: return m_DrawLayerOrderWest;
-                    case 0x04: return m_DrawLayerOrderUp;
-                    case 0x05: return m_DrawLayerOrderNorth;
-                    case 0x06: return m_DrawLayerOrderRight;
-                    case 0x07: return m_DrawLayerOrderEast;
+                    case 0x00: return s_DrawLayerOrderDown;
+                    case 0x01: return s_DrawLayerOrderSouth;
+                    case 0x02: return s_DrawLayerOrderLeft;
+                    case 0x03: return s_DrawLayerOrderWest;
+                    case 0x04: return s_DrawLayerOrderUp;
+                    case 0x05: return s_DrawLayerOrderNorth;
+                    case 0x06: return s_DrawLayerOrderRight;
+                    case 0x07: return s_DrawLayerOrderEast;
                     default:
-                        // TODO: Log an Error
-                        return m_DrawLayerOrderNorth;
+                        // MirrorFacingForDraw ands with 0x07, this will never happen.
+                        return s_DrawLayerOrderNorth;
                 }
             }
         }
 
-        private static int[] m_DrawLayerOrderNorth = new int[] { 
+        private static int[] s_DrawLayerOrderNorth = new int[] { 
             (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, 
             (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, 
             (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, 
@@ -257,7 +280,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             (int)EquipLayer.Earrings, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.Helm, 
             (int)EquipLayer.TwoHanded, 
             };
-        private static int[] m_DrawLayerOrderRight = new int[] { 
+        private static int[] s_DrawLayerOrderRight = new int[] { 
             (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, 
             (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, 
             (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, 
@@ -265,7 +288,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair,
             (int)EquipLayer.Earrings, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.Helm, 
             (int)EquipLayer.TwoHanded };
-        private static int[] m_DrawLayerOrderEast = new int[] { 
+        private static int[] s_DrawLayerOrderEast = new int[] { 
             (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, 
             (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, 
             (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, 
@@ -273,7 +296,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, 
             (int)EquipLayer.Earrings, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.Helm, 
             (int)EquipLayer.TwoHanded };
-        private static int[] m_DrawLayerOrderDown = new int[] { 
+        private static int[] s_DrawLayerOrderDown = new int[] { 
             (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Cloak, (int)EquipLayer.Shirt, 
             (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, 
             (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, 
@@ -281,7 +304,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, 
             (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.OneHanded, (int)EquipLayer.Helm, 
             (int)EquipLayer.TwoHanded };
-        private static int[] m_DrawLayerOrderSouth = new int[] { 
+        private static int[] s_DrawLayerOrderSouth = new int[] { 
             (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, 
             (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, 
             (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, 
@@ -289,7 +312,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, 
             (int)EquipLayer.Earrings, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.Helm, 
             (int)EquipLayer.TwoHanded };
-        private static int[] m_DrawLayerOrderLeft = new int[] { 
+        private static int[] s_DrawLayerOrderLeft = new int[] { 
             (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, 
             (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, 
             (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, 
@@ -297,7 +320,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, 
             (int)EquipLayer.Earrings, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.Helm, 
             (int)EquipLayer.TwoHanded };
-        private static int[] m_DrawLayerOrderWest = new int[] { 
+        private static int[] s_DrawLayerOrderWest = new int[] { 
             (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, 
             (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, 
             (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, 
@@ -305,7 +328,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, 
             (int)EquipLayer.Earrings, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.Helm, 
             (int)EquipLayer.TwoHanded };
-        private static int[] m_DrawLayerOrderUp = new int[] { 
+        private static int[] s_DrawLayerOrderUp = new int[] { 
             (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, 
             (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, 
             (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, 

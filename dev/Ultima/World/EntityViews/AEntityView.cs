@@ -1,12 +1,24 @@
-﻿using System;
+﻿/***************************************************************************
+ *   AEntityView.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.WorldViews;
+#endregion
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -47,6 +59,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
         protected bool DrawFlip = false;
         protected Rectangle DrawArea = Rectangle.Empty;
         protected Texture2D DrawTexture = null;
+
+        protected bool DrawShadow = false;
+        protected float DrawShadowZ = 0;
 
         public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
@@ -130,7 +145,20 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             if (!spriteBatch.Draw(DrawTexture, vertexBuffer, s_Technique))
             {
+                // the vertex buffer was not on screen, return false (did not draw)
                 return false;
+            }
+
+            if (DrawShadow)
+            {
+                if (Entity.Position.Y_offset != 0)
+                {
+
+                }
+                spriteBatch.DrawShadow(DrawTexture, vertexBuffer, new Vector2(
+                    drawPosition.X + IsometricRenderer.TILE_SIZE_FLOAT_HALF,
+                    drawPosition.Y + (Entity.Position.Offset.X + Entity.Position.Offset.Y) * IsometricRenderer.TILE_SIZE_FLOAT_HALF - ((Entity.Position.Z_offset + Entity.Z) * 4) + IsometricRenderer.TILE_SIZE_FLOAT_HALF), 
+                    DrawFlip, DrawShadowZ);
             }
 
             Pick(mouseOverList, vertexBuffer);
