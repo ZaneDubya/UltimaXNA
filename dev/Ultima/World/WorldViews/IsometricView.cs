@@ -76,7 +76,15 @@ namespace UltimaXNA.Ultima.World.WorldViews
             {
                 if (m_RenderTarget != null)
                     m_RenderTarget.Dispose();
-                m_RenderTarget = new RenderTarget2D(m_SpriteBatch.GraphicsDevice, Settings.World.PlayWindowGumpResolution.Width / pixelScale, Settings.World.PlayWindowGumpResolution.Height / pixelScale, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
+                m_RenderTarget = new RenderTarget2D(
+                    m_SpriteBatch.GraphicsDevice, 
+                    Settings.World.PlayWindowGumpResolution.Width / pixelScale, 
+                    Settings.World.PlayWindowGumpResolution.Height / pixelScale, 
+                    false, 
+                    SurfaceFormat.Color, 
+                    DepthFormat.Depth24Stencil8, 
+                    0, 
+                    RenderTargetUsage.DiscardContents);
             }
 
             DetermineIfClientIsUnderEntity(map, center);

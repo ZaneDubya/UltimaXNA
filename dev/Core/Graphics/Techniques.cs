@@ -14,11 +14,19 @@ namespace UltimaXNA.Core.Graphics
     // N.B. Techniques must be numbered sequentially! Any missing numbers might cause the shader to crash.
     public enum Techniques : int
     {
+        // drawn effects:
         Hued = 0,
         MiniMap = 1,
         Grayscale = 2,
+        // not drawn effects:
+        StencilSet = 3, 
+        StencilClear = 4,
 
         Default = Hued,
-        Max = Grayscale
+        FirstDrawn = Hued,
+        LastDrawn = Grayscale,
+        FirstStencil = StencilSet,
+        LastStencil = StencilClear,
+        All = StencilClear
     }
 }

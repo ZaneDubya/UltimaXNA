@@ -138,6 +138,15 @@ float4 PixelShader_Grayscale(PS_INPUT IN) : COLOR0
 	return color;
 }
 
+float4 PixelShader_Simple(PS_INPUT IN) : COLOR0
+{
+	// Get the initial pixel and discard it if the alpha == 0
+	float4 color = tex2D(DrawSampler, IN.TexCoord);
+	if (color.a == 0)
+		discard;
+	return color;
+}
+
 
 technique HueTechnique
 {
@@ -163,5 +172,14 @@ technique GrayscaleTechnique
 	{
 		VertexShader = compile vs_2_0 VertexShaderFunction();
 		PixelShader = compile ps_2_0 PixelShader_Grayscale();
+	}
+}
+
+technique SimpleTechnique
+{
+	pass p0
+	{
+		VertexShader = compile vs_2_0 VertexShaderFunction();
+		PixelShader = compile ps_2_0 PixelShader_Simple();
 	}
 }

@@ -37,9 +37,9 @@ namespace UltimaXNA.Core.Graphics
         {
             Game = game;
 
-            m_drawQueue = new List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>>(1024);
-            for (int i = 0; i <= (int)Techniques.Max; i++)
-                m_drawQueue.Add(new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>());
+            m_drawQueue = new List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>>((int)Techniques.All);
+            for (int i = 0; i <= (int)Techniques.All; i++)
+                m_drawQueue.Add(new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(1024));
 
             m_indexBuffer = CreateIndexBuffer(0x2000);
             m_vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
@@ -81,11 +81,11 @@ namespace UltimaXNA.Core.Graphics
         /// <param name="texture"></param>
         /// <param name="vertices"></param>
         /// <returns>True if the object was drawn, false otherwise.</returns>
-        public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Techniques effects = Techniques.Default)
+        public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Techniques effect = Techniques.Default)
         {
             bool draw = false;
 
-            // Check: do not draw if there is no texture to draw with.
+            // Sanity: do not draw if there is no texture to draw with.
             if (texture == null)
                 return false;
 
@@ -104,31 +104,34 @@ namespace UltimaXNA.Core.Graphics
             // Set the draw position's z value, and increment the z value for the next drawn object.
             vertices[0].Position.Z = vertices[1].Position.Z = vertices[2].Position.Z = vertices[3].Position.Z = Z++;
 
-            // Get the vertex list for this texture. if none exists, dequeue or create a new vertex list.
-            List<VertexPositionNormalTextureHue> vertexList;
-            if(m_drawQueue[(int)effects].ContainsKey(texture))
-            {
-                vertexList = m_drawQueue[(int)effects][texture];
-            }
-            else
-            {
-                if(m_vertexListQueue.Count > 0)
-                {
-                    vertexList = m_vertexListQueue.Dequeue();
-                    vertexList.Clear();
-                }
-                else
-                {
-                    vertexList = new List<VertexPositionNormalTextureHue>(1024);
-                }
-                m_drawQueue[(int)effects].Add(texture, vertexList);
-            }
+            // Get the vertex list for this texture. if none exists, dequeue existing or create a new vertex list.
+            List<VertexPositionNormalTextureHue> vertexList = GetVertexList(texture, effect);
 
             // Add the drawn object to the vertex list.
             for(int i = 0; i < vertices.Length; i++)
                 vertexList.Add(vertices[i]);
 
             return true;
+        }
+
+        public void DrawShadow(Texture2D texture, VertexPositionNormalTextureHue[] vertices, bool useVertex02 = false)
+        {
+            // Sanity: do not draw if there is no texture to draw with.
+            if (texture == null)
+                return;
+
+            List<VertexPositionNormalTextureHue> vertexList;
+
+            vertexList = GetVertexList(texture, Techniques.StencilClear);
+            for (int i = 0; i < vertices.Length; i++)
+                vertexList.Add(vertices[i]);
+
+            vertices[0].Position.X += 50; // skew texture
+            vertices[useVertex02 ? 2 : 1].Position.X += 50; // skew texture
+
+            vertexList = GetVertexList(texture, Techniques.StencilSet);
+            for (int i = 0; i < vertices.Length; i++)
+                vertexList.Add(vertices[i]);
         }
 
         public void Flush(bool doLighting)
@@ -153,15 +156,63 @@ namespace UltimaXNA.Core.Graphics
             m_Effect.Parameters["Viewport"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
 
             GraphicsDevice.DepthStencilState = depthDefault;
-            DrawAllVertices(true);
+            DrawAllVertices();
         }
 
-        private void DrawAllVertices(bool clearAfterDraw)
+        private List<VertexPositionNormalTextureHue> GetVertexList(Texture2D texture, Techniques effect)
         {
-            Texture2D texture;
             List<VertexPositionNormalTextureHue> vertexList;
+            if (m_drawQueue[(int)effect].ContainsKey(texture))
+            {
+                vertexList = m_drawQueue[(int)effect][texture];
+            }
+            else
+            {
+                if (m_vertexListQueue.Count > 0)
+                {
+                    vertexList = m_vertexListQueue.Dequeue();
+                    vertexList.Clear();
+                }
+                else
+                {
+                    vertexList = new List<VertexPositionNormalTextureHue>(1024);
+                }
+                m_drawQueue[(int)effect].Add(texture, vertexList);
+            }
+            return vertexList;
+        }
 
-            for (Techniques effect = 0; effect <= Techniques.Max; effect += 1)
+        private void DrawAllVertices()
+        {
+            // draw stencil objects (set and clear).
+            m_Effect.CurrentTechnique = m_Effect.Techniques["SimpleTechnique"];
+            m_Effect.CurrentTechnique.Passes[0].Apply();
+
+            for (Techniques effect = Techniques.FirstStencil; effect <= Techniques.LastStencil; effect += 1)
+            {
+                switch (effect)
+                {
+                    case Techniques.StencilSet: // happens first
+                        break;
+                    case Techniques.StencilClear: // happens second
+                        break;
+                }
+
+                IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> vertexEnumerator = m_drawQueue[(int)effect].GetEnumerator();
+                while (vertexEnumerator.MoveNext())
+                {
+                    Texture2D texture = vertexEnumerator.Current.Key;
+                    List<VertexPositionNormalTextureHue> vertexList = vertexEnumerator.Current.Value;
+                    GraphicsDevice.Textures[0] = texture;
+                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_indexBuffer, 0, vertexList.Count / 2);
+                    vertexList.Clear();
+                    m_vertexListQueue.Enqueue(vertexList);
+                }
+                m_drawQueue[(int)effect].Clear();
+            }
+
+            // draw normal objects
+            for (Techniques effect = Techniques.FirstDrawn; effect <= Techniques.LastDrawn; effect += 1)
             {
                 switch (effect)
                 {
@@ -180,23 +231,17 @@ namespace UltimaXNA.Core.Graphics
                 }
                 m_Effect.CurrentTechnique.Passes[0].Apply();
 
-                IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_drawQueue[(int)effect].GetEnumerator();
-                while (keyValuePairs.MoveNext())
+                IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> vertexEnumerator = m_drawQueue[(int)effect].GetEnumerator();
+                while (vertexEnumerator.MoveNext())
                 {
-                    texture = keyValuePairs.Current.Key;
-                    vertexList = keyValuePairs.Current.Value;
+                    Texture2D texture = vertexEnumerator.Current.Key;
+                    List<VertexPositionNormalTextureHue> vertexList = vertexEnumerator.Current.Value;
                     GraphicsDevice.Textures[0] = texture;
                     GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_indexBuffer, 0, vertexList.Count / 2);
-                    if (clearAfterDraw)
-                    {
-                        vertexList.Clear();
-                        m_vertexListQueue.Enqueue(vertexList);
-                    }
+                    vertexList.Clear();
+                    m_vertexListQueue.Enqueue(vertexList);
                 }
-                if (clearAfterDraw)
-                {
-                    m_drawQueue[(int)effect].Clear();
-                }
+                m_drawQueue[(int)effect].Clear();
             }
         }
 

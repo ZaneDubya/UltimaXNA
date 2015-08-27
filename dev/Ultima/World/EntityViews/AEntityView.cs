@@ -48,6 +48,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
         protected Rectangle DrawArea = Rectangle.Empty;
         protected Texture2D DrawTexture = null;
 
+        protected bool DrawShadow = false;
+
         public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
             VertexPositionNormalTextureHue[] vertexBuffer;
@@ -130,7 +132,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             if (!spriteBatch.Draw(DrawTexture, vertexBuffer, s_Technique))
             {
+                // the vertex buffer was not on screen, return false (did not draw)
                 return false;
+            }
+
+            if (DrawShadow)
+            {
+                spriteBatch.DrawShadow(DrawTexture, vertexBuffer, DrawFlip);
             }
 
             Pick(mouseOverList, vertexBuffer);
