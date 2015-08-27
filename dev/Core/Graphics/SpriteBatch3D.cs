@@ -120,7 +120,7 @@ namespace UltimaXNA.Core.Graphics
             return true;
         }
 
-        public void DrawShadow(Texture2D texture, VertexPositionNormalTextureHue[] vertices, bool useVertex02 = false, float z = 0)
+        public void DrawShadow(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Vector3 drawPosition, bool useVertex02, float z)
         {
             // Sanity: do not draw if there is no texture to draw with.
             if (texture == null)
@@ -128,8 +128,9 @@ namespace UltimaXNA.Core.Graphics
 
             List<VertexPositionNormalTextureHue> vertexList;
             vertices[0].Position.Z = vertices[1].Position.Z = vertices[2].Position.Z = vertices[3].Position.Z = z;
-            vertices[0].Position.X += 30; // skew texture
-            vertices[useVertex02 ? 2 : 1].Position.X += 30; // skew texture
+            float xSkew = drawPosition.X - vertices[2].Position.X;
+            vertices[0].Position.X += xSkew; // skew texture
+            vertices[useVertex02 ? 2 : 1].Position.X += xSkew; // skew texture
 
             vertexList = GetVertexList(texture, Techniques.ShadowSet);
             for (int i = 0; i < vertices.Length; i++)

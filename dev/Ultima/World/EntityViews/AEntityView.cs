@@ -139,7 +139,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             if (DrawShadow)
             {
-                spriteBatch.DrawShadow(DrawTexture, vertexBuffer, DrawFlip, DrawShadowZ);
+                spriteBatch.DrawShadow(DrawTexture, vertexBuffer, drawPosition, DrawFlip, DrawShadowZ);
             }
 
             Pick(mouseOverList, vertexBuffer);
