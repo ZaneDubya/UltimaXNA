@@ -120,18 +120,26 @@ namespace UltimaXNA.Core.Graphics
             return true;
         }
 
-        public void DrawShadow(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Vector3 drawPosition, bool useVertex02, float z)
+        public void DrawShadow(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Vector2 drawPosition, bool useVertex02, float z)
         {
             // Sanity: do not draw if there is no texture to draw with.
             if (texture == null)
                 return;
+            // set proper z depth for this shadow.
+            vertices[0].Position.Z = vertices[1].Position.Z = vertices[2].Position.Z = vertices[3].Position.Z = z;
+            // skew texture
+            float skewHorizTop = (vertices[0].Position.Y - drawPosition.Y) * .5f;
+            float skewHorizBottom = (vertices[3].Position.Y - drawPosition.Y) * .5f;
+            vertices[0].Position.X -= skewHorizTop;
+            vertices[0].Position.Y -= skewHorizTop;
+            vertices[useVertex02 ? 2 : 1].Position.X -= skewHorizTop;
+            vertices[useVertex02 ? 2 : 1].Position.Y -= skewHorizTop;
+            vertices[useVertex02 ? 1 : 2].Position.X -= skewHorizBottom;
+            vertices[useVertex02 ? 1 : 2].Position.Y -= skewHorizBottom;
+            vertices[3].Position.X -= skewHorizBottom; 
+            vertices[3].Position.Y -= skewHorizBottom;
 
             List<VertexPositionNormalTextureHue> vertexList;
-            vertices[0].Position.Z = vertices[1].Position.Z = vertices[2].Position.Z = vertices[3].Position.Z = z;
-            float xSkew = drawPosition.X - vertices[2].Position.X;
-            vertices[0].Position.X += xSkew; // skew texture
-            vertices[useVertex02 ? 2 : 1].Position.X += xSkew; // skew texture
-
             vertexList = GetVertexList(texture, Techniques.ShadowSet);
             for (int i = 0; i < vertices.Length; i++)
                 vertexList.Add(vertices[i]);

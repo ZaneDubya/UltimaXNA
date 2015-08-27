@@ -139,7 +139,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             if (DrawShadow)
             {
-                spriteBatch.DrawShadow(DrawTexture, vertexBuffer, drawPosition, DrawFlip, DrawShadowZ);
+                if (Entity.Position.Y_offset != 0)
+                {
+
+                }
+                spriteBatch.DrawShadow(DrawTexture, vertexBuffer, new Vector2(
+                    drawPosition.X + IsometricRenderer.TILE_SIZE_FLOAT_HALF,
+                    drawPosition.Y + (Entity.Position.Offset.X + Entity.Position.Offset.Y) * IsometricRenderer.TILE_SIZE_FLOAT_HALF - ((Entity.Position.Z_offset + Entity.Z) * 4) + IsometricRenderer.TILE_SIZE_FLOAT_HALF), 
+                    DrawFlip, DrawShadowZ);
             }
 
             Pick(mouseOverList, vertexBuffer);
