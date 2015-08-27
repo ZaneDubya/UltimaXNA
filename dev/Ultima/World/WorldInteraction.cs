@@ -57,9 +57,9 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        public void SendChat(string text) // used by chatwindow.
+        public void SendSpeech(string text) // used by chatwindow.
         {
-            m_Network.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
+            m_Network.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, Settings.Game.SpeechColor + 2, 0, "ENU", text));
         }
 
         /// <summary>

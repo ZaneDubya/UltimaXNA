@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.Network.Client
     {
         const byte HasTriggers = 0xC0;
 
-        public AsciiSpeechPacket(AsciiSpeechPacketTypes type, int color, int font, string lang, string text)
+        public AsciiSpeechPacket(AsciiSpeechPacketTypes type, int hue, int font, string lang, string text)
             : base(0xAD, "Ascii Speech")
         {
             // get triggers
@@ -46,7 +46,7 @@ namespace UltimaXNA.Ultima.Network.Client
                 type = (AsciiSpeechPacketTypes)((byte)type | HasTriggers);
 
             Stream.Write((byte)type);
-            Stream.Write((short)color);
+            Stream.Write((short)hue);
             Stream.Write((short)font);
             Stream.WriteAsciiNull(lang);
             if (triggerCount > 0)
