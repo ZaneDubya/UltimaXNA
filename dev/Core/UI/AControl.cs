@@ -525,6 +525,15 @@ namespace UltimaXNA.Core.UI
                 Parent.ChangePage(pageIndex);
         }
 
+        protected int ServerRecievedHueTransform(int hue)
+        {
+            if (hue > 1)            // hue: if greater than or equal to 2, subtract 2 to get the true hue.
+                hue -= 2;
+            if (hue < 2)             // hue: if 0 or 1, set to 1 (true black).
+                hue = 1;
+            return hue;
+        }
+
         // ================================================================================
         // Overrideable methods
         // ================================================================================

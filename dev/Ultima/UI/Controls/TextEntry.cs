@@ -67,11 +67,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             y = Int32.Parse(arguements[2]);
             width = Int32.Parse(arguements[3]);
             height = Int32.Parse(arguements[4]);
-            hue = Int32.Parse(arguements[5]);
-            if (hue > 1)            // hue: if greater than or equal to 2, subtract 2 to get the true hue.
-                hue -= 2;
-            if (hue < 2)             // hue: if 0 or 1, set to 1 (true black).
-                hue = 1;
+            hue = ServerRecievedHueTransform(Int32.Parse(arguements[5]));
+            
             entryID = Int32.Parse(arguements[6]);
             textIndex = Int32.Parse(arguements[7]);
             if (arguements[0] == "textentrylimited")

@@ -53,7 +53,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             int x, y, hue, textIndex;
             x = Int32.Parse(arguements[1]);
             y = Int32.Parse(arguements[2]);
-            hue = Int32.Parse(arguements[3]);
+            hue = ServerRecievedHueTransform(Int32.Parse(arguements[3]));
             textIndex = Int32.Parse(arguements[4]);
             buildGumpling(x, y, hue, lines[textIndex]);
         }

@@ -339,6 +339,7 @@ namespace UltimaXNA
         private void InitializeGraphicsDeviceAndWindow()
         {
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
+            GraphicsDeviceManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             GraphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
             Window.ClientSizeChanged += new EventHandler<EventArgs>(OnWindowSizeChanged);
         }
