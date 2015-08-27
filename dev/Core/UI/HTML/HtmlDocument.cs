@@ -644,6 +644,11 @@ namespace UltimaXNA.Core.UI.HTML
                 {
                     ImageElement image = (element as ImageElement);
                     image.AssociatedImage.Area = new Rectangle(x, y, image.Width, image.Height);
+                    if (element.Style.IsHREF)
+                    {
+                        Links.AddLink(element.Style, new Rectangle(x, y, element.Width, element.Height));
+                        image.AssociatedImage.LinkIndex = Links.Count;
+                    }
                 }
                 else if (element is BlockElement)
                 {

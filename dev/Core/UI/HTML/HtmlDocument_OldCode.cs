@@ -343,7 +343,7 @@ namespace UltimaXNA.Core.UI.HTML
                                 //regionHeight = 0;
                             }
 
-                            image.RegionIndex = region.Index;
+                            image.LinkIndex = region.Index;
                         }
                     }
 

@@ -207,7 +207,7 @@ namespace UltimaXNA.Core.UI
                     Texture2D texture = null;
 
                     // is the mouse over this image?
-                    if (image.RegionIndex == MouseOverRegionID)
+                    if (image.LinkIndex != -1 && image.LinkIndex == MouseOverRegionID)
                     {
                         if (IsMouseDown)
                             texture = image.TextureDown;
