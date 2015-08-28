@@ -14,6 +14,7 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.World.Entities.Effects;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.EntityViews;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
 
 namespace UltimaXNA.Ultima.World.Entities
 {
@@ -41,6 +42,8 @@ namespace UltimaXNA.Ultima.World.Entities
         {
             if (entity is Mobile)
                 return (MobileView)entity.GetView();
+            else if (entity is Corpse)
+                return (CorpseView)entity.GetView();
             else if (entity is LightningEffect)
                 return (LightningEffectView)entity.GetView();
             else if (entity is AnimatedItemEffect)

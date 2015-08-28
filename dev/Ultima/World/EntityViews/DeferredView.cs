@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 }
             }
 
-            m_BaseView.SetYClipLine(m_DrawPosition.Y - 33 - ((Entity.Position.Z + Entity.Position.Z_offset) * 4)  + ((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF));
+            m_BaseView.SetYClipLine(m_DrawPosition.Y - 22 - ((Entity.Position.Z + Entity.Position.Z_offset) * 4)  + ((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF));
             bool success = m_BaseView.DrawInternal(spriteBatch, m_DrawPosition, mouseOverList, map);
             m_BaseView.ClearYClipLine();
             return success;

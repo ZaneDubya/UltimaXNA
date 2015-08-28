@@ -25,6 +25,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
+            CheckDefer(map, drawPosition);
+
+            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map);
+        }
+
+        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        {
             int facing = MirrorFacingForDraw(Entity.Facing);
             int frameIndex = (int)(Entity.Frame * BodyConverter.DeathAnimationFrameCount(Entity.Body));
 
@@ -37,7 +44,6 @@ namespace UltimaXNA.Ultima.World.EntityViews
             DrawArea = new Rectangle(
                 animationFrame.Center.X - IsometricRenderer.TILE_SIZE_INTEGER_HALF,
                 DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER_HALF + (Entity.Z * 4) + animationFrame.Center.Y, DrawTexture.Width, DrawTexture.Height);
-            // DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
 
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
         }
