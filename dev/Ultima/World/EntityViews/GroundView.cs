@@ -78,7 +78,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             m_vertexBufferAlternate[2].Position = drawPosition + m_vertex2_yOffset;
             m_vertexBufferAlternate[3].Position = drawPosition + m_vertex3_yOffset;
 
-            if (!spriteBatch.Draw(DrawTexture, m_vertexBufferAlternate, s_Technique))
+            if (!spriteBatch.DrawSprite(DrawTexture, m_vertexBufferAlternate, s_Technique))
                 return false;
 
             if ((mouseOverList.PickType & PickType) == PickType)

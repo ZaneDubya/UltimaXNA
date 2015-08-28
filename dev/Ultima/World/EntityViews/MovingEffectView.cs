@@ -39,16 +39,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
-            if (!m_AllowDefer)
-            {
-                if (CheckDefer(map, drawPosition))
-                    return false;
-            }
-            else
-            {
-                m_AllowDefer = false;
-            }
+            CheckDefer(map, drawPosition);
 
+            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map);
+        }
+
+        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        {
             int displayItemdID = (m_Animated) ? Effect.ItemID + ((Effect.FramesActive / m_AnimData.FrameInterval) % m_AnimData.FrameCount) : Effect.ItemID;
 
             if (displayItemdID != m_DisplayItemID)

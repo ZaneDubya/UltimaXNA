@@ -35,6 +35,11 @@ namespace UltimaXNA.Ultima.World.EntityViews
         /// </summary>
         public readonly MobileAnimation Animation;
 
+        private new Mobile Entity
+        {
+            get { return (Mobile)base.Entity; }
+        }
+
         public MobileView(Mobile mobile)
             : base(mobile)
         {
@@ -42,7 +47,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             m_MobileLayers = new MobileViewLayer[(int)EquipLayer.LastUserValid];
             PickType = PickType.PickObjects;
 
-            DrawShadow = true;
+            IsShadowCastingView = true;
         }
 
         public void Update(double frameMS)
@@ -52,17 +57,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
-            if (!m_AllowDefer)
-            {
-                if (CheckDefer(map, drawPosition))
-                    return false;
-            }
-            else
-            {
-                m_AllowDefer = false;
-            }
+            CheckDefer(map, drawPosition);
 
-            DrawShadowZ = spriteBatch.GetNextUniqueZ();
+            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map);
+        }
+
+        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        {
+            DrawShadowZDepth = spriteBatch.GetNextUniqueZ();
             DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
 
             if (Entity.IsMoving)
@@ -137,11 +139,6 @@ namespace UltimaXNA.Ultima.World.EntityViews
             DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, yOffset);
 
             return true;
-        }
-
-        private new Mobile Entity
-        {
-            get { return (Mobile)base.Entity; }
         }
 
         // ======================================================================

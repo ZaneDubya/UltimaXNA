@@ -3,6 +3,7 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.World.WorldViews;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -28,8 +29,11 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     return false;
                 }
             }
-            m_BaseView.SetAllowDefer();
-            return m_BaseView.Draw(spriteBatch, m_DrawPosition, mouseOverList, map);
+
+            m_BaseView.SetYClipLine(m_DrawPosition.Y - 33 - ((Entity.Position.Z + Entity.Position.Z_offset) * 4)  + ((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF));
+            bool success = m_BaseView.DrawInternal(spriteBatch, m_DrawPosition, mouseOverList, map);
+            m_BaseView.ClearYClipLine();
+            return success;
         }
     }
 }

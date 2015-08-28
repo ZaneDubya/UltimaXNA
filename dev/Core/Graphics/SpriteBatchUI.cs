@@ -33,7 +33,7 @@ namespace UltimaXNA.Core.Graphics
             };
 
             v[0].Hue = v[1].Hue = v[2].Hue = v[3].Hue = hue;
-            return Draw(texture, v);
+            return DrawSprite(texture, v);
         }
 
         public bool Draw2D(Texture2D texture, Vector3 position, Rectangle sourceRect, Vector3 hue)
@@ -52,7 +52,7 @@ namespace UltimaXNA.Core.Graphics
             };
 
             v[0].Hue = v[1].Hue = v[2].Hue = v[3].Hue = hue;
-            return Draw(texture, v);
+            return DrawSprite(texture, v);
         }
 
         public bool Draw2D(Texture2D texture, Rectangle destRect, Rectangle sourceRect, Vector3 hue)
@@ -69,7 +69,7 @@ namespace UltimaXNA.Core.Graphics
             };
 
             v[0].Hue = v[1].Hue = v[2].Hue = v[3].Hue = hue;
-            return Draw(texture, v);
+            return DrawSprite(texture, v);
         }
 
         public bool Draw2D(Texture2D texture, Rectangle destRect, Vector3 hue)
@@ -83,7 +83,7 @@ namespace UltimaXNA.Core.Graphics
             };
 
             v[0].Hue = v[1].Hue = v[2].Hue = v[3].Hue = hue;
-            return Draw(texture, v);
+            return DrawSprite(texture, v);
         }
 
         public bool Draw2DTiled(Texture2D texture, Rectangle destRect, Vector3 hue)

@@ -32,9 +32,12 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 		private const int PersonHeight = 16;
 		private const int StepHeight = 2;
 
-		public static bool CheckMovementForced(Mobile m, Position3D loc, Direction d, out int newZ)
+		public static int GetNextZ(Mobile m, Position3D loc, Direction d)
 		{
-			return CheckMovement(m, loc, d,out newZ, true);
+            int newZ;
+            if (CheckMovement(m, loc, d, out newZ, true))
+                return newZ;
+            return loc.Z;
 		}
 
 		public static bool CheckMovement(Mobile m, Position3D loc, Direction d, out int newZ, bool forceOK = false)

@@ -59,9 +59,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
         protected bool DrawFlip = false;
         protected Rectangle DrawArea = Rectangle.Empty;
         protected Texture2D DrawTexture = null;
+        protected Vector3 HueVector = Vector3.Zero;
 
-        protected bool DrawShadow = false;
-        protected float DrawShadowZ = 0;
+        protected bool IsShadowCastingView = false;
+        protected float DrawShadowZDepth = 0;
 
         public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
@@ -108,15 +109,29 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     vertexBuffer[0].Position = drawPosition;
                     vertexBuffer[0].Position.X += DrawArea.X + IsometricRenderer.TILE_SIZE_FLOAT;
                     vertexBuffer[0].Position.Y -= DrawArea.Y;
+                    vertexBuffer[0].TextureCoordinate.Y = 0;
 
                     vertexBuffer[1].Position = vertexBuffer[0].Position;
                     vertexBuffer[1].Position.Y += DrawArea.Height;
 
                     vertexBuffer[2].Position = vertexBuffer[0].Position;
                     vertexBuffer[2].Position.X -= DrawArea.Width;
+                    vertexBuffer[2].TextureCoordinate.Y = 0;
 
                     vertexBuffer[3].Position = vertexBuffer[1].Position;
                     vertexBuffer[3].Position.X -= DrawArea.Width;
+
+                    if (m_YClipLine != 0)
+                    {
+                        if (m_YClipLine > vertexBuffer[3].Position.Y)
+                            return false;
+                        else if (m_YClipLine > vertexBuffer[0].Position.Y)
+                        {
+                            float uvStart = (m_YClipLine - vertexBuffer[0].Position.Y) / DrawTexture.Height;
+                            vertexBuffer[0].Position.Y = vertexBuffer[2].Position.Y = m_YClipLine;
+                            vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[2].TextureCoordinate.Y = uvStart;
+                        }
+                    }
                 }
                 else
                 {
@@ -128,22 +143,36 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     vertexBuffer[0].Position = drawPosition;
                     vertexBuffer[0].Position.X -= DrawArea.X;
                     vertexBuffer[0].Position.Y -= DrawArea.Y;
+                    vertexBuffer[0].TextureCoordinate.Y = 0;
 
                     vertexBuffer[1].Position = vertexBuffer[0].Position;
                     vertexBuffer[1].Position.X += DrawArea.Width;
+                    vertexBuffer[1].TextureCoordinate.Y = 0;
 
                     vertexBuffer[2].Position = vertexBuffer[0].Position;
                     vertexBuffer[2].Position.Y += DrawArea.Height;
 
                     vertexBuffer[3].Position = vertexBuffer[1].Position;
                     vertexBuffer[3].Position.Y += DrawArea.Height;
+
+                    if (m_YClipLine != 0)
+                    {
+                        if (m_YClipLine >= vertexBuffer[3].Position.Y)
+                            return false;
+                        else if (m_YClipLine > vertexBuffer[0].Position.Y)
+                        {
+                            float uvStart = (m_YClipLine - vertexBuffer[0].Position.Y) / DrawTexture.Height;
+                            vertexBuffer[0].Position.Y = vertexBuffer[1].Position.Y = m_YClipLine;
+                            vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[1].TextureCoordinate.Y = uvStart;
+                        }
+                    }
                 }
             }
 
             if (vertexBuffer[0].Hue != HueVector)
                 vertexBuffer[0].Hue = vertexBuffer[1].Hue = vertexBuffer[2].Hue = vertexBuffer[3].Hue = HueVector;
 
-            if (!spriteBatch.Draw(DrawTexture, vertexBuffer, s_Technique))
+            if (!spriteBatch.DrawSprite(DrawTexture, vertexBuffer, s_Technique))
             {
                 // the vertex buffer was not on screen, return false (did not draw)
                 return false;
@@ -151,15 +180,25 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             Pick(mouseOverList, vertexBuffer);
 
-            if (DrawShadow)
+            if (IsShadowCastingView)
             {
                 spriteBatch.DrawShadow(DrawTexture, vertexBuffer, new Vector2(
                     drawPosition.X + IsometricRenderer.TILE_SIZE_FLOAT_HALF,
                     drawPosition.Y + (Entity.Position.Offset.X + Entity.Position.Offset.Y) * IsometricRenderer.TILE_SIZE_FLOAT_HALF - ((Entity.Position.Z_offset + Entity.Z) * 4) + IsometricRenderer.TILE_SIZE_FLOAT_HALF),
-                    DrawFlip, DrawShadowZ);
+                    DrawFlip, DrawShadowZDepth);
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Used by DeferredView to draw an object without first determining if it should be deferred.
+        /// Should only be implemented for those views that call CheckDefer(), Otherwise, using only
+        /// Draw() will suffice. See MobileView for an example of use.
+        /// </summary>
+        public virtual bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        {
+            return false;
         }
 
         /// <summary>
@@ -201,20 +240,32 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        protected Vector3 HueVector = Vector3.Zero;
+        // ======================================================================
+        // Y Clipping (used during deferred draws.
+        // ======================================================================
+
+        protected int m_YClipLine = 0;
+
+        /// <summary>
+        /// Between the time when this is called and when ClearYClipLine() is called, this view will only draw sprites below
+        /// the specified y line.
+        /// </summary>
+        /// <param name="y"></param>
+        public virtual void SetYClipLine(float y)
+        {
+            m_YClipLine = (int)y;
+        }
+
+        public virtual void ClearYClipLine()
+        {
+            m_YClipLine = 0;
+        }
 
         // ======================================================================
         // Deferred drawing code
         // ======================================================================
 
-        protected bool m_AllowDefer = false;
-
-        public void SetAllowDefer()
-        {
-            m_AllowDefer = true;
-        }
-
-        protected bool CheckDefer(Map map, Vector3 drawPosition)
+        protected void CheckDefer(Map map, Vector3 drawPosition)
         {
             MapTile deferToTile;
             Direction checkDirection;
@@ -251,22 +302,18 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 if (Entity is Mobile)
                 {
                     Mobile mobile = Entity as Mobile;
-                    int z;
-                    if (MobileMovementCheck.CheckMovementForced(mobile, Entity.Position, checkDirection, out z))
-                    {
-                        DeferredEntity deferred = new DeferredEntity(mobile, drawPosition, z);
-                        deferToTile.OnEnter(deferred);
-                        return true;
-                    }
+                    // This calculates the z position of the mobile as if it had moved into the next tile.
+                    // Strictly speaking, this isn't necessary, but looks nice for mobiles that are walking.
+                    int z = MobileMovementCheck.GetNextZ(mobile, Entity.Position, checkDirection); 
+                    DeferredEntity deferred = new DeferredEntity(mobile, drawPosition, z);
+                    deferToTile.OnEnter(deferred);
                 }
                 else
                 {
                     DeferredEntity deferred = new DeferredEntity(Entity, drawPosition, Entity.Z);
                     deferToTile.OnEnter(deferred);
-                    return true;
                 }
             }
-            return false;
         }
     }
 }

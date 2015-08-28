@@ -28,16 +28,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
-            if (!m_AllowDefer)
-            {
-                if (CheckDefer(map, drawPosition))
-                    return false;
-            }
-            else
-            {
-                m_AllowDefer = false;
-            }
+            CheckDefer(map, drawPosition);
 
+            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map);
+        }
+
+        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        {
             int displayItemdID = 0x4e20 + Effect.FramesActive;
 
             if (displayItemdID != m_DisplayItemID)
@@ -47,7 +44,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                 DrawTexture = provider.GetUITexture(displayItemdID);
 
-                Point offset = m_Offsets[m_DisplayItemID - 20000];
+                Point offset = s_Offsets[m_DisplayItemID - 20000];
                 DrawArea = new Rectangle(offset.X, DrawTexture.Height - 33 + (Entity.Z * 4) + offset.Y, DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;
                 DrawFlip = false;
@@ -59,7 +56,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
         }
 
-        static Point[] m_Offsets = new Point[10]
+        static Point[] s_Offsets = new Point[10]
             {
                 new Point(48, 0),
                 new Point(68, 0),

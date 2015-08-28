@@ -86,7 +86,7 @@ namespace UltimaXNA.Core.Graphics
         /// <param name="texture"></param>
         /// <param name="vertices"></param>
         /// <returns>True if the object was drawn, false otherwise.</returns>
-        public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Techniques effect = Techniques.Default)
+        public bool DrawSprite(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Techniques effect = Techniques.Default)
         {
             bool draw = false;
 

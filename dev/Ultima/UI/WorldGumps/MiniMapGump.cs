@@ -107,7 +107,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 new VertexPositionNormalTextureHue(new Vector3(position.X + Width, position.Y + Height, 0), playerPosition + new Vector3(minimapU, minimapV, 0), new Vector3(1, 1, 0))
             };
 
-            spriteBatch.Draw(m_GumpTexture, v, Techniques.MiniMap);
+            spriteBatch.DrawSprite(m_GumpTexture, v, Techniques.MiniMap);
 
             if (UltimaGame.TotalMS % 500f < 250f)
             {
