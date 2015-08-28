@@ -120,7 +120,15 @@ namespace UltimaXNA.Core.Graphics
             return true;
         }
 
-        public void DrawShadow(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Vector2 drawPosition, bool useVertex02, float z)
+        /// <summary>
+        /// Draws a special 'shadow' sprite, automatically skewing the passed vertices.
+        /// </summary>
+        /// <param name="texture">The texture to draw with.</param>
+        /// <param name="vertices">An array of four vertices. Note: modified by this routine.</param>
+        /// <param name="drawPosition">The draw position at which this sprite begins (should be the center of an isometric tile for non-moving sprites).</param>
+        /// <param name="flipVertices">See AEntityView.Draw(); this is equivalent to DrawFlip.</param>
+        /// <param name="z">The z depth at which the shadow sprite should be placed.</param>
+        public void DrawShadow(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Vector2 drawPosition, bool flipVertices, float z)
         {
             // Sanity: do not draw if there is no texture to draw with.
             if (texture == null)
@@ -132,10 +140,10 @@ namespace UltimaXNA.Core.Graphics
             float skewHorizBottom = (vertices[3].Position.Y - drawPosition.Y) * .5f;
             vertices[0].Position.X -= skewHorizTop;
             vertices[0].Position.Y -= skewHorizTop;
-            vertices[useVertex02 ? 2 : 1].Position.X -= skewHorizTop;
-            vertices[useVertex02 ? 2 : 1].Position.Y -= skewHorizTop;
-            vertices[useVertex02 ? 1 : 2].Position.X -= skewHorizBottom;
-            vertices[useVertex02 ? 1 : 2].Position.Y -= skewHorizBottom;
+            vertices[flipVertices ? 2 : 1].Position.X -= skewHorizTop;
+            vertices[flipVertices ? 2 : 1].Position.Y -= skewHorizTop;
+            vertices[flipVertices ? 1 : 2].Position.X -= skewHorizBottom;
+            vertices[flipVertices ? 1 : 2].Position.Y -= skewHorizBottom;
             vertices[3].Position.X -= skewHorizBottom; 
             vertices[3].Position.Y -= skewHorizBottom;
 
