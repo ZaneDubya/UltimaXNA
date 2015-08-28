@@ -84,7 +84,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 if (m_MessageHistoryIndex > 0)
                     m_MessageHistoryIndex -= 1;
                 m_TextEntry.Text = m_MessageHistory[m_MessageHistoryIndex];
-
             }
             else if (m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.W, false, false, true))
             {
