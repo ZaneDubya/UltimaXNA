@@ -219,9 +219,6 @@ namespace UltimaXNA
 
             if(!IsMinimized)
             {
-                SpriteBatch3D.Reset();
-                GraphicsDevice.Clear(Color.Black);  
-
                 ActiveModel.GetView()
                     .Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);

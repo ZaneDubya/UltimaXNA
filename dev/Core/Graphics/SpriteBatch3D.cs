@@ -21,15 +21,11 @@ namespace UltimaXNA.Core.Graphics
 {
     public class SpriteBatch3D
     {
-        private static float Z; // shared between all spritebatches.
-        public float GetNextUniqueZ()
-        {
-            return Z++;
-        }
+        private const float MAX_ACCURATE_SINGLE_FLOAT = 65536; // this number is somewhat arbitrary; it's the number at which the difference between two subsequent integers is +/-0.005
 
-
-        private static BoundingBox ViewportArea;
-        private static Game Game;
+        private float m_Z;
+        private static BoundingBox m_ViewportArea;
+        private Game m_Game;
 
         private readonly List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>> m_drawQueue;
 
@@ -41,7 +37,7 @@ namespace UltimaXNA.Core.Graphics
 
         public SpriteBatch3D(Game game)
         {
-            Game = game;
+            m_Game = game;
 
             m_drawQueue = new List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>>((int)Techniques.All);
             for (int i = 0; i <= (int)Techniques.All; i++)
@@ -50,18 +46,18 @@ namespace UltimaXNA.Core.Graphics
             m_indexBuffer = CreateIndexBuffer(0x2000);
             m_vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
 
-            m_Effect = Game.Content.Load<Effect>("Shaders/IsometricWorld");
+            m_Effect = m_Game.Content.Load<Effect>("Shaders/IsometricWorld");
         }
 
         public GraphicsDevice GraphicsDevice
         {
             get
             {
-                if (Game == null)
+                if (m_Game == null)
                 {
                     return null;
                 }
-                return Game.GraphicsDevice;
+                return m_Game.GraphicsDevice;
             }
         }
 
@@ -75,10 +71,15 @@ namespace UltimaXNA.Core.Graphics
             get { return Matrix.CreateOrthographicOffCenter(0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0f, Int16.MinValue, Int16.MaxValue); }
         }
 
-        public static void Reset()
+        public void Reset(bool setZHigh = false)
         {
-            Z = 0;
-            ViewportArea = new BoundingBox(new Vector3(0, 0, Int32.MinValue), new Vector3(Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height, Int32.MaxValue));
+            m_Z = setZHigh ? MAX_ACCURATE_SINGLE_FLOAT : 0;
+            m_ViewportArea = new BoundingBox(new Vector3(0, 0, Int32.MinValue), new Vector3(m_Game.GraphicsDevice.Viewport.Width, m_Game.GraphicsDevice.Viewport.Height, Int32.MaxValue));
+        }
+
+        public virtual float GetNextUniqueZ()
+        {
+            return m_Z++;
         }
 
         /// <summary>
@@ -98,7 +99,7 @@ namespace UltimaXNA.Core.Graphics
             // Check: only draw if the texture is within the visible area.
             for (int i = 0; i < 4; i++) // only draws a 2 triangle tristrip.
             {
-                if (ViewportArea.Contains(vertices[i].Position) == ContainmentType.Contains)
+                if (m_ViewportArea.Contains(vertices[i].Position) == ContainmentType.Contains)
                 {
                     draw = true;
                     break;
@@ -108,7 +109,7 @@ namespace UltimaXNA.Core.Graphics
                 return false;
 
             // Set the draw position's z value, and increment the z value for the next drawn object.
-            vertices[0].Position.Z = vertices[1].Position.Z = vertices[2].Position.Z = vertices[3].Position.Z = Z++;
+            vertices[0].Position.Z = vertices[1].Position.Z = vertices[2].Position.Z = vertices[3].Position.Z = GetNextUniqueZ();
 
             // Get the vertex list for this texture. if none exists, dequeue existing or create a new vertex list.
             List<VertexPositionNormalTextureHue> vertexList = GetVertexList(texture, effect);
@@ -153,6 +154,15 @@ namespace UltimaXNA.Core.Graphics
                 vertexList.Add(vertices[i]);
         }
 
+        public void DrawStencil(Texture2D texture, VertexPositionNormalTextureHue[] vertices)
+        {
+            // Sanity: do not draw if there is no texture to draw with.
+            if (texture == null)
+                return;
+            // set proper z depth for this shadow.
+            vertices[0].Position.Z = vertices[1].Position.Z = vertices[2].Position.Z = vertices[3].Position.Z = GetNextUniqueZ();
+        }
+
         public void FlushSprites(bool doLighting)
         {
             // set up graphics device and texture sampling.
@@ -192,6 +202,9 @@ namespace UltimaXNA.Core.Graphics
                     case Techniques.ShadowSet:
                         m_Effect.CurrentTechnique = m_Effect.Techniques["ShadowSetTechnique"];
                         SetDepthStencilState(true, true);
+                        break;
+                    case Techniques.StencilSet:
+                        // do nothing;
                         break;
                     default:
                         Tracer.Critical("Unknown effect in SpriteBatch3D.Flush(). Effect index is {0}", effect);

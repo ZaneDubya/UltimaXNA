@@ -151,6 +151,8 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 return;
             }
 
+            // reset the spritebatch Z
+            m_SpriteBatch.Reset();
             // set the lighting variables.
             m_SpriteBatch.SetLightIntensity(Lighting.IsometricLightLevel);
             m_SpriteBatch.SetLightDirection(Lighting.IsometricLightDirection);

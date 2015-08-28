@@ -244,6 +244,8 @@ namespace UltimaXNA.Core.UI
         {
             OrderControlsBasedOnUILayerMetaData();
 
+            m_SpriteBatch.GraphicsDevice.Clear(Color.Transparent);
+            m_SpriteBatch.Reset();
             foreach (AControl c in m_Controls.Reverse<AControl>())
             {
                 if (c.IsInitialized)
