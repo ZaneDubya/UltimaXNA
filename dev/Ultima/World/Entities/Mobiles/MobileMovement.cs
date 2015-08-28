@@ -44,7 +44,11 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             get { return m_entity.Position; }
         }
 
-        private Position3D m_GoalPosition;
+        public Position3D GoalPosition
+        {
+            get;
+            private set;
+        }
 
         Direction m_playerMobile_NextMove = Direction.Nothing;
         Direction m_Facing = Direction.Up;
@@ -58,9 +62,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             get
             {
-                if (m_GoalPosition == null)
+                if (GoalPosition == null)
                     return false;
-                if ((CurrentPosition.Tile == m_GoalPosition.Tile) &&
+                if ((CurrentPosition.Tile == GoalPosition.Tile) &&
                     !CurrentPosition.IsOffset)
                     return false;
                 return true;
@@ -136,7 +140,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             m_MoveEvents.ResetMoveSequence();
             Facing = (Direction)facing;
             CurrentPosition.Set(x, y, z);
-            m_GoalPosition = null;
+            GoalPosition = null;
         }
 
         public void Update(double frameMS)
@@ -159,7 +163,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                         Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
                         if (p != CurrentPosition)
                         {
-                            m_GoalPosition = p;
+                            GoalPosition = p;
                             break;
                         }
                     }
@@ -172,7 +176,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                         Facing = (Direction)moveEvent.Facing;
                         Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
                         if (p != CurrentPosition)
-                            m_GoalPosition = p;
+                            GoalPosition = p;
                     }
                 }
             }
@@ -187,22 +191,22 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 if (m_entity.IsClientEntity)
                     m_playerMobile_NextMoveInMS -= frameMS;
 
-                if (Math.Abs(m_GoalPosition.X - CurrentPosition.X) > 1 || Math.Abs(m_GoalPosition.Y - CurrentPosition.Y) > 1)
+                if (Math.Abs(GoalPosition.X - CurrentPosition.X) > 1 || Math.Abs(GoalPosition.Y - CurrentPosition.Y) > 1)
                 {
                     int x, y;
-                    if (CurrentPosition.X < m_GoalPosition.X)
-                        x = m_GoalPosition.X - 1;
-                    else if (CurrentPosition.X > m_GoalPosition.X)
-                        x = m_GoalPosition.X + 1;
+                    if (CurrentPosition.X < GoalPosition.X)
+                        x = GoalPosition.X - 1;
+                    else if (CurrentPosition.X > GoalPosition.X)
+                        x = GoalPosition.X + 1;
                     else
-                        x = m_GoalPosition.X;
+                        x = GoalPosition.X;
 
-                    if (CurrentPosition.Y < m_GoalPosition.Y)
-                        y = m_GoalPosition.Y - 1;
-                    else if (CurrentPosition.Y > m_GoalPosition.Y)
-                        y = m_GoalPosition.Y + 1;
+                    if (CurrentPosition.Y < GoalPosition.Y)
+                        y = GoalPosition.Y - 1;
+                    else if (CurrentPosition.Y > GoalPosition.Y)
+                        y = GoalPosition.Y + 1;
                     else
-                        y = m_GoalPosition.Y;
+                        y = GoalPosition.Y;
 
                     CurrentPosition.Set(x, y, CurrentPosition.Z);
                 }
@@ -210,13 +214,13 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 if (MoveSequence < 1f)
                 {
                     CurrentPosition.Offset = new Vector3(
-                        m_GoalPosition.X - CurrentPosition.X,
-                        m_GoalPosition.Y - CurrentPosition.Y,
-                        m_GoalPosition.Z - CurrentPosition.Z) * (float)MoveSequence;
+                        GoalPosition.X - CurrentPosition.X,
+                        GoalPosition.Y - CurrentPosition.Y,
+                        GoalPosition.Z - CurrentPosition.Z) * (float)MoveSequence;
                 }
                 else
                 {
-                    CurrentPosition.Set(m_GoalPosition.X, m_GoalPosition.Y, m_GoalPosition.Z);
+                    CurrentPosition.Set(GoalPosition.X, GoalPosition.Y, GoalPosition.Z);
                     CurrentPosition.Offset = Vector3.Zero;
                     MoveSequence = 0f;
                     if (m_entity.IsClientEntity)

@@ -84,6 +84,17 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public bool IsRunning { get { return m_movement.IsRunning; } }
 
+        public Position3D DestinationPosition
+        {
+            get
+            {
+                if (!IsMoving)
+                    return this.Position;
+                else
+                    return m_movement.GoalPosition;
+            }
+        }
+
         // ============================================================
         // Properties
         // ============================================================

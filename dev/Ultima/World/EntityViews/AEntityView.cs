@@ -317,16 +317,16 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        protected bool CheckUnderSurface(Map map)
+        protected bool CheckUnderSurface(Map map, int x, int y)
         {
-            return UnderSurfaceCheck(map, 0) && UnderSurfaceCheck(map, 1) && UnderSurfaceCheck(map, 2);
+            return UnderSurfaceCheck(map, x, y) && UnderSurfaceCheck(map, x + 1, y + 1) && UnderSurfaceCheck(map, x + 2, y + 2);
         }
 
-        private bool UnderSurfaceCheck(Map map, int offset)
+        private bool UnderSurfaceCheck(Map map, int x, int y)
         {
             MapTile tile;
             AEntity e0, e1;
-            if ((tile = map.GetMapTile(Entity.Position.X + offset, Entity.Position.Y + offset)) != null)
+            if ((tile = map.GetMapTile(x, y)) != null)
             {
                 if (tile == null)
                     return false;

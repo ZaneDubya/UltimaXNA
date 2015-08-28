@@ -58,7 +58,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
-            if (roofHideFlag && CheckUnderSurface(map))
+            if (roofHideFlag && CheckUnderSurface(map, Entity.DestinationPosition.X, Entity.DestinationPosition.Y))
                 return false;
 
             CheckDefer(map, drawPosition);
