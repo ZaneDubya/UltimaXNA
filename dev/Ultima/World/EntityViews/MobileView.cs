@@ -16,6 +16,7 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.WorldViews;
+using UltimaXNA.Ultima.World.Entities;
 #endregion
 
 namespace UltimaXNA.Ultima.World.EntityViews
@@ -55,14 +56,17 @@ namespace UltimaXNA.Ultima.World.EntityViews
             Animation.Update(frameMS);
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
+            if (roofHideFlag && CheckUnderSurface(map))
+                return false;
+
             CheckDefer(map, drawPosition);
 
-            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map);
+            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
         }
 
-        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             DrawShadowZDepth = spriteBatch.GetNextUniqueZ();
             DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
@@ -119,7 +123,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                         /* w */ DrawFlip ? DrawArea.Width : DrawArea.Width,
                         /* h */ DrawArea.Height);
 
-                    base.Draw(spriteBatch, drawPosition, mouseOverList, map);
+                    base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
                 }
             }
 

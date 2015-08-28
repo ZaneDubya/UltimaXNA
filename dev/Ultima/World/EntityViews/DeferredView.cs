@@ -19,7 +19,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             m_BaseView = baseView;
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             if (Entity is Mobile)
             { 
@@ -31,7 +31,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
 
             m_BaseView.SetYClipLine(m_DrawPosition.Y - 22 - ((Entity.Position.Z + Entity.Position.Z_offset) * 4)  + ((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF));
-            bool success = m_BaseView.DrawInternal(spriteBatch, m_DrawPosition, mouseOverList, map);
+            bool success = m_BaseView.DrawInternal(spriteBatch, m_DrawPosition, mouseOverList, map, roofHideFlag);
             m_BaseView.ClearYClipLine();
             return success;
         }

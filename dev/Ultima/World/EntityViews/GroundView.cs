@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             if (m_NoDraw)
                 return false;
@@ -56,7 +56,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
 
             if (!m_DrawAs3DStretched)
-                return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
+                return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
             else
                 return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, map);
         }

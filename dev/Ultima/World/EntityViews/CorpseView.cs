@@ -23,14 +23,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
             PickType = PickType.PickObjects;
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             CheckDefer(map, drawPosition);
 
-            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map);
+            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
         }
 
-        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             int facing = MirrorFacingForDraw(Entity.Facing);
             int frameIndex = (int)(Entity.Frame * BodyConverter.DeathAnimationFrameCount(Entity.Body));
@@ -45,7 +45,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 animationFrame.Center.X - IsometricRenderer.TILE_SIZE_INTEGER_HALF,
                 DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER_HALF + (Entity.Z * 4) + animationFrame.Center.Y, DrawTexture.Width, DrawTexture.Height);
 
-            return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
+            return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
         }
 
         private IAnimationFrame getFrame(Body body, int facing, int frameIndex, int hue)

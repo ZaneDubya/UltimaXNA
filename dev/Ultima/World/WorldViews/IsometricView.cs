@@ -61,6 +61,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
         private SpriteBatch3D m_SpriteBatch;
         private bool m_DrawTerrain = true;
+        private bool m_UnderSurface = false;
         private int m_DrawMaxItemAltitude;
         private Vector2 m_DrawOffset;
 
@@ -96,48 +97,53 @@ namespace UltimaXNA.Ultima.World.WorldViews
         {
             // Are we inside (under a roof)? Do not draw tiles above our head.
             m_DrawMaxItemAltitude = 255;
+            m_DrawTerrain = true;
+            m_UnderSurface = false;
 
-            MapTile t;
-            if ((t = map.GetMapTile(center.X, center.Y)) != null)
+            MapTile tile;
+            AEntity underObject, underTerrain;
+            if ((tile = map.GetMapTile(center.X, center.Y)) != null)
             {
-                AEntity underObject, underTerrain;
-                t.IsZUnderEntityOrGround(center.Z, out underObject, out underTerrain);
-
-                // if we are under terrain, then do not draw any terrain at all.
-                m_DrawTerrain = (underTerrain == null);
-
-                if (!(underObject == null))
+                if (tile.IsZUnderEntityOrGround(center.Z, out underObject, out underTerrain))
                 {
-                    // Roofing and new floors ALWAYS begin at intervals of 20.
-                    // if we are under a ROOF, then get rid of everything above me.Z + 20
-                    // (this accounts for A-frame roofs). Otherwise, get rid of everything
-                    // at the object above us.Z.
-                    if (underObject is Item)
-                    {
-                        Item item = (Item)underObject;
-                        if (item.ItemData.IsRoof)
-                            m_DrawMaxItemAltitude = center.Z - (center.Z % 20) + 20;
-                        else if (item.ItemData.IsSurface || (item.ItemData.IsWall && !item.ItemData.IsDoor))
-                            m_DrawMaxItemAltitude = item.Z;
-                        else
-                        {
-                            int z = center.Z + ((item.ItemData.Height > 20) ? item.ItemData.Height : 20);
-                            m_DrawMaxItemAltitude = z;// - (z % 20));
-                        }
-                    }
+                    // if we are under terrain, then do not draw any terrain at all.
+                    m_DrawTerrain = (underTerrain == null);
 
-                    // If we are under a roof tile, do not make roofs transparent if we are on an edge.
-                    if (underObject is Item && ((Item)underObject).ItemData.IsRoof)
+                    if (!(underObject == null))
                     {
-                        bool isRoofSouthEast = true;
-                        if ((t = map.GetMapTile(center.X + 1, center.Y)) != null)
+                        // Roofing and new floors ALWAYS begin at intervals of 20.
+                        // if we are under a ROOF, then get rid of everything above me.Z + 20
+                        // (this accounts for A-frame roofs). Otherwise, get rid of everything
+                        // at the object above us.Z.
+                        if (underObject is Item)
                         {
-                            t.IsZUnderEntityOrGround(center.Z, out underObject, out underTerrain);
-                            isRoofSouthEast = !(underObject == null);
+                            Item item = (Item)underObject;
+                            if (item.ItemData.IsRoof)
+                                m_DrawMaxItemAltitude = center.Z - (center.Z % 20) + 20;
+                            else if (item.ItemData.IsSurface || (item.ItemData.IsWall && !item.ItemData.IsDoor))
+                                m_DrawMaxItemAltitude = item.Z;
+                            else
+                            {
+                                int z = center.Z + ((item.ItemData.Height > 20) ? item.ItemData.Height : 20);
+                                m_DrawMaxItemAltitude = z;
+                            }
                         }
 
-                        if (!isRoofSouthEast)
-                            m_DrawMaxItemAltitude = 255;
+                        // If we are under a roof tile, do not make roofs transparent if we are on an edge.
+                        if (underObject is Item && ((Item)underObject).ItemData.IsRoof)
+                        {
+                            bool isRoofSouthEast = true;
+                            if ((tile = map.GetMapTile(center.X + 1, center.Y)) != null)
+                            {
+                                tile.IsZUnderEntityOrGround(center.Z, out underObject, out underTerrain);
+                                isRoofSouthEast = !(underObject == null);
+                            }
+
+                            if (!isRoofSouthEast)
+                                m_DrawMaxItemAltitude = 255;
+                        }
+
+                        m_UnderSurface = (m_DrawMaxItemAltitude != 255);
                     }
                 }
             }
@@ -206,7 +212,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
                         if (view != null)
                         {
-                            if (view.Draw(m_SpriteBatch, drawPosition, overList, map))
+                            if (view.Draw(m_SpriteBatch, drawPosition, overList, map, !m_UnderSurface))
                                 CountEntitiesRendered++;
                         }
 
@@ -222,7 +228,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 }
             }
 
-            OverheadRenderer.Render(m_SpriteBatch, overList, map);
+            OverheadRenderer.Render(m_SpriteBatch, overList, map, m_UnderSurface);
 
             // Update the MouseOver objects
             mousePicking.UpdateOverEntities(overList, mousePicking.Position);

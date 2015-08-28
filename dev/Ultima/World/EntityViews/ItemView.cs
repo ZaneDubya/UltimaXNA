@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         private int m_DisplayItemID = -1;
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             if (Entity.NoDraw)
                 return false;
@@ -54,9 +54,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
             {
                 int offset = Entity.ItemData.Unknown4;
                 Vector3 offsetDrawPosition = new Vector3(drawPosition.X - 5, drawPosition.Y - 5, 0);
-                base.Draw(spriteBatch, offsetDrawPosition, mouseOverList, map);
+                base.Draw(spriteBatch, offsetDrawPosition, mouseOverList, map, roofHideFlag);
             }
-            bool drawn = base.Draw(spriteBatch, drawPosition, mouseOverList, map);
+            bool drawn = base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
 
 
             DrawOverheads(spriteBatch, drawPosition, mouseOverList, map, (int)DrawArea.Y - IsometricRenderer.TILE_SIZE_INTEGER_HALF);

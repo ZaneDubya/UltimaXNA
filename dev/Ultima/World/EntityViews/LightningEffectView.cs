@@ -26,14 +26,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             CheckDefer(map, drawPosition);
 
-            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map);
+            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
         }
 
-        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             int displayItemdID = 0x4e20 + Effect.FramesActive;
 
@@ -53,7 +53,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             // Update hue vector.
             HueVector = Utility.GetHueVector(Entity.Hue);
 
-            return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
+            return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
         }
 
         static Point[] s_Offsets = new Point[10]

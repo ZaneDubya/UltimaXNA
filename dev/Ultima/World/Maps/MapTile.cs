@@ -123,7 +123,7 @@ namespace UltimaXNA.Ultima.World.Maps
         ///                         If no such objects exist above the specified z, then returns null.</param>
         /// <param name="underGround">Returns the ground object of this tile if the specified z is under the ground.
         ///                         Returns null otherwise.</param>
-        public void IsZUnderEntityOrGround(int z, out AEntity underEntity, out AEntity underGround)
+        public bool IsZUnderEntityOrGround(int z, out AEntity underEntity, out AEntity underGround)
         {
             // getting the publicly exposed Entities collection will sort the entities if necessary.
             List<AEntity> entities = Entities;
@@ -150,6 +150,7 @@ namespace UltimaXNA.Ultima.World.Maps
                     underGround = entities[i];
                 }
             }
+            return (underEntity != null) || (underGround != null);
         }
 
         public List<StaticItem> GetStatics()

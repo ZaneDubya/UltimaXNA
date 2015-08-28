@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
@@ -64,7 +65,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         protected bool IsShadowCastingView = false;
         protected float DrawShadowZDepth = 0;
 
-        public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             VertexPositionNormalTextureHue[] vertexBuffer;
 
@@ -196,7 +197,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         /// Should only be implemented for those views that call CheckDefer(), Otherwise, using only
         /// Draw() will suffice. See MobileView for an example of use.
         /// </summary>
-        public virtual bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        public virtual bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             return false;
         }
@@ -314,6 +315,32 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     deferToTile.OnEnter(deferred);
                 }
             }
+        }
+
+        protected bool CheckUnderSurface(Map map)
+        {
+            return UnderSurfaceCheck(map, 0) && UnderSurfaceCheck(map, 1) && UnderSurfaceCheck(map, 2);
+        }
+
+        private bool UnderSurfaceCheck(Map map, int offset)
+        {
+            MapTile tile;
+            AEntity e0, e1;
+            if ((tile = map.GetMapTile(Entity.Position.X + offset, Entity.Position.Y + offset)) != null)
+            {
+                if (tile == null)
+                    return false;
+                if (tile.IsZUnderEntityOrGround(Entity.Position.Z, out e0, out e1))
+                {
+                    if (e0 == null || !(e0 is Item))
+                        return false;
+                    Item item = e0 as Item;
+                    if ((item.ItemData.IsRoof) || (item.ItemData.IsSurface) || (item.ItemData.IsWall && !item.ItemData.IsDoor))
+                        return true;
+                }
+            }
+
+            return false;
         }
     }
 }
