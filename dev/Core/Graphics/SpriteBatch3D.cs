@@ -21,30 +21,28 @@ namespace UltimaXNA.Core.Graphics
 {
     public class SpriteBatch3D
     {
-        private const float MAX_ACCURATE_SINGLE_FLOAT = 65536; // this number is somewhat arbitrary; it's the number at which the difference between two subsequent integers is +/-0.005
+        private const float MAX_ACCURATE_SINGLE_FLOAT = 65536; // this number is somewhat arbitrary; it's the number at which the
+        // difference between two subsequent integers is +/-0.005. See http://stackoverflow.com/questions/872544/precision-of-floating-point
 
         private float m_Z;
-        private static BoundingBox m_ViewportArea;
-        private Game m_Game;
 
-        private readonly List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>> m_drawQueue;
-
+        private readonly Game m_Game;
         private readonly Effect m_Effect;
-        private readonly short[] m_indexBuffer;
-        private readonly Queue<List<VertexPositionNormalTextureHue>> m_vertexListQueue;
-        
-        private List<VertexPositionNormalTextureHue> m_vertices = new List<VertexPositionNormalTextureHue>();
+        private readonly short[] m_IndexBuffer;
+        private static BoundingBox m_ViewportArea;
+        private readonly Queue<List<VertexPositionNormalTextureHue>> m_VertexListQueue;
+        private readonly List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>> m_DrawQueue;
 
         public SpriteBatch3D(Game game)
         {
             m_Game = game;
 
-            m_drawQueue = new List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>>((int)Techniques.All);
+            m_DrawQueue = new List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>>((int)Techniques.All);
             for (int i = 0; i <= (int)Techniques.All; i++)
-                m_drawQueue.Add(new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(1024));
+                m_DrawQueue.Add(new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(1024));
 
-            m_indexBuffer = CreateIndexBuffer(0x2000);
-            m_vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
+            m_IndexBuffer = CreateIndexBuffer(0x2000);
+            m_VertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
 
             m_Effect = m_Game.Content.Load<Effect>("Shaders/IsometricWorld");
         }
@@ -212,17 +210,17 @@ namespace UltimaXNA.Core.Graphics
                 }
                 m_Effect.CurrentTechnique.Passes[0].Apply();
 
-                IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> vertexEnumerator = m_drawQueue[(int)effect].GetEnumerator();
+                IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> vertexEnumerator = m_DrawQueue[(int)effect].GetEnumerator();
                 while (vertexEnumerator.MoveNext())
                 {
                     Texture2D texture = vertexEnumerator.Current.Key;
                     List<VertexPositionNormalTextureHue> vertexList = vertexEnumerator.Current.Value;
                     GraphicsDevice.Textures[0] = texture;
-                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_indexBuffer, 0, vertexList.Count / 2);
+                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_IndexBuffer, 0, vertexList.Count / 2);
                     vertexList.Clear();
-                    m_vertexListQueue.Enqueue(vertexList);
+                    m_VertexListQueue.Enqueue(vertexList);
                 }
-                m_drawQueue[(int)effect].Clear();
+                m_DrawQueue[(int)effect].Clear();
             }
         }
 
@@ -258,22 +256,22 @@ namespace UltimaXNA.Core.Graphics
         private List<VertexPositionNormalTextureHue> GetVertexList(Texture2D texture, Techniques effect)
         {
             List<VertexPositionNormalTextureHue> vertexList;
-            if (m_drawQueue[(int)effect].ContainsKey(texture))
+            if (m_DrawQueue[(int)effect].ContainsKey(texture))
             {
-                vertexList = m_drawQueue[(int)effect][texture];
+                vertexList = m_DrawQueue[(int)effect][texture];
             }
             else
             {
-                if (m_vertexListQueue.Count > 0)
+                if (m_VertexListQueue.Count > 0)
                 {
-                    vertexList = m_vertexListQueue.Dequeue();
+                    vertexList = m_VertexListQueue.Dequeue();
                     vertexList.Clear();
                 }
                 else
                 {
                     vertexList = new List<VertexPositionNormalTextureHue>(1024);
                 }
-                m_drawQueue[(int)effect].Add(texture, vertexList);
+                m_DrawQueue[(int)effect].Add(texture, vertexList);
             }
             return vertexList;
         }
