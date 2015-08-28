@@ -147,11 +147,6 @@ namespace UltimaXNA.Core.Graphics
 
         public void FlushSprites(bool doLighting)
         {
-            //set up depth/stencil buffer
-            DepthStencilState depthDefault = new DepthStencilState();
-            depthDefault.DepthBufferEnable = true;
-            depthDefault.DepthBufferWriteEnable = true;
-
             // set up graphics device and texture sampling.
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.RasterizerState = RasterizerState.CullNone;
@@ -165,8 +160,8 @@ namespace UltimaXNA.Core.Graphics
             m_Effect.Parameters["ProjectionMatrix"].SetValue(ProjectionMatrixScreen);
             m_Effect.Parameters["WorldMatrix"].SetValue(ProjectionMatrixWorld);
             m_Effect.Parameters["Viewport"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
-
-            GraphicsDevice.DepthStencilState = depthDefault;
+            // enable depth sorting, disable the stencil
+            SetDepthStencilState(true, false);
             DrawAllVertices(Techniques.FirstDrawn, Techniques.LastDrawn);
         }
 
@@ -188,6 +183,7 @@ namespace UltimaXNA.Core.Graphics
                         break;
                     case Techniques.ShadowSet:
                         m_Effect.CurrentTechnique = m_Effect.Techniques["ShadowSetTechnique"];
+                        SetDepthStencilState(true, true);
                         break;
                     default:
                         Tracer.Critical("Unknown effect in SpriteBatch3D.Flush(). Effect index is {0}", effect);
@@ -217,6 +213,25 @@ namespace UltimaXNA.Core.Graphics
         public void SetLightIntensity(float intensity)
         {
             m_Effect.Parameters["lightIntensity"].SetValue(intensity);
+        }
+
+        private void SetDepthStencilState(bool depth, bool stencil)
+        {
+            // depth is currently ignored.
+            DepthStencilState dss = new DepthStencilState();
+            dss.DepthBufferEnable = true;
+            dss.DepthBufferWriteEnable = true;
+
+            if (stencil)
+            {
+                dss.StencilEnable = true;
+                dss.StencilFunction = CompareFunction.Equal;
+                dss.ReferenceStencil = 0;
+                dss.StencilPass = StencilOperation.Increment;
+                dss.StencilFail = StencilOperation.Keep;
+            }
+
+            GraphicsDevice.DepthStencilState = dss;
         }
 
         private List<VertexPositionNormalTextureHue> GetVertexList(Texture2D texture, Techniques effect)
