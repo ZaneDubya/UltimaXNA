@@ -117,7 +117,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
                         Item item = (Item)underObject;
                         if (item.ItemData.IsRoof)
                             m_DrawMaxItemAltitude = center.Z - (center.Z % 20) + 20;
-                        else if (item.ItemData.IsSurface || item.ItemData.IsWall)
+                        else if (item.ItemData.IsSurface || (item.ItemData.IsWall && !item.ItemData.IsDoor))
                             m_DrawMaxItemAltitude = item.Z;
                         else
                         {
