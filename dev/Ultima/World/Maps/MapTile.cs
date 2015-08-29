@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   MapTile.cs
- *   Based on code from ClintXNA.
+ *   Copyright (c) 2009 Chase Mosher
+ *   Copyright (c) 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by

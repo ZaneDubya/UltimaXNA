@@ -212,7 +212,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             {
                 AEntityView view = Entity.Overheads[i].GetView();
                 view.DrawArea = new Rectangle((view.DrawTexture.Width / 2) - 22, yOffset + view.DrawTexture.Height, view.DrawTexture.Width, view.DrawTexture.Height);
-                OverheadRenderer.AddView(view, drawPosition);
+                OverheadsView.AddView(view, drawPosition);
                 yOffset += view.DrawTexture.Height;
             }
         }

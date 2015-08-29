@@ -1,5 +1,16 @@
-﻿using System.Collections.Generic;
+﻿/***************************************************************************
+ *   OverheadsView.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Input;
@@ -7,7 +18,7 @@ using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.WorldViews
 {
-    static class OverheadRenderer
+    static class OverheadsView
     {
         private static List<ViewWithDrawInfo> m_Views = new List<ViewWithDrawInfo>();
 

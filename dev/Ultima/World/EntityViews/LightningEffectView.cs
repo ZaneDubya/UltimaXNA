@@ -1,7 +1,16 @@
-﻿using Microsoft.Xna.Framework;
+﻿/***************************************************************************
+ *   LightningEffectView.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities.Effects;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;

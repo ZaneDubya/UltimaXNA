@@ -228,7 +228,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 }
             }
 
-            OverheadRenderer.Render(m_SpriteBatch, overList, map, m_UnderSurface);
+            OverheadsView.Render(m_SpriteBatch, overList, map, m_UnderSurface);
 
             // Update the MouseOver objects
             mousePicking.UpdateOverEntities(overList, mousePicking.Position);
