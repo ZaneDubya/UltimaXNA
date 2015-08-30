@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             if (m_Data.ContainsKey(mobile.Serial))
             {
-                m_Data[mobile.Serial].LastFootstep = 1.0f;
+                m_Data[mobile.Serial].LastFrame = 1.0f;
             }
         }
 
@@ -40,7 +40,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 m_Data.Add(mobile.Serial, data);
             }
 
-            bool play = (data.LastFootstep < 0.5d && frame >= 0.5d) || (data.LastFootstep > 0.5d && frame < 0.5d);
+            bool play = (data.LastFrame < 0.5d && frame >= 0.5d) || (data.LastFrame > 0.5d && frame < 0.5d);
             if (mobile.IsMounted && !mobile.IsRunning && frame > 0.5d)
                 play = false;
 
@@ -57,8 +57,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                     m_Audio.PlaySound(m_StepSFX[sfx]);
                 }
             }
-
-            data.LastFootstep = frame;
+            data.LastFrame = frame;
         }
 
         private class MobileSoundData
@@ -69,7 +68,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 private set;
             }
 
-            public double LastFootstep;
+            public double LastFrame = 1d;
 
             public MobileSoundData(Mobile mobile)
             {
