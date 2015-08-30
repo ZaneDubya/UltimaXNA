@@ -144,16 +144,9 @@ float4 PixelShader_ShadowSet(PS_INPUT IN) : COLOR0
 	float4 color = tex2D(DrawSampler, IN.TexCoord);
 	if (color.a == 0)
 		discard;
+	// if pixel was opaque, return black half-transparent.
+	// we use the stencil buffer to only write one shadow pixel to each screen pixel.
 	return float4(0, 0, 0, .5);
-}
-
-float4 PixelShader_ShadowClear(PS_INPUT IN) : COLOR0
-{
-	// Get the initial pixel and discard it if the alpha == 0
-	float4 color = tex2D(DrawSampler, IN.TexCoord);
-	if (color.a == 0)
-		discard;
-	return float4 (0, 0, 0, 0);
 }
 
 
@@ -190,14 +183,5 @@ technique ShadowSetTechnique
 	{
 		VertexShader = compile vs_2_0 VertexShaderFunction();
 		PixelShader = compile ps_2_0 PixelShader_ShadowSet();
-	}
-}
-
-technique ShadowClearTechnique
-{
-	pass p0
-	{
-		VertexShader = compile vs_2_0 VertexShaderFunction();
-		PixelShader = compile ps_2_0 PixelShader_ShadowClear();
 	}
 }
