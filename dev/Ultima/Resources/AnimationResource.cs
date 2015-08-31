@@ -55,6 +55,12 @@ namespace UltimaXNA.Ultima.Resources
             return frames.Length;
         }
 
+        public IAnimationFrame[] GetSittingAnimation(int body, int direction, int hue)
+        {
+            IAnimationFrame[] standing = GetAnimation(body, 0, direction, hue);
+            return standing;
+        }
+
         public IAnimationFrame[] GetAnimation(int body, int action, int direction, int hue)
         {
             int animIndex;
@@ -101,24 +107,6 @@ namespace UltimaXNA.Ultima.Resources
             }
             return frames;
         }
-
-        /*public byte[] GetData(int body, int action, int direction, int hue)
-        {
-            int animIndex;
-            FileIndex fileIndex;
-            int length, extra;
-            bool patched;
-
-            if (body >= 0x1000)
-                return null;
-
-            getIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
-            BinaryFileReader reader = fileIndex.Seek(animIndex, out length, out extra, out patched);
-            if (reader == null)
-                return null;
-
-            return reader.ReadBytes(length);
-        }*/
 
         private ushort[] GetPalette(BinaryFileReader reader)
         {
@@ -205,7 +193,6 @@ namespace UltimaXNA.Ultima.Resources
 
                         break;
                     }
-                // Issue 60 - Missing (or wrong) object animations - http://code.google.com/p/ultimaxna/issues/detail?id=60 - Smjert
                 case 5:
                     {
                         fileIndex = m_FileIndex5;
@@ -218,7 +205,6 @@ namespace UltimaXNA.Ultima.Resources
 
                         break;
                     }
-                // Issue 60 - End
             }
 
             index += action * 5;
