@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   IsometricView.cs
- *   Based on code from ClintXNA's renderer.
+ *   Based on Chase Mosher's UO Renderer, licensed under GPLv3.
+ *   Modifications Copyright (c) 2009, 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -9,17 +10,16 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Core.Diagnostics.Tracing;
-using System;
 #endregion
 
 namespace UltimaXNA.Ultima.World.WorldViews
