@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.Audio
                 m_MusicCurrentlyPlaying.Update();
         }
 
-        public void PlaySound(int soundIndex)
+        public void PlaySound(int soundIndex, AudioEffects effect = AudioEffects.None)
         {
             if (Settings.Audio.SoundOn)
             {

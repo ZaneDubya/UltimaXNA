@@ -134,7 +134,6 @@ namespace UltimaXNA.Ultima.World.Input
                     maxY = v[i].Position.Y;
             }
 
-            // Added cursor picking -Poplicola 5/19/2009
             BoundingBox iBoundingBox = new BoundingBox(new Vector3(minX, minY, 0), new Vector3(maxX, maxY, 10));
             if (iBoundingBox.Contains(m_mousePosition) == ContainmentType.Contains)
             {
