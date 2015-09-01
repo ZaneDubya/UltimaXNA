@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   Map.cs
- *   Based on code from ClintXNA.
+ *   Based on Chase Mosher's UO Renderer, licensed under GPLv3.
+ *   Modifications Copyright (c) 2009, 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -9,8 +10,8 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using Microsoft.Xna.Framework;
+using System;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities.Multis;

@@ -107,6 +107,12 @@ namespace UltimaXNA
             private set;
         }
 
+        protected AudioService Audio
+        {
+            get;
+            private set;
+        }
+
         protected InputManager Input
         {
             get;
@@ -141,7 +147,7 @@ namespace UltimaXNA
             // Create all the services we need.
             ServiceRegistry.Register<SpriteBatch3D>(new SpriteBatch3D(this));
             ServiceRegistry.Register<SpriteBatchUI>(new SpriteBatchUI(this));
-            ServiceRegistry.Register<AudioService>(new AudioService());
+            Audio = ServiceRegistry.Register<AudioService>(new AudioService());
             Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
             Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
             UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
@@ -198,6 +204,7 @@ namespace UltimaXNA
                 double frameMS = gameTime.ElapsedGameTime.TotalMilliseconds;
 
                 TotalMS = totalMS;
+                Audio.Update();
                 Input.Update(totalMS, frameMS);
                 UserInterface.Update(totalMS, frameMS);
                 if (Network.IsConnected)

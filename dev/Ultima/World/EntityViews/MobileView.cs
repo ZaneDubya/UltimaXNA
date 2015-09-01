@@ -68,6 +68,11 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
+            if (Entity.IsDisposed)
+                return false;
+            if (Entity.Body == 0)
+                return false;
+
             DrawShadowZDepth = spriteBatch.GetNextUniqueZ();
             DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
 
