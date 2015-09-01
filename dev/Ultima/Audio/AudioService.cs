@@ -22,7 +22,13 @@ namespace UltimaXNA.Ultima.Audio
         private readonly Dictionary<int, ASound> m_Sounds = new Dictionary<int, ASound>();
         private readonly Dictionary<int, ASound> m_Music = new Dictionary<int, ASound>();
 
-        private ASound m_MusicCurrentlyPlaying = null;
+        private UOMusic m_MusicCurrentlyPlaying = null;
+
+        public void Update()
+        {
+            if (m_MusicCurrentlyPlaying != null)
+                m_MusicCurrentlyPlaying.Update();
+        }
 
         public void PlaySound(int soundIndex)
         {
@@ -78,7 +84,7 @@ namespace UltimaXNA.Ultima.Audio
                     // stop the current song
                     StopMusic();
                     // play the new song!
-                    m_MusicCurrentlyPlaying = toPlay;
+                    m_MusicCurrentlyPlaying = toPlay as UOMusic;
                     m_MusicCurrentlyPlaying.Play(false);
                 }
             }
