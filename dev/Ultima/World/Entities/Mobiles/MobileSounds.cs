@@ -49,15 +49,21 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
             if (play)
             {
+                float volume = 1f;
+                int distanceFromPlayer = Utility.DistanceBetweenTwoPoints(mobile.DestinationPosition.Tile, WorldModel.Entities.GetPlayerEntity().DestinationPosition.Tile);
+                if (distanceFromPlayer > 4)
+                    volume = 1f - (distanceFromPlayer - 4) * 0.05f;
+
+
                 if (mobile.IsMounted && mobile.IsRunning)
                 {
                     int sfx = Utility.RandomValue(0, m_StepMountedSFX.Length - 1);
-                    m_Audio.PlaySound(m_StepMountedSFX[sfx], Core.Audio.AudioEffects.PitchVariation);
+                    m_Audio.PlaySound(m_StepMountedSFX[sfx], Core.Audio.AudioEffects.PitchVariation, volume);
                 }
                 else
                 {
                     int sfx = Utility.RandomValue(0, m_StepSFX.Length - 1);
-                    m_Audio.PlaySound(m_StepSFX[sfx], Core.Audio.AudioEffects.PitchVariation);
+                    m_Audio.PlaySound(m_StepSFX[sfx], Core.Audio.AudioEffects.PitchVariation, volume);
                 }
             }
             data.LastFrame = frame;
