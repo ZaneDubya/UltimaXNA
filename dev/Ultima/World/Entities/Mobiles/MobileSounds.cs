@@ -27,12 +27,15 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             if (m_Data.ContainsKey(mobile.Serial))
             {
-                m_Data[mobile.Serial].LastFootstep = 1.0f;
+                m_Data[mobile.Serial].LastFrame = 1.0f;
             }
         }
 
         public static void DoFootstepSounds(Mobile mobile, double frame)
         {
+            if (!mobile.Body.IsHuman || mobile.Flags.IsHidden)
+                return;
+
             MobileSoundData data;
             if (!m_Data.TryGetValue(mobile.Serial, out data))
             {
@@ -40,25 +43,30 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 m_Data.Add(mobile.Serial, data);
             }
 
-            bool play = (data.LastFootstep < 0.5d && frame >= 0.5d) || (data.LastFootstep > 0.5d && frame < 0.5d);
+            bool play = (data.LastFrame < 0.5d && frame >= 0.5d) || (data.LastFrame > 0.5d && frame < 0.5d);
             if (mobile.IsMounted && !mobile.IsRunning && frame > 0.5d)
                 play = false;
 
             if (play)
             {
+                float volume = 1f;
+                int distanceFromPlayer = Utility.DistanceBetweenTwoPoints(mobile.DestinationPosition.Tile, WorldModel.Entities.GetPlayerEntity().DestinationPosition.Tile);
+                if (distanceFromPlayer > 4)
+                    volume = 1f - (distanceFromPlayer - 4) * 0.05f;
+
+
                 if (mobile.IsMounted && mobile.IsRunning)
                 {
                     int sfx = Utility.RandomValue(0, m_StepMountedSFX.Length - 1);
-                    m_Audio.PlaySound(m_StepMountedSFX[sfx]);
+                    m_Audio.PlaySound(m_StepMountedSFX[sfx], Core.Audio.AudioEffects.PitchVariation, volume);
                 }
                 else
                 {
                     int sfx = Utility.RandomValue(0, m_StepSFX.Length - 1);
-                    m_Audio.PlaySound(m_StepSFX[sfx]);
+                    m_Audio.PlaySound(m_StepSFX[sfx], Core.Audio.AudioEffects.PitchVariation, volume);
                 }
             }
-
-            data.LastFootstep = frame;
+            data.LastFrame = frame;
         }
 
         private class MobileSoundData
@@ -69,7 +77,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 private set;
             }
 
-            public double LastFootstep;
+            public double LastFrame = 1d;
 
             public MobileSoundData(Mobile mobile)
             {

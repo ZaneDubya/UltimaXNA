@@ -30,14 +30,14 @@ namespace UltimaXNA.Ultima.Audio
                 m_MusicCurrentlyPlaying.Update();
         }
 
-        public void PlaySound(int soundIndex)
+        public void PlaySound(int soundIndex, AudioEffects effect = AudioEffects.None, float volume = 1.0f)
         {
             if (Settings.Audio.SoundOn)
             {
                 ASound sound;
                 if (m_Sounds.TryGetValue(soundIndex, out sound))
                 {
-                    sound.Play();
+                    sound.Play(true, effect, volume);
                 }
                 else
                 {
@@ -47,7 +47,7 @@ namespace UltimaXNA.Ultima.Audio
                     {
                         sound = new UOSound(name, data);
                         m_Sounds.Add(soundIndex, sound);
-                        sound.Play();
+                        sound.Play(true, effect, volume);
                     }
                 }
             }
