@@ -86,12 +86,15 @@ namespace UltimaXNA.Ultima.World.Managers
             else
             {
                 // Update all other entities, disposing when they are out of range.
+                Position3D player_position = player.DestinationPosition;
                 foreach (KeyValuePair<int, AEntity> entity in m_Entities)
                 {
                     entity.Value.Update(frameMS);
-                    if (System.Math.Abs(player.Position.X - entity.Value.Position.X) > (entity.Value.GetMaxUpdateRange() + 1) ||
-                        System.Math.Abs(player.Position.Y - entity.Value.Position.Y) > (entity.Value.GetMaxUpdateRange() + 1))
+                    if (System.Math.Abs(player_position.X - entity.Value.Position.X) > (entity.Value.GetMaxUpdateRange()) ||
+                        System.Math.Abs(player_position.Y - entity.Value.Position.Y) > (entity.Value.GetMaxUpdateRange()))
+                    {
                         entity.Value.Dispose();
+                    }
                     if (entity.Value.IsDisposed)
                         m_SerialsToRemove.Add(entity.Key);
                 }
