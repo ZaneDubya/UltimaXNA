@@ -21,6 +21,8 @@ namespace UltimaXNA.Core.Graphics
 {
     public class SpriteBatch3D
     {
+        private const int MAX_VERTICES_PER_DRAW = 0x1000 * 3;
+        private const int INITIAL_TEXTURE_COUNT = 0x800;
         private const float MAX_ACCURATE_SINGLE_FLOAT = 65536; // this number is somewhat arbitrary; it's the number at which the
         // difference between two subsequent integers is +/-0.005. See http://stackoverflow.com/questions/872544/precision-of-floating-point
 
@@ -32,6 +34,7 @@ namespace UltimaXNA.Core.Graphics
         private static BoundingBox m_ViewportArea;
         private readonly Queue<List<VertexPositionNormalTextureHue>> m_VertexListQueue;
         private readonly List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>> m_DrawQueue;
+        private readonly VertexPositionNormalTextureHue[] m_VertexArray;
 
         public SpriteBatch3D(Game game)
         {
@@ -39,10 +42,11 @@ namespace UltimaXNA.Core.Graphics
 
             m_DrawQueue = new List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>>((int)Techniques.All);
             for (int i = 0; i <= (int)Techniques.All; i++)
-                m_DrawQueue.Add(new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(1024));
+                m_DrawQueue.Add(new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(INITIAL_TEXTURE_COUNT));
 
-            m_IndexBuffer = CreateIndexBuffer(0x2000);
-            m_VertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
+            m_IndexBuffer = CreateIndexBuffer(MAX_VERTICES_PER_DRAW);
+            m_VertexArray = new VertexPositionNormalTextureHue[MAX_VERTICES_PER_DRAW];
+            m_VertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(INITIAL_TEXTURE_COUNT);
 
             m_Effect = m_Game.Content.Load<Effect>("Shaders/IsometricWorld");
         }
@@ -216,12 +220,20 @@ namespace UltimaXNA.Core.Graphics
                     Texture2D texture = vertexEnumerator.Current.Key;
                     List<VertexPositionNormalTextureHue> vertexList = vertexEnumerator.Current.Value;
                     GraphicsDevice.Textures[0] = texture;
-                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_IndexBuffer, 0, vertexList.Count / 2);
+
+                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, CopyVerticesToArray(vertexList), 0, vertexList.Count, m_IndexBuffer, 0, vertexList.Count / 2);
                     vertexList.Clear();
                     m_VertexListQueue.Enqueue(vertexList);
                 }
                 m_DrawQueue[(int)effect].Clear();
             }
+        }
+
+        private VertexPositionNormalTextureHue[] CopyVerticesToArray(List<VertexPositionNormalTextureHue> vertices)
+        {
+            int max = vertices.Count <= MAX_VERTICES_PER_DRAW ? vertices.Count : MAX_VERTICES_PER_DRAW;
+            vertices.CopyTo(0, m_VertexArray, 0, max);
+            return m_VertexArray;
         }
 
         public void SetLightDirection(Vector3 direction)
