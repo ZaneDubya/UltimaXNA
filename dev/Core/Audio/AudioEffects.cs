@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
 
-namespace UltimaXNA.Ultima.Audio
+namespace UltimaXNA.Core.Audio
 {
     public enum AudioEffects
     {

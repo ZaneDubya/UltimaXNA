@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.Audio
                 ASound sound;
                 if (m_Sounds.TryGetValue(soundIndex, out sound))
                 {
-                    sound.Play();
+                    sound.Play(true, effect);
                 }
                 else
                 {
@@ -47,7 +47,7 @@ namespace UltimaXNA.Ultima.Audio
                     {
                         sound = new UOSound(name, data);
                         m_Sounds.Add(soundIndex, sound);
-                        sound.Play();
+                        sound.Play(true, effect);
                     }
                 }
             }

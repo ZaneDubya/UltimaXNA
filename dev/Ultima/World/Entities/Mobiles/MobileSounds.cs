@@ -49,12 +49,12 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 if (mobile.IsMounted && mobile.IsRunning)
                 {
                     int sfx = Utility.RandomValue(0, m_StepMountedSFX.Length - 1);
-                    m_Audio.PlaySound(m_StepMountedSFX[sfx]);
+                    m_Audio.PlaySound(m_StepMountedSFX[sfx], Core.Audio.AudioEffects.PitchVariation);
                 }
                 else
                 {
                     int sfx = Utility.RandomValue(0, m_StepSFX.Length - 1);
-                    m_Audio.PlaySound(m_StepSFX[sfx]);
+                    m_Audio.PlaySound(m_StepSFX[sfx], Core.Audio.AudioEffects.PitchVariation);
                 }
             }
             data.LastFrame = frame;

@@ -60,7 +60,7 @@ namespace UltimaXNA.Core.Audio
         /// Plays the effect.
         /// </summary>
         /// <param name="asEffect">Set to false for music, true for sound effects.</param>
-        public void Play(bool asEffect = true)
+        public void Play(bool asEffect, AudioEffects effect = AudioEffects.None)
         {
             double now = UltimaGame.TotalMS;
             CullExpiredEffects(now);
@@ -70,6 +70,14 @@ namespace UltimaXNA.Core.Audio
             {
                 this.Dispose();
                 return;
+            }
+
+            switch (effect)
+            {
+                case AudioEffects.PitchVariation:
+                    float pitch = (float)Utility.RandomValue(-5, 5) * .025f;
+                    m_ThisInstance.Pitch = pitch;
+                    break;
             }
 
             BeforePlay();
@@ -124,7 +132,7 @@ namespace UltimaXNA.Core.Audio
             if (list.Count >= maxInstances)
                 return null;
             else
-                return new DynamicSoundEffectInstance(Frequency, Channels);
+                return new DynamicSoundEffectInstance(Frequency, Channels); // shouldn't we be recycling these?
         }
     }
 }
