@@ -26,7 +26,7 @@ namespace UltimaXNA.Core.Audio
 
         private static List<Tuple<DynamicSoundEffectInstance, double>> m_EffectInstances;
         private static List<Tuple<DynamicSoundEffectInstance, double>> m_MusicInstances;
-        private DynamicSoundEffectInstance m_ThisInstance;
+        protected DynamicSoundEffectInstance m_ThisInstance;
 
         protected int Frequency = 22050;
         protected AudioChannels Channels = AudioChannels.Mono;
@@ -77,13 +77,13 @@ namespace UltimaXNA.Core.Audio
             byte[] buffer = GetBuffer();
             if (buffer != null && buffer.Length > 0)
             {
-
                 m_ThisInstance.BufferNeeded += new EventHandler<EventArgs>(OnBufferNeeded);
                 m_ThisInstance.SubmitBuffer(buffer);
                 m_ThisInstance.Play();
 
                 List<Tuple<DynamicSoundEffectInstance, double>> list = (asEffect) ? m_EffectInstances : m_MusicInstances;
-                list.Add(new Tuple<DynamicSoundEffectInstance, double>(m_ThisInstance, now + (m_ThisInstance.GetSampleDuration(buffer.Length).Milliseconds)));
+                double ms = m_ThisInstance.GetSampleDuration(buffer.Length).TotalMilliseconds;
+                list.Add(new Tuple<DynamicSoundEffectInstance, double>(m_ThisInstance, now + ms));
             }
         }
 
