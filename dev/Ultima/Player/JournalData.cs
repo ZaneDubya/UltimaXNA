@@ -11,7 +11,7 @@ namespace UltimaXNA.Ultima.Player
             get { return m_JournalEntries; }
         }
 
-        public Action<string> OnJournalEntryAdded = null;
+        public event Action<string> OnJournalEntryAdded;
 
         public void AddEntry(string text)
         {
