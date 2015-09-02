@@ -160,6 +160,28 @@ namespace UltimaXNA.Ultima.Data
                 Facing = facing;
                 ChairType = chairType;
             }
+
+            public Direction GetSittingFacing(Direction inFacing)
+            {
+                if (ChairType == ChairType.SingleFacing)
+                    return Facing;
+
+                inFacing = DirectionHelper.GetCardinal(inFacing);
+                if (inFacing == Facing)
+                    return Facing;
+
+                if (ChairType == ChairType.ReversibleFacing)
+                {
+                    if (DirectionHelper.Reverse(inFacing) == Facing)
+                        return Facing;
+                }
+                else if (ChairType == ChairType.AnyFacing)
+                {
+                    return inFacing; // which has been made cardinal already, so this works.
+                }
+
+                return Facing;
+            }
         }
 
         public enum ChairType

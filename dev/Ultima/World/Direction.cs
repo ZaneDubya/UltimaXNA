@@ -63,5 +63,15 @@ namespace UltimaXNA.Ultima.World
 
             return (Direction)direction;
         }
+
+        public static Direction GetCardinal(Direction inDirection)
+        {
+            return inDirection & (Direction)0x6; // contains bitmasks for 0x0, 0x2, 0x4, and 0x6
+        }
+
+        public static Direction Reverse(Direction inDirection)
+        {
+            return (Direction)((int)inDirection + 0x04) & Direction.FacingMask;
+        }
     }
 }
