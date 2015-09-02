@@ -622,7 +622,7 @@ namespace UltimaXNA.Ultima.World.Input
         {
             // hold 'shift' to pick up an entire stack.
             // if in a bag and is a quantity, then show the 'lift amount' prompt, else just lift it outright.
-            if (!m_Input.IsShiftDown && !amount.HasValue && item.Amount > 1)
+            if (!m_Input.IsShiftDown && !amount.HasValue && !(item is Corpse) && item.Amount > 1)
             {
                 SplitItemStackGump gump = new SplitItemStackGump(item, new Point(x, y));
                 m_UserInterface.AddControl(gump, m_Input.MousePosition.X - 80, m_Input.MousePosition.Y - 40);

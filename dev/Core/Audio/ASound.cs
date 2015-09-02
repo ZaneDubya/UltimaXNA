@@ -26,7 +26,7 @@ namespace UltimaXNA.Core.Audio
 
         private static List<Tuple<DynamicSoundEffectInstance, double>> m_EffectInstances;
         private static List<Tuple<DynamicSoundEffectInstance, double>> m_MusicInstances;
-        private DynamicSoundEffectInstance m_ThisInstance;
+        protected DynamicSoundEffectInstance m_ThisInstance;
 
         protected int Frequency = 22050;
         protected AudioChannels Channels = AudioChannels.Mono;
@@ -60,7 +60,7 @@ namespace UltimaXNA.Core.Audio
         /// Plays the effect.
         /// </summary>
         /// <param name="asEffect">Set to false for music, true for sound effects.</param>
-        public void Play(bool asEffect = true)
+        public void Play(bool asEffect, AudioEffects effect = AudioEffects.None, float volume = 1.0f)
         {
             double now = UltimaGame.TotalMS;
             CullExpiredEffects(now);
@@ -72,18 +72,27 @@ namespace UltimaXNA.Core.Audio
                 return;
             }
 
+            switch (effect)
+            {
+                case AudioEffects.PitchVariation:
+                    float pitch = (float)Utility.RandomValue(-5, 5) * .025f;
+                    m_ThisInstance.Pitch = pitch;
+                    break;
+            }
+
             BeforePlay();
 
             byte[] buffer = GetBuffer();
             if (buffer != null && buffer.Length > 0)
             {
-
                 m_ThisInstance.BufferNeeded += new EventHandler<EventArgs>(OnBufferNeeded);
                 m_ThisInstance.SubmitBuffer(buffer);
+                m_ThisInstance.Volume = volume;
                 m_ThisInstance.Play();
 
                 List<Tuple<DynamicSoundEffectInstance, double>> list = (asEffect) ? m_EffectInstances : m_MusicInstances;
-                list.Add(new Tuple<DynamicSoundEffectInstance, double>(m_ThisInstance, now + (m_ThisInstance.GetSampleDuration(buffer.Length).Milliseconds)));
+                double ms = m_ThisInstance.GetSampleDuration(buffer.Length).TotalMilliseconds;
+                list.Add(new Tuple<DynamicSoundEffectInstance, double>(m_ThisInstance, now + ms));
             }
         }
 
@@ -124,7 +133,7 @@ namespace UltimaXNA.Core.Audio
             if (list.Count >= maxInstances)
                 return null;
             else
-                return new DynamicSoundEffectInstance(Frequency, Channels);
+                return new DynamicSoundEffectInstance(Frequency, Channels); // shouldn't we be recycling these?
         }
     }
 }

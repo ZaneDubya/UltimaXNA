@@ -14,6 +14,7 @@ using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.WorldViews;
+using UltimaXNA.Ultima.World.Entities;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -22,8 +23,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
         Vector3 m_DrawPosition;
         AEntityView m_BaseView;
 
-        public DeferredView(Vector3 drawPosition, AEntityView baseView)
-            : base(baseView.Entity)
+        public DeferredView(DeferredEntity entity, Vector3 drawPosition, AEntityView baseView)
+            : base(entity)
         {
             m_DrawPosition = drawPosition;
             m_BaseView = baseView;
@@ -31,16 +32,19 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
-            if (Entity is Mobile)
+            if (m_BaseView.Entity is Mobile)
             { 
-                Mobile mobile = Entity as Mobile;
+                Mobile mobile = m_BaseView.Entity as Mobile;
                 if (!mobile.IsAlive || mobile.IsDisposed || mobile.Body == 0)
                 {
+                    Entity.Dispose();
                     return false;
                 }
             }
 
-            m_BaseView.SetYClipLine(m_DrawPosition.Y - 22 - ((Entity.Position.Z + Entity.Position.Z_offset) * 4)  + ((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF));
+            m_BaseView.SetYClipLine(m_DrawPosition.Y - 22 - 
+                ((m_BaseView.Entity.Position.Z + m_BaseView.Entity.Position.Z_offset) * 4)  + 
+                ((m_BaseView.Entity.Position.X_offset + m_BaseView.Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF));
             bool success = m_BaseView.DrawInternal(spriteBatch, m_DrawPosition, mouseOverList, map, roofHideFlag);
             m_BaseView.ClearYClipLine();
             return success;

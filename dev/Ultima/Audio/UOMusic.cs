@@ -10,6 +10,7 @@
  ***************************************************************************/
 
 using Microsoft.Xna.Framework.Audio;
+using System;
 using UltimaXNA.Core.Audio;
 using UltimaXNA.Core.Audio.MP3Sharp;
 using UltimaXNA.Ultima.IO;
@@ -19,7 +20,7 @@ namespace UltimaXNA.Ultima.Audio
     class UOMusic : ASound
     {
         private MP3Stream m_Stream;
-        private const int NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK = 8192;
+        private const int NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK = 0x8000; // 32768 bytes, about 0.9 seconds
         private readonly byte[] m_WaveBuffer = new byte[NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK];
 
         private bool m_Repeat;
@@ -40,6 +41,12 @@ namespace UltimaXNA.Ultima.Audio
             m_Repeat = loop;
             m_Playing = false;
             Channels = AudioChannels.Stereo;
+        }
+
+        public void Update()
+        {
+            // sanity - if the buffer empties, we will lose our sound effect. Thus we must continually check if it is dead.
+            OnBufferNeeded(null, null);
         }
 
         protected override byte[] GetBuffer()
@@ -63,17 +70,17 @@ namespace UltimaXNA.Ultima.Audio
             return m_WaveBuffer;
         }
 
-        protected override void OnBufferNeeded(object sender, System.EventArgs e)
+        protected override void OnBufferNeeded(object sender, EventArgs e)
         {
             if (m_Playing)
             {
-                DynamicSoundEffectInstance instance = sender as DynamicSoundEffectInstance;
-                while (instance.PendingBufferCount < 3)
+                // DynamicSoundEffectInstance instance = sender as DynamicSoundEffectInstance;
+                while (m_ThisInstance.PendingBufferCount < 3)
                 {
                     byte[] buffer = GetBuffer();
-                    if (instance.IsDisposed)
+                    if (m_ThisInstance.IsDisposed)
                         return;
-                    instance.SubmitBuffer(buffer);
+                    m_ThisInstance.SubmitBuffer(buffer);
                 }
             }
         }

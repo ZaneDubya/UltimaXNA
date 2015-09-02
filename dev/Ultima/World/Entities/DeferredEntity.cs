@@ -57,7 +57,7 @@ namespace UltimaXNA.Ultima.World.Entities
 
         protected override AEntityView CreateView()
         {
-            return new DeferredView(m_DrawPosition, m_BaseView);
+            return new DeferredView(this, m_DrawPosition, m_BaseView);
         }
     }
 }

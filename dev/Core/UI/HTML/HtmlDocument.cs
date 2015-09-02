@@ -105,6 +105,8 @@ namespace UltimaXNA.Core.UI.HTML
         // Parse and create boxes
         // ======================================================================
 
+        private static HTMLparser m_Parser;
+
         private BlockElement ParseHtmlToBlocks(string html)
         {
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
@@ -122,10 +124,12 @@ namespace UltimaXNA.Core.UI.HTML
             }
             else
             {
-                HTMLparser parser = new HTMLparser(html);
+                if (m_Parser == null)
+                    m_Parser = new HTMLparser();
+                m_Parser.Init(html);
                 HTMLchunk chunk;
 
-                while ((chunk = ParseNext(parser)) != null)
+                while ((chunk = ParseNext(m_Parser)) != null)
                 {
                     if (!(chunk.oHTML == string.Empty))
                     {

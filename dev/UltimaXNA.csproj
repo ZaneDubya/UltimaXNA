@@ -220,6 +220,7 @@
     <Compile Include="Core\UI\RenderedTextList.cs" />
     <Compile Include="Core\UI\RenderedText.cs" />
     <Compile Include="ServiceRegistry.cs" />
+    <Compile Include="Core\Audio\AudioEffects.cs" />
     <Compile Include="Ultima\Audio\AudioService.cs" />
     <Compile Include="Ultima\Audio\UOMusic.cs" />
     <Compile Include="Ultima\Audio\UOSound.cs" />

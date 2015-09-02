@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
@@ -43,6 +42,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             InitializeJournalEntries();
             PlayerState.Journaling.OnJournalEntryAdded += AddJournalEntry;
+        }
+
+        public override void Dispose()
+        {
+            PlayerState.Journaling.OnJournalEntryAdded -= AddJournalEntry;
+            base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)
