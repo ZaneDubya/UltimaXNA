@@ -54,22 +54,25 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             if (Tile == null)
                 return;
 
-            bool foundChairData = false;
-            List<Item> items = Tile.GetItemsBetweenZ(Z - 1, Z + 1); // match legacy - sit on chairs between z-1 and z+1.
-            foreach (Item i in items)
+            if (Body.IsHumanoid)
             {
-                Chairs.ChairData data;
-                if (Chairs.CheckItemAsChair(i.ItemID, out data))
+                bool foundChairData = false;
+                List<Item> items = Tile.GetItemsBetweenZ(Z - 1, Z + 1); // match legacy - sit on chairs between z-1 and z+1.
+                foreach (Item i in items)
                 {
-                    foundChairData = true;
-                    m_ChairSittingUpon = data;
-                    SittingPixelOffset = i.ItemData.Unknown4;
-                    SittingZ = i.Z - Z;
-                    break;
+                    Chairs.ChairData data;
+                    if (Chairs.CheckItemAsChair(i.ItemID, out data))
+                    {
+                        foundChairData = true;
+                        m_ChairSittingUpon = data;
+                        SittingPixelOffset = i.ItemData.Unknown4;
+                        SittingZ = i.Z - Z;
+                        break;
+                    }
                 }
+                if (!foundChairData)
+                    m_ChairSittingUpon = Chairs.ChairData.Null;
             }
-            if (!foundChairData)
-                m_ChairSittingUpon = Chairs.ChairData.Null;
         }
 
         public override void Update(double frameMS)

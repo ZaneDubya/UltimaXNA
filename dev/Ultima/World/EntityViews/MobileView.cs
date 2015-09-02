@@ -207,7 +207,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             ClearLayers();
 
-            if (Entity.Body.IsHuman)
+            if (Entity.Body.IsHumanoid)
             {
                 int[] drawLayers = DrawLayerOrder;
                 bool hasOuterTorso = Entity.Equipment[(int)EquipLayer.OuterTorso] != null && Entity.Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;

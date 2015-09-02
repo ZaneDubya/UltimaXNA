@@ -248,7 +248,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         private int getActionIndex(MobileAction action, int index)
         {
-            if (Parent.Body.IsHuman)
+            if (Parent.Body.IsHumanoid)
             {
                 switch (action)
                 {
@@ -410,7 +410,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         private MobileAction getActionFromIndex(int index)
         {
-            if (Parent.Body.IsHuman)
+            if (Parent.Body.IsHumanoid)
             {
                 switch ((ActionIndexHumanoid)index)
                 {

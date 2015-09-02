@@ -33,7 +33,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public static void DoFootstepSounds(Mobile mobile, double frame)
         {
-            if (!mobile.Body.IsHuman || mobile.Flags.IsHidden)
+            if (!mobile.Body.IsHumanoid || mobile.Flags.IsHidden)
                 return;
 
             MobileSoundData data;
