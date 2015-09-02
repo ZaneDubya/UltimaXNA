@@ -154,14 +154,39 @@ namespace UltimaXNA.Ultima.World.Maps
             return (underEntity != null) || (underGround != null);
         }
 
+        private List<StaticItem> s_StaticItemList = new List<StaticItem>();
+        /// <summary>
+        /// Returns a list of static items in this tile. ONLY CALL ONCE AT A TIME. NOT THREAD SAFE.
+        /// </summary>
+        /// <returns></returns>
         public List<StaticItem> GetStatics()
         {
-            List<StaticItem> items = new List<StaticItem>();
+            List<StaticItem> items = s_StaticItemList;
+            s_StaticItemList.Clear();
 
             for (int i = 0; i < m_Entities.Count; i++)
             {
                 if (m_Entities[i] is StaticItem)
                     items.Add((StaticItem)m_Entities[i]);
+            }
+
+            return items;
+        }
+
+        private static List<Item> s_ItemsAtZList = new List<Item>();
+        /// <summary>
+        /// Returns a list of items at the specified z in this tile. ONLY CALL ONCE AT A TIME. NOT THREAD SAFE.
+        /// </summary>
+        /// <returns></returns>
+        public List<Item> GetItemsBetweenZ(int z0, int z1)
+        {
+            List<Item> items = s_ItemsAtZList;
+            s_ItemsAtZList.Clear();
+
+            for (int i = 0; i < m_Entities.Count; i++)
+            {
+                if (m_Entities[i] is Item && m_Entities[i].Z >= z0 && m_Entities[i].Z <= z1)
+                    items.Add((Item)m_Entities[i]);
             }
 
             return items;

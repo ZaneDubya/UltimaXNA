@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
@@ -45,6 +46,30 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             Equipment.ClearEquipment();
             if (OnEntityUpdated != null)
                 OnEntityUpdated();
+        }
+
+        protected override void OnTileChanged(int x, int y)
+        {
+            base.OnTileChanged(x, y);
+            if (Tile == null)
+                return;
+
+            bool foundChairData = false;
+            List<Item> items = Tile.GetItemsBetweenZ(Z - 1, Z + 1); // match legacy - sit on chairs between z-1 and z+1.
+            foreach (Item i in items)
+            {
+                Chairs.ChairData data;
+                if (Chairs.CheckItemAsChair(i.ItemID, out data))
+                {
+                    foundChairData = true;
+                    m_ChairSittingUpon = data;
+                    SittingPixelOffset = i.ItemData.Unknown4;
+                    SittingZ = i.Z - Z;
+                    break;
+                }
+            }
+            if (!foundChairData)
+                m_ChairSittingUpon = Chairs.ChairData.Null;
         }
 
         public override void Update(double frameMS)
@@ -94,6 +119,30 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                     return m_movement.GoalPosition;
             }
         }
+
+        private Chairs.ChairData m_ChairSittingUpon = Chairs.ChairData.Null;
+        public bool IsSitting
+        {
+            get
+            {
+                if (m_ChairSittingUpon.ItemID == Chairs.ChairData.Null.ItemID)
+                    return false;
+                return true;
+            }
+        }
+
+        public Direction SittingFacing
+        {
+            get
+            {
+                if (!IsSitting)
+                    return Facing;
+                return m_ChairSittingUpon.GetSittingFacing(Facing);
+            }
+        }
+
+        public int SittingPixelOffset = 0;
+        public int SittingZ = 0;
 
         // ============================================================
         // Properties
