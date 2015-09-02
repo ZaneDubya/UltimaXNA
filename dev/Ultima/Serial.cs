@@ -24,10 +24,7 @@ namespace UltimaXNA.Ultima
             get { return 0; }
         }
 
-        public static Serial World
-        {
-            get { return unchecked((int)0xFFFFFFFF); }
-        }
+        public readonly static Serial World = unchecked((int)0xFFFFFFFF);
 
         private readonly int m_Serial;
 
