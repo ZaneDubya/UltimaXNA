@@ -213,7 +213,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     // get the resource provider
                     IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                     IAnimationFrame[] frames = provider.GetAnimation(
-                        Parent.Body, actionIndex, (int)Parent.Facing, Parent.Hue);
+                        Parent.Body, actionIndex, (int)Parent.DrawFacing, Parent.Hue);
                     if (frames != null)
                     {
                         m_FrameCount = frames.Length;
@@ -253,6 +253,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 switch (action)
                 {
                     case MobileAction.None:
+                        // this will never be called.
                         return getActionIndex(MobileAction.Stand, index);
                     case MobileAction.Walk:
                         if (Parent.IsMounted)
@@ -281,15 +282,25 @@ namespace UltimaXNA.Ultima.World.EntityViews
                         }
                     case MobileAction.Stand:
                         if (Parent.IsMounted)
+                        {
                             return (int)ActionIndexHumanoid.Mounted_Stand;
+                        }
                         else
-                            if (Parent.Flags.IsWarMode)
+                        {
+                            if (Parent.IsSitting)
                             {
-                                // Also check if weapon type is 2h. Can be 1H or 2H
+                                return (int)ActionIndexHumanoid.Sit;
+                            }
+                            else if (Parent.Flags.IsWarMode)
+                            {
+                                // TODO: Also check if weapon type is 2h. Can be 1H or 2H
                                 return (int)ActionIndexHumanoid.Stand_Warmode1H;
                             }
                             else
+                            {
                                 return (int)ActionIndexHumanoid.Stand;
+                            }
+                        }
                     case MobileAction.Death:
                         // randomly select die forwards or backwards.
                         if (Utility.RandomValue(0, 1) == 0)
@@ -582,7 +593,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         Walk_Armed = 0x01,
         Run = 0x02,
         Run_Armed = 0x03,
-        Stand = 0x04,
+        Stand = AnimationResource.HUMANOID_STAND_INDEX,
         Fidget_1 = 0x05,
         Fidget_2 = 0x06,
         Stand_Warmode1H = 0x07,
@@ -612,6 +623,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         Attack_Unarmed3 = 0x1F,
         Emote_Bow = 0x20,
         Emote_Salute = 0x21,
-        Emote_Eat = 0x22
+        Emote_Eat = 0x22,
+        Sit = AnimationResource.HUMANOID_SIT_INDEX
     }
 }

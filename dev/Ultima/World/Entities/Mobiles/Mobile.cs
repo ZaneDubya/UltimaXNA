@@ -104,8 +104,25 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public Direction Facing
         {
-            get { return m_movement.Facing & Direction.FacingMask; }
-            set { m_movement.Facing = value; }
+            get
+            {
+                return m_movement.Facing & Direction.FacingMask;
+            }
+            set
+            {
+                m_movement.Facing = value;
+            }
+        }
+
+        public Direction DrawFacing
+        {
+            get
+            {
+                Direction facing = Facing;
+                if (!IsSitting)
+                    return facing;
+                return m_ChairSittingUpon.GetSittingFacing(facing);
+            }
         }
 
         public bool IsMoving { get { return m_movement.IsMoving; } }
@@ -128,19 +145,11 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             get
             {
+                if (((MobileView)GetView()).Animation.IsAnimating || m_movement.IsMoving)
+                    return false;
                 if (m_ChairSittingUpon.ItemID == Chairs.ChairData.Null.ItemID)
                     return false;
                 return true;
-            }
-        }
-
-        public Direction SittingFacing
-        {
-            get
-            {
-                if (!IsSitting)
-                    return Facing;
-                return m_ChairSittingUpon.GetSittingFacing(Facing);
             }
         }
 

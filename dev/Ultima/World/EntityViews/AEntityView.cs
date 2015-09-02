@@ -272,16 +272,16 @@ namespace UltimaXNA.Ultima.World.EntityViews
             Direction checkDirection;
             if (Entity is Mobile && ((Mobile)Entity).IsMoving)
             {
-                Mobile mobile = Entity as Mobile;
+                Direction facing = (Entity as Mobile).DrawFacing;
                 if (
-                    ((mobile.Facing & Direction.FacingMask) == Direction.Left) ||
-                    ((mobile.Facing & Direction.FacingMask) == Direction.South) ||
-                    ((mobile.Facing & Direction.FacingMask) == Direction.East))
+                    ((facing & Direction.FacingMask) == Direction.Left) ||
+                    ((facing & Direction.FacingMask) == Direction.South) ||
+                    ((facing & Direction.FacingMask) == Direction.East))
                 {
                     deferToTile = map.GetMapTile(Entity.Position.X, Entity.Position.Y + 1);
-                    checkDirection = mobile.Facing & Direction.FacingMask;
+                    checkDirection = facing & Direction.FacingMask;
                 }
-                else if ((mobile.Facing & Direction.FacingMask) == Direction.Down)
+                else if ((facing & Direction.FacingMask) == Direction.Down)
                 {
                     deferToTile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y + 1);
                     checkDirection = Direction.Down;

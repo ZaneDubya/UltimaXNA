@@ -72,10 +72,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 return false;
             if (Entity.Body == 0)
                 return false;
-
+            // get a z index underneath all this mobile's sprite layers. We will place the shadow on this z index.
             DrawShadowZDepth = spriteBatch.GetNextUniqueZ();
-            DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
-
+            // get/update the animation index.
             if (Entity.IsMoving)
             {
                 if (Entity.IsRunning)
@@ -88,6 +87,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 if (!Animation.IsAnimating)
                     Animation.Animate(MobileAction.Stand);
             }
+
+            // flip the facing (anim directions are reversed from the client-server protocol's directions).
+            DrawFlip = (MirrorFacingForDraw(Entity.DrawFacing) > 4) ? true : false;
 
             InternalSetupLayers();
 
@@ -241,7 +243,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         private void AddLayer(int bodyID, int hue)
         {
-            int facing = MirrorFacingForDraw(Entity.Facing);
+            int facing = MirrorFacingForDraw(Entity.DrawFacing);
             int animation = Animation.ActionIndex;
             float frame = Animation.AnimationFrame;
 
@@ -259,7 +261,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             get
             {
-                int direction = MirrorFacingForDraw(Entity.Facing);
+                int direction = MirrorFacingForDraw(Entity.DrawFacing);
                 switch (direction)
                 {
                     case 0x00: return s_DrawLayerOrderDown;
