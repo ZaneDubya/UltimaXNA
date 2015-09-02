@@ -60,6 +60,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             if (roofHideFlag && CheckUnderSurface(map, Entity.DestinationPosition.X, Entity.DestinationPosition.Y))
                 return false;
+            if (Entity.Body == 0)
+                return false;
 
             CheckDefer(map, drawPosition);
 
@@ -69,8 +71,6 @@ namespace UltimaXNA.Ultima.World.EntityViews
         public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
             if (Entity.IsDisposed)
-                return false;
-            if (Entity.Body == 0)
                 return false;
 
             DrawShadowZDepth = spriteBatch.GetNextUniqueZ();
