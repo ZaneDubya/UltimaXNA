@@ -110,11 +110,11 @@ namespace UltimaXNA.Ultima.Data
             AddChairData(0x2DE4, Direction.South, ChairType.SingleFacing);
             AddChairData(0x2DE5, Direction.West, ChairType.SingleFacing);
             AddChairData(0x2DE6, Direction.North, ChairType.SingleFacing);
-            // 0x2DEB - 0x2DEF - elven chairs 2
+            // 0x2DEB - 0x2DEE - elven chairs 2
             AddChairData(0x2DEB, Direction.North, ChairType.SingleFacing);
             AddChairData(0x2DEC, Direction.South, ChairType.SingleFacing);
             AddChairData(0x2DED, Direction.East, ChairType.SingleFacing);
-            AddChairData(0x2DEF, Direction.West, ChairType.SingleFacing);
+            AddChairData(0x2DEE, Direction.West, ChairType.SingleFacing);
             // 0x3DFF - 0x3E00 - dark stone benches
             AddChairData(0x3DFF, Direction.South, ChairType.ReversibleFacing);
             AddChairData(0x3E00, Direction.East, ChairType.ReversibleFacing);
