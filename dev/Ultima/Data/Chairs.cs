@@ -23,13 +23,111 @@ namespace UltimaXNA.Ultima.Data
         static Chairs()
         {
             m_Chairs = new Dictionary<int, ChairData>();
-            //0x0B2C - 0x0B33
-            //0x0B4E - 0x0B6A
-            //0x1218 - 0x121B
-            m_Chairs.Add(0x0B2C, new ChairData(0x0B2C, Direction.South, ChairType.SingleFacing));
+            // 0x0459 - 0x045C - marbe benches
+            AddChairData(0x0459, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x045A, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x045B, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x045C, Direction.East, ChairType.ReversibleFacing);
+            // 0x0A2A - 0x0A2B - two stools
+            AddChairData(0x0A2A, Direction.South, ChairType.AnyFacing);
+            AddChairData(0x0A2B, Direction.South, ChairType.AnyFacing);
+            //0x0B2C - 0x0B33 - chairs
+            AddChairData(0x0B2C, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x0B2D, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x0B2E, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x0B2F, Direction.East, ChairType.SingleFacing);
+            AddChairData(0x0B30, Direction.West, ChairType.SingleFacing);
+            AddChairData(0x0B31, Direction.North, ChairType.SingleFacing);
+            AddChairData(0x0B32, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x0B33, Direction.East, ChairType.SingleFacing);
+            //0x0B4E - 0x0B6A - chairs, benches, one stool
+            AddChairData(0x0B4E, Direction.East, ChairType.SingleFacing);
+            AddChairData(0x0B4F, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x0B50, Direction.North, ChairType.SingleFacing);
+            AddChairData(0x0B51, Direction.West, ChairType.SingleFacing);
+            AddChairData(0x0B52, Direction.East, ChairType.SingleFacing);
+            AddChairData(0x0B53, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x0B54, Direction.North, ChairType.SingleFacing);
+            AddChairData(0x0B55, Direction.West, ChairType.SingleFacing);
+            AddChairData(0x0B56, Direction.East, ChairType.SingleFacing);
+            AddChairData(0x0B57, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x0B58, Direction.North, ChairType.SingleFacing);
+            AddChairData(0x0B59, Direction.West, ChairType.SingleFacing);
+            AddChairData(0x0B5A, Direction.East, ChairType.SingleFacing);
+            AddChairData(0x0B5B, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x0B5C, Direction.North, ChairType.SingleFacing);
+            AddChairData(0x0B5D, Direction.West, ChairType.SingleFacing);
+            AddChairData(0x0B5E, Direction.South, ChairType.AnyFacing);
+            AddChairData(0x0B5F, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x0B60, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x0B61, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x0B62, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x0B63, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x0B64, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x0B65, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x0B66, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x0B67, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x0B68, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x0B69, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x0B6A, Direction.South, ChairType.ReversibleFacing);
+            // 0x0B91 - 0x0B4 - benches with high backs
+            AddChairData(0x0B91, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x0B92, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x0B93, Direction.East, ChairType.SingleFacing);
+            AddChairData(0x0B94, Direction.East, ChairType.SingleFacing);
+            // 0x1049 - 0x104A - benches
+            AddChairData(0x1049, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x104A, Direction.South, ChairType.ReversibleFacing);
+            // 0x11FC - bamboo stool
+            AddChairData(0x11FC, Direction.South, ChairType.AnyFacing);
+            // 0x1207 - 0x120C - stone benches
+            AddChairData(0x1207, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x1208, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x1209, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x120A, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x120B, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x120C, Direction.South, ChairType.ReversibleFacing);
+            //0x1218 - 0x121B - stone chairs
+            AddChairData(0x1218, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x1219, Direction.East, ChairType.SingleFacing);
+            AddChairData(0x121A, Direction.North, ChairType.SingleFacing);
+            AddChairData(0x121B, Direction.West, ChairType.SingleFacing);
+            // 0x1DC7 - 0x1DD2 - long sandstone / marbe benches
+            AddChairData(0x1DC7, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x1DC8, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x1DC9, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x1DCA, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x1DCB, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x1DCC, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x1DCD, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x1DCE, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x1DCF, Direction.East, ChairType.ReversibleFacing);
+            AddChairData(0x1DD0, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x1DD1, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x1DD2, Direction.South, ChairType.ReversibleFacing);
+            // 0x2DE3 - 0x2DE6 - elven chairs 1
+            AddChairData(0x2DE3, Direction.East, ChairType.SingleFacing);
+            AddChairData(0x2DE4, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x2DE5, Direction.West, ChairType.SingleFacing);
+            AddChairData(0x2DE6, Direction.North, ChairType.SingleFacing);
+            // 0x2DEB - 0x2DEF - elven chairs 2
+            AddChairData(0x2DEB, Direction.North, ChairType.SingleFacing);
+            AddChairData(0x2DEC, Direction.South, ChairType.SingleFacing);
+            AddChairData(0x2DED, Direction.East, ChairType.SingleFacing);
+            AddChairData(0x2DEF, Direction.West, ChairType.SingleFacing);
+            // 0x3DFF - 0x3E00 - dark stone benches
+            AddChairData(0x3DFF, Direction.South, ChairType.ReversibleFacing);
+            AddChairData(0x3E00, Direction.East, ChairType.ReversibleFacing);
         }
 
-        public bool CheckItemAsChair(int itemID, out ChairData value)
+        public static void AddChairData(int itemID, Direction direction, ChairType chairType)
+        {
+            if (m_Chairs.ContainsKey(itemID))
+                m_Chairs.Remove(itemID);
+            m_Chairs.Add(itemID, new ChairData(itemID, direction, chairType));
+        }
+
+        public static bool CheckItemAsChair(int itemID, out ChairData value)
         {
             if (m_Chairs.TryGetValue(itemID, out value))
             {
