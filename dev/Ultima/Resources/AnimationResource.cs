@@ -66,19 +66,23 @@ namespace UltimaXNA.Ultima.Resources
             AFileIndex fileIndex;
             int length, extra;
             bool patched;
-            bool sittingTransform = false;
-
-            if (action == HUMANOID_SIT_INDEX)
-            {
-                sittingTransform = true;
-                action = HUMANOID_STAND_INDEX;
-            }
-
-            GetIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
 
             IAnimationFrame[] f = CheckCache(body, action, direction);
             if (f != null)
                 return f;
+
+            GetIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
+
+            bool sittingTransform = false;
+            if (action == HUMANOID_SIT_INDEX)
+            {
+                sittingTransform = true;
+                GetIndexes(ref body, ref hue, HUMANOID_STAND_INDEX, direction, out animIndex, out fileIndex);
+            }
+            else
+            {
+                GetIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
+            }
 
             BinaryFileReader reader = fileIndex.Seek(animIndex, out length, out extra, out patched);
             if (reader == null)
@@ -108,7 +112,7 @@ namespace UltimaXNA.Ultima.Resources
                 else
                 {
                     reader.Seek(read_start + lookups[i], SeekOrigin.Begin);
-                    frames[i] = new AnimationFrame(m_Graphics, palette, reader);
+                    frames[i] = new AnimationFrame(m_Graphics, palette, reader, sittingTransform);
                 }
             }
             return frames;

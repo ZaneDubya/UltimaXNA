@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.Resources
 
         }
 
-        public unsafe AnimationFrame(GraphicsDevice graphics, ushort[] palette, BinaryFileReader reader)
+        public unsafe AnimationFrame(GraphicsDevice graphics, ushort[] palette, BinaryFileReader reader, bool sittingTransform)
         {
             int xCenter = reader.ReadShort();
             int yCenter = reader.ReadShort();
@@ -50,14 +50,22 @@ namespace UltimaXNA.Ultima.Resources
             int width = reader.ReadUShort();
             int height = reader.ReadUShort();
 
-            // Fix for animations with no IO.
+            // Fix for animations with no pixels.
             if ((width == 0) || (height == 0))
             {
                 Texture = null;
                 return;
             }
 
+            if (sittingTransform)
+            {
+                xCenter += 8;
+                width += 8;
+            }
+
             ushort[] data = new ushort[width * height];
+            for (int i = 0; i < data.Length; i++)
+                data[i] = 0xFFFF;
 
             int header;
 
