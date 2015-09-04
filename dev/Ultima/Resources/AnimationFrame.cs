@@ -72,6 +72,10 @@ namespace UltimaXNA.Ultima.Resources
             int xBase = xCenter - 0x200;
             int yBase = (yCenter + height) - 0x200;
 
+            // somewhere around the waist of a typical mobile animation, we take twelve rows of pixels,
+            // discard every third, and shift every remaining row (total of eight) one pixel to the left
+            // or right (depending on orientation), for a total skew of eight pixels.
+
             fixed (ushort* pData = data)
             {
                 ushort* dataRef = pData;
