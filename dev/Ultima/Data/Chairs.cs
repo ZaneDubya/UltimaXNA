@@ -51,8 +51,8 @@ namespace UltimaXNA.Ultima.Data
             AddChairData(0x0B55, Direction.West, ChairType.SingleFacing);
             AddChairData(0x0B56, Direction.East, ChairType.SingleFacing);
             AddChairData(0x0B57, Direction.South, ChairType.SingleFacing);
-            AddChairData(0x0B58, Direction.North, ChairType.SingleFacing);
-            AddChairData(0x0B59, Direction.West, ChairType.SingleFacing);
+            AddChairData(0x0B58, Direction.West, ChairType.SingleFacing);
+            AddChairData(0x0B59, Direction.North, ChairType.SingleFacing);
             AddChairData(0x0B5A, Direction.East, ChairType.SingleFacing);
             AddChairData(0x0B5B, Direction.South, ChairType.SingleFacing);
             AddChairData(0x0B5C, Direction.North, ChairType.SingleFacing);

@@ -72,8 +72,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 return false;
             if (Entity.Body == 0)
                 return false;
+            
             // get a z index underneath all this mobile's sprite layers. We will place the shadow on this z index.
             DrawShadowZDepth = spriteBatch.GetNextUniqueZ();
+            
             // get/update the animation index.
             if (Entity.IsMoving)
             {
@@ -106,6 +108,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 drawX = -IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
                 drawY = drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
             }
+
+            if (Entity.IsSitting)
+            {
+                drawX -= 1;
+                drawY -= Entity.SittingPixelOffset + 8;
+            }
+
+            IsShadowCastingView = !Entity.IsSitting;
 
             // get the maximum y-extent of this object so we can correctly place overheads.
             int yOffset = 0;

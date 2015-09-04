@@ -68,6 +68,7 @@ namespace UltimaXNA.Ultima.Resources
             bool patched;
 
             IAnimationFrame[] f = CheckCache(body, action, direction);
+            f = null;
             if (f != null)
                 return f;
 
