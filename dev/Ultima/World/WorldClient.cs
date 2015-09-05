@@ -428,8 +428,7 @@ namespace UltimaXNA.Ultima.World
         {
             WornItemPacket p = (WornItemPacket)packet;
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ParentSerial, 0);
-            Mobile m = WorldModel.Entities.GetObject<Mobile>(p.ParentSerial, false);
-            m.WearItem(item, p.Layer);
+            WorldModel.Entities.AddWornItem(item, p.Layer, p.ParentSerial);
             if (item.PropertyList.Hash == 0)
                 m_Network.Send(new QueryPropertiesPacket(item.Serial));
         }

@@ -12,6 +12,7 @@
 using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
@@ -22,10 +23,12 @@ namespace UltimaXNA.Ultima.World.Managers
     {
         private WorldModel m_Model;
 
+        private List<QueuedWornItem> m_QueuedWornItems = new List<QueuedWornItem>();
         private Dictionary<int, AEntity> m_Entities = new Dictionary<int, AEntity>();
         private List<AEntity> m_Entities_Queued = new List<AEntity>();
+
         private bool m_EntitiesCollectionIsLocked = false;
-        List<int> m_SerialsToRemove = new List<int>();
+        private List<int> m_SerialsToRemove = new List<int>();
 
         public EntityManager(WorldModel model)
         {
@@ -34,6 +37,8 @@ namespace UltimaXNA.Ultima.World.Managers
 
         public void Reset(bool clearPlayerEntity = false)
         {
+            m_QueuedWornItems.Clear();
+
             if (clearPlayerEntity)
             {
                 m_Entities.Clear();
@@ -177,6 +182,18 @@ namespace UltimaXNA.Ultima.World.Managers
             if (e.Serial == WorldModel.PlayerSerial)
                 e.IsClientEntity = true;
 
+            if (e is Mobile)
+            {
+                for (int i = 0; i < m_QueuedWornItems.Count; i++)
+                {
+                    if (m_QueuedWornItems[i].ParentSerial == serial)
+                    {
+                        (e as Mobile).WearItem(m_QueuedWornItems[i].Item, m_QueuedWornItems[i].Layer);
+                        m_QueuedWornItems.RemoveAt(i--);
+                    }
+                }
+            }
+
             // If the entities collection is locked, add the new entity to the queue. Otherwise 
             // add it directly to the main entity collection.
             if (m_EntitiesCollectionIsLocked)
@@ -194,5 +211,29 @@ namespace UltimaXNA.Ultima.World.Managers
                 m_Entities[serial].Dispose();
             }
         }
+
+        public void AddWornItem(Item item, byte layer, Serial parent)
+        {
+            Mobile m = WorldModel.Entities.GetObject<Mobile>(parent, false);
+            if (m != null)
+                m.WearItem(item, layer);
+            else
+                m_QueuedWornItems.Add(new QueuedWornItem(item, layer, parent));
+        }
+
+        private struct QueuedWornItem
+        {
+            public readonly byte Layer;
+            public readonly Item Item;
+            public readonly Serial ParentSerial;
+
+            public QueuedWornItem(Item item, byte layer, Serial parent)
+            {
+                Item = item;
+                Layer = layer;
+                ParentSerial = parent;
+            }
+        }
     }
 }
+
