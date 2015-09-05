@@ -64,7 +64,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                 Dispose();
                 return;
             }
-           
 
             if (clickedCanDrag && UltimaGame.TotalMS >= pickUpTime)
             {
@@ -149,6 +148,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             clickedCanDrag = true;
             pickUpTime = (float)UltimaGame.TotalMS + Settings.World.Mouse.ClickAndPickupMS;
             m_ClickPoint = new Point(x, y);
+        }
+
+        protected override void OnMouseUp(int x, int y, MouseButton button)
+        {
+            clickedCanDrag = false;
         }
 
         protected override void OnMouseOver(int x, int y)
