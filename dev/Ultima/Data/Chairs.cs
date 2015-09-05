@@ -197,7 +197,7 @@ namespace UltimaXNA.Ultima.Data
                 if (ChairType == ChairType.ReversibleFacing)
                 {
                     if (DirectionHelper.Reverse(inFacing) == Facing)
-                        return Facing;
+                        return inFacing;
                 }
                 else if (ChairType == ChairType.AnyFacing)
                 {
