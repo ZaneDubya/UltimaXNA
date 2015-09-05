@@ -142,15 +142,15 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
 
         public override void OnHtmlInputEvent(string href, MouseEvent e)
         {
-            if (e != MouseEvent.Click)
+            int charIndex;
+            if (href.Length > 5 && href.StartsWith("CHAR="))
+                charIndex = int.Parse(href.Substring(5));
+            else
                 return;
 
-            if (href.Length > 5 && href.StartsWith("CHAR="))
+            if (e == MouseEvent.Click)
             {
-                int charIndex = int.Parse(href.Substring(5));
-                if (charIndex == m_charSelected)
-                    OnLoginWithCharacter(charIndex);
-                else
+                if (href.Length > 5 && href.StartsWith("CHAR="))
                 {
                     if ((m_charSelected >= 0) && (m_charSelected < Characters.Length))
                         m_characterNames[m_charSelected].Text = formatHTMLCharName(m_charSelected, Characters.List[m_charSelected].Name, 1278);
@@ -158,6 +158,11 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                     if ((m_charSelected >= 0) && (m_charSelected < Characters.Length))
                         m_characterNames[m_charSelected].Text = formatHTMLCharName(m_charSelected, Characters.List[m_charSelected].Name, 431);
                 }
+            }
+            else if (e == MouseEvent.DoubleClick)
+            {
+                if (charIndex == m_charSelected)
+                    OnLoginWithCharacter(charIndex);
             }
         }
 

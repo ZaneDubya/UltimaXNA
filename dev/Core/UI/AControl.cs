@@ -724,15 +724,17 @@ namespace UltimaXNA.Core.UI
                 return;
             }
 
-            OnMouseClick(x, y, button);
-            if (MouseClickEvent != null)
-                MouseClickEvent(this, x, y, button);
-
             if (doubleClick)
             {
                 OnMouseDoubleClick(x, y, button);
                 if (MouseDoubleClickEvent != null)
                     MouseDoubleClickEvent(this, x, y, button);
+            }
+            else
+            {
+                OnMouseClick(x, y, button);
+                if (MouseClickEvent != null)
+                    MouseClickEvent(this, x, y, button);
             }
         }
 
