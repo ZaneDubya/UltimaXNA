@@ -477,7 +477,7 @@ namespace UltimaXNA.Ultima.World
                 Tracer.Warn("DeathAnimation received for corpse which does not exist.");
             else
             {
-                c.Facing = m.Facing;
+                c.Facing = m.DrawFacing;
                 c.MobileSerial = p.PlayerSerial;
                 c.PlayDeathAnimation();
             }

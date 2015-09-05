@@ -9,11 +9,8 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
-using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.IO;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.IO;
@@ -23,7 +20,15 @@ namespace UltimaXNA.Ultima.Resources
 {
     internal sealed class AnimationResource
     {
-        private AFileIndex m_FileIndex = (AFileIndex) FileManager.CreateFileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
+        public const int HUMANOID_STAND_INDEX = 0x04;
+        public const int HUMANOID_MOUNT_INDEX = 0x19;
+        public const int HUMANOID_SIT_INDEX = 0x23; // 35
+
+        private const int COUNT_ANIMS = 0x1000;
+        private const int COUNT_ACTIONS = 36; // max UO action index is 34 (0-based, thus 35), we add one additional index for the humanoid sitting action.
+        private const int COUNT_DIRECTIONS = 8;
+
+        private AFileIndex m_FileIndex = (AFileIndex)FileManager.CreateFileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
         public AFileIndex FileIndex { get { return m_FileIndex; } }
 
         private AFileIndex m_FileIndex2 = (AFileIndex)FileManager.CreateFileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
@@ -35,7 +40,7 @@ namespace UltimaXNA.Ultima.Resources
         private AFileIndex m_FileIndex4 = (AFileIndex)FileManager.CreateFileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
         public AFileIndex FileIndex4 { get { return m_FileIndex4; } }
 
-        private AFileIndex m_FileIndex5 = (AFileIndex) FileManager.CreateFileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
+        private AFileIndex m_FileIndex5 = (AFileIndex)FileManager.CreateFileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
         public AFileIndex FileIndex5 { get { return m_FileIndex5; } }
 
         private IAnimationFrame[][][][] m_Cache;
@@ -45,6 +50,7 @@ namespace UltimaXNA.Ultima.Resources
         public AnimationResource(GraphicsDevice graphics)
         {
             m_Graphics = graphics;
+            m_Cache = new IAnimationFrame[COUNT_ANIMS][][][];
         }
 
         public int GetAnimationFrameCount(int body, int action, int direction, int hue)
@@ -62,21 +68,42 @@ namespace UltimaXNA.Ultima.Resources
             int length, extra;
             bool patched;
 
+            IAnimationFrame[] frames = CheckCache(body, action, direction);
+            frames = null;
+            if (frames != null)
+                return frames;
+
             GetIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
 
-            IAnimationFrame[] f = CheckCache(body, action, direction);
-            if (f != null)
-                return f;
+            AnimationFrame.SittingTransformation sitting = AnimationFrame.SittingTransformation.None;
+            if (action == HUMANOID_SIT_INDEX)
+            {
+                if (direction == 3 || direction == 5)
+                {
+                    sitting = AnimationFrame.SittingTransformation.MountNorth;
+                    GetIndexes(ref body, ref hue, HUMANOID_MOUNT_INDEX, direction, out animIndex, out fileIndex);
+                }
+                else if (direction == 1 || direction == 7)
+                {
+                    sitting = AnimationFrame.SittingTransformation.StandSouth;
+                    GetIndexes(ref body, ref hue, HUMANOID_STAND_INDEX, direction, out animIndex, out fileIndex);
+                }
+            }
+
+            if (sitting == AnimationFrame.SittingTransformation.None)
+            {
+                GetIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
+            }
 
             BinaryFileReader reader = fileIndex.Seek(animIndex, out length, out extra, out patched);
             if (reader == null)
                 return null;
 
-            IAnimationFrame[] frames = LoadAnimation(reader);
+            frames = LoadAnimation(reader, sitting);
             return m_Cache[body][action][direction] = frames;
         }
 
-        private IAnimationFrame[] LoadAnimation(BinaryFileReader reader)
+        private IAnimationFrame[] LoadAnimation(BinaryFileReader reader, AnimationFrame.SittingTransformation sitting)
         {
             ushort[] palette = GetPalette(reader); // 0x100 * 2 = 0x0200 bytes
             int read_start = (int)reader.Position; // save file position after palette.
@@ -96,29 +123,11 @@ namespace UltimaXNA.Ultima.Resources
                 else
                 {
                     reader.Seek(read_start + lookups[i], SeekOrigin.Begin);
-                    frames[i] = new AnimationFrame(m_Graphics, palette, reader);
+                    frames[i] = new AnimationFrame(m_Graphics, palette, reader, sitting);
                 }
             }
             return frames;
         }
-
-        /*public byte[] GetData(int body, int action, int direction, int hue)
-        {
-            int animIndex;
-            FileIndex fileIndex;
-            int length, extra;
-            bool patched;
-
-            if (body >= 0x1000)
-                return null;
-
-            getIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
-            BinaryFileReader reader = fileIndex.Seek(animIndex, out length, out extra, out patched);
-            if (reader == null)
-                return null;
-
-            return reader.ReadBytes(length);
-        }*/
 
         private ushort[] GetPalette(BinaryFileReader reader)
         {
@@ -133,12 +142,10 @@ namespace UltimaXNA.Ultima.Resources
         private IAnimationFrame[] CheckCache(int body, int action, int direction)
         {
             // Make sure the cache is complete.
-            // max number of bodies is about 0x1000
-            if (m_Cache == null) m_Cache = new IAnimationFrame[0x1000][][][];
             if (m_Cache[body] == null)
-                m_Cache[body] = new IAnimationFrame[35][][];
+                m_Cache[body] = new IAnimationFrame[COUNT_ACTIONS][][]; // max 35 actions
             if (m_Cache[body][action] == null)
-                m_Cache[body][action] = new IAnimationFrame[8][];
+                m_Cache[body][action] = new IAnimationFrame[COUNT_DIRECTIONS][];
             if (m_Cache[body][action][direction] == null)
                 m_Cache[body][action][direction] = new IAnimationFrame[1];
             if (m_Cache[body][action][direction][0] != null)
@@ -218,7 +225,7 @@ namespace UltimaXNA.Ultima.Resources
 
                         break;
                     }
-                // Issue 60 - End
+                    // Issue 60 - End
             }
 
             index += action * 5;
@@ -294,4 +301,4 @@ namespace UltimaXNA.Ultima.Resources
             }
         }
     }
-} 
+}

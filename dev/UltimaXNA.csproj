@@ -261,6 +261,7 @@
     <Compile Include="Core\Diagnostics\GeneralExceptionHandler.cs" />
     <Compile Include="Core\Configuration\SettingsFile.cs" />
     <Compile Include="Ultima\Data\Body.cs" />
+    <Compile Include="Ultima\Data\Chairs.cs" />
     <Compile Include="Ultima\Data\ItemInContainer.cs" />
     <Compile Include="Ultima\Data\ContextMenuItem.cs" />
     <Compile Include="Ultima\Data\HouseRevisionState.cs" />

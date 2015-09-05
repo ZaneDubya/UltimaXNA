@@ -71,11 +71,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             if (Rotation != 0)
             {
-                Vector3 center = drawPosition - new Vector3(DrawArea.X - IsometricRenderer.TILE_SIZE_INTEGER + DrawArea.Width / 2, DrawArea.Y + DrawArea.Height / 2, 0);
-                float sinx = (float)Math.Sin(Rotation) * DrawArea.Width / 2f;
-                float cosx = (float)Math.Cos(Rotation) * DrawArea.Width / 2f;
-                float siny = (float)Math.Sin(Rotation) * -DrawArea.Height / 2f;
-                float cosy = (float)Math.Cos(Rotation) * -DrawArea.Height / 2f;
+                float w = DrawArea.Width / 2f;
+                float h = DrawArea.Height / 2f;
+                Vector3 center = drawPosition - new Vector3(DrawArea.X - IsometricRenderer.TILE_SIZE_INTEGER + w, DrawArea.Y + h, 0);
+                float sinx = (float)Math.Sin(Rotation) * w;
+                float cosx = (float)Math.Cos(Rotation) * w;
+                float siny = (float)Math.Sin(Rotation) * -h;
+                float cosy = (float)Math.Cos(Rotation) * -h;
                 // 2   0    
                 // |\  |     
                 // |  \|     
@@ -272,16 +274,16 @@ namespace UltimaXNA.Ultima.World.EntityViews
             Direction checkDirection;
             if (Entity is Mobile && ((Mobile)Entity).IsMoving)
             {
-                Mobile mobile = Entity as Mobile;
+                Direction facing = (Entity as Mobile).DrawFacing;
                 if (
-                    ((mobile.Facing & Direction.FacingMask) == Direction.Left) ||
-                    ((mobile.Facing & Direction.FacingMask) == Direction.South) ||
-                    ((mobile.Facing & Direction.FacingMask) == Direction.East))
+                    ((facing & Direction.FacingMask) == Direction.Left) ||
+                    ((facing & Direction.FacingMask) == Direction.South) ||
+                    ((facing & Direction.FacingMask) == Direction.East))
                 {
                     deferToTile = map.GetMapTile(Entity.Position.X, Entity.Position.Y + 1);
-                    checkDirection = mobile.Facing & Direction.FacingMask;
+                    checkDirection = facing & Direction.FacingMask;
                 }
-                else if ((mobile.Facing & Direction.FacingMask) == Direction.Down)
+                else if ((facing & Direction.FacingMask) == Direction.Down)
                 {
                     deferToTile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y + 1);
                     checkDirection = Direction.Down;

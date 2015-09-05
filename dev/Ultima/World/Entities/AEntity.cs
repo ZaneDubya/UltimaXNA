@@ -90,9 +90,13 @@ namespace UltimaXNA.Ultima.World.Entities
                             Dispose();
                 }
             }
+            get
+            {
+                return m_Tile;
+            }
         }
 
-        private void OnTileChanged(int x, int y)
+        protected virtual void OnTileChanged(int x, int y)
         {
             if (Map != null)
             {

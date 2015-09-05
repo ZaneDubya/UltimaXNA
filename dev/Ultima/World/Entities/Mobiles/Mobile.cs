@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
@@ -18,6 +19,10 @@ using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.Entities.Mobiles
 {
+    /// <summary>
+    /// A mobile object - monster, NPC, or player.
+    /// TODO: This class needs a serious refactor.
+    /// </summary>
     public class Mobile : AEntity
     {
         // ============================================================
@@ -45,6 +50,34 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             Equipment.ClearEquipment();
             if (OnEntityUpdated != null)
                 OnEntityUpdated();
+        }
+
+        protected override void OnTileChanged(int x, int y)
+        {
+            base.OnTileChanged(x, y);
+            if (Tile == null)
+                return;
+
+            if (Body.IsHumanoid)
+            {
+                bool foundChairData = false;
+                List<Item> items = Tile.GetItemsBetweenZ(Z - 1, Z + 1); // match legacy - sit on chairs between z-1 and z+1.
+                foreach (Item i in items)
+                {
+                    Chairs.ChairData data;
+                    if (Chairs.CheckItemAsChair(i.ItemID, out data))
+                    {
+                        foundChairData = true;
+                        ChairData = data;
+                        SittingZ = i.Z - Z;
+                        ((MobileView)GetView()).Animation.Clear();
+                        Tile.ForceSort();
+                        break;
+                    }
+                }
+                if (!foundChairData)
+                    ChairData = Chairs.ChairData.Null;
+            }
         }
 
         public override void Update(double frameMS)
@@ -76,8 +109,25 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public Direction Facing
         {
-            get { return m_movement.Facing & Direction.FacingMask; }
-            set { m_movement.Facing = value; }
+            get
+            {
+                return m_movement.Facing & Direction.FacingMask;
+            }
+            set
+            {
+                m_movement.Facing = value;
+            }
+        }
+
+        public Direction DrawFacing
+        {
+            get
+            {
+                Direction facing = Facing;
+                if (!IsSitting)
+                    return facing;
+                return ChairData.GetSittingFacing(facing);
+            }
         }
 
         public bool IsMoving { get { return m_movement.IsMoving; } }
@@ -94,6 +144,21 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                     return m_movement.GoalPosition;
             }
         }
+
+        public bool IsSitting
+        {
+            get
+            {
+                if (!((MobileView)GetView()).Animation.IsStanding || m_movement.IsMoving)
+                    return false;
+                if (ChairData.ItemID == Chairs.ChairData.Null.ItemID)
+                    return false;
+                return true;
+            }
+        }
+
+        public Chairs.ChairData ChairData = Chairs.ChairData.Null;
+        public int SittingZ = 0;
 
         // ============================================================
         // Properties

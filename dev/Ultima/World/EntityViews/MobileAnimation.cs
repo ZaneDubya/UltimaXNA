@@ -16,6 +16,10 @@ using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
+    /// <summary>
+    /// Maintains and updates a mobile's animations. Receives animations from server, and when moving, updates the movement animation.
+    /// TODO: This class needs a serious refactor.
+    /// </summary>
     public class MobileAnimation
     {
         private Mobile Parent = null;
@@ -45,6 +49,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     m_action == MobileAction.Run))
                     return false;
                 return true;
+            }
+        }
+
+        public bool IsStanding
+        {
+            get
+            {
+                return (m_action == MobileAction.Stand);
             }
         }
 
@@ -160,6 +172,20 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
+        /// <summary>
+        /// Immediately clears all animation data, sets mobile action to stand.
+        /// </summary>
+        public void Clear()
+        {
+            m_action = MobileAction.Stand;
+            m_animationFrame = 0;
+            m_FrameCount = 1;
+            m_FrameDelay = 0;
+            m_IsAnimatationPaused = true;
+            m_repeatCount = 0;
+            m_actionIndex = getActionIndex(MobileAction.Stand);
+        }
+
         public void UpdateAnimation()
         {
             animate(m_action, m_actionIndex, 0, false, false, 0, false);
@@ -213,7 +239,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     // get the resource provider
                     IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                     IAnimationFrame[] frames = provider.GetAnimation(
-                        Parent.Body, actionIndex, (int)Parent.Facing, Parent.Hue);
+                        Parent.Body, actionIndex, (int)Parent.DrawFacing, Parent.Hue);
                     if (frames != null)
                     {
                         m_FrameCount = frames.Length;
@@ -248,11 +274,12 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         private int getActionIndex(MobileAction action, int index)
         {
-            if (Parent.Body.IsHuman)
+            if (Parent.Body.IsHumanoid)
             {
                 switch (action)
                 {
                     case MobileAction.None:
+                        // this will never be called.
                         return getActionIndex(MobileAction.Stand, index);
                     case MobileAction.Walk:
                         if (Parent.IsMounted)
@@ -281,15 +308,25 @@ namespace UltimaXNA.Ultima.World.EntityViews
                         }
                     case MobileAction.Stand:
                         if (Parent.IsMounted)
+                        {
                             return (int)ActionIndexHumanoid.Mounted_Stand;
+                        }
                         else
-                            if (Parent.Flags.IsWarMode)
+                        {
+                            if (Parent.IsSitting)
                             {
-                                // Also check if weapon type is 2h. Can be 1H or 2H
+                                return (int)ActionIndexHumanoid.Sit;
+                            }
+                            else if (Parent.Flags.IsWarMode)
+                            {
+                                // TODO: Also check if weapon type is 2h. Can be 1H or 2H
                                 return (int)ActionIndexHumanoid.Stand_Warmode1H;
                             }
                             else
+                            {
                                 return (int)ActionIndexHumanoid.Stand;
+                            }
+                        }
                     case MobileAction.Death:
                         // randomly select die forwards or backwards.
                         if (Utility.RandomValue(0, 1) == 0)
@@ -410,7 +447,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         private MobileAction getActionFromIndex(int index)
         {
-            if (Parent.Body.IsHuman)
+            if (Parent.Body.IsHumanoid)
             {
                 switch ((ActionIndexHumanoid)index)
                 {
@@ -582,7 +619,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         Walk_Armed = 0x01,
         Run = 0x02,
         Run_Armed = 0x03,
-        Stand = 0x04,
+        Stand = AnimationResource.HUMANOID_STAND_INDEX,
         Fidget_1 = 0x05,
         Fidget_2 = 0x06,
         Stand_Warmode1H = 0x07,
@@ -603,7 +640,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         Die_Forwards = 0x16,
         Mounted_RideSlow = 0x17,
         Mounted_RideFast = 0x18,
-        Mounted_Stand = 0x19,
+        Mounted_Stand = AnimationResource.HUMANOID_MOUNT_INDEX,
         Mounted_Attack_1H = 0x1A,
         Mounted_Attack_Bow = 0x1B,
         Mounted_Attack_BowX = 0x1C,
@@ -612,6 +649,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         Attack_Unarmed3 = 0x1F,
         Emote_Bow = 0x20,
         Emote_Salute = 0x21,
-        Emote_Eat = 0x22
+        Emote_Eat = 0x22,
+        Sit = AnimationResource.HUMANOID_SIT_INDEX
     }
 }

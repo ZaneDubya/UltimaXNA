@@ -16,7 +16,6 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.WorldViews;
-using UltimaXNA.Ultima.World.Entities;
 #endregion
 
 namespace UltimaXNA.Ultima.World.EntityViews
@@ -72,10 +71,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             if (Entity.IsDisposed)
                 return false;
-
+            if (Entity.Body == 0)
+                return false;
+            
+            // get a z index underneath all this mobile's sprite layers. We will place the shadow on this z index.
             DrawShadowZDepth = spriteBatch.GetNextUniqueZ();
-            DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
-
+            
+            // get/update the animation index.
             if (Entity.IsMoving)
             {
                 if (Entity.IsRunning)
@@ -88,6 +90,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 if (!Animation.IsAnimating)
                     Animation.Animate(MobileAction.Stand);
             }
+
+            // flip the facing (anim directions are reversed from the client-server protocol's directions).
+            DrawFlip = (MirrorFacingForDraw(Entity.DrawFacing) > 4) ? true : false;
 
             InternalSetupLayers();
 
@@ -104,6 +109,18 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 drawX = -IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
                 drawY = drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
             }
+
+            if (Entity.IsSitting)
+            {
+                drawX -= 1;
+                drawY -= 6 + Entity.ChairData.SittingPixelOffset;
+                if (Entity.DrawFacing == Direction.North || Entity.DrawFacing == Direction.West)
+                {
+                    drawY -= 16;
+                }
+            }
+
+            IsShadowCastingView = !Entity.IsSitting;
 
             // get the maximum y-extent of this object so we can correctly place overheads.
             int yOffset = 0;
@@ -122,12 +139,6 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     DrawArea = new Rectangle((int)x, (int)-y, DrawTexture.Width, DrawTexture.Height);
                     HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
 
-                    Rectangle screenDest = new Rectangle(
-                        /* x */ DrawFlip ? (int)drawPosition.X + DrawArea.X - DrawArea.Width + IsometricRenderer.TILE_SIZE_INTEGER : (int)drawPosition.X - DrawArea.X,
-                        /* y */ (int)drawPosition.Y - DrawArea.Y,
-                        /* w */ DrawFlip ? DrawArea.Width : DrawArea.Width,
-                        /* h */ DrawArea.Height);
-
                     base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
                 }
             }
@@ -144,6 +155,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             {
                 yOffset = -(yOffset + IsometricRenderer.TILE_SIZE_INTEGER);
             }
+
+            // this is where we would draw the reverse of the chair texture.
 
             DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, yOffset);
 
@@ -207,7 +220,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             ClearLayers();
 
-            if (Entity.Body.IsHuman)
+            if (Entity.Body.IsHumanoid)
             {
                 int[] drawLayers = DrawLayerOrder;
                 bool hasOuterTorso = Entity.Equipment[(int)EquipLayer.OuterTorso] != null && Entity.Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
@@ -241,7 +254,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         private void AddLayer(int bodyID, int hue)
         {
-            int facing = MirrorFacingForDraw(Entity.Facing);
+            int facing = MirrorFacingForDraw(Entity.DrawFacing);
             int animation = Animation.ActionIndex;
             float frame = Animation.AnimationFrame;
 
@@ -259,7 +272,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             get
             {
-                int direction = MirrorFacingForDraw(Entity.Facing);
+                int direction = MirrorFacingForDraw(Entity.DrawFacing);
                 switch (direction)
                 {
                     case 0x00: return s_DrawLayerOrderDown;

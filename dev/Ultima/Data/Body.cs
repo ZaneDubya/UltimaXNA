@@ -91,7 +91,7 @@ namespace UltimaXNA.Ultima.Data
             }
         }
 
-        public bool IsHuman
+        public bool IsHumanoid
         {
             get
             {

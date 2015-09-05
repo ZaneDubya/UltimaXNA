@@ -47,6 +47,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 DrawFlip = false;
             }
 
+            // Update Z
+            DrawArea.Y = DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER + (Entity.Z * 4);
+
             // Update hue vector.
             HueVector = Utility.GetHueVector(Entity.Hue, Entity.ItemData.IsPartialHue, false);
 

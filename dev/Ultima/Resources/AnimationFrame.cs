@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.Resources
 
         }
 
-        public unsafe AnimationFrame(GraphicsDevice graphics, ushort[] palette, BinaryFileReader reader)
+        public unsafe AnimationFrame(GraphicsDevice graphics, ushort[] palette, BinaryFileReader reader, SittingTransformation sitting)
         {
             int xCenter = reader.ReadShort();
             int yCenter = reader.ReadShort();
@@ -50,35 +50,70 @@ namespace UltimaXNA.Ultima.Resources
             int width = reader.ReadUShort();
             int height = reader.ReadUShort();
 
-            // Fix for animations with no IO.
+            // Fix for animations with no pixels.
             if ((width == 0) || (height == 0))
             {
                 Texture = null;
                 return;
             }
 
+            if (sitting == SittingTransformation.StandSouth)
+            {
+                xCenter += 8;
+                width += 8;
+                height += 4;
+            }
+
             ushort[] data = new ushort[width * height];
+            /*for (int i = 0; i < data.Length; i++)
+                data[i] = 0xFFFF;*/
 
-            int header;
-
-            int xBase = xCenter - 0x200;
-            int yBase = (yCenter + height) - 0x200;
+            // somewhere around the waist of a typical mobile animation, we take twelve rows of pixels,
+            // discard every third, and shift every remaining row (total of eight) one pixel to the left
+            // or right (depending on orientation), for a total skew of eight pixels.
 
             fixed (ushort* pData = data)
             {
                 ushort* dataRef = pData;
-                int delta = width;
 
                 int dataRead = 0;
 
-                dataRef += xBase;
-                dataRef += (yBase * delta);
-
+                int header;
                 while ((header = reader.ReadInt()) != 0x7FFF7FFF)
                 {
                     header ^= DoubleXor;
 
-                    ushort* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
+                    int x = ((header >> 22) & 0x3FF) + xCenter - 0x200;
+                    int y = ((header >> 12) & 0x3FF) + yCenter + height - 0x200;
+
+                    if (sitting == SittingTransformation.StandSouth)
+                    {
+                        const int skew_start = -17;
+                        const int skew_end = skew_start - 16;
+                        int iy = y - height - yCenter;
+                        if (iy > skew_start)
+                        {
+                            // pixels below the skew
+                            x -= 8;
+                            y -= 4;
+                        }
+                        else if (iy > skew_end)
+                        {
+                            // pixels within the skew
+                            if ((iy - skew_end) % 4 == 0)
+                            {
+                                reader.Position += (header & 0xFFF);
+                                continue;
+                            }
+                            else
+                            {
+                                x -= (iy - skew_end) / 2;
+                                y -= (iy - skew_end) / 4;
+                            }
+                        }
+                    }
+
+                    ushort* cur = dataRef + y * width + x;
                     ushort* end = cur + (header & 0xFFF);
 
                     int filecounter = 0;
@@ -97,6 +132,13 @@ namespace UltimaXNA.Ultima.Resources
 
             Texture = new Texture2D(graphics, width, height, false, SurfaceFormat.Bgra5551);
             Texture.SetData<ushort>(data);
+        }
+
+        public enum SittingTransformation
+        {
+            None,
+            StandSouth,
+            MountNorth
         }
     }
 }
