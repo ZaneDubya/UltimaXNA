@@ -218,5 +218,17 @@ namespace UltimaXNA.Ultima.UI.Controls
                 OnHtmlInputEvent(m_RenderedText.Regions.Region(m_MouseDownHREF).HREF, MouseEvent.DragBegin);
             }
         }
+
+        protected override void OnMouseDoubleClick(int x, int y, MouseButton button)
+        {
+            if (m_MouseOverHREF != -1 && m_MouseDownHREF == m_MouseOverHREF)
+            {
+                if (button == MouseButton.Left)
+                {
+                    if (m_RenderedText.Regions.Region(m_MouseOverHREF).HREF != null)
+                        OnHtmlInputEvent(m_RenderedText.Regions.Region(m_MouseOverHREF).HREF, MouseEvent.DoubleClick);
+                }
+            }
+        }
     }
 }
