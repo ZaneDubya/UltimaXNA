@@ -71,11 +71,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             if (Rotation != 0)
             {
-                Vector3 center = drawPosition - new Vector3(DrawArea.X - IsometricRenderer.TILE_SIZE_INTEGER + DrawArea.Width / 2, DrawArea.Y + DrawArea.Height / 2, 0);
-                float sinx = (float)Math.Sin(Rotation) * DrawArea.Width / 2f;
-                float cosx = (float)Math.Cos(Rotation) * DrawArea.Width / 2f;
-                float siny = (float)Math.Sin(Rotation) * -DrawArea.Height / 2f;
-                float cosy = (float)Math.Cos(Rotation) * -DrawArea.Height / 2f;
+                float w = DrawArea.Width / 2f;
+                float h = DrawArea.Height / 2f;
+                Vector3 center = drawPosition - new Vector3(DrawArea.X - IsometricRenderer.TILE_SIZE_INTEGER + w, DrawArea.Y + h, 0);
+                float sinx = (float)Math.Sin(Rotation) * w;
+                float cosx = (float)Math.Cos(Rotation) * w;
+                float siny = (float)Math.Sin(Rotation) * -h;
+                float cosy = (float)Math.Cos(Rotation) * -h;
                 // 2   0    
                 // |\  |     
                 // |  \|     
@@ -122,7 +124,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     vertexBuffer[3].Position = vertexBuffer[1].Position;
                     vertexBuffer[3].Position.X -= DrawArea.Width;
 
-                    if (m_YClipLine != 0)
+                    /*if (m_YClipLine != 0)
                     {
                         if (m_YClipLine > vertexBuffer[3].Position.Y)
                             return false;
@@ -132,7 +134,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                             vertexBuffer[0].Position.Y = vertexBuffer[2].Position.Y = m_YClipLine;
                             vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[2].TextureCoordinate.Y = uvStart;
                         }
-                    }
+                    }*/
                 }
                 else
                 {
@@ -156,7 +158,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     vertexBuffer[3].Position = vertexBuffer[1].Position;
                     vertexBuffer[3].Position.Y += DrawArea.Height;
 
-                    if (m_YClipLine != 0)
+                    /*if (m_YClipLine != 0)
                     {
                         if (m_YClipLine >= vertexBuffer[3].Position.Y)
                             return false;
@@ -166,7 +168,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                             vertexBuffer[0].Position.Y = vertexBuffer[1].Position.Y = m_YClipLine;
                             vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[1].TextureCoordinate.Y = uvStart;
                         }
-                    }
+                    }*/
                 }
             }
 

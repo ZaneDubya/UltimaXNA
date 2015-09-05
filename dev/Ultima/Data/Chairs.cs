@@ -12,6 +12,9 @@
 #region usings
 using System.Collections.Generic;
 using UltimaXNA.Ultima.World;
+using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.Resources;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.Data
@@ -140,11 +143,28 @@ namespace UltimaXNA.Ultima.Data
             }
         }
 
-        public struct ChairData
+        public class ChairData
         {
             public readonly int ItemID;
             public readonly Direction Facing;
             public readonly ChairType ChairType;
+            public readonly int SittingPixelOffset;
+
+            private Texture2D m_Texture;
+            public Texture2D Texture
+            {
+                get
+                {
+                    if (m_Texture == null)
+                    {
+                        IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                        Texture2D baseTexture = provider.GetItemTexture(ItemID);
+
+                        m_Texture = provider.GetItemTexture(ItemID);
+                    }
+                    return m_Texture;
+                }
+            }
 
             public static ChairData Null = new ChairData(0, Direction.ValueMask, ChairType.AnyFacing);
 
@@ -159,6 +179,10 @@ namespace UltimaXNA.Ultima.Data
                 ItemID = itemID;
                 Facing = facing;
                 ChairType = chairType;
+
+                SittingPixelOffset = TileData.ItemData[itemID].Unknown4;
+                if (SittingPixelOffset > 32)
+                    SittingPixelOffset = SittingPixelOffset - 32;
             }
 
             public Direction GetSittingFacing(Direction inFacing)

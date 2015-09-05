@@ -68,8 +68,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                     if (Chairs.CheckItemAsChair(i.ItemID, out data))
                     {
                         foundChairData = true;
-                        m_ChairSittingUpon = data;
-                        SittingPixelOffset = i.ItemData.Unknown4 > 32 ? i.ItemData.Unknown4 - 32 : i.ItemData.Unknown4;
+                        ChairData = data;
                         SittingZ = i.Z - Z;
                         ((MobileView)GetView()).Animation.Clear();
                         Tile.ForceSort();
@@ -77,7 +76,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                     }
                 }
                 if (!foundChairData)
-                    m_ChairSittingUpon = Chairs.ChairData.Null;
+                    ChairData = Chairs.ChairData.Null;
             }
         }
 
@@ -127,7 +126,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 Direction facing = Facing;
                 if (!IsSitting)
                     return facing;
-                return m_ChairSittingUpon.GetSittingFacing(facing);
+                return ChairData.GetSittingFacing(facing);
             }
         }
 
@@ -146,20 +145,19 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
-        private Chairs.ChairData m_ChairSittingUpon = Chairs.ChairData.Null;
         public bool IsSitting
         {
             get
             {
                 if (!((MobileView)GetView()).Animation.IsStanding || m_movement.IsMoving)
                     return false;
-                if (m_ChairSittingUpon.ItemID == Chairs.ChairData.Null.ItemID)
+                if (ChairData.ItemID == Chairs.ChairData.Null.ItemID)
                     return false;
                 return true;
             }
         }
 
-        public int SittingPixelOffset = 0;
+        public Chairs.ChairData ChairData = Chairs.ChairData.Null;
         public int SittingZ = 0;
 
         // ============================================================

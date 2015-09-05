@@ -111,7 +111,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             if (Entity.IsSitting)
             {
                 drawX -= 1;
-                drawY -= Entity.SittingPixelOffset + 8;
+                drawY -= 6 + Entity.ChairData.SittingPixelOffset;
                 if (Entity.DrawFacing == Direction.North || Entity.DrawFacing == Direction.West)
                 {
                     drawY -= 16;
@@ -137,12 +137,6 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     DrawArea = new Rectangle((int)x, (int)-y, DrawTexture.Width, DrawTexture.Height);
                     HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
 
-                    Rectangle screenDest = new Rectangle(
-                        /* x */ DrawFlip ? (int)drawPosition.X + DrawArea.X - DrawArea.Width + IsometricRenderer.TILE_SIZE_INTEGER : (int)drawPosition.X - DrawArea.X,
-                        /* y */ (int)drawPosition.Y - DrawArea.Y,
-                        /* w */ DrawFlip ? DrawArea.Width : DrawArea.Width,
-                        /* h */ DrawArea.Height);
-
                     base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
                 }
             }
@@ -159,6 +153,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             {
                 yOffset = -(yOffset + IsometricRenderer.TILE_SIZE_INTEGER);
             }
+
+            // this is where we would draw the reverse of the chair texture.
 
             DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, yOffset);
 
