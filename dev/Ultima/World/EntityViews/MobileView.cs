@@ -59,6 +59,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             if (roofHideFlag && CheckUnderSurface(map, Entity.DestinationPosition.X, Entity.DestinationPosition.Y))
                 return false;
+            if (Entity.Body == 0)
+                return false;
 
             CheckDefer(map, drawPosition);
 
