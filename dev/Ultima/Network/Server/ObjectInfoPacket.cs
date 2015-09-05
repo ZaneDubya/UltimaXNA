@@ -15,101 +15,42 @@ using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Server
 {
-    public class WorldItemPacket : RecvPacket
+    public class ObjectInfoPacket : RecvPacket
     {
-        readonly Serial m_serial;
-        readonly ushort m_itemid;
-        readonly ushort m_amount;
-        readonly short m_x;
-        readonly short m_y;
-        readonly sbyte m_z;
-        readonly byte m_direction;
-        readonly ushort m_hue;
-        readonly byte m_flags;
+        public readonly Serial Serial;
+        public readonly ushort ItemID;
+        public readonly ushort Amount;
+        public readonly short X;
+        public readonly short Y;
+        public readonly sbyte Z;
+        public readonly byte Direction;
+        public readonly ushort Hue;
+        public readonly byte Flags;
 
-        public Serial Serial 
+        public ObjectInfoPacket(PacketReader reader)
+            : base(0x1A, "ObjectInfoPacket")
         {
-            get { return m_serial; } 
-        }
+            Serial = reader.ReadInt32();
+            ItemID = reader.ReadUInt16();
 
-        public ushort ItemID
-        {
-            get { return m_itemid; }
-        }
+            Amount = (ushort)(((Serial & 0x80000000) == 0x80000000) ? reader.ReadUInt16() : 0);
 
-        public ushort StackAmount 
-        {
-            get { return m_amount; } 
-        }
-
-        public short X 
-        {
-            get { return m_x; }
-        }
-
-        public short Y 
-        {
-            get { return m_y; }
-        }
-
-        public short Z 
-        {
-            get { return m_z; }
-        }
-
-        public byte Direction
-        {
-            get { return m_Direction; }
-        }
-
-        public ushort Hue 
-        {
-            get { return m_hue; }
-        }
-
-        public short Flags
-        {
-            get { return m_flags; }
-        }
-
-        public WorldItemPacket(PacketReader reader)
-            : base(0x1A, "ObjectInfo")
-        {
-            Serial serial = reader.ReadInt32();
-            ushort itemId = reader.ReadUInt16();
-
-            m_amount = 0;
-
-            if ((serial & 0x80000000) == 0x80000000)
-            {
-                m_amount = reader.ReadUInt16();
-            }
-
-            ushort x = reader.ReadUInt16();
-            ushort y = reader.ReadUInt16();
+            X = reader.ReadInt16();
+            Y = reader.ReadInt16();
                         
-            m_direction = 0;
+            Direction = (byte)(((X & 0x8000) == 0x8000) ? reader.ReadByte() : 0);
 
-            if ((x & 0x8000) == 0x8000)
-                m_direction = reader.ReadByte();
+            Z = reader.ReadSByte();
 
-            m_z = reader.ReadSByte();
-            m_hue = 0;
+            Hue = (ushort)(((Y & 0x8000) == 0x8000) ? reader.ReadUInt16() : 0);
 
-            if ((y & 0x8000) == 0x8000)
-                m_hue = reader.ReadUInt16();
+            Flags = (byte)(((Y & 0x4000) == 0x4000) ? reader.ReadByte() : 0);
 
-            m_flags = 0;
-
-            if ((y & 0x4000) == 0x4000)
-                m_flags = reader.ReadByte();
-
-            m_serial = (int)(serial &= 0x7FFFFFFF);
-            m_itemid = (ushort)(itemId &= 0x7FFF);
-            m_x = (short)(x &= 0x7FFF);
-            m_y = (short)(y &= 0x3FFF);
+            // sanitize values
+            Serial = (int)(Serial & 0x7FFFFFFF);
+            ItemID = (ushort)(ItemID & 0x7FFF);
+            X = (short)(X & 0x7FFF);
+            Y = (short)(Y & 0x3FFF);
         }
-
-        public byte m_Direction { get; set; }
     }
 }

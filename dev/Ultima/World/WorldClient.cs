@@ -60,7 +60,7 @@ namespace UltimaXNA.Ultima.World
         {
             Register<DamagePacket>(0x0B, "Damage", 0x07, new TypedPacketReceiveHandler(ReceiveDamage));
             Register<MobileStatusCompactPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(ReceiveStatusInfo));
-            Register<WorldItemPacket>(0x1A, "World Item", -1, new TypedPacketReceiveHandler(ReceiveWorldItem));
+            Register<ObjectInfoPacket>(0x1A, "World Item", -1, new TypedPacketReceiveHandler(ReceiveWorldItem));
             Register<AsciiMessagePacket>(0x1C, "Ascii Meessage", -1, new TypedPacketReceiveHandler(ReceiveAsciiMessage));
             Register<RemoveEntityPacket>(0x1D, "Remove Entity", 5, new TypedPacketReceiveHandler(ReceiveDeleteObject));
             Register<MobileUpdatePacket>(0x20, "Mobile Update", 19, new TypedPacketReceiveHandler(ReceiveMobileUpdate));
@@ -405,14 +405,14 @@ namespace UltimaXNA.Ultima.World
 
         private void ReceiveWorldItem(IRecvPacket packet)
         {
-            WorldItemPacket p = (WorldItemPacket)packet;
+            ObjectInfoPacket p = (ObjectInfoPacket)packet;
 
             // Now create the GameObject.
             // If the iItemID < 0x4000, this is a regular game object.
             // If the iItemID >= 0x4000, then this is a multiobject.
             if (p.ItemID <= 0x4000)
             {
-                Item item = add_Item(p.Serial, p.ItemID, p.Hue, 0, p.StackAmount);
+                Item item = add_Item(p.Serial, p.ItemID, p.Hue, 0, p.Amount);
                 item.Position.Set(p.X, p.Y, p.Z);
             }
             else
