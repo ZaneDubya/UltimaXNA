@@ -272,7 +272,7 @@ namespace UltimaXNA.Ultima.Resources
         /// </item>
         /// </list>
         /// </returns>
-        public static int Convert(ref int body)
+        public static int Convert(int body)
         {
             // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
             // Converts MountItemID to BodyID
