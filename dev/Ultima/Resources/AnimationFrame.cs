@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.Resources
 
         }
 
-        public unsafe AnimationFrame(GraphicsDevice graphics, ushort[] palette, BinaryFileReader reader, bool sittingTransform)
+        public unsafe AnimationFrame(GraphicsDevice graphics, ushort[] palette, BinaryFileReader reader, SittingTransformation sitting)
         {
             int xCenter = reader.ReadShort();
             int yCenter = reader.ReadShort();
@@ -57,7 +57,7 @@ namespace UltimaXNA.Ultima.Resources
                 return;
             }
 
-            if (sittingTransform)
+            if (sitting == SittingTransformation.StandSouth)
             {
                 xCenter += 8;
                 width += 8;
@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.Resources
                     int x = ((header >> 22) & 0x3FF) + xCenter - 0x200;
                     int y = ((header >> 12) & 0x3FF) + yCenter + height - 0x200;
 
-                    if (sittingTransform)
+                    if (sitting == SittingTransformation.StandSouth)
                     {
                         const int skew_start = -17;
                         const int skew_end = skew_start - 16;
@@ -132,6 +132,13 @@ namespace UltimaXNA.Ultima.Resources
 
             Texture = new Texture2D(graphics, width, height, false, SurfaceFormat.Bgra5551);
             Texture.SetData<ushort>(data);
+        }
+
+        public enum SittingTransformation
+        {
+            None,
+            StandSouth,
+            MountNorth
         }
     }
 }

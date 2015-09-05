@@ -48,6 +48,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
+        public bool IsStanding
+        {
+            get
+            {
+                return (m_action == MobileAction.Stand);
+            }
+        }
+
         private float m_animationFrame = 0f;
         public float AnimationFrame
         {
@@ -614,7 +622,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         Die_Forwards = 0x16,
         Mounted_RideSlow = 0x17,
         Mounted_RideFast = 0x18,
-        Mounted_Stand = 0x19,
+        Mounted_Stand = AnimationResource.HUMANOID_MOUNT_INDEX,
         Mounted_Attack_1H = 0x1A,
         Mounted_Attack_Bow = 0x1B,
         Mounted_Attack_BowX = 0x1C,

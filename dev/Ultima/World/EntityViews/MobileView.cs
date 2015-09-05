@@ -113,6 +113,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
             {
                 drawX -= 1;
                 drawY -= Entity.SittingPixelOffset + 8;
+                if (Entity.DrawFacing == Direction.North || Entity.DrawFacing == Direction.West)
+                {
+                    drawY -= 16;
+                }
             }
 
             IsShadowCastingView = !Entity.IsSitting;

@@ -145,7 +145,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             get
             {
-                if (((MobileView)GetView()).Animation.IsAnimating || m_movement.IsMoving)
+                if (!((MobileView)GetView()).Animation.IsStanding || m_movement.IsMoving)
                     return false;
                 if (m_ChairSittingUpon.ItemID == Chairs.ChairData.Null.ItemID)
                     return false;
