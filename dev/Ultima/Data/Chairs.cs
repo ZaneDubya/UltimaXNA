@@ -150,7 +150,7 @@ namespace UltimaXNA.Ultima.Data
             public readonly ChairType ChairType;
             public readonly int SittingPixelOffset;
 
-            private Texture2D m_Texture;
+            /*private Texture2D m_Texture;
             public Texture2D Texture
             {
                 get
@@ -164,7 +164,7 @@ namespace UltimaXNA.Ultima.Data
                     }
                     return m_Texture;
                 }
-            }
+            }*/
 
             public static ChairData Null = new ChairData(0, Direction.ValueMask, ChairType.AnyFacing);
 
