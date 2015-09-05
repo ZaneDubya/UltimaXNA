@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // Ctor, Update, Dispose
         // ================================================================================
         public SpellbookGump(SpellBook entity, int itemID)
-            : base(0, 0)
+            : base(entity.Serial, 0)
         {
             m_World = ServiceRegistry.GetService<WorldModel>();
 
@@ -145,11 +145,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 for (int spellIndex = 1; spellIndex <= 8; spellIndex++)
                 {
-                    int spellIndexAll = spellCircle * 8 + spellIndex;
-                    if (m_Spellbook.HasSpell(spellIndexAll))
+                    if (m_Spellbook.HasSpell(spellCircle, spellIndex))
                     {
                         m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#532' hovercolor='#800' activecolor='#611' style='font-family=uni0; text-decoration=none;'>{0}</a><br/>",
-                            Magery.GetSpell(spellIndexAll).Name,
+                            Magery.GetSpell(spellCircle * 8 + spellIndex).Name,
                             currentSpellPage);
                         if (isRightPage)
                         {
@@ -289,7 +288,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     for (int spellIndex = 1; spellIndex <= 8; spellIndex++)
                     {
                         int spellIndexAll = spellCircle * 8 + spellIndex;
-                        if (m_Spellbook.HasSpell(spellIndexAll))
+                        if (m_Spellbook.HasSpell(spellCircle, spellIndex))
                         {
                             CreateSpellPage(currentSpellPage, isRightPage, spellCircle, Magery.GetSpell(spellIndexAll));
                             if (isRightPage)
