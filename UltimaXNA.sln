@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimaXNA", "dev\UltimaXNA.csproj", "{205E21C9-4A74-4B0F-BDA0-270A38A0C4EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimaXNAContent", "dev\Content\UltimaXNAContent.contentproj", "{C4D0357F-85DD-4418-ABA4-7C7875BB3129}"
@@ -29,11 +29,16 @@ Global
 		{E47B15BD-68F4-4A69-9659-F4398575F01F}.Debug|x86.Build.0 = Debug|x86
 		{E47B15BD-68F4-4A69-9659-F4398575F01F}.Release|x86.ActiveCfg = Release|x86
 		{E47B15BD-68F4-4A69-9659-F4398575F01F}.Release|x86.Build.0 = Release|x86
+		{77D71F7C-D809-4690-AEDB-071A40D90EA2}.Debug|x86.ActiveCfg = Debug|x86
+		{77D71F7C-D809-4690-AEDB-071A40D90EA2}.Debug|x86.Build.0 = Debug|x86
+		{77D71F7C-D809-4690-AEDB-071A40D90EA2}.Release|x86.ActiveCfg = Release|x86
+		{77D71F7C-D809-4690-AEDB-071A40D90EA2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E47B15BD-68F4-4A69-9659-F4398575F01F} = {78D4AE57-25D7-4C21-9136-4CB921FC444E}
+		{77D71F7C-D809-4690-AEDB-071A40D90EA2} = {78D4AE57-25D7-4C21-9136-4CB921FC444E}
 	EndGlobalSection
 EndGlobal
