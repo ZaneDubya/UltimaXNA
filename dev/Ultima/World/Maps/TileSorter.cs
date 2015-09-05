@@ -53,8 +53,8 @@ namespace UltimaXNA.Ultima.World.Maps
             int yType;
             int yTiebreaker;
 
-            GetSortValues(x, out xZ, out xThreshold, out xType, out xTiebreaker);
-            GetSortValues(y, out yZ, out yThreshold, out yType, out yTiebreaker);
+            GetSortValues(x, out xZ, out xType, out xThreshold, out xTiebreaker);
+            GetSortValues(y, out yZ, out yType, out yThreshold, out yTiebreaker);
 
             xZ += xThreshold;
             yZ += yThreshold;
@@ -75,79 +75,54 @@ namespace UltimaXNA.Ultima.World.Maps
             return comparison;
         }
 
-        public static void GetSortValues(AEntity e, out int z, out int threshold, out int type, out int tiebreaker)
+        public static void GetSortValues(AEntity e, out int z, out int type, out int threshold, out int tiebreaker)
         {
             if (e is AEffect)
             {
                 AEffect effect = e as AEffect;
                 z = effect.Z;
-                threshold = 2;
                 type = 4;
+                threshold = 2;
                 tiebreaker = 0;
             }
             else if (e is DeferredEntity)
             {
                 DeferredEntity mobile = (DeferredEntity)e;
                 z = mobile.Z;
-                threshold = 1;
                 type = 2;
+                threshold = 1;
                 tiebreaker = 0;
             }
             else if (e is Mobile)
             {
                 Mobile mobile = (Mobile)e;
                 z = mobile.Z;
-                threshold = 2;
                 type = 3;
-                if (mobile.IsClientEntity)
-                {
-                    tiebreaker = 0x40000000;
-                }
-                else
-                {
-                    tiebreaker = mobile.Serial;
-                }
+                threshold = 2;
+                tiebreaker = mobile.IsClientEntity ? 0x40000000 : (int)mobile.Serial;
             }
             else if (e is Ground)
             {
                 Ground tile = (Ground)e;
                 z = tile.GetView().SortZ;
-                threshold = 0;
                 type = 0;
+                threshold = 0;
                 tiebreaker = 0;
             }
             else if (e is StaticItem)
             {
-                int sort;
                 StaticItem item = (StaticItem)e;
                 z = item.Z;
-                if (item.ItemData.IsBackground)
-                {
-                    sort = 0;
-                }
-                else
-                {
-                    sort = 1;
-                }
-                threshold = (item.ItemData.Height == 0) ? sort : (sort + 1);
                 type = 1;
+                threshold = (item.ItemData.Height > 0 ? 1 : 0) + (item.ItemData.IsBackground ? 0 : 1);
                 tiebreaker = item.SortInfluence;
             }
-            else if (e is Item) // this was previously dynamicitem - I think Kirros and I use the word 'Dynamic' for different purposes.
+            else if (e is Item)
             {
-                int sort;
                 Item item = (Item)e;
                 z = item.Z;
-                if (item.ItemData.IsBackground)
-                {
-                    sort = 0;
-                }
-                else
-                {
-                    sort = 1;
-                }
-                threshold = (item.ItemData.Height == 0) ? sort : (sort + 1);
-                type = ((item.ItemID & 0x3fff) == 0x2006) ? 4 : 2; // is corpse? Corpse inherits from Container, which inherits from Item, so this works here.
+                type = ((item.ItemID & 0x3fff) == 0x2006) ? 4 : 2; // corpses show on top of mobiles and items.
+                threshold = (item.ItemData.Height > 0 ? 1 : 0) + (item.ItemData.IsBackground ? 0 : 1);
                 tiebreaker = item.Serial;
             }
             else
