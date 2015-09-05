@@ -71,6 +71,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                         m_ChairSittingUpon = data;
                         SittingPixelOffset = i.ItemData.Unknown4 > 32 ? i.ItemData.Unknown4 - 32 : i.ItemData.Unknown4;
                         SittingZ = i.Z - Z;
+                        ((MobileView)GetView()).Animation.Clear();
+                        Tile.ForceSort();
                         break;
                     }
                 }

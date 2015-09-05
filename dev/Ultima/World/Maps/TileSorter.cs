@@ -44,14 +44,8 @@ namespace UltimaXNA.Ultima.World.Maps
 
         public static int Compare(AEntity x, AEntity y)
         {
-            int xZ;
-            int xThreshold;
-            int xType;
-            int xTiebreaker;
-            int yZ;
-            int yThreshold;
-            int yType;
-            int yTiebreaker;
+            int xZ, xType, xThreshold, xTiebreaker;
+            int yZ, yType, yThreshold, yTiebreaker;
 
             GetSortValues(x, out xZ, out xType, out xThreshold, out xTiebreaker);
             GetSortValues(y, out yZ, out yType, out yThreshold, out yTiebreaker);
@@ -97,7 +91,7 @@ namespace UltimaXNA.Ultima.World.Maps
             {
                 Mobile mobile = (Mobile)e;
                 z = mobile.Z;
-                type = 3;
+                type = mobile.IsSitting ? 0 : 3;
                 threshold = 2;
                 tiebreaker = mobile.IsClientEntity ? 0x40000000 : (int)mobile.Serial;
             }

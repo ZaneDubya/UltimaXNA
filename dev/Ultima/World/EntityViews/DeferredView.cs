@@ -42,13 +42,11 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 }
             }
 
-            // don't draw the upper portion of the deferred sprite. This is used for two reasons: don't draw tall sprites twice (it would overlap roof sprites
-            // even worse than in legacy; and don't draw the upper portion of a sprite when in a chair and facing away (would overlap the chair back).
-            m_BaseView.SetYClipLine(m_DrawPosition.Y - 22 - 
-                ((m_BaseView.Entity.Position.Z + m_BaseView.Entity.Position.Z_offset) * 4)  + 
-                ((m_BaseView.Entity.Position.X_offset + m_BaseView.Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF));
+            /*m_BaseView.SetYClipLine(m_DrawPosition.Y - 22 -
+                ((m_BaseView.Entity.Position.Z + m_BaseView.Entity.Position.Z_offset) * 4) +
+                ((m_BaseView.Entity.Position.X_offset + m_BaseView.Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF));*/
             bool success = m_BaseView.DrawInternal(spriteBatch, m_DrawPosition, mouseOverList, map, roofHideFlag);
-            m_BaseView.ClearYClipLine();
+            /*m_BaseView.ClearYClipLine();*/
             return success;
         }
     }

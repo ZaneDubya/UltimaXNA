@@ -122,7 +122,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     vertexBuffer[3].Position = vertexBuffer[1].Position;
                     vertexBuffer[3].Position.X -= DrawArea.Width;
 
-                    /*if (m_YClipLine != 0)
+                    if (m_YClipLine != 0)
                     {
                         if (m_YClipLine > vertexBuffer[3].Position.Y)
                             return false;
@@ -132,7 +132,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                             vertexBuffer[0].Position.Y = vertexBuffer[2].Position.Y = m_YClipLine;
                             vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[2].TextureCoordinate.Y = uvStart;
                         }
-                    }*/
+                    }
                 }
                 else
                 {
@@ -156,7 +156,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     vertexBuffer[3].Position = vertexBuffer[1].Position;
                     vertexBuffer[3].Position.Y += DrawArea.Height;
 
-                    /*if (m_YClipLine != 0)
+                    if (m_YClipLine != 0)
                     {
                         if (m_YClipLine >= vertexBuffer[3].Position.Y)
                             return false;
@@ -166,7 +166,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                             vertexBuffer[0].Position.Y = vertexBuffer[1].Position.Y = m_YClipLine;
                             vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[1].TextureCoordinate.Y = uvStart;
                         }
-                    }*/
+                    }
                 }
             }
 

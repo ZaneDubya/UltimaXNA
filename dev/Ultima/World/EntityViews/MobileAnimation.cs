@@ -172,6 +172,20 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
+        /// <summary>
+        /// Immediately clears all animation data, sets mobile action to stand.
+        /// </summary>
+        public void Clear()
+        {
+            m_action = MobileAction.Stand;
+            m_animationFrame = 0;
+            m_FrameCount = 1;
+            m_FrameDelay = 0;
+            m_IsAnimatationPaused = true;
+            m_repeatCount = 0;
+            m_actionIndex = getActionIndex(MobileAction.Stand);
+        }
+
         public void UpdateAnimation()
         {
             animate(m_action, m_actionIndex, 0, false, false, 0, false);
