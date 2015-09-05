@@ -16,6 +16,10 @@ using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
+    /// <summary>
+    /// Maintains and updates a mobile's animations. Receives animations from server, and when moving, updates the movement animation.
+    /// TODO: This class needs a serious refactor.
+    /// </summary>
     public class MobileAnimation
     {
         private Mobile Parent = null;

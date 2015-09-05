@@ -19,6 +19,10 @@ using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.Entities.Mobiles
 {
+    /// <summary>
+    /// A mobile object - monster, NPC, or player.
+    /// TODO: This class needs a serious refactor.
+    /// </summary>
     public class Mobile : AEntity
     {
         // ============================================================

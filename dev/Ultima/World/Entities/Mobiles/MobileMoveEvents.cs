@@ -4,6 +4,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 {
     /// <summary>
     /// Queues moves and maintains the fastwalk key and current sequence value.
+    /// TODO: This class needs a serious refactor.
     /// </summary>
     class MobileMoveEvents
     {

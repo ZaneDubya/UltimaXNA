@@ -17,6 +17,10 @@ using UltimaXNA.Ultima.Network.Client;
 
 namespace UltimaXNA.Ultima.World.Entities.Mobiles
 {
+    /// <summary>
+    /// Mobile movement state tracking object. Receives movement packets from the server and sends client move packets to the server.
+    /// TODO: This class needs a serious refactor.
+    /// </summary>
     public class MobileMovement
     {
         double m_playerMobile_NextMoveInMS;
