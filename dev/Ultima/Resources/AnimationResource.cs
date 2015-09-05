@@ -69,7 +69,6 @@ namespace UltimaXNA.Ultima.Resources
             bool patched;
 
             IAnimationFrame[] frames = CheckCache(body, action, direction);
-            frames = null;
             if (frames != null)
                 return frames;
 
@@ -158,7 +157,7 @@ namespace UltimaXNA.Ultima.Resources
         {
             Translate(ref body, ref hue);
 
-            int fileType = BodyConverter.Convert(ref body);
+            int fileType = BodyConverter.Convert(body);
             switch (fileType)
             {
                 default:
