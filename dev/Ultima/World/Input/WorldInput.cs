@@ -141,7 +141,7 @@ namespace UltimaXNA.Ultima.World.Input
                 InternalParseKeyboard(frameMS);
 
                 // In all cases, where we are moving and the move button was released, stop moving.
-                if(ContinuousMouseMovementCheck &&
+                if (ContinuousMouseMovementCheck &&
                    m_Input.HandleMouseEvent(MouseEvent.Up, Settings.World.Mouse.MovementButton))
                 {
                     ContinuousMouseMovementCheck = false;
@@ -149,13 +149,13 @@ namespace UltimaXNA.Ultima.World.Input
 
                 // If 1. The mouse is over the world (not over UI) and
                 //    2. The cursor is not blocking input, then interpret mouse input.
-                if(IsMouseOverWorld && !World.Cursor.IsHoldingItem)
+                if (IsMouseOverWorld && !World.Cursor.IsHoldingItem)
                 {
                     InternalParseMouse(frameMS);
                 }
 
                 // PickType is the kind of objects that will show up as the 'MouseOverObject'
-                if(IsMouseOverWorld)
+                if (IsMouseOverWorld)
                 {
                     MousePick.PickOnly = PickType.PickEverything;
                     MousePick.Position = MouseOverWorldPosition;
@@ -166,8 +166,13 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     MousePick.PickOnly = PickType.PickNothing;
                 }
-                
+
                 doMouseMovement(frameMS);
+            }
+            else
+            {
+                // the world is not receiving input this frame. get rid of any mouse picking data.
+                MousePick.PickOnly = PickType.PickNothing;
             }
         }
 

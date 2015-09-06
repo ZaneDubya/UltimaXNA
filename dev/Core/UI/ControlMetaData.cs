@@ -28,6 +28,15 @@ namespace UltimaXNA.Core.UI
             set;
         }
 
+        /// <summary>
+        /// If modal, and this is true, then a click outside the modal area will close the control.
+        /// </summary>
+        public bool ModalClickOutsideAreaClosesThisControl
+        {
+            get;
+            set;
+        }
+
         public AControl Control
         {
             get;

@@ -22,16 +22,22 @@ using UltimaXNA.Core.Input;
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
+    /// <summary>
+    /// A context menu with a number of choices.
+    /// </summary>
     class ContextMenuGump : Gump
     {
         private readonly ContextMenuData m_Data;
 
-        private ResizePic m_Background;
-        private HtmlGumpling m_MenuItems;
+        private readonly ResizePic m_Background;
+        private readonly HtmlGumpling m_MenuItems;
 
         public ContextMenuGump(ContextMenuData data)
             : base(0, 0)
         {
+            MetaData.IsModal = true;
+            MetaData.ModalClickOutsideAreaClosesThisControl = true;
+
             m_Data = data;
 
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
@@ -55,7 +61,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         protected override void OnMouseOut(int x, int y)
         {
-            Dispose();
+            // Dispose();
         }
 
         public override void OnHtmlInputEvent(string href, MouseEvent e)

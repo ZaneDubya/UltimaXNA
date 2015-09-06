@@ -370,7 +370,7 @@ namespace UltimaXNA.Core.UI
 
             // The cursor and world input objects occasionally must block input events from reaching the UI:
             // e.g. when the cursor is carrying an object.
-            if (!IsModalControlOpen && ObjectsBlockingInput)
+            if ((IsModalControlOpen == false) && (ObjectsBlockingInput == true))
                 return;
 
             List<InputEventMouse> events = m_Input.GetMouseEvents();
@@ -387,6 +387,16 @@ namespace UltimaXNA.Core.UI
                         if (focusedControl.HandlesKeyboardFocus)
                             m_keyboardFocusControl = focusedControl;
                         m_MouseDownControl[(int)e.Button] = focusedControl;
+                    }
+                    else
+                    {
+                        // close modal controls if they can be closed with a mouse down outside their drawn area
+                        if (IsModalControlOpen)
+                        {
+                            foreach (AControl c in m_Controls)
+                                if (c.MetaData.IsModal && c.MetaData.ModalClickOutsideAreaClosesThisControl)
+                                    c.Dispose();
+                        }
                     }
                 }
 
