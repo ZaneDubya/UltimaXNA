@@ -55,6 +55,15 @@ namespace UltimaXNA.Core.UI
         }
 
         /// <summary>
+        /// A unique identifier, assigned by the server, that is sent by the client when a button is pressed.
+        /// </summary>
+        public int GumpServerTypeID
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Information used by UserInterfaceService to display and update this control.
         /// </summary>
         public ControlMetaData MetaData
