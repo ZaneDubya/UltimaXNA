@@ -1,3 +1,13 @@
+/***************************************************************************
+*   IsometricWorld.fx
+*   Copyright (c) 2009, 2015 UltimaXNA Development Team
+*
+*   This program is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation; either version 3 of the License, or
+*   (at your option) any later version.
+*
+***************************************************************************/
 float4x4 ProjectionMatrix;
 float4x4 WorldMatrix;
 float2 Viewport;
