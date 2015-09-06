@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   CreateCharacterScene.cs
+ *   SpellbookData.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -9,13 +9,12 @@
  *
  ***************************************************************************/
 
-using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
 
 namespace UltimaXNA.Ultima.Data
 {
-    sealed class SpellbookData
+    public class SpellbookData
     {
         public readonly Serial Serial;
         public readonly ushort ItemID;

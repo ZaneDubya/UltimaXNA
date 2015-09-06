@@ -1085,7 +1085,13 @@ namespace UltimaXNA.Ultima.World
             switch (p.Subcommand)
             {
                 case 0x04: // Close generic gump
-                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                    {
+                        AControl control = m_UserInterface.GetControlByTypeID(p.CloseGumpTypeID);
+                        if (control is Gump)
+                        {
+                            (control as Gump).OnButtonClick(p.CloseGumpButtonID);
+                        }
+                    }
                     break;
                 case 0x06: // party system
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
@@ -1101,16 +1107,16 @@ namespace UltimaXNA.Ultima.World
                     }
                 case 0x18: // Enable map-diff (files) / number of maps
                     // as of 6.0.0.0, this only tells us the number of maps.
-                    m_World.MapCount = p.MapCount;
+                    m_World.MapCount = p.MapDiffsCount;
                     break;
                 case 0x19: // Extended stats
-                    if (p.Serial != WorldModel.PlayerSerial)
+                    if (p.ExtendedStatsSerial != WorldModel.PlayerSerial)
                         Tracer.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
                     else
                     {
-                        PlayerState.StatLocks.StrengthLock = p.StatisticLocks.Strength;
-                        PlayerState.StatLocks.DexterityLock = p.StatisticLocks.Dexterity;
-                        PlayerState.StatLocks.IntelligenceLock = p.StatisticLocks.Intelligence;
+                        PlayerState.StatLocks.StrengthLock = p.ExtendedStatsLocks.Strength;
+                        PlayerState.StatLocks.DexterityLock = p.ExtendedStatsLocks.Dexterity;
+                        PlayerState.StatLocks.IntelligenceLock = p.ExtendedStatsLocks.Intelligence;
                     }
                     break;
                 case 0x1B: // spellbook data

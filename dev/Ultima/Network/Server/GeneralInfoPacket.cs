@@ -18,44 +18,72 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class GeneralInfoPacket : RecvPacket
     {
-        readonly short m_subcommand;
-        public short Subcommand
-        {
-            get { return m_subcommand; }
-        }
+        public readonly short Subcommand;
 
-        HouseRevisionState m_revisionState;
-        public HouseRevisionState HouseRevisionState
+        /// <summary>
+        /// Subcommand 0x04: Close a generic gump.
+        /// </summary>
+        public int CloseGumpTypeID
         {
-            get { return m_revisionState; }
+            get;
+            private set;
         }
-
-        public Serial Serial;
-        StatLocks m_locks;
-        public StatLocks StatisticLocks
-        {
-            get { return m_locks; }
-        }
-
-        public ContextMenuData ContextMenu
+        public int CloseGumpButtonID
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Subcommand 0x08: The index of the map the player is located within.
+        /// </summary>
         public byte MapID
         {
             get;
             private set;
         }
 
-        public int MapCount
+        /// <summary>
+        /// Subcommand 0x14: A context menu.
+        /// </summary>
+        public ContextMenuData ContextMenu
         {
             get;
             private set;
         }
 
-        internal SpellbookData Spellbook
+        /// <summary>
+        /// Subcommand 0x18: The count of map diffs that were received.
+        /// </summary>
+        public int MapDiffsCount
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Subcommand 0x1B: the contents of a spellbook.
+        /// </summary>
+        public SpellbookData Spellbook
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Subcommand 0x19: the serial of the mobile which the extended stats must be applied to.
+        /// </summary>
+        public Serial ExtendedStatsSerial;
+        public StatLocks ExtendedStatsLocks
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Subcommand 0x1D: The revision hash of a custom house.
+        /// </summary>
+        public HouseRevisionState HouseRevisionState
         {
             get;
             private set;
@@ -64,12 +92,13 @@ namespace UltimaXNA.Ultima.Network.Server
         public GeneralInfoPacket(PacketReader reader)
             : base(0xBF, "General Information")
         {
-            m_subcommand = reader.ReadInt16();
+            Subcommand = reader.ReadInt16();
 
-            switch (m_subcommand)
+            switch (Subcommand)
             {
                 case 0x04: // Close generic gump
-                    // !!! Not implemented yet.
+                    CloseGumpTypeID = reader.ReadInt32();
+                    CloseGumpButtonID = reader.ReadInt32();
                     break;
                 case 0x06:
                     // party system, not implemented.
@@ -115,7 +144,7 @@ namespace UltimaXNA.Ultima.Network.Server
         void receiveExtendedStats(PacketReader reader)
         {
             int clientFlag = reader.ReadByte(); // (0x2 for 2D client, 0x5 for KR client) 
-            Serial = (Serial)reader.ReadInt32();
+            ExtendedStatsSerial = (Serial)reader.ReadInt32();
             byte unknown0 = reader.ReadByte(); // (always 0) 
             byte lockFlags = reader.ReadByte();
             // Lock flags = 00SSDDII ( in binary )
@@ -128,7 +157,7 @@ namespace UltimaXNA.Ultima.Network.Server
                 int strengthLock = (lockFlags >> 4) & 0x03;
                 int dexterityLock = (lockFlags >> 2) & 0x03;
                 int inteligenceLock = (lockFlags) & 0x03;
-                m_locks = new StatLocks(strengthLock, dexterityLock, inteligenceLock);
+                ExtendedStatsLocks = new StatLocks(strengthLock, dexterityLock, inteligenceLock);
             }
 
             if (clientFlag == 5)
@@ -151,13 +180,13 @@ namespace UltimaXNA.Ultima.Network.Server
         {
             Serial s = reader.ReadInt32();
             int hash = reader.ReadInt32();
-            m_revisionState = new HouseRevisionState(s, hash);
+            HouseRevisionState = new HouseRevisionState(s, hash);
         }
 
         void receiveMapDiffManifest(PacketReader reader)
         {
-            MapCount = reader.ReadInt32();
-            for (int i = 0; i < MapCount; i++)
+            MapDiffsCount = reader.ReadInt32();
+            for (int i = 0; i < MapDiffsCount; i++)
             {
                 int mapPatches = reader.ReadInt32();
                 int staticPatches = reader.ReadInt32();

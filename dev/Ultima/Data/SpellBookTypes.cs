@@ -1,6 +1,6 @@
 ﻿namespace UltimaXNA.Ultima.Data
 {
-    enum SpellBookTypes
+    public enum SpellBookTypes
     {
         Magic,
         Necromancer,
