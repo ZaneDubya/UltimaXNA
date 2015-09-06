@@ -116,8 +116,13 @@ namespace UltimaXNA.Ultima.Data
 
             foreach (ItemInContainer i in contents.Items)
             {
-                ulong spellBit = ((ulong)1) << ((i.Amount - offset) & 0x0000003F);
-                SpellsBitfield |= spellBit;
+                int index = ((i.Amount - offset) & 0x0000003F);
+                int circle = (index / 8);
+                index = index % 8;
+                index = ((3 - circle % 4) + (circle / 4) * 4) * 8 + (index);
+                ulong flag = ((ulong)1) << index;
+
+                SpellsBitfield |= flag;
             }
         }
     }
