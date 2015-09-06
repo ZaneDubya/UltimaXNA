@@ -202,6 +202,16 @@ namespace UltimaXNA.Core.UI
             return null;
         }
 
+        public AControl GetControlByTypeID(int typeID)
+        {
+            foreach (AControl c in m_Controls)
+            {
+                if (!c.IsDisposed && c.GumpServerTypeID == typeID)
+                    return c;
+            }
+            return null;
+        }
+
         public T GetControl<T>(int? localID = null) where T : AControl
         {
             foreach (AControl c in m_Controls)
