@@ -775,7 +775,7 @@ namespace UltimaXNA.Ultima.World
             {
                 case MessageTypes.Regular:
                 case MessageTypes.SpeechUnknown:
-                    overhead = WorldModel.Entities.AddOverhead(msgType, serial, "<outline>" + text, font, hue);
+                    overhead = WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue);
                     if (overhead != null)
                     {
                         m_World.Interaction.ChatMessage(speakerName + ": " + text, font, hue);

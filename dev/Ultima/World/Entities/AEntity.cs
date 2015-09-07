@@ -213,7 +213,7 @@ namespace UltimaXNA.Ultima.World.Entities
                 }
             }
 
-            overhead = new Overhead(this, msgType, text);
+            overhead = new Overhead(this, msgType, string.Format("<font style='font-family: ascii{0};'>{1}", fontID, text));
             overhead.Hue = hue;
             InternalInsertOverhead(overhead);
             return overhead;

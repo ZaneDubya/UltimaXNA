@@ -57,9 +57,40 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        public void SendSpeech(string text) // used by chatwindow.
+        public void SendSpeech(string text, ChatMode mode) // used by chatwindow.
         {
-            m_Network.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, Settings.Game.SpeechColor + 2, 0, "ENU", text));
+            AsciiSpeechPacketTypes speechType = AsciiSpeechPacketTypes.Normal;
+            int hue = 0;
+
+            switch (mode)
+            {
+                case ChatMode.Default:
+                    speechType = AsciiSpeechPacketTypes.Normal;
+                    hue = Settings.Game.SpeechColor;
+                    break;
+                case ChatMode.Whisper:
+                    speechType = AsciiSpeechPacketTypes.Whisper;
+                    hue = Settings.Game.SpeechColor;
+                    break;
+                case ChatMode.Emote:
+                    speechType = AsciiSpeechPacketTypes.Emote;
+                    hue = Settings.Game.EmoteColor;
+                    break;
+                case ChatMode.Party:
+                    // not yet implemented
+                    speechType = AsciiSpeechPacketTypes.Normal;
+                    hue = Settings.Game.SpeechColor;
+                    break;
+                case ChatMode.Guild:
+                    speechType = AsciiSpeechPacketTypes.Guild;
+                    hue = Settings.Game.GuildMsgColor;
+                    break;
+                case ChatMode.Alliance:
+                    speechType = AsciiSpeechPacketTypes.Alliance;
+                    hue = Settings.Game.AllianceMsgColor;
+                    break;
+            }
+            m_Network.Send(new AsciiSpeechPacket(speechType, hue + 2, 0, "ENU", text));
         }
 
         /// <summary>

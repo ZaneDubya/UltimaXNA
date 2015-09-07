@@ -43,10 +43,12 @@ namespace UltimaXNA.Ultima.Resources.Fonts
                     bool rowHasData = false;
                     for (int x = 0; x < Width; x++)
                     {
-                        short pixel = (short)(reader.ReadByte() | (reader.ReadByte() << 8));
+                        ushort pixel = (ushort)(reader.ReadByte() | (reader.ReadByte() << 8));
 
                         if (pixel != 0)
                         {
+                            if (pixel == 0x4e73) // off-grey color, normalize to white
+                                pixel = 0xffff;
                             pixels[i] = (uint)(0xFF000000 + (
                                 ((((pixel >> 10) & 0x1F) * 0xFF / 0x1F)) |
                                 ((((pixel >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |

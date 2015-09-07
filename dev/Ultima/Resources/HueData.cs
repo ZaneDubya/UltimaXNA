@@ -27,7 +27,6 @@ namespace UltimaXNA.Ultima.Resources
         private static Texture2D m_HueTexture0, m_HueTexture1;
         private const int m_HueTextureWidth = 32; // Each hue is 32 colors
         private const int m_HueTextureHeight = 2048;
-        private const int multiplier = 0xFF / 0x1F;
         private static ushort[] m_Hues;
 
         public static void Initialize(GraphicsDevice graphicsDevice)
@@ -77,13 +76,14 @@ namespace UltimaXNA.Ultima.Resources
                 {
                     for (int i = 0; i < 32; i++)
                     {
+                        const float multiplier = 0xff / 0x1f;
                         uint color = reader.ReadUInt16();
                         if (i == 31)
                             m_Hues[currentHue] = (ushort)color;
                         data[currentIndex++] = 0xFF000000 + (
-                            ((((color >> 10) & 0x1F) * multiplier)) |
-                            ((((color >> 5) & 0x1F) * multiplier) << 8) |
-                            (((color & 0x1F) * multiplier) << 16)
+                            ((uint)(((color >> 10) & 0x1F) * multiplier)) |
+                            ((uint)(((color >> 5) & 0x1F) * multiplier) << 8) |
+                            ((uint)((color & 0x1F) * multiplier) << 16)
                             );
                     }
                     reader.ReadInt16(); //table start

@@ -19,6 +19,7 @@ using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -53,27 +54,32 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Whisper:
-                        m_TextEntry.LeadingHtmlTag = "<outline color='#f00' style='font-family: uni0;'>";
+                        m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.SpeechColor + 1)));
                         m_TextEntry.LeadingText = "Whisper: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Emote: // emote
-                        m_TextEntry.LeadingHtmlTag = "<outline color='#f0f' style='font-family: uni0;'>";
+                        m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.EmoteColor + 1)));
                         m_TextEntry.LeadingText = "Emote: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Party: // party
-                        m_TextEntry.LeadingHtmlTag = "<outline color='#ff0' style='font-family: uni0;'>";
+                        m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.PartyMsgColor + 1)));
                         m_TextEntry.LeadingText = "Party: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Guild: // guild
-                        m_TextEntry.LeadingHtmlTag = "<outline color='#fff' style='font-family: uni0;'>";
+                        m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.GuildMsgColor + 1)));
                         m_TextEntry.LeadingText = "Guild: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Alliance: // alliance
-                        m_TextEntry.LeadingHtmlTag = "<outline color='#00f' style='font-family: uni0;'>";
+                        m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.AllianceMsgColor + 1)));
                         m_TextEntry.LeadingText = "Alliance: ";
                         m_TextEntry.Text = string.Empty;
                         break;
@@ -150,9 +156,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 Mode = ChatMode.Default;
             }
 
-            // if in default, only switch mode if there is a single command char (;, :, etc) followed by a space.
+            // if in default, only switch mode if there is a single command char (;, :, etc) followed by any other char.
             // in not in default, only switch mode if the single command char is the only char entered.
-            if ((Mode == ChatMode.Default && m_TextEntry.Text.Length == 2 && m_TextEntry.Text[1] == ' ') ||
+            if ((Mode == ChatMode.Default && m_TextEntry.Text.Length == 2) ||
                 (Mode != ChatMode.Default && m_TextEntry.Text.Length == 1))
             {
                 switch (m_TextEntry.Text[0])
@@ -194,23 +200,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_TextEntry.Text = string.Empty;
             m_MessageHistory.Add(new Tuple<ChatMode, string>(Mode, text));
             m_MessageHistoryIndex = m_MessageHistory.Count;
-            m_World.Interaction.SendSpeech(text);
+            m_World.Interaction.SendSpeech(text, Mode);
             Mode = ChatMode.Default;
         }
 
         public void AddLine(string text)
         {
             m_TextEntries.Add(new ChatLineTimed(string.Format("<{1}>{0}</{1}>", text, "big"), Width));
-        }
-
-        private enum ChatMode
-        {
-            Default,
-            Whisper,
-            Emote,
-            Party,
-            Guild,
-            Alliance
         }
     }
 
