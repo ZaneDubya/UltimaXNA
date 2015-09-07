@@ -446,11 +446,11 @@ namespace UltimaXNA
         /// <returns></returns>
         public static string GetColorFromUshort(ushort color)
         {
-            const uint multiplier = 0xFF / 0x1F;
+            const float multiplier = 0xFF / 0x1F;
             uint uintColor = (uint)(
-                ((((color >> 10) & 0x1F) * multiplier) << 16) |
-                ((((color >> 5) & 0x1F) * multiplier) << 8) |
-                (((color & 0x1F) * multiplier))
+                ((uint)(((color >> 10) & 0x1F) * multiplier) << 16) |
+                ((uint)(((color >> 5) & 0x1F) * multiplier) << 8) |
+                ((uint)((color & 0x1F) * multiplier))
                 );
             return string.Format("{0:X6}", uintColor);
         }
