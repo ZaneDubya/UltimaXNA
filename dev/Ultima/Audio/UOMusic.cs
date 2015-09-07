@@ -51,23 +51,31 @@ namespace UltimaXNA.Ultima.Audio
 
         protected override byte[] GetBuffer()
         {
-            int bytesReturned = m_Stream.Read(m_WaveBuffer, 0, m_WaveBuffer.Length);
-            if (bytesReturned != NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK)
+            if (m_Playing)
             {
-                if (m_Repeat)
+                int bytesReturned = m_Stream.Read(m_WaveBuffer, 0, m_WaveBuffer.Length);
+                if (bytesReturned != NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK)
                 {
-                    m_Stream.Position = 0;
-                    m_Stream.Read(m_WaveBuffer, bytesReturned, m_WaveBuffer.Length - bytesReturned);
-                }
-                else
-                {
-                    if (bytesReturned == 0)
+                    if (m_Repeat)
                     {
-                        Stop();
+                        m_Stream.Position = 0;
+                        m_Stream.Read(m_WaveBuffer, bytesReturned, m_WaveBuffer.Length - bytesReturned);
+                    }
+                    else
+                    {
+                        if (bytesReturned == 0)
+                        {
+                            Stop();
+                        }
                     }
                 }
+                return m_WaveBuffer;
             }
-            return m_WaveBuffer;
+            else
+            {
+                Stop();
+                return null;
+            }
         }
 
         protected override void OnBufferNeeded(object sender, EventArgs e)
@@ -92,10 +100,19 @@ namespace UltimaXNA.Ultima.Audio
                 Stop();
             }
 
-            m_Stream = new MP3Stream(Path, NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK);
-            Frequency = m_Stream.Frequency;
+            try
+            {
+                m_Stream = new MP3Stream(Path, NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK);
 
-            m_Playing = true;
+                Frequency = m_Stream.Frequency;
+
+                m_Playing = true;
+            }
+            catch
+            {
+                // file in use
+                m_Playing = false;
+            }
         }
 
         protected override void AfterStop()
