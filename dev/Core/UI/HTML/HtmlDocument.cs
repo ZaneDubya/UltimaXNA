@@ -97,7 +97,7 @@ namespace UltimaXNA.Core.UI.HTML
             Images = null;
             Links.Clear();
             Links = null;
-            if (Texture != null)
+            if (Texture != null && !Texture.IsDisposed)
                 Texture.Dispose();
         }
 
