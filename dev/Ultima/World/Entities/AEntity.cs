@@ -39,7 +39,11 @@ namespace UltimaXNA.Ultima.World.Entities
 
         public bool IsClientEntity = false;
 
-        public int Hue = 0;
+        public virtual int Hue
+        {
+            set;
+            get;
+        }
 
         public virtual string Name
         {

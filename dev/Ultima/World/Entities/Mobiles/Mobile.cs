@@ -332,7 +332,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         }
 
         private int m_hue;
-        public new int Hue
+        public override int Hue
         {
             get {
                 if (Flags.IsHidden)

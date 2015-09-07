@@ -94,7 +94,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
                             }
                         }
                     case MobileAction.Death:
-                        // randomly select die forwards or backwards.
                         if (dieForwards)
                             return (int)ActionIndexHumanoid.Die_Backwards;
                         else
@@ -172,8 +171,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
                     case MobileAction.Stand:
                         return (int)ActionIndexAnimal.Stand;
                     case MobileAction.Death:
-                        // randomly select die forwards or backwards.
-                        if (Utility.RandomValue(0, 1) == 0)
+                        if (dieForwards)
                             return (int)ActionIndexAnimal.Die_Backwards;
                         else
                             return (int)ActionIndexAnimal.Die_Forwards;
@@ -196,8 +194,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
                     case MobileAction.Stand:
                         return (int)ActionIndexMonster.Stand;
                     case MobileAction.Death:
-                        // randomly select die forwards or backwards.
-                        if (Utility.RandomValue(0, 1) == 0)
+                        if (dieForwards)
                             return (int)ActionIndexMonster.Die_Backwards;
                         else
                             return (int)ActionIndexMonster.Die_Forwards;
