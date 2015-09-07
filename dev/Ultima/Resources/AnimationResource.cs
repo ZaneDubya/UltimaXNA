@@ -72,7 +72,7 @@ namespace UltimaXNA.Ultima.Resources
             if (frames != null)
                 return frames;
 
-            GetIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
+            GetIndexes(body, hue, action, direction, out animIndex, out fileIndex);
 
             AnimationFrame.SittingTransformation sitting = AnimationFrame.SittingTransformation.None;
             if (action == HUMANOID_SIT_INDEX)
@@ -80,18 +80,18 @@ namespace UltimaXNA.Ultima.Resources
                 if (direction == 3 || direction == 5)
                 {
                     sitting = AnimationFrame.SittingTransformation.MountNorth;
-                    GetIndexes(ref body, ref hue, HUMANOID_MOUNT_INDEX, direction, out animIndex, out fileIndex);
+                    GetIndexes(body, hue, HUMANOID_MOUNT_INDEX, direction, out animIndex, out fileIndex);
                 }
                 else if (direction == 1 || direction == 7)
                 {
                     sitting = AnimationFrame.SittingTransformation.StandSouth;
-                    GetIndexes(ref body, ref hue, HUMANOID_STAND_INDEX, direction, out animIndex, out fileIndex);
+                    GetIndexes(body, hue, HUMANOID_STAND_INDEX, direction, out animIndex, out fileIndex);
                 }
             }
 
             if (sitting == AnimationFrame.SittingTransformation.None)
             {
-                GetIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
+                GetIndexes(body, hue, action, direction, out animIndex, out fileIndex);
             }
 
             BinaryFileReader reader = fileIndex.Seek(animIndex, out length, out extra, out patched);
@@ -153,7 +153,7 @@ namespace UltimaXNA.Ultima.Resources
                 return null;
         }
 
-        private void GetIndexes(ref int body, ref int hue, int action, int direction, out int index, out AFileIndex fileIndex)
+        private void GetIndexes(int body, int hue, int action, int direction, out int index, out AFileIndex fileIndex)
         {
             Translate(ref body, ref hue);
 
