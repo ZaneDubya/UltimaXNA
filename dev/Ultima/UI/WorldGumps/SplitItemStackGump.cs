@@ -52,7 +52,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             ((Button)LastControl).MouseClickEvent += ClickOkayButton;
             // Text entry field
             m_AmountEntry = (TextEntry)AddControl(new TextEntry(this, 30, 39, 60, 16, 0, 0, 5, item.Amount.ToString()));
-            m_AmountEntry.HtmlTag = "<big>";
+            m_AmountEntry.LeadingHtmlTag = "<big>";
             m_AmountEntry.LegacyCarat = true;
             m_AmountEntry.Hue = 1001;
             m_AmountEntry.ReplaceDefaultTextOnFirstKeypress = true;

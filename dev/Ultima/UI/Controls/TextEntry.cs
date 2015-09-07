@@ -26,7 +26,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool IsPasswordField = false;
         public bool ReplaceDefaultTextOnFirstKeypress = false;
         public bool NumericOnly = false;
-        public string HtmlTag = string.Empty;
+        public string LeadingHtmlTag = string.Empty;
+        public string LeadingText = string.Empty;
 
         public string Text
         {
@@ -132,8 +133,8 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_CaratBlinkOn = false;
             }
 
-            m_RenderedText.Text = HtmlTag + (IsPasswordField ? new string('*', Text.Length) : Text);
-            m_Carat.Text = HtmlTag + (LegacyCarat ? "_" : "|");
+            m_RenderedText.Text = LeadingHtmlTag + LeadingText + (IsPasswordField ? new string('*', Text.Length) : Text);
+            m_Carat.Text = LeadingHtmlTag + (LegacyCarat ? "_" : "|");
 
             base.Update(totalMS, frameMS);
         }

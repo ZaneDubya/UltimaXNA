@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
@@ -26,15 +27,53 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     {
         private const int MaxChatMessageLength = 96;
 
-        TextEntry m_TextEntry;
-        List<ChatLineTimed> m_TextEntries;
-        List<string> m_MessageHistory;
+        private TextEntry m_TextEntry;
+        private List<ChatLineTimed> m_TextEntries;
+        private List<Tuple<ChatMode, string>> m_MessageHistory;
 
-        UserInterfaceService m_UserInterface;
-        InputManager m_Input;
-        WorldModel m_World;
+        private UserInterfaceService m_UserInterface;
+        private InputManager m_Input;
+        private WorldModel m_World;
 
-        int m_MessageHistoryIndex = -1;
+        private int m_MessageHistoryIndex = -1;
+
+        private ChatMode m_Mode = ChatMode.Default;
+        private ChatMode Mode
+        {
+            get { return m_Mode; }
+            set
+            {
+                m_Mode = value;
+                switch (value)
+                {
+                    case ChatMode.Default:
+                        m_TextEntry.LeadingHtmlTag = string.Empty;
+                        m_TextEntry.LeadingText = string.Empty;
+                        m_TextEntry.Text = string.Empty;
+                        break;
+                    case ChatMode.Emote: // emote
+                        m_TextEntry.LeadingHtmlTag = "<font>";
+                        m_TextEntry.LeadingText = "Emote: ";
+                        m_TextEntry.Text = string.Empty;
+                        break;
+                    case ChatMode.Party: // party
+                        m_TextEntry.LeadingHtmlTag = "<font>";
+                        m_TextEntry.LeadingText = "Party: ";
+                        m_TextEntry.Text = string.Empty;
+                        break;
+                    case ChatMode.Guild: // guild
+                        m_TextEntry.LeadingHtmlTag = "<font>";
+                        m_TextEntry.LeadingText = "Guild: ";
+                        m_TextEntry.Text = string.Empty;
+                        break;
+                    case ChatMode.Alliance: // alliance
+                        m_TextEntry.LeadingHtmlTag = "<font>";
+                        m_TextEntry.LeadingText = "Alliance: ";
+                        m_TextEntry.Text = string.Empty;
+                        break;
+                }
+            }
+        }
 
         public ChatControl(AControl parent, int x, int y, int width, int height)
             : base(parent)
@@ -43,7 +82,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Size = new Point(width, height);
 
             m_TextEntries = new List<ChatLineTimed>();
-            m_MessageHistory = new List<string>();
+            m_MessageHistory = new List<Tuple<ChatMode, string>>();
 
             m_Input = ServiceRegistry.GetService<InputManager>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
@@ -60,7 +99,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 IFont font = provider.GetUnicodeFont(0);
                 m_TextEntry = new TextEntry(this, 1, Height - font.Height, Width, font.Height, 0, 0, MaxChatMessageLength, string.Empty);
                 m_TextEntry.LegacyCarat = true;
-                m_TextEntry.HtmlTag = "<basefont color='#fff'>";
+                m_TextEntry.LeadingHtmlTag = "<basefont color='#fff'>";
 
                 AddControl(new CheckerTrans(this, 0, Height - 20, Width, 20));
                 AddControl(m_TextEntry);
@@ -83,17 +122,45 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 if (m_MessageHistoryIndex > 0)
                     m_MessageHistoryIndex -= 1;
-                m_TextEntry.Text = m_MessageHistory[m_MessageHistoryIndex];
+                {
+                    Mode = m_MessageHistory[m_MessageHistoryIndex].Item1;
+                    m_TextEntry.Text = m_MessageHistory[m_MessageHistoryIndex].Item2;
+                }
             }
             else if (m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.W, false, false, true))
             {
                 if (m_MessageHistoryIndex < m_MessageHistory.Count - 1)
                 {
                     m_MessageHistoryIndex += 1;
-                    m_TextEntry.Text = m_MessageHistory[m_MessageHistoryIndex];
+                    Mode = m_MessageHistory[m_MessageHistoryIndex].Item1;
+                    m_TextEntry.Text = m_MessageHistory[m_MessageHistoryIndex].Item2;
                 }
                 else
                     m_TextEntry.Text = string.Empty;
+            }
+            // backspace when mode is not default and Text is empty = clear mode.
+            else if (m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Back, false, false, false) && m_TextEntry.Text == string.Empty)
+            {
+                Mode = ChatMode.Default;
+            }
+
+            if (m_TextEntry.Text.Length == 2 && m_TextEntry.Text[1] == ' ')
+            {
+                switch (m_TextEntry.Text[0])
+                {
+                    case ':': // emote
+                        Mode = ChatMode.Emote;
+                        break;
+                    case '/': // party
+                        Mode = ChatMode.Party;
+                        break;
+                    case '\\': // guild
+                        Mode = ChatMode.Guild;
+                        break;
+                    case '|': // alliance
+                        Mode = ChatMode.Alliance;
+                        break;
+                }
             }
 
             base.Update(totalMS, frameMS);
@@ -113,14 +180,24 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public override void OnKeyboardReturn(int textID, string text)
         {
             m_TextEntry.Text = string.Empty;
-            m_MessageHistory.Add(text);
+            m_MessageHistory.Add(new Tuple<ChatMode, string>(Mode, text));
             m_MessageHistoryIndex = m_MessageHistory.Count;
             m_World.Interaction.SendSpeech(text);
+            Mode = ChatMode.Default;
         }
 
         public void AddLine(string text)
         {
             m_TextEntries.Add(new ChatLineTimed(string.Format("<{1}>{0}</{1}>", text, "big"), Width));
+        }
+
+        private enum ChatMode
+        {
+            Default,
+            Emote,
+            Party,
+            Guild,
+            Alliance
         }
     }
 
