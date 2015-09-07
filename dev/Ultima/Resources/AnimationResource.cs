@@ -72,7 +72,7 @@ namespace UltimaXNA.Ultima.Resources
             if (frames != null)
                 return frames;
 
-            GetIndexes(body, hue, action, direction, out animIndex, out fileIndex);
+            // GetIndexes(body, hue, action, direction, out animIndex, out fileIndex);
 
             AnimationFrame.SittingTransformation sitting = AnimationFrame.SittingTransformation.None;
             if (action == HUMANOID_SIT_INDEX)
@@ -87,9 +87,12 @@ namespace UltimaXNA.Ultima.Resources
                     sitting = AnimationFrame.SittingTransformation.StandSouth;
                     GetIndexes(body, hue, HUMANOID_STAND_INDEX, direction, out animIndex, out fileIndex);
                 }
+                else
+                {
+                    GetIndexes(body, hue, action, direction, out animIndex, out fileIndex);
+                }
             }
-
-            if (sitting == AnimationFrame.SittingTransformation.None)
+            else
             {
                 GetIndexes(body, hue, action, direction, out animIndex, out fileIndex);
             }
@@ -157,7 +160,7 @@ namespace UltimaXNA.Ultima.Resources
         {
             Translate(ref body, ref hue);
 
-            int fileType = BodyConverter.Convert(body);
+            int fileType = BodyConverter.Convert(ref body);
             switch (fileType)
             {
                 default:
@@ -211,7 +214,6 @@ namespace UltimaXNA.Ultima.Resources
 
                         break;
                     }
-                // Issue 60 - Missing (or wrong) object animations - http://code.google.com/p/ultimaxna/issues/detail?id=60 - Smjert
                 case 5:
                     {
                         fileIndex = m_FileIndex5;
@@ -224,7 +226,6 @@ namespace UltimaXNA.Ultima.Resources
 
                         break;
                     }
-                    // Issue 60 - End
             }
 
             index += action * 5;

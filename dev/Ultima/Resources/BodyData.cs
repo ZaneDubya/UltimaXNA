@@ -136,10 +136,7 @@ namespace UltimaXNA.Ultima.Resources
                     int anim3;
                     int anim4;
                     int anim5;
-                    // Int32.TryParse(split[0], out original);
-                    // Int32.TryParse(split[1], out anim2);
 
-                    // The control here was wrong, previously it was always putting -1 without parsing the file - Smjert
                     if (split.Length < 3 || !int.TryParse(split[2], out anim3))
                     {
                         anim3 = -1;
@@ -154,7 +151,6 @@ namespace UltimaXNA.Ultima.Resources
                     {
                         anim5 = -1;
                     }
-                    // End Mod - Smjert
 
                     if (anim2 != -1)
                     {
@@ -272,9 +268,8 @@ namespace UltimaXNA.Ultima.Resources
         /// </item>
         /// </list>
         /// </returns>
-        public static int Convert(int body)
+        public static int Convert(ref int body)
         {
-            // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
             // Converts MountItemID to BodyID
             if (body > 0x3E93)
             {
@@ -288,7 +283,6 @@ namespace UltimaXNA.Ultima.Resources
                     }
                 }
             }
-            // Issue 6 - End
             if (m_Table1 != null && body >= 0 && body < m_Table1.Length)
             {
                 int val = m_Table1[body];
