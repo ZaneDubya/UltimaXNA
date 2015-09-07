@@ -44,8 +44,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 else
                 {
                     m_Equipment[index] = value;
-                    if (m_Parent is Mobile)
-                        value.Parent = m_Parent;
+                    value.Parent = m_Parent;
                 }
             }
         }

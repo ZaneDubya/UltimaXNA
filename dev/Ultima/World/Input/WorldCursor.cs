@@ -648,9 +648,14 @@ namespace UltimaXNA.Ultima.World.Input
 
                     // remove the item from the containing entity.
                     if (item.Parent is Mobile)
-                        ((Mobile)item.Parent).RemoveItem(item.Serial);
+                        (item.Parent as Mobile).RemoveItem(item.Serial);
                     else if (item.Parent is Container)
-                        ((Container)item.Parent).RemoveItem(item.Serial);
+                    {
+                        AEntity parent = item.Parent;
+                        if (parent is Corpse)
+                            (parent as Corpse).RemoveItem(item.Serial);
+                        (parent as Container).RemoveItem(item.Serial);
+                    }
                     item.Parent = null;
                 }
 
