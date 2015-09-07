@@ -47,27 +47,27 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 switch (value)
                 {
                     case ChatMode.Default:
-                        m_TextEntry.LeadingHtmlTag = string.Empty;
+                        m_TextEntry.LeadingHtmlTag = "<outline color='#f00' style='font-family: uni0;'>";
                         m_TextEntry.LeadingText = string.Empty;
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Emote: // emote
-                        m_TextEntry.LeadingHtmlTag = "<font>";
+                        m_TextEntry.LeadingHtmlTag = "<outline color='#f0f' style='font-family: uni0;'>";
                         m_TextEntry.LeadingText = "Emote: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Party: // party
-                        m_TextEntry.LeadingHtmlTag = "<font>";
+                        m_TextEntry.LeadingHtmlTag = "<outline color='#ff0' style='font-family: uni0;'>";
                         m_TextEntry.LeadingText = "Party: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Guild: // guild
-                        m_TextEntry.LeadingHtmlTag = "<font>";
+                        m_TextEntry.LeadingHtmlTag = "<outline color='#fff' style='font-family: uni0;'>";
                         m_TextEntry.LeadingText = "Guild: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Alliance: // alliance
-                        m_TextEntry.LeadingHtmlTag = "<font>";
+                        m_TextEntry.LeadingHtmlTag = "<outline color='#00f' style='font-family: uni0;'>";
                         m_TextEntry.LeadingText = "Alliance: ";
                         m_TextEntry.Text = string.Empty;
                         break;
@@ -99,7 +99,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 IFont font = provider.GetUnicodeFont(0);
                 m_TextEntry = new TextEntry(this, 1, Height - font.Height, Width, font.Height, 0, 0, MaxChatMessageLength, string.Empty);
                 m_TextEntry.LegacyCarat = true;
-                m_TextEntry.LeadingHtmlTag = "<basefont color='#fff'>";
+                Mode = ChatMode.Default;
 
                 AddControl(new CheckerTrans(this, 0, Height - 20, Width, 20));
                 AddControl(m_TextEntry);
@@ -144,7 +144,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 Mode = ChatMode.Default;
             }
 
-            if (m_TextEntry.Text.Length == 2 && m_TextEntry.Text[1] == ' ')
+            if (m_TextEntry.Text.Length == 1)
             {
                 switch (m_TextEntry.Text[0])
                 {
