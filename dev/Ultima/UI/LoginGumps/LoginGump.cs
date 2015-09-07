@@ -57,13 +57,13 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new TextLabelAscii(this, 181, 386, hue, 2, provider.GetString(3000103)));
             // name field
             TextEntry g1 = new TextEntry(this, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, Settings.Server.UserName);
-            g1.HtmlTag = "<basefont color=#000000><big>";
+            g1.LeadingHtmlTag = "<basefont color=#000000><big>";
             AddControl(new ResizePic(this, g1));
             AddControl(g1);
             // password field
             TextEntry g2 = new TextEntry(this, 332, 386, 200, 20, 0, (int)LoginGumpTextFields.Password, 32, "");
             g2.IsPasswordField = true;
-            g2.HtmlTag = "<basefont color=#000000><big>";
+            g2.LeadingHtmlTag = "<basefont color=#000000><big>";
             AddControl(new ResizePic(this, g2));
             AddControl(g2);
             // login button

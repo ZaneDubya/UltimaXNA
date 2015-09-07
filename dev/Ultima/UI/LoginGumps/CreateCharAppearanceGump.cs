@@ -103,7 +103,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // character name 
             AddControl(new GumpPic(this, 280, 53, 1801, 0));
             m_TxtName = new TextEntry(this, 238, 70, 234, 20, 0, 0, 29, string.Empty);
-            m_TxtName.HtmlTag = "<span color='#000' style='font-family:uni0;'>";
+            m_TxtName.LeadingHtmlTag = "<span color='#000' style='font-family:uni0;'>";
             AddControl(new ResizePic(this, m_TxtName));
             AddControl(m_TxtName);
             // character window
