@@ -24,13 +24,13 @@ namespace UltimaXNA.Ultima.Network.Server
             : base(0x89, "Corpse Clothing")
         {
             CorpseSerial = reader.ReadInt32(); // BYTE[4] corpseID
-            bool isNotTerminated = false;
-            while (isNotTerminated)
+            bool hasItems = true;
+            while (hasItems)
             {
                 int layer = reader.ReadByte();
                 if (layer == 0x00)
                 {
-                    isNotTerminated = false;
+                    hasItems = false;
                 }
                 else
                 {

@@ -610,7 +610,12 @@ namespace UltimaXNA.Ultima.World
             Corpse corpse = WorldModel.Entities.GetObject<Corpse>(p.CorpseSerial, false);
             if (corpse == null)
                 return;
-            corpse.LoadCorpseClothing(p.Items);
+            foreach (CorpseClothingPacket.CorpseItem i in p.Items)
+            {
+                Item item = WorldModel.Entities.GetObject<Item>(i.Serial, false);
+                if (item != null)
+                    corpse.Equipment[i.Layer] = item;
+            }
         }
 
         // ======================================================================

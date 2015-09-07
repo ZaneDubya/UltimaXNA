@@ -55,11 +55,6 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
                 Frame = 0.999f;
         }
 
-        public void LoadCorpseClothing(List<CorpseClothingPacket.CorpseItem> items)
-        {
-
-        }
-
         public void PlayDeathAnimation()
         {
             Frame = 0f;
