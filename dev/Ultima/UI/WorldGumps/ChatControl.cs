@@ -47,8 +47,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 switch (value)
                 {
                     case ChatMode.Default:
-                        m_TextEntry.LeadingHtmlTag = "<outline color='#f00' style='font-family: uni0;'>";
+                        m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>", 
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.SpeechColor + 1)));
                         m_TextEntry.LeadingText = string.Empty;
+                        m_TextEntry.Text = string.Empty;
+                        break;
+                    case ChatMode.Whisper:
+                        m_TextEntry.LeadingHtmlTag = "<outline color='#f00' style='font-family: uni0;'>";
+                        m_TextEntry.LeadingText = "Whisper: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Emote: // emote
@@ -144,12 +150,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 Mode = ChatMode.Default;
             }
 
-            if (m_TextEntry.Text.Length == 1)
+            // if in default, only switch mode if there is a single command char (;, :, etc) followed by a space.
+            // in not in default, only switch mode if the single command char is the only char entered.
+            if ((Mode == ChatMode.Default && m_TextEntry.Text.Length == 2 && m_TextEntry.Text[1] == ' ') ||
+                (Mode != ChatMode.Default && m_TextEntry.Text.Length == 1))
             {
                 switch (m_TextEntry.Text[0])
                 {
                     case ':': // emote
                         Mode = ChatMode.Emote;
+                        break;
+                    case ';': // whisper
+                        Mode = ChatMode.Whisper;
                         break;
                     case '/': // party
                         Mode = ChatMode.Party;
@@ -194,6 +206,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private enum ChatMode
         {
             Default,
+            Whisper,
             Emote,
             Party,
             Guild,

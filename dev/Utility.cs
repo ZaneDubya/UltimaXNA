@@ -439,13 +439,18 @@ namespace UltimaXNA
             return new Vector3(hue & 0x0FFF, partial ? 2 : 1, transparent ? 0.5f : 0);
         }
 
+        /// <summary>
+        /// Reads a color from a ushort hue; format is bgr.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
         public static string GetColorFromUshort(ushort color)
         {
-            const int MULTIPLIER = 0xFF / 0x1F;
+            const uint multiplier = 0xFF / 0x1F;
             uint uintColor = (uint)(
-                ((((color >> 10) & 0x1F) * MULTIPLIER)) |
-                ((((color >> 5) & 0x1F) * MULTIPLIER) << 8) |
-                (((color & 0x1F) * MULTIPLIER) << 16)
+                ((((color >> 10) & 0x1F) * multiplier) << 16) |
+                ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                (((color & 0x1F) * multiplier))
                 );
             return string.Format("{0:X6}", uintColor);
         }

@@ -28,23 +28,31 @@ namespace UltimaXNA.Ultima.Resources
         private const int m_HueTextureWidth = 32; // Each hue is 32 colors
         private const int m_HueTextureHeight = 2048;
         private const int multiplier = 0xFF / 0x1F;
+        private static ushort[] m_Hues;
 
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
             HueData.graphicsDevice = graphicsDevice;
             graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
-            CreateTexture();
+            GetHueData();
+        }
+
+        public static ushort GetHue(int index)
+        {
+            return m_Hues[index & 0x3fff];
         }
 
         static void graphicsDevice_DeviceReset(object sender, EventArgs e)
         {
-            CreateTexture();
+            GetHueData();
         }
 
-        static void CreateTexture()
+        static void GetHueData()
         {
             m_HueTexture0 = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight);
             m_HueTexture1 = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight);
+            m_Hues = new ushort[HueCount];
+
             uint[] hueData = getTextureData();
             m_HueTexture0.SetData(hueData, 0, m_HueTextureWidth * m_HueTextureHeight);
             m_HueTexture1.SetData(hueData, m_HueTextureWidth * m_HueTextureHeight, m_HueTextureWidth * m_HueTextureHeight);
@@ -70,16 +78,18 @@ namespace UltimaXNA.Ultima.Resources
                     for (int i = 0; i < 32; i++)
                     {
                         uint color = reader.ReadUInt16();
+                        if (i == 31)
+                            m_Hues[currentHue] = (ushort)color;
                         data[currentIndex++] = 0xFF000000 + (
                             ((((color >> 10) & 0x1F) * multiplier)) |
                             ((((color >> 5) & 0x1F) * multiplier) << 8) |
                             (((color & 0x1F) * multiplier) << 16)
                             );
                     }
-                    currentHue++;
                     reader.ReadInt16(); //table start
                     reader.ReadInt16(); //table end
                     reader.ReadBytes( 20 ); //name
+                    currentHue++;
                 }
             }
             reader.Close();
