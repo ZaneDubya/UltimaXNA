@@ -71,7 +71,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Dispose()
         {
-            m_OKButton -= okButton_MouseClickEvent;
+            m_OKButton.MouseClickEvent -= okButton_MouseClickEvent;
             base.Dispose();
         }
 

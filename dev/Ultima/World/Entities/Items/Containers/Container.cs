@@ -68,7 +68,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
             m_ContentsUpdated = true;
         }
 
-        public void RemoveItem(Serial serial)
+        public virtual void RemoveItem(Serial serial)
         {
             foreach (Item item in Contents)
             {

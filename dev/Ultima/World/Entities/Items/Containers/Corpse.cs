@@ -62,8 +62,9 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 
         public MobileEquipment Equipment;
 
-        public void RemoveItem(Serial serial)
+        public override void RemoveItem(Serial serial)
         {
+            base.RemoveItem(serial);
             Equipment.RemoveBySerial(serial);
             if (OnEntityUpdated != null)
                 OnEntityUpdated();

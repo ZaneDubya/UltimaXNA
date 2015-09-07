@@ -654,7 +654,8 @@ namespace UltimaXNA.Ultima.World.Input
                         AEntity parent = item.Parent;
                         if (parent is Corpse)
                             (parent as Corpse).RemoveItem(item.Serial);
-                        (parent as Container).RemoveItem(item.Serial);
+                        else
+                            (parent as Container).RemoveItem(item.Serial);
                     }
                     item.Parent = null;
                 }
