@@ -63,7 +63,7 @@ namespace UltimaXNA.Ultima.Login.States
             openSkillsGump();
         }
 
-        void openSkillsGump()
+        private void openSkillsGump()
         {
             m_CreateSkillsGump = (CreateCharSkillsGump)m_UserInterface.AddControl(new CreateCharSkillsGump(), 0, 0);
             m_CreateSkillsGump.OnForward += OnForward;
@@ -84,7 +84,7 @@ namespace UltimaXNA.Ultima.Login.States
             }
         }
 
-        void openAppearanceGump()
+        private void openAppearanceGump()
         {
             m_CreateAppearanceGump = (CreateCharAppearanceGump)m_UserInterface.AddControl(new CreateCharAppearanceGump(), 0, 0);
             m_CreateAppearanceGump.OnForward += OnForward;
@@ -103,7 +103,7 @@ namespace UltimaXNA.Ultima.Login.States
             }
         }
 
-        bool validateSkills()
+        private bool validateSkills()
         {
             // we need to make sure that the stats add up to 80, skills add up to 100, and 3 unique skills are selected.
             // if not, pop up an appropriate error message.
@@ -139,7 +139,7 @@ namespace UltimaXNA.Ultima.Login.States
             return true;
         }
 
-        bool validateAppearance()
+        private bool validateAppearance()
         {
             // get the resource provider
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
@@ -209,9 +209,17 @@ namespace UltimaXNA.Ultima.Login.States
         public override void Dispose()
         {
             if (m_CreateSkillsGump != null)
+            {
+                m_CreateSkillsGump.OnForward -= OnForward;
+                m_CreateSkillsGump.OnBackward -= OnBackward;
                 m_CreateSkillsGump.Dispose();
+            }
             if (m_CreateAppearanceGump != null)
+            {
+                m_CreateAppearanceGump.OnForward -= OnForward;
+                m_CreateAppearanceGump.OnBackward -= OnBackward;
                 m_CreateAppearanceGump.Dispose();
+            }
             base.Dispose();
         }
 

@@ -56,7 +56,9 @@ namespace UltimaXNA.Ultima.Resources
             if (!m_initialized)
             {
                 m_initialized = true;
-                m_GraphicsDevice.DeviceReset += graphicsDevice_DeviceReset; // this is neat. Does it really work this way?
+                // unsubscribe in case this is called twice.
+                m_GraphicsDevice.DeviceReset -= graphicsDevice_DeviceReset;
+                m_GraphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
                 loadFonts();
             }
         }

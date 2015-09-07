@@ -32,6 +32,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private ExpandableScroll m_Background;
         private IScrollBar m_ScrollBar;
         private HtmlGumpling m_TotalCost;
+        private Button m_OKButton;
 
         private int m_VendorSerial;
         private VendorItemInfo[] m_Items;
@@ -63,9 +64,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(m_TotalCost = new HtmlGumpling(this, 44, 334, 200, 30, 0, 0, string.Empty));
             UpdateEntryAndCost();
 
-            Button okButton = (Button)AddControl(new Button(this, 220, 333, 0x907, 0x908, ButtonTypes.Activate, 0, 0));
-            okButton.GumpOverID = 0x909;
-            okButton.MouseClickEvent += okButton_MouseClickEvent;
+            AddControl(m_OKButton = new Button(this, 220, 333, 0x907, 0x908, ButtonTypes.Activate, 0, 0));
+            m_OKButton.GumpOverID = 0x909;
+            m_OKButton.MouseClickEvent += okButton_MouseClickEvent;
+        }
+
+        public override void Dispose()
+        {
+            m_OKButton -= okButton_MouseClickEvent;
+            base.Dispose();
         }
 
         private void okButton_MouseClickEvent(AControl control, int x, int y, MouseButton button)

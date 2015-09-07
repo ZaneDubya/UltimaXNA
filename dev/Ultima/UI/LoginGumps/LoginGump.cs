@@ -31,7 +31,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
 
     public class LoginGump : Gump
     {
-        public LoginEvent OnLogin;
+        public event LoginEvent OnLogin;
 
         public LoginGump()
             : base(0, 0)

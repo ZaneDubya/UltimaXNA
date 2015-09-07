@@ -53,6 +53,7 @@ namespace UltimaXNA.Ultima.Login.States
 
         public override void Dispose()
         {
+            m_LoginGump -= OnLogin;
             m_LoginGump.Dispose();
             base.Dispose();
         }

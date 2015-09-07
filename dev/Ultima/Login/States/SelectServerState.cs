@@ -83,6 +83,9 @@ namespace UltimaXNA.Ultima.Login.States
 
         public override void Dispose()
         {
+            m_SelectServerGump.OnBackToLoginScreen -= OnBackToLoginScreen;
+            m_SelectServerGump.OnSelectLastServer -= OnSelectLastServer;
+            m_SelectServerGump.OnSelectServer -= OnSelectServer;
             m_SelectServerGump.Dispose();
             base.Dispose();
         }

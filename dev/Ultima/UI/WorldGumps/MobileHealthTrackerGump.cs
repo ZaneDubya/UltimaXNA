@@ -76,6 +76,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
         }
 
+        public override void Dispose()
+        {
+            m_Background.MouseDoubleClickEvent -= Background_MouseDoubleClickEvent;
+            base.Dispose();
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
             m_Bars[0].PercentWidthDrawn = ((float)Mobile.Health.Current / Mobile.Health.Max);

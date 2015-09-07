@@ -71,6 +71,17 @@ namespace UltimaXNA.Ultima.UI.Controls
             AddControl(new GumpPic(this, width - 22, 5, 2086, 0), 0);
         }
 
+        public override void Dispose()
+        {
+            if (m_resize != null)
+            {
+                m_resize.MouseClickEvent -= onClickClosedList;
+                m_resize.MouseOverEvent -= onMouseOverClosedList;
+                m_resize.MouseOutEvent -= onMouseOutClosedList;
+            }
+            base.Dispose();
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
             if (Index < 0 || Index >= m_items.Count)
@@ -110,7 +121,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         void closeOpenList()
         {
             m_listOpen = false;
-            m_openResizePic.Dispose();
+            if (m_openResizePic != null)
+            {
+                m_openResizePic.MouseClickEvent -= onClickOpenList;
+                m_openResizePic.MouseOverEvent -= onMouseOverOpenList;
+                m_openResizePic.MouseOutEvent -= onMouseOutOpenList;
+                m_openResizePic.Dispose();
+                m_openResizePic = null;
+            }
             if (m_openScrollBar != null)
                 m_openScrollBar.Dispose();
             for (int i = 0; i < m_visibleItems; i++)

@@ -44,6 +44,16 @@ namespace UltimaXNA.Ultima.Login.States
             m_CharListGump.OnNewCharacter += OnNewCharacter;
         }
 
+        public override void Dispose()
+        {
+            m_CharListGump.OnBackToSelectServer -= OnBackToSelectServer;
+            m_CharListGump.OnLoginWithCharacter -= OnLoginWithCharacter;
+            m_CharListGump.OnDeleteCharacter -= OnDeleteCharacter;
+            m_CharListGump.OnNewCharacter -= OnNewCharacter;
+            m_CharListGump.Dispose();
+            base.Dispose();
+        }
+
         private bool m_autoSelectedCharacter;
 
         public override void Update(double totalTime, double frameTime)
@@ -80,12 +90,6 @@ namespace UltimaXNA.Ultima.Login.States
                         throw (new Exception("Unknown UltimaClientStatus in CharacterListScene:Update"));
                 }
             }
-        }
-
-        public override void Dispose()
-        {
-            m_CharListGump.Dispose();
-            base.Dispose();
         }
 
         public void OnBackToSelectServer()

@@ -47,6 +47,7 @@ namespace UltimaXNA.Core.Audio
         {
             if (m_ThisInstance != null)
             {
+                m_ThisInstance.BufferNeeded -= OnBufferNeeded;
                 if (!m_ThisInstance.IsDisposed)
                 {
                     m_ThisInstance.Stop();
@@ -85,7 +86,7 @@ namespace UltimaXNA.Core.Audio
             byte[] buffer = GetBuffer();
             if (buffer != null && buffer.Length > 0)
             {
-                m_ThisInstance.BufferNeeded += new EventHandler<EventArgs>(OnBufferNeeded);
+                m_ThisInstance.BufferNeeded += OnBufferNeeded;
                 m_ThisInstance.SubmitBuffer(buffer);
                 m_ThisInstance.Volume = volume;
                 m_ThisInstance.Play();

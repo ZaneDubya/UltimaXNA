@@ -23,9 +23,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
 
     class SelectServerGump : Gump
     {
-        public BackToLoginScreenEvent OnBackToLoginScreen;
-        public SelectLastServerEvent OnSelectLastServer;
-        public LoginToAServerEvent OnSelectServer;
+        public event BackToLoginScreenEvent OnBackToLoginScreen;
+        public event SelectLastServerEvent OnSelectLastServer;
+        public event LoginToAServerEvent OnSelectServer;
 
         enum SelectServerGumpButtons
         {

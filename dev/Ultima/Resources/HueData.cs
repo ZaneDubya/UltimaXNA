@@ -32,6 +32,7 @@ namespace UltimaXNA.Ultima.Resources
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
             HueData.graphicsDevice = graphicsDevice;
+            graphicsDevice.DeviceReset -= graphicsDevice_DeviceReset;
             graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
             GetHueData();
         }

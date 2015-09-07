@@ -72,12 +72,14 @@ namespace UltimaXNA
 
         private void StartEngine()
         {
-            PrepareExceptionHandlers();
+            SetExceptionHandlers();
 
             using (UltimaGame engine = new UltimaGame())
             {
                 engine.Run();
             }
+
+            ClearExceptionHandlers();
         }
 
         private void ConfigureTraceListeners()
@@ -97,10 +99,16 @@ namespace UltimaXNA
             Tracer.RegisterListener(new MsgBoxOnCriticalListener());
         }
 
-        private void PrepareExceptionHandlers()
+        private void SetExceptionHandlers()
         {
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+        }
+
+        private void ClearExceptionHandlers()
+        {
+            AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
+            TaskScheduler.UnobservedTaskException -= OnUnobservedTaskException;
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)

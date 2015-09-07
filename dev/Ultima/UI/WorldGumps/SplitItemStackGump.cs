@@ -31,6 +31,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         private HSliderBar m_Slider;
         private TextEntry m_AmountEntry;
+        private Button m_OKButton;
         private int m_LastValue = 0;
 
         public SplitItemStackGump(Item item, Point pickupOffset)
@@ -47,9 +48,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Slider = (HSliderBar)AddControl(new HSliderBar(this, 30, 16, 104, 0, item.Amount, item.Amount, HSliderBarStyle.BlueWidgetNoBar));
             m_LastValue = m_Slider.Value;
             // Ok button
-            AddControl(new Button(this, 102, 38, 0x085d, 0x085e, ButtonTypes.Default, 0, 0));
-            ((Button)LastControl).GumpOverID = 0x085f;
-            ((Button)LastControl).MouseClickEvent += ClickOkayButton;
+            AddControl(m_OKButton = new Button(this, 102, 38, 0x085d, 0x085e, ButtonTypes.Default, 0, 0));
+            m_OKButton.GumpOverID = 0x085f;
+            m_OKButton.MouseClickEvent += ClickOkayButton;
             // Text entry field
             m_AmountEntry = (TextEntry)AddControl(new TextEntry(this, 30, 39, 60, 16, 0, 0, 5, item.Amount.ToString()));
             m_AmountEntry.LeadingHtmlTag = "<big>";
@@ -57,6 +58,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_AmountEntry.Hue = 1001;
             m_AmountEntry.ReplaceDefaultTextOnFirstKeypress = true;
             m_AmountEntry.NumericOnly = true;
+        }
+
+        public override void Dispose()
+        {
+            m_OKButton.MouseClickEvent -= ClickOkayButton;
+            base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)

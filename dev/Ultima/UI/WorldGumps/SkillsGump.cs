@@ -47,6 +47,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             PlayerState.Skills.OnSkillChanged += OnSkillChanged;
         }
 
+        public override void Dispose()
+        {
+            PlayerState.Skills.OnSkillChanged -= OnSkillChanged;
+            base.Dispose();
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
             base.Update(totalMS, frameMS);

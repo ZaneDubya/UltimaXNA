@@ -24,10 +24,10 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public delegate void EventWithInt(int index);
         public delegate void EventWithNoParams();
 
-        public EventWithInt OnDeleteCharacter;
-        public EventWithNoParams OnNewCharacter;
-        public EventWithNoParams OnBackToSelectServer;
-        public EventWithInt OnLoginWithCharacter;
+        public event EventWithInt OnDeleteCharacter;
+        public event EventWithNoParams OnNewCharacter;
+        public event EventWithNoParams OnBackToSelectServer;
+        public event EventWithInt OnLoginWithCharacter;
 
         enum Buttons
         {

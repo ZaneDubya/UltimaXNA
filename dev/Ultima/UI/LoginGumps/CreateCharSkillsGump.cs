@@ -27,8 +27,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             QuitButton
         }
 
-        public EventNoParams OnForward;
-        public EventNoParams OnBackward;
+        public event EventNoParams OnForward;
+        public event EventNoParams OnBackward;
 
         HSliderBar[] sliderAttributes; TextLabelAscii[] lblAttributes;
         HSliderBar[] sliderSkills; TextLabelAscii[] lblSkills; DropDownList[] listSkills;

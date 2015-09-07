@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
 
     class LoginStatusGump : Gump
     {
-        public CancelLoginEvent OnCancelLogin;
+        public event CancelLoginEvent OnCancelLogin;
 
         public LoginStatusGump()
             : base(0, 0)

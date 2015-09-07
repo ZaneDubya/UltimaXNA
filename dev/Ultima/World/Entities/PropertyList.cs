@@ -18,13 +18,13 @@ namespace UltimaXNA.Ultima.World.Entities
     public class PropertyList
     {
         public int Hash = 0;
-        private List<string> mPropertyList = new List<string>();
+        private List<string> m_PropertyList = new List<string>();
 
         public bool HasProperties
         {
             get
             {
-                if (mPropertyList.Count == 0)
+                if (m_PropertyList.Count == 0)
                     return false;
                 else
                     return true;
@@ -36,10 +36,10 @@ namespace UltimaXNA.Ultima.World.Entities
             get
             {
                 string iPropertyConcat = string.Empty;
-                for (int i = 0; i < mPropertyList.Count; i++)
+                for (int i = 0; i < m_PropertyList.Count; i++)
                 {
-                    iPropertyConcat += mPropertyList[i];
-                    if (i < mPropertyList.Count - 1)
+                    iPropertyConcat += m_PropertyList[i];
+                    if (i < m_PropertyList.Count - 1)
                     {
                         iPropertyConcat += '\n';
                     }
@@ -50,12 +50,12 @@ namespace UltimaXNA.Ultima.World.Entities
 
         public void Clear()
         {
-            mPropertyList.Clear();
+            m_PropertyList.Clear();
         }
 
         public void AddProperty(string nProperty)
         {
-            mPropertyList.Add(nProperty);
+            m_PropertyList.Add(nProperty);
         }
     }
 }

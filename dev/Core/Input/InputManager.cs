@@ -23,16 +23,18 @@ namespace UltimaXNA.Core.Input
     public class InputManager
     {
         // Base WndProc
-        private const int MouseDragBeginDistance = 2;
-        private const int MouseClickMaxDelta = 2;
+        private WndProc m_WndProc;
+        private bool m_IsInitialized;
+
+        // event data
         private readonly List<InputEvent> m_EventsAccumulating = new List<InputEvent>();
         private readonly List<InputEvent> m_EventsAccumulatingAlternate = new List<InputEvent>();
         private readonly List<InputEvent> m_EventsThisFrame = new List<InputEvent>();
-        private readonly WndProc m_WndProc;
         private bool m_EventsAccumulatingUseAlternate;
-        private bool m_IsInitialized;
 
         // Mouse dragging support
+        private const int MouseDragBeginDistance = 2;
+        private const int MouseClickMaxDelta = 2;
         private InputEventMouse m_LastMouseClick;
         private float m_LastMouseClickTime;
         private InputEventMouse m_LastMouseDown;
@@ -54,6 +56,19 @@ namespace UltimaXNA.Core.Input
             m_WndProc.KeyDown += onKeyDown;
             m_WndProc.KeyUp += onKeyUp;
             m_WndProc.KeyChar += onKeyChar;
+        }
+
+        public void Dispose()
+        {
+            m_WndProc.MouseWheel -= onMouseWheel;
+            m_WndProc.MouseMove -= onMouseMove;
+            m_WndProc.MouseUp -= onMouseUp;
+            m_WndProc.MouseDown -= onMouseDown;
+            m_WndProc.KeyDown -= onKeyDown;
+            m_WndProc.KeyUp -= onKeyUp;
+            m_WndProc.KeyChar -= onKeyChar;
+            m_WndProc.Dispose();
+            m_WndProc = null;
         }
 
         public bool IsCtrlDown

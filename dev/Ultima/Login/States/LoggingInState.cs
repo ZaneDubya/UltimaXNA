@@ -44,6 +44,13 @@ namespace UltimaXNA.Ultima.Login.States
             m_Login.Client.Disconnect();
         }
 
+        public override void Dispose()
+        {
+            m_Gump.OnCancelLogin -= OnCancelLogin;
+            m_Gump.Dispose();
+            base.Dispose();
+        }
+
         public override void Update(double totalTime, double frameTime)
         {
             base.Update(totalTime, frameTime);
@@ -108,12 +115,6 @@ namespace UltimaXNA.Ultima.Login.States
                     }
                 }
             }
-        }
-
-        public override void Dispose()
-        {
-            m_Gump.Dispose();
-            base.Dispose();
         }
 
         public void OnCancelLogin()

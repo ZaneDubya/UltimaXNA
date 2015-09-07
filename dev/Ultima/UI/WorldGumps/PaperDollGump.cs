@@ -53,6 +53,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private readonly int[] PeaceModeBtnGumps = new int[] { 0x07e5, 0x07e6, 0x07e7 };
         private readonly int[] WarModeBtnGumps = new int[] { 0x07e8, 0x07e9, 0x07ea };
 
+        private GumpPic m_VirtueMenuButton;
+
         public PaperDollGump()
             : base(0, 0)
         {
@@ -120,8 +122,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 ((Button)LastControl).GumpOverID = 0x07ed;
 
                 // Virtue menu
-                AddControl(new GumpPic(this, 80, 8, 0x0071, 0));
-                LastControl.MouseDoubleClickEvent += VirtueMenu_MouseDoubleClickEvent;
+                AddControl(m_VirtueMenuButton = new GumpPic(this, 80, 8, 0x0071, 0));
+                m_VirtueMenuButton.MouseDoubleClickEvent += VirtueMenu_MouseDoubleClickEvent;
 
                 // Special moves book
                 // AddControl(new GumpPic(this, 158, 200, 0x2B34, 0));
@@ -154,6 +156,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // name and title
             AddControl(new HtmlGumpling(this, 36, 262, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", Mobile.Name)));
             AddControl(new HtmlGumpling(this, 35, 262, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", Mobile.Name)));
+        }
+
+        public override void Dispose()
+        {
+            m_VirtueMenuButton.MouseDoubleClickEvent -= VirtueMenu_MouseDoubleClickEvent;
+            base.Dispose();
         }
 
         private void SpecialMoves_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)

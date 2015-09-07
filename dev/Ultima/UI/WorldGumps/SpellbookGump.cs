@@ -68,6 +68,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public override void Dispose()
         {
             m_Spellbook.OnEntityUpdated -= OnEntityUpdate;
+            if (m_PageCornerLeft != null)
+            {
+                m_PageCornerLeft.MouseClickEvent -= PageCorner_MouseClickEvent;
+                m_PageCornerLeft.MouseDoubleClickEvent -= PageCorner_MouseDoubleClickEvent;
+            }
+            if (m_PageCornerRight != null)
+            {
+                m_PageCornerRight.MouseClickEvent -= PageCorner_MouseClickEvent;
+                m_PageCornerRight.MouseDoubleClickEvent -= PageCorner_MouseDoubleClickEvent;
+            }
             base.Dispose();
         }
 
@@ -97,27 +107,27 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             AddControl(new GumpPic(this, 0, 0, 0x08AC, 0)); // spellbook background
 
-            m_PageCornerLeft = (GumpPic)AddControl(new GumpPic(this, 50, 8, 0x08BB, 0)); // page turn left
-            LastControl.GumpLocalID = 0;
-            LastControl.MouseClickEvent += PageCorner_MouseClickEvent;
-            LastControl.MouseDoubleClickEvent += PageCorner_MouseDoubleClickEvent;
+            AddControl(m_PageCornerLeft = new GumpPic(this, 50, 8, 0x08BB, 0)); // page turn left
+            m_PageCornerLeft.GumpLocalID = 0;
+            m_PageCornerLeft.MouseClickEvent += PageCorner_MouseClickEvent;
+            m_PageCornerLeft.MouseDoubleClickEvent += PageCorner_MouseDoubleClickEvent;
 
-            m_PageCornerRight = (GumpPic)AddControl(new GumpPic(this, 321, 8, 0x08BC, 0)); // page turn right
-            LastControl.GumpLocalID = 1;
-            LastControl.MouseClickEvent += PageCorner_MouseClickEvent;
-            LastControl.MouseDoubleClickEvent += PageCorner_MouseDoubleClickEvent;
+            AddControl(m_PageCornerRight = new GumpPic(this, 321, 8, 0x08BC, 0)); // page turn right
+            m_PageCornerRight.GumpLocalID = 1;
+            m_PageCornerRight.MouseClickEvent += PageCorner_MouseClickEvent;
+            m_PageCornerRight.MouseDoubleClickEvent += PageCorner_MouseDoubleClickEvent;
 
             for (int i = 0; i < 4; i++) // spell circles 1 - 4
             {
                 AddControl(new GumpPic(this, 60 + i * 35, 174, 0x08B1 + i, 0));
                 LastControl.GumpLocalID = i;
-                LastControl.MouseClickEvent += SpellCircle_MouseClickEvent;
+                LastControl.MouseClickEvent += SpellCircle_MouseClickEvent; // unsubscribe from these?
             }
             for (int i = 0; i < 4; i++) // spell circles 5 - 8
             {
                 AddControl(new GumpPic(this, 226 + i * 34, 174, 0x08B5 + i, 0));
                 LastControl.GumpLocalID = i + 4;
-                LastControl.MouseClickEvent += SpellCircle_MouseClickEvent;
+                LastControl.MouseClickEvent += SpellCircle_MouseClickEvent; // unsubscribe from these?
             }
 
             // indexes are on pages 1 - 4. Spells are on pages 5+.

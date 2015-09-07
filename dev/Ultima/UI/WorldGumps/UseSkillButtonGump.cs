@@ -58,6 +58,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
         }
 
+        public override void Dispose()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                m_BG[i].MouseDownEvent -= EventMouseDown;
+                m_BG[i].MouseUpEvent -= EventMouseUp;
+                m_BG[i].MouseClickEvent -= EventMouseClick;
+            }
+            base.Dispose();
+        }
+
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             bool isMouseOver = (m_BG[0].IsMouseOver || m_BG[1].IsMouseOver || m_BG[2].IsMouseOver);

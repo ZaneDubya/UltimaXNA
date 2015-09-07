@@ -43,8 +43,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             HandlesMouseInput = true;
 
             m_SpellButton = (GumpPic)AddControl(new GumpPic(this, 0, 0, spell.GumpIconSmallID, 0));
-            LastControl.HandlesMouseInput = true;
-            LastControl.MouseDoubleClickEvent += EventMouseDoubleClick;
+            m_SpellButton.HandlesMouseInput = true;
+            m_SpellButton.MouseDoubleClickEvent += EventMouseDoubleClick;
+        }
+
+        public override void Dispose()
+        {
+            m_SpellButton.MouseDoubleClickEvent -= EventMouseDoubleClick;
+            base.Dispose();
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)

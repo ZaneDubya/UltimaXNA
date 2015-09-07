@@ -188,7 +188,7 @@ namespace UltimaXNA.Core.Graphics
         private void DrawAllVertices(Techniques first, Techniques last)
         {
             // draw normal objects
-            for (Techniques effect = first; effect <= last; effect += 1)
+            for (Techniques effect = first; effect <= last; effect++)
             {
                 switch (effect)
                 {

@@ -22,8 +22,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class PaperDollInteractable : Gump
     {
-        bool m_isFemale;
-        bool m_isElf;
+        private bool m_isFemale;
+        private bool m_isElf;
+        private GumpPicBackpack m_Backpack;
 
         WorldModel m_World;
 
@@ -39,6 +40,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public override void Dispose()
         {
             m_sourceEntity.OnEntityUpdated -= OnEntityUpdated;
+            m_Backpack.MouseDoubleClickEvent -= On_Dblclick_Backpack;
             base.Dispose();
         }
 
@@ -93,9 +95,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (((Mobile)m_sourceEntity).GetItem((int)PaperDollEquipSlots.Backpack) != null)
             {
                 Item backpack = ((Mobile)m_sourceEntity).GetItem((int)PaperDollEquipSlots.Backpack);
-                AddControl(new GumpPicBackpack(this, -7, 0, backpack));
-                LastControl.HandlesMouseInput = true;
-                LastControl.MouseDoubleClickEvent += On_Dblclick_Backpack;
+                AddControl(m_Backpack = new GumpPicBackpack(this, -7, 0, backpack));
+                m_Backpack.HandlesMouseInput = true;
+                m_Backpack.MouseDoubleClickEvent += On_Dblclick_Backpack;
             }
         }
 
@@ -124,6 +126,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                         // update the gump
                         OnEntityUpdated();
                         // if the entity changes in the future, update the gump again
+                        m_sourceEntity.OnEntityUpdated -= OnEntityUpdated;
                         m_sourceEntity.OnEntityUpdated += OnEntityUpdated;
                     }
                 }

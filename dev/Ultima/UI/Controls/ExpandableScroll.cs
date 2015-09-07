@@ -63,6 +63,19 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
+        public override void Dispose()
+        {
+            if (m_GumplingExpander != null)
+            {
+                m_GumplingExpander.MouseDownEvent -= expander_OnMouseDown;
+                m_GumplingExpander.MouseUpEvent -= expander_OnMouseUp;
+                m_GumplingExpander.MouseOverEvent -= expander_OnMouseOver;
+                m_GumplingExpander.Dispose();
+                m_GumplingExpander = null;
+            }
+            base.Dispose();
+        }
+
         protected override bool IsPointWithinControl(int x, int y)
         {
             Point position = new Point(x + ScreenX, y + ScreenY);
