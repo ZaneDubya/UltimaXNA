@@ -972,7 +972,7 @@ namespace UltimaXNA.Ultima.World
                 else
                     strCliLoc = constructCliLoc(strCliLoc, p.Arguements[i], true);
                 if (i == 0)
-                    strCliLoc = string.Format("<span color='#ff0'>{0}</span>", strCliLoc);
+                    strCliLoc = string.Format("<span color='#ff0'>{0}</span>", Utility.CapitalizeFirstCharacter(strCliLoc.Trim()));
                 entity.PropertyList.AddProperty(strCliLoc);
             }
         }
