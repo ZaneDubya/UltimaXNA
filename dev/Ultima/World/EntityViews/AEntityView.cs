@@ -296,8 +296,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
             else
             {
-                deferToTile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y);
-                checkDirection = Direction.East;
+                deferToTile = map.GetMapTile(Entity.Position.X, Entity.Position.Y + 1);
+                checkDirection = Direction.South;
             }
 
             if (deferToTile != null)

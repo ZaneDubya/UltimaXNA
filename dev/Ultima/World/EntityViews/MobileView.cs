@@ -12,10 +12,15 @@
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.WorldViews;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Entities.Mobiles.Animations;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.World.EntityViews
@@ -25,42 +30,67 @@ namespace UltimaXNA.Ultima.World.EntityViews
     /// </summary>
     public class MobileView : AEntityView
     {
-        // ======================================================================
-        // Public methods and properties: ctr, update, draw, and Animation property.
-        // ======================================================================
-
-        /// <summary>
-        /// Manages the animation state (what animation is playing, how far along is the animation, etc.) for this
-        /// mobile view. Exposed as public so that we can receive animations from the server (e.g. emotes).
-        /// </summary>
-        public readonly MobileAnimation Animation;
-
-        private new Mobile Entity
+        public Body Body
         {
-            get { return (Mobile)base.Entity; }
+            get
+            {
+                if (Entity is Mobile)
+                    return (Entity as Mobile).Body;
+                if (Entity is Corpse)
+                    return (Entity as Corpse).Body;
+                return 0;
+            }
         }
 
-        public MobileView(Mobile mobile)
-            : base(mobile)
+        public Direction Facing
         {
-            Animation = new MobileAnimation(mobile);
+            get
+            {
+                if (Entity is Mobile)
+                    return (Entity as Mobile).DrawFacing;
+                else if (Entity is Corpse)
+                    return (Entity as Corpse).Facing;
+                return Direction.Nothing;
+            }
+        }
+
+        public MobileEquipment Equipment
+        {
+            get
+            {
+                if (Entity is Mobile)
+                    return (Entity as Mobile).Equipment;
+                else if (Entity is Corpse)
+                    return (Entity as Corpse).Equipment;
+                return null;
+            }
+        }
+
+        // ======================================================================
+        // Public methods and properties: ctr, update, draw
+        // ======================================================================
+
+        public MobileView(AEntity entity)
+            : base(entity)
+        {
             m_MobileLayers = new MobileViewLayer[(int)EquipLayer.LastUserValid];
             PickType = PickType.PickObjects;
 
             IsShadowCastingView = true;
         }
 
-        public void Update(double frameMS)
-        {
-            Animation.Update(frameMS);
-        }
-
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
-            if (roofHideFlag && CheckUnderSurface(map, Entity.DestinationPosition.X, Entity.DestinationPosition.Y))
+            if (Body == 0)
                 return false;
-            if (Entity.Body == 0)
-                return false;
+
+            if (roofHideFlag)
+            {
+                int x = (Entity is Mobile) ? (Entity as Mobile).DestinationPosition.X : Entity.X;
+                int y = (Entity is Mobile) ? (Entity as Mobile).DestinationPosition.Y : Entity.Y;
+                if (CheckUnderSurface(map, x, y))
+                    return false;
+            }
 
             CheckDefer(map, drawPosition);
 
@@ -71,28 +101,21 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             if (Entity.IsDisposed)
                 return false;
-            if (Entity.Body == 0)
-                return false;
             
             // get a z index underneath all this mobile's sprite layers. We will place the shadow on this z index.
             DrawShadowZDepth = spriteBatch.GetNextUniqueZ();
             
-            // get/update the animation index.
-            if (Entity.IsMoving)
+            // get running moving and sitting booleans, which are used when drawing mobiles but not corpses.
+            bool isRunning = false, isMoving = false, isSitting = false;
+            if (Entity is Mobile)
             {
-                if (Entity.IsRunning)
-                    Animation.Animate(MobileAction.Run);
-                else
-                    Animation.Animate(MobileAction.Walk);
-            }
-            else
-            {
-                if (!Animation.IsAnimating)
-                    Animation.Animate(MobileAction.Stand);
+                isRunning = (Entity as Mobile).IsRunning;
+                isMoving = (Entity as Mobile).IsMoving;
+                isSitting = (Entity as Mobile).IsSitting;
             }
 
             // flip the facing (anim directions are reversed from the client-server protocol's directions).
-            DrawFlip = (MirrorFacingForDraw(Entity.DrawFacing) > 4) ? true : false;
+            DrawFlip = (MirrorFacingForDraw(Facing) > 4) ? true : false;
 
             InternalSetupLayers();
 
@@ -110,17 +133,17 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 drawY = drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
             }
 
-            if (Entity.IsSitting)
+            if (isSitting)
             {
                 drawX -= 1;
-                drawY -= 6 + Entity.ChairData.SittingPixelOffset;
-                if (Entity.DrawFacing == Direction.North || Entity.DrawFacing == Direction.West)
+                drawY -= 6 + (Entity as Mobile).ChairData.SittingPixelOffset;
+                if (Facing == Direction.North || Facing == Direction.West)
                 {
                     drawY -= 16;
                 }
             }
 
-            IsShadowCastingView = !Entity.IsSitting;
+            IsShadowCastingView = !isSitting;
 
             // get the maximum y-extent of this object so we can correctly place overheads.
             int yOffset = 0;
@@ -220,10 +243,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             ClearLayers();
 
-            if (Entity.Body.IsHumanoid)
+            if (Body.IsHumanoid)
             {
                 int[] drawLayers = DrawLayerOrder;
-                bool hasOuterTorso = Entity.Equipment[(int)EquipLayer.OuterTorso] != null && Entity.Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
+                bool hasOuterTorso = Equipment[(int)EquipLayer.OuterTorso] != null && Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
 
                 for (int i = 0; i < drawLayers.Length; i++)
                 {
@@ -235,28 +258,39 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
                     if (drawLayers[i] == (int)EquipLayer.Body)
                     {
-                        AddLayer(Entity.Body, Entity.Hue);
+                        AddLayer(Body, Entity.Hue);
                     }
-                    else if (Entity.Equipment[drawLayers[i]] != null && Entity.Equipment[drawLayers[i]].ItemData.AnimID != 0)
+                    else if (Equipment[drawLayers[i]] != null && Equipment[drawLayers[i]].ItemData.AnimID != 0)
                     {
                         // skip hair/facial hair for ghosts
-                        if (!Entity.IsAlive && (drawLayers[i] == (int)EquipLayer.Hair || drawLayers[i] == (int)EquipLayer.FacialHair))
+                        if (((Entity is Mobile) && !(Entity as Mobile).IsAlive) && 
+                            (drawLayers[i] == (int)EquipLayer.Hair || drawLayers[i] == (int)EquipLayer.FacialHair))
                             continue;
-                        AddLayer(Entity.Equipment[drawLayers[i]].ItemData.AnimID, Entity.Equipment[drawLayers[i]].Hue);
+                        AddLayer(Equipment[drawLayers[i]].ItemData.AnimID, Equipment[drawLayers[i]].Hue);
                     }
                 }
             }
             else
             {
-                AddLayer(Entity.Body, Entity.Hue);
+                AddLayer(Body, Entity.Hue);
             }
         }
 
         private void AddLayer(int bodyID, int hue)
         {
-            int facing = MirrorFacingForDraw(Entity.DrawFacing);
-            int animation = Animation.ActionIndex;
-            float frame = Animation.AnimationFrame;
+            int facing = MirrorFacingForDraw(Facing);
+            int animation = 0;
+            float frame = 0;
+            if (Entity is Mobile)
+            {
+                animation = (Entity as Mobile).Animation.ActionIndex;
+                frame = (Entity as Mobile).Animation.AnimationFrame;
+            }
+            else if (Entity is Corpse)
+            {
+                animation = ActionTranslator.GetActionIndex(Entity, MobileAction.Death);
+                frame = (Entity as Corpse).Frame * BodyConverter.DeathAnimationFrameCount(Body);
+            }
 
             int frameCount;
             m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, getFrame(bodyID, hue, facing, animation, frame, out frameCount));
@@ -272,7 +306,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             get
             {
-                int direction = MirrorFacingForDraw(Entity.DrawFacing);
+                int direction = MirrorFacingForDraw(Facing);
                 switch (direction)
                 {
                     case 0x00: return s_DrawLayerOrderDown;

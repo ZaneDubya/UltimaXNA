@@ -14,6 +14,7 @@ using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities.Items.Containers
@@ -32,15 +33,18 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
             set { m_Facing = value; }
         }
 
+        public readonly bool DieForwards;
+
         public Corpse(Serial serial, Map map)
             : base(serial, map)
         {
-
+            Equipment = new MobileEquipment(this);
+            DieForwards = Utility.RandomValue(0, 1) == 0;
         }
 
         protected override AEntityView CreateView()
         {
-            return new CorpseView(this);
+            return new MobileView(this);
         }
 
         public override void Update(double frameMS)
@@ -60,5 +64,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
         {
             Frame = 0f;
         }
+
+        public MobileEquipment Equipment;
     }
 }

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
+using UltimaXNA.Ultima.World.Entities.Mobiles.Animations;
 using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
@@ -32,6 +33,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         public Mobile(Serial serial, Map map)
             : base(serial, map)
         {
+            Animation = new MobileAnimation(this);
             Equipment = new MobileEquipment(this);
             m_movement = new MobileMovement(this);
             m_movement.RequiresUpdate = true;
@@ -70,7 +72,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                         foundChairData = true;
                         ChairData = data;
                         SittingZ = i.Z - Z;
-                        ((MobileView)GetView()).Animation.Clear();
+                        Animation.Clear();
                         Tile.ForceSort();
                         break;
                     }
@@ -89,8 +91,22 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
             if (!m_movement.Position.IsNullPosition)
             {
+                // update the movement and then animation objects
                 m_movement.Update(frameMS);
-                ((MobileView)GetView()).Update(frameMS);
+                // get/update the animation index.
+                if (IsMoving)
+                {
+                    if (IsRunning)
+                        Animation.Animate(MobileAction.Run);
+                    else
+                        Animation.Animate(MobileAction.Walk);
+                }
+                else
+                {
+                    if (!Animation.IsAnimating)
+                        Animation.Animate(MobileAction.Stand);
+                }
+                Animation.Update(frameMS);
             }
 
             base.Update(frameMS);
@@ -100,6 +116,12 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             return new MobileView(this);
         }
+
+        /// <summary>
+        /// Manages the animation state (what animation is playing, how far along is the animation, etc.) for this
+        /// mobile view. Exposed as public so that we can receive animations from the server (e.g. emotes).
+        /// </summary>
+        public readonly MobileAnimation Animation;
 
         // ============================================================
         // Movement and Facing
@@ -149,7 +171,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             get
             {
-                if (!((MobileView)GetView()).Animation.IsStanding || m_movement.IsMoving)
+                if (!Animation.IsStanding || m_movement.IsMoving)
                     return false;
                 if (ChairData.ItemID == Chairs.ChairData.Null.ItemID)
                     return false;
@@ -369,7 +391,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public void Animate(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
-            ((MobileView)GetView()).Animation.Animate(action, frameCount, repeatCount, reverse, repeat, delay);
+            Animation.Animate(action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
         public void Mobile_AddMoveEvent(int x, int y, int z, int facing)

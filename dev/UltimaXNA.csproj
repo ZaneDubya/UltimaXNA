@@ -309,6 +309,7 @@
     <Compile Include="Ultima\World\Direction.cs" />
     <Compile Include="Ultima\Data\MessageTypes.cs" />
     <Compile Include="Ultima\Data\TileFlags.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\Animations\ActionIndexes.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\MobileMoveEvent.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\MobileMoveEvents.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\MobileSounds.cs" />
@@ -326,6 +327,7 @@
     <Compile Include="Ultima\World\Entities\Effects\AnimatedItemEffect.cs" />
     <Compile Include="Ultima\World\Entities\Effects\LightningEffect.cs" />
     <Compile Include="Ultima\World\Entities\Effects\MovingEffect.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\Animations\ActionTranslator.cs" />
     <Compile Include="Ultima\World\EntityViews\AEntityView.cs" />
     <Compile Include="Ultima\World\EntityViews\CorpseView.cs" />
     <Compile Include="Ultima\World\EntityViews\AnimatedItemEffectView.cs" />
@@ -539,7 +541,7 @@
     <Compile Include="Ultima\World\Position3D.cs" />
     <Compile Include="Ultima\World\Entities\Items\Item.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\Mobile.cs" />
-    <Compile Include="Ultima\World\EntityViews\MobileAnimation.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\Animations\MobileAnimation.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\MobileEquipment.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\MobileMovement.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\MobileMovementCheck.cs" />

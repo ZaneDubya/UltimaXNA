@@ -16,9 +16,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
     public class MobileEquipment
     {
         private Item[] m_Equipment;
-        private Mobile m_Parent;
+        private AEntity m_Parent;
 
-        public MobileEquipment(Mobile parent)
+        public MobileEquipment(AEntity parent)
         {
             m_Equipment = new Item[(int)EquipLayer.LastValid + 1];
             m_Parent = parent;
@@ -44,7 +44,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 else
                 {
                     m_Equipment[index] = value;
-                    value.Parent = m_Parent;
+                    if (m_Parent is Mobile)
+                        value.Parent = m_Parent;
                 }
             }
         }

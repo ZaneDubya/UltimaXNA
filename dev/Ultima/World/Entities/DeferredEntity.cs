@@ -43,7 +43,7 @@ namespace UltimaXNA.Ultima.World.Entities
             if (entity is Mobile)
                 return (MobileView)entity.GetView();
             else if (entity is Corpse)
-                return (CorpseView)entity.GetView();
+                return (MobileView)entity.GetView();
             else if (entity is LightningEffect)
                 return (LightningEffectView)entity.GetView();
             else if (entity is AnimatedItemEffect)
