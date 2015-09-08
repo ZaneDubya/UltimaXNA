@@ -143,10 +143,10 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(m_FacialHairHue = new ColorPicker(this, new Rectangle(490, 244, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, Hues.HairTones), 1);
 
             // back button
-            AddControl(new Button(this, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton), 1);
+            AddControl(new Button(this, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton), 0);
             ((Button)LastControl).GumpOverID = 5538;
             // forward button
-            AddControl(new Button(this, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton), 1);
+            AddControl(new Button(this, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton), 0);
             ((Button)LastControl).GumpOverID = 5541;
             // quit button
             AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));

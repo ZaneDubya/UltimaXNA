@@ -329,6 +329,24 @@ namespace UltimaXNA.Ultima.Resources
 
             return 1;
         }
+
+        public static bool ConvertMountID(ref int body)
+        {
+            if (body > 0x3E93)
+            {
+                for (int i = 0; i < m_MountIDConv.Length; ++i)
+                {
+                    int[] conv = m_MountIDConv[i];
+                    if (conv[0] == body)
+                    {
+                        body = conv[1];
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 
     public sealed class BodyTableEntry
