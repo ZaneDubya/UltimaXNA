@@ -135,7 +135,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
         {
             if (WorldView.AllLabels && !(this is StaticItem))
             {
-                AddOverhead(MessageTypes.Label, "<outline>" + Name, 0, 0);
+                AddOverhead(MessageTypes.Label, Name, 3, 0);
             }
 
             base.Update(frameMS);
