@@ -204,6 +204,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 return null;
             frameCount = frames.Length;
             int iFrame = (int)frame; // frameFromSequence(frame, iFrames.Length);
+            if (iFrame >= frameCount)
+                iFrame = 0;
+
             if (frames[iFrame].Texture == null)
                 return null;
             return frames[iFrame];
@@ -267,6 +270,19 @@ namespace UltimaXNA.Ultima.World.EntityViews
                             (drawLayers[i] == (int)EquipLayer.Hair || drawLayers[i] == (int)EquipLayer.FacialHair))
                             continue;
                         AddLayer(Equipment[drawLayers[i]].ItemData.AnimID, Equipment[drawLayers[i]].Hue);
+                    }
+                    else if (Equipment[drawLayers[i]] != null && drawLayers[i] == (int)EquipLayer.Mount)
+                    {
+                        if (Equipment[drawLayers[i]].ItemData.AnimID != 0)
+                            AddLayer(Equipment[drawLayers[i]].ItemData.AnimID, Equipment[drawLayers[i]].Hue);
+                        else
+                        {
+                            int body = Equipment[drawLayers[i]].ItemID;
+                            if (UltimaXNA.Ultima.Resources.BodyConverter.ConvertMountID(ref body))
+                            {
+                                AddLayer(body, Equipment[drawLayers[i]].Hue);
+                            }
+                        }
                     }
                 }
             }
