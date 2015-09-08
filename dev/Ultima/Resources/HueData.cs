@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.Resources
         private static Texture2D m_HueTexture0, m_HueTexture1;
         private const int m_HueTextureWidth = 32; // Each hue is 32 colors
         private const int m_HueTextureHeight = 2048;
-        private static ushort[] m_Hues;
+        private static ushort[] m_Hues = new ushort[HueCount];
 
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
@@ -51,7 +51,6 @@ namespace UltimaXNA.Ultima.Resources
         {
             m_HueTexture0 = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight);
             m_HueTexture1 = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight);
-            m_Hues = new ushort[HueCount];
 
             uint[] hueData = getTextureData();
             m_HueTexture0.SetData(hueData, 0, m_HueTextureWidth * m_HueTextureHeight);
