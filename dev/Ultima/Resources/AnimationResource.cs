@@ -72,8 +72,6 @@ namespace UltimaXNA.Ultima.Resources
             if (frames != null)
                 return frames;
 
-            // GetIndexes(body, hue, action, direction, out animIndex, out fileIndex);
-
             AnimationFrame.SittingTransformation sitting = AnimationFrame.SittingTransformation.None;
             if (action == HUMANOID_SIT_INDEX)
             {
@@ -160,8 +158,8 @@ namespace UltimaXNA.Ultima.Resources
         {
             Translate(ref body, ref hue);
 
-            int fileType = BodyConverter.Convert(ref body);
-            switch (fileType)
+            int animIndex = BodyConverter.Convert(ref body);
+            switch (animIndex)
             {
                 default:
                 case 1:
@@ -184,50 +182,7 @@ namespace UltimaXNA.Ultima.Resources
                         if (body < 200)
                             index = body * 110;
                         else
-                        {
                             index = 22000 + ((body - 200) * 65);
-
-                            // anim2 mounts have 0xC (12) animations
-                            switch (action)
-                            {
-                                case 0x17:
-                                    // Mounted_RideSlow = 0x17,
-                                    break;
-
-                                case 0x18:
-                                    // Mounted_RideFast = 0x18,
-                                    index += 5;
-                                    break;
-
-                                case 0x19:
-                                    // Mounted_Stand = 0x19,
-                                    index += 10;
-                                    break;
-
-                                case 0x1A:
-                                case 0x1B:
-                                case 0x1C:
-                                    // Mounted_Attack_1H = 0x1A,
-                                    index += 15;
-                                    break;
-
-                                case 0x1D:
-                                    // Mounted_SlapHorse = 0x1D,
-                                    index += 35;
-                                    break;
-
-                            }
-                            if (direction <= 4)
-                            {
-                                index += direction;
-                            }
-                            else
-                            {
-                                index += direction - (direction - 4) * 2;
-                            }
-
-                            return; // return here to stop adjusting the index
-                        }
 
                         break;
                     }
