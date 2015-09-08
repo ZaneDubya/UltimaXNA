@@ -12,15 +12,15 @@
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.World.Entities.Mobiles.Animations;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.WorldViews;
-using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.Entities.Mobiles.Animations;
-using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.World.EntityViews
@@ -193,7 +193,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         private IAnimationFrame getFrame(int bodyID, int hue, int facing, int action, float frame, out int frameCount)
         {
             if (bodyID >= 500 && bodyID <= 505)
-                patchLightSourceAction(ref action, ref frame);
+                patchLightSourceAction(ref action);
 
             frameCount = 0;
 
@@ -212,7 +212,25 @@ namespace UltimaXNA.Ultima.World.EntityViews
             return frames[iFrame];
         }
 
-        private void patchLightSourceAction(ref int action, ref float frame)
+        private int patchMountAction(int action)
+        {
+            switch ((ActionIndexHumanoid)action)
+            {
+                case ActionIndexHumanoid.Mounted_RideFast:
+                    return (int)ActionIndexAnimal.Run;
+                case ActionIndexHumanoid.Mounted_RideSlow:
+                    return (int)ActionIndexAnimal.Walk;
+                case ActionIndexHumanoid.Mounted_Attack_1H:
+                case ActionIndexHumanoid.Mounted_Attack_Bow:
+                case ActionIndexHumanoid.Mounted_Attack_BowX:
+                case ActionIndexHumanoid.Block_WithShield:
+                    return (int)ActionIndexAnimal.Attack3;
+                default:
+                    return (int)ActionIndexAnimal.Stand;
+            }
+        }
+
+        private void patchLightSourceAction(ref int action)
         {
             if (action == (int)ActionIndexHumanoid.Walk)
                 action = (int)ActionIndexHumanoid.Walk_Armed;
@@ -253,7 +271,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
                 for (int i = 0; i < drawLayers.Length; i++)
                 {
-                    // when wearing something on the outer torso the other torso stuff is not drawn
+                    // when wearing something on the outer torso the other torso equipment is not drawn in the world.
                     if (hasOuterTorso && (drawLayers[i] == (int)EquipLayer.InnerTorso || drawLayers[i] == (int)EquipLayer.MiddleTorso))
                     {
                         continue;
@@ -263,24 +281,29 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     {
                         AddLayer(Body, Entity.Hue);
                     }
-                    else if (Equipment[drawLayers[i]] != null && Equipment[drawLayers[i]].ItemData.AnimID != 0)
+
+                    else if (Equipment[drawLayers[i]] != null)
                     {
-                        // skip hair/facial hair for ghosts
-                        if (((Entity is Mobile) && !(Entity as Mobile).IsAlive) && 
-                            (drawLayers[i] == (int)EquipLayer.Hair || drawLayers[i] == (int)EquipLayer.FacialHair))
-                            continue;
-                        AddLayer(Equipment[drawLayers[i]].ItemData.AnimID, Equipment[drawLayers[i]].Hue);
-                    }
-                    else if (Equipment[drawLayers[i]] != null && drawLayers[i] == (int)EquipLayer.Mount)
-                    {
-                        if (Equipment[drawLayers[i]].ItemData.AnimID != 0)
-                            AddLayer(Equipment[drawLayers[i]].ItemData.AnimID, Equipment[drawLayers[i]].Hue);
-                        else
+                        // special handling for mounts.
+                        if (drawLayers[i] == (int)EquipLayer.Mount)
                         {
                             int body = Equipment[drawLayers[i]].ItemID;
-                            if (UltimaXNA.Ultima.Resources.BodyConverter.ConvertMountID(ref body))
+                            if (BodyConverter.CheckIfItemIsMount(ref body))
                             {
-                                AddLayer(body, Equipment[drawLayers[i]].Hue);
+                                AddLayer(body, Equipment[drawLayers[i]].Hue, true);
+                            }
+                        }
+                        else
+                        {
+                            if (Equipment[drawLayers[i]].ItemData.AnimID != 0)
+                            {
+                                // skip hair/facial hair for ghosts
+                                if (((Entity is Mobile) && !(Entity as Mobile).IsAlive) &&
+                                    (drawLayers[i] == (int)EquipLayer.Hair || drawLayers[i] == (int)EquipLayer.FacialHair))
+                                {
+                                    continue;
+                                }
+                                AddLayer(Equipment[drawLayers[i]].ItemData.AnimID, Equipment[drawLayers[i]].Hue);
                             }
                         }
                     }
@@ -292,7 +315,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        private void AddLayer(int bodyID, int hue)
+        private void AddLayer(int bodyID, int hue, bool asMount = false)
         {
             int facing = MirrorFacingForDraw(Facing);
             int animation = 0;
@@ -300,6 +323,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             if (Entity is Mobile)
             {
                 animation = (Entity as Mobile).Animation.ActionIndex;
+                if (asMount)
+                    animation = patchMountAction(animation);
                 frame = (Entity as Mobile).Animation.AnimationFrame;
             }
             else if (Entity is Corpse)
