@@ -199,11 +199,11 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        public void CreateLabel(MessageTypes msgType, Serial serial, string text, int hue, int font)
+        public void CreateLabel(MessageTypes msgType, Serial serial, string text, int font, int hue)
         {
             if (serial.IsValid)
             {
-                WorldModel.Entities.AddOverhead(msgType, serial, "<outline>" + text, font, hue);
+                WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue);
             }
             else
             {
