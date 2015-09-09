@@ -65,15 +65,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             RP,
             RE,
             Damage,
+            Sex,
             Max
         }
 
         public StatusGump()
             : base(0, 0)
         {
+            IsMoveable = true;
+
             if (UltimaXNA.Ultima.Data.Features.EnableAOS)
             {
-                IsMoveable = true;
                 AddControl(new GumpPic(this, 0, 0, 0x2A6C, 0));
 
                 m_Labels[(int)MobileStats.Name] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 54, 44, 1, 6, m_Mobile.Name));
@@ -109,14 +111,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             else
             {
-                IsMoveable = true;
                 AddControl(new GumpPic(this, 0, 0, 0x802, 0));
 
                 m_Labels[(int)MobileStats.Name] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 37, 0, 6, m_Mobile.Name));
                 m_Labels[(int)MobileStats.Strength] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 57, 0, 6, m_Mobile.Strength.ToString()));
                 m_Labels[(int)MobileStats.Dexterity] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 69, 0, 6, m_Mobile.Dexterity.ToString()));
                 m_Labels[(int)MobileStats.Intelligence] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 81, 0, 6, m_Mobile.Intelligence.ToString()));
-                //m_Labels[(int)MobileStats.AR] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 93, 0, 6, m_Mobile.ArmorRating.ToString())); //sex missing
+                m_Labels[(int)MobileStats.Sex] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 93, 0, 6, m_Mobile.Flags.IsFemale ? "F" : "M"));
                 m_Labels[(int)MobileStats.AR] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 105, 0, 6, m_Mobile.ArmorRating.ToString()));
 
                 m_Labels[(int)MobileStats.HealthCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 57, 0, 6, m_Mobile.Health.Current.ToString() + '/' + m_Mobile.Health.Max.ToString()));
@@ -139,10 +140,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 m_RefreshTime = totalMS;
 
+                // we can just set these without checking if they've changed.
+                // The label will only update if the value has changed.
                 if (UltimaXNA.Ultima.Data.Features.EnableAOS)
                 {
-                    // we can just set these without checking if they've changed.
-                    // The label will only update if the value has changed.
                     m_Labels[(int)MobileStats.Name].Text = m_Mobile.Name;
                     m_Labels[(int)MobileStats.Strength].Text = m_Mobile.Strength.ToString();
                     m_Labels[(int)MobileStats.Dexterity].Text = m_Mobile.Dexterity.ToString();
@@ -190,6 +191,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     m_Labels[(int)MobileStats.Gold].Text = m_Mobile.Gold.ToString();
 
                     m_Labels[(int)MobileStats.AR].Text = m_Mobile.ArmorRating.ToString();
+
+                    m_Labels[(int)MobileStats.Sex].Text = m_Mobile.Flags.IsFemale ? "F" : "M";
                 }
             }
 
