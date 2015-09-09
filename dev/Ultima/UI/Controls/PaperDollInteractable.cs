@@ -28,12 +28,13 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         WorldModel m_World;
 
-        public PaperDollInteractable(AControl parent, int x, int y)
+        public PaperDollInteractable(AControl parent, int x, int y, Mobile sourceEntity)
             : base(0, 0)
         {
             Parent = parent;
             Position = new Point(x, y);
-
+            m_isFemale = sourceEntity.Flags.IsFemale;
+            SourceEntity = sourceEntity;
             m_World = ServiceRegistry.GetService<WorldModel>();
         }
 

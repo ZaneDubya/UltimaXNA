@@ -137,20 +137,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 AddControl(new EquipmentSlot(this, 2, 76 + 22 * 4, Mobile, EquipLayer.Bracelet));
 
                 // Paperdoll control!
-                AddControl(new PaperDollInteractable(this, 8, 21)
-                {
-                    SourceEntity = Mobile
-                });
+                AddControl(new PaperDollInteractable(this, 8, 21, Mobile));
             }
             else
             {
                 AddControl(new GumpPic(this, 0, 0, 0x07d1, 0));
 
                 // Paperdoll
-                AddControl(new PaperDollInteractable(this, 8, 21)
-                {
-                    SourceEntity = Mobile
-                });
+                AddControl(new PaperDollInteractable(this, 8, 21, Mobile));
             }
 
             // name and title
