@@ -200,7 +200,31 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void OnHtmlInputEvent(string href, MouseEvent e)
         {
-            if (e == MouseEvent.Click)
+            if (e == MouseEvent.DoubleClick)
+            {
+                    string[] hrefs = href.Split('=');
+                    if (hrefs.Length != 2)
+                        return;
+                    else if (hrefs[0] == "page")
+                    {
+                        int page;
+                        if (int.TryParse(hrefs[1], out page))
+                            m_World.Interaction.CastSpell(page-4);
+                    }
+                    else if (hrefs[0] == "spell")
+                    {
+                        int spell;
+                        if (int.TryParse(hrefs[1], out spell))
+                            m_World.Interaction.CastSpell(spell);
+                    }
+                    else if (hrefs[0] == "spellicon")
+                    {
+                        int spell;
+                        if (int.TryParse(hrefs[1], out spell))
+                            m_World.Interaction.CastSpell(spell);
+                    }
+            }
+            else if (e == MouseEvent.Click)
             {
                 string[] hrefs = href.Split('=');
                 if (hrefs.Length != 2)
@@ -210,18 +234,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     int page;
                     if (int.TryParse(hrefs[1], out page))
                         SetActivePage(page);
-                }
-                else if (hrefs[0] == "spell")
-                {
-                    int spell;
-                    if (int.TryParse(hrefs[1], out spell))
-                        m_World.Interaction.CastSpell(spell);
-                }
-                else if (hrefs[0] == "spellicon")
-                {
-                    int spell;
-                    if (int.TryParse(hrefs[1], out spell))
-                        m_World.Interaction.CastSpell(spell);
                 }
             }
             else if (e == MouseEvent.DragBegin)
