@@ -265,6 +265,7 @@ namespace UltimaXNA.Core.UI.HTML
             CalculateLayoutWidthsRecursive(root);
             root.Width = width;
             LayoutElements(root);
+            root.Height += 1; // for outlined chars. hack
         }
 
         private void CalculateLayoutWidthsRecursive(BlockElement root)
@@ -601,9 +602,6 @@ namespace UltimaXNA.Core.UI.HTML
                 return new Texture2D(graphics, 1, 1);
 
             uint[] pixels = new uint[root.Width * root.Height];
-            /* DEBUG PURPOSES: Fill background with a lovely shade of lime green. */
-            // for (int i = 0; i < pixels.Length; i++)
-            //    pixels[i] = 0xff00ff00;
 
             if (root.Err_Cant_Fit_Children)
             {

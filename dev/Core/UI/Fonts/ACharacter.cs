@@ -61,7 +61,7 @@ namespace UltimaXNA.Core.UI.Fonts
                         {
                             dest += (baseLine - YOffset - y - 1) / 2;
                         }
-                        isOutlined = false;
+
                         for (int x = 0; x < Width; x++)
                         {
                             if (*src != 0x00000000)
