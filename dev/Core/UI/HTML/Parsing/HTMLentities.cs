@@ -91,11 +91,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// after entity
 		/// </summary>
 		/// <returns>Char (not byte) that corresponds to the entity or 0 if it was not entity</returns>
-#if UNSAFE_CODE
-		internal unsafe char CheckForEntity(byte[] bHTML,ref int iCurPos)
-#else
 		internal char CheckForEntity(byte[] bHTML,ref int iCurPos,int iDataLength)
-#endif
 		{
 			if(!bDecodeEntities && !bMiniEntities)
 				return (char)0;
@@ -193,14 +189,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 							return (char) ParseUInt(bHTML,iFrom,iEntLen);
 						}
 
-#if UNSAFE_CODE
-						fixed(byte* pBuffer=bHTML)
-						{
-							sEntity=new String((sbyte*)pBuffer,iFrom,iEntLen,System.Text.Encoding.Default);
-#else
-					
 						sEntity=Encoding.Default.GetString(bHTML,iFrom,iEntLen);
-#endif
 
 						if(bCharCode)
 						{
@@ -305,11 +294,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// This function will decode any entities found in a string - not fast!
 		/// </summary>
 		/// <returns>Possibly decoded string</returns>
-#if UNSAFE_CODE
-		internal static unsafe char DecodeEntities()
-#else
 		internal static string DecodeEntities(string sData)
-#endif
 		{
 			char cChar;
 
@@ -441,14 +426,8 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 									}
 
 								}
-#if UNSAFE_CODE
-						fixed(byte* pBuffer=bHTML)
-						{
-							sEntity=new String((sbyte*)pBuffer,iFrom,iEntLen,System.Text.Encoding.Default);
-#else
-					
+                                			
 								sEntity=sData.Substring(iFrom,iEntLen);
-#endif
 
 								if(bCharCode)
 								{
