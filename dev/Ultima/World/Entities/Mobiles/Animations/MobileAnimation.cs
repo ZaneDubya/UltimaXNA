@@ -238,10 +238,10 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
                     m_actionIndex = actionIndex;
                     m_animationFrame = 0f;
 
-                    // get the resource provider
+                    // get the frames of the base body - we need to count the number of frames in this animation.
                     IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                    IAnimationFrame[] frames = provider.GetAnimation(
-                        Parent.Body, actionIndex, (int)Parent.DrawFacing, Parent.Hue);
+                    int body = Parent.Body, hue = 0;
+                    IAnimationFrame[] frames = provider.GetAnimation(body, ref hue, actionIndex, (int)Parent.DrawFacing);
                     if (frames != null)
                     {
                         m_FrameCount = frames.Length;

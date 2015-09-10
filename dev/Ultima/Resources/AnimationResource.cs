@@ -20,6 +20,9 @@ namespace UltimaXNA.Ultima.Resources
 {
     internal sealed class AnimationResource
     {
+        private const int ANIM_COUNT = 0x0800;
+        private const int ANIM_MASK = 0x07FF;
+
         public const int HUMANOID_STAND_INDEX = 0x04;
         public const int HUMANOID_MOUNT_INDEX = 0x19;
         public const int HUMANOID_SIT_INDEX = 0x23; // 35
@@ -45,7 +48,6 @@ namespace UltimaXNA.Ultima.Resources
 
         private IAnimationFrame[][][][] m_Cache;
         private GraphicsDevice m_Graphics;
-        private int[] m_Table;
 
         public AnimationResource(GraphicsDevice graphics)
         {
@@ -53,46 +55,41 @@ namespace UltimaXNA.Ultima.Resources
             m_Cache = new IAnimationFrame[COUNT_ANIMS][][][];
         }
 
-        public int GetAnimationFrameCount(int body, int action, int direction, int hue)
-        {
-            IAnimationFrame[] frames = GetAnimation(body, action, direction, hue);
-            if (frames == null)
-                return 0;
-            return frames.Length;
-        }
-
-        public IAnimationFrame[] GetAnimation(int body, int action, int direction, int hue)
+        public IAnimationFrame[] GetAnimation(int body, ref int hue, int action, int direction)
         {
             int animIndex;
             AFileIndex fileIndex;
             int length, extra;
             bool patched;
+            AnimationFrame.SittingTransformation sitting = AnimationFrame.SittingTransformation.None;
+
+            if (!BodyExists(body))
+                BodyDef.TranslateBodyAndHue(ref body, ref hue);
 
             IAnimationFrame[] frames = CheckCache(body, action, direction);
             if (frames != null)
                 return frames;
-
-            AnimationFrame.SittingTransformation sitting = AnimationFrame.SittingTransformation.None;
+            
             if (action == HUMANOID_SIT_INDEX)
             {
                 if (direction == 3 || direction == 5)
                 {
                     sitting = AnimationFrame.SittingTransformation.MountNorth;
-                    GetIndexes(body, hue, HUMANOID_MOUNT_INDEX, direction, out animIndex, out fileIndex);
+                    GetIndexes(body, HUMANOID_MOUNT_INDEX, direction, out animIndex, out fileIndex);
                 }
                 else if (direction == 1 || direction == 7)
                 {
                     sitting = AnimationFrame.SittingTransformation.StandSouth;
-                    GetIndexes(body, hue, HUMANOID_STAND_INDEX, direction, out animIndex, out fileIndex);
+                    GetIndexes(body, HUMANOID_STAND_INDEX, direction, out animIndex, out fileIndex);
                 }
                 else
                 {
-                    GetIndexes(body, hue, action, direction, out animIndex, out fileIndex);
+                    GetIndexes(body, action, direction, out animIndex, out fileIndex);
                 }
             }
             else
             {
-                GetIndexes(body, hue, action, direction, out animIndex, out fileIndex);
+                GetIndexes(body, action, direction, out animIndex, out fileIndex);
             }
 
             BinaryFileReader reader = fileIndex.Seek(animIndex, out length, out extra, out patched);
@@ -154,9 +151,10 @@ namespace UltimaXNA.Ultima.Resources
                 return null;
         }
 
-        private void GetIndexes(int body, int hue, int action, int direction, out int index, out AFileIndex fileIndex)
+        private void GetIndexes(int body, int action, int direction, out int index, out AFileIndex fileIndex)
         {
-            Translate(ref body, ref hue);
+            if (body < 0 || body >= COUNT_ANIMS)
+                body = 0;
 
             int animIndex = BodyConverter.Convert(ref body);
             switch (animIndex)
@@ -238,65 +236,18 @@ namespace UltimaXNA.Ultima.Resources
             }
         }
 
-        public void Translate(ref int body)
+        private bool BodyExists(int body)
         {
-            if (m_Table == null)
-                LoadTable();
+            int animIndex;
+            AFileIndex fileIndex;
+            int length, extra;
+            bool patched;
 
-            if (body <= 0 || body >= m_Table.Length)
-            {
-                body = 0;
-                return;
-            }
-
-            body = (m_Table[body] & 0x7FFF);
-        }
-
-        public void Translate(ref int body, ref int hue)
-        {
-            if (m_Table == null)
-                LoadTable();
-
-            if (body <= 0 || body >= m_Table.Length)
-            {
-                body = 0;
-                return;
-            }
-
-            int table = m_Table[body];
-
-            if ((table & (1 << 31)) != 0)
-            {
-                body = table & 0x7FFF;
-
-                int vhue = (hue & 0x3FFF) - 1;
-
-                if (vhue < 0 || vhue >= HueData.HueCount)
-                    hue = (table >> 15) & 0xFFFF;
-            }
-        }
-
-        private void LoadTable()
-        {
-            int count = 400 + ((m_FileIndex.Index.Length - 35000) / 175);
-
-            m_Table = new int[count];
-
-            for (int i = 0; i < count; ++i)
-            {
-                object o = BodyTable.m_Entries[i];
-
-                if (o == null || BodyConverter.Contains(i))
-                {
-                    m_Table[i] = i;
-                }
-                else
-                {
-                    BodyTableEntry bte = (BodyTableEntry)o;
-
-                    m_Table[i] = bte.m_OldID | (1 << 31) | (((bte.m_NewHue ^ 0x8000) & 0xFFFF) << 15);
-                }
-            }
+            GetIndexes(body, 0, 0, out animIndex, out fileIndex);
+            BinaryFileReader reader = fileIndex.Seek(animIndex, out length, out extra, out patched);
+            if (reader == null)
+                return false;
+            return true;
         }
     }
 }
