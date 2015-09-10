@@ -55,13 +55,13 @@ namespace UltimaXNA.Core.UI.Fonts
                 {
                     for (int y = 0; (y < Height) && (y + dy < maxHeight); y++)
                     {
-                        uint* src = ((uint*)srcPtr) + (Width * y);
-                        uint* dest = (((uint*)dstPtr) + (linewidth * (y + dy + YOffset)) + dx);
+                        uint* src = (srcPtr + (Width * y));
+                        uint* dest = (dstPtr + (linewidth * (y + dy + YOffset)) + dx);
                         if (isItalic)
                         {
                             dest += (baseLine - YOffset - y - 1) / 2;
                         }
-
+                        isOutlined = false;
                         for (int x = 0; x < Width; x++)
                         {
                             if (*src != 0x00000000)
@@ -73,9 +73,11 @@ namespace UltimaXNA.Core.UI.Fonts
                                 {
                                     for (int iy = -1; iy <= 1; iy++)
                                     {
-                                        uint* idest = dest + (iy * linewidth);
+                                        uint* idest = (dest + (iy * linewidth));
                                         if (*idest == 0x00000000)
+                                        {
                                             *idest = outline;
+                                        }
                                         if (iy == 0)
                                         {
                                             if (isBold)
@@ -99,16 +101,22 @@ namespace UltimaXNA.Core.UI.Fonts
                                         else
                                         {
                                             if (*(idest + 1) == 0x00000000)
+                                            {
                                                 *(idest + 1) = outline;
+                                            }
                                         }
 
 
                                         if (*(idest + 2) == 0x00000000)
+                                        {
                                             *(idest + 2) = outline;
+                                        }
                                         if (isBold)
                                         {
                                             if (*(idest + 3) == 0x00000000)
+                                            {
                                                 *(idest + 3) = outline;
+                                            }
                                         }
                                     }
                                 }
