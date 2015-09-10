@@ -25,8 +25,8 @@ namespace UltimaXNA.Ultima.Resources.Fonts
 
         public CharacterUnicode(BinaryReader reader)
         {
-            XOffset = (sbyte)reader.ReadByte();
-            YOffset = (sbyte)reader.ReadByte();
+            XOffset = reader.ReadSByte();
+            YOffset = reader.ReadSByte();
             Width = reader.ReadByte();
             Height = reader.ReadByte();
             ExtraWidth = 1;

@@ -86,7 +86,7 @@ namespace UltimaXNA.Core.UI.HTML
 
             DoLayout(m_Root, width);
             if (Ascender != 0)
-                m_Root.Height -= Ascender;
+                m_Root.Height -= Ascender; // ascender is always negative.
             Texture = DoRender(m_Root);
         }
 
@@ -398,7 +398,7 @@ namespace UltimaXNA.Core.UI.HTML
                 AElement e0 = root.Children[i];
                 if (e0.IsThisAtomALineBreak)
                 {
-                    // root alignments align children elements within the root width.
+                    // root alignment styles align a root's children elements within the root width.
                     if (root.Alignment == Alignments.Center)
                     {
                         int centerX = x + (x1 - x0) / 2;
@@ -542,7 +542,11 @@ namespace UltimaXNA.Core.UI.HTML
                         if (atom.Style.IsItalic)
                             styleWidth = font.Height / 2;
                         if (atom.Style.MustDrawnOutline)
+                        {
                             styleWidth += 2;
+                            if (-1 < ascender)
+                                ascender = -1;
+                        }
                         if (ch.YOffset + ch.Height > wordHeight)
                             wordHeight = ch.YOffset + ch.Height;
                         if (ch.YOffset < 0 && ascender > ch.YOffset)
@@ -628,7 +632,7 @@ namespace UltimaXNA.Core.UI.HTML
             foreach (AElement element in root.Children)
             {
                 int x = element.Layout_X;
-                int y = element.Layout_Y - Ascender;
+                int y = element.Layout_Y - Ascender; // ascender is always negative.
                 if (element is CharacterElement)
                 {
                     IFont font = element.Style.Font;

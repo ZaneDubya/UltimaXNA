@@ -21,7 +21,7 @@ namespace UltimaXNA.Core.Graphics
 {
     public class SpriteBatch3D
     {
-        private const int MAX_VERTICES_PER_DRAW = 0x1000 * 3;
+        private const int MAX_VERTICES_PER_DRAW = 0x2000;
         private const int INITIAL_TEXTURE_COUNT = 0x800;
         private const float MAX_ACCURATE_SINGLE_FLOAT = 65536; // this number is somewhat arbitrary; it's the number at which the
         // difference between two subsequent integers is +/-0.005. See http://stackoverflow.com/questions/872544/precision-of-floating-point

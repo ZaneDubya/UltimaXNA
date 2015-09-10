@@ -164,10 +164,10 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Write(int value)
         {
-            m_buffer[0] = (byte)(value >> 24);
-            m_buffer[1] = (byte)(value >> 16);
-            m_buffer[2] = (byte)(value >> 8);
-            m_buffer[3] = (byte)value;
+            m_buffer[0] = (byte)((value >> 24) & 0xff);
+            m_buffer[1] = (byte)((value >> 16) & 0xff);
+            m_buffer[2] = (byte)((value >> 8) & 0xff);
+            m_buffer[3] = (byte)(value & 0xff);
 
             m_stream.Write(m_buffer, 0, 4);
         }
@@ -177,10 +177,10 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Write(uint value)
         {
-            m_buffer[0] = (byte)(value >> 24);
-            m_buffer[1] = (byte)(value >> 16);
-            m_buffer[2] = (byte)(value >> 8);
-            m_buffer[3] = (byte)value;
+            m_buffer[0] = (byte)((value >> 24) & 0xff);
+            m_buffer[1] = (byte)((value >> 16) & 0xff);
+            m_buffer[2] = (byte)((value >> 8) & 0xff);
+            m_buffer[3] = (byte)(value & 0xff);
 
             m_stream.Write(m_buffer, 0, 4);
         }

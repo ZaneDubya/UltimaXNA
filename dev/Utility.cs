@@ -277,7 +277,7 @@ namespace UltimaXNA
 
         public static uint UintFromColor(Color color)
         {
-            return (uint)((color.A << 24) | (color.B << 16) | (color.G << 8) | (color.R));
+            return (uint)(((uint)color.A << 24) | ((uint)color.B << 16) | ((uint)color.G << 8) | (color.R));
         }
 
         public static Color ColorFromHexString(string hex)
