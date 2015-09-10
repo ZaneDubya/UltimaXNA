@@ -137,6 +137,7 @@
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="Configuration\ResolutionConfig.cs" />
+    <Compile Include="Core\Configuration\SettingsFile.cs" />
     <Compile Include="Core\Configuration\TextSettingsFileWriter.cs" />
     <Compile Include="Core\Diagnostics\EventLevels.cs" />
     <Compile Include="Core\Diagnostics\HighPerformanceTimer.cs" />
@@ -259,7 +260,6 @@
     <Compile Include="Core\Diagnostics\Listeners\StreamOuputEventListener.cs" />
     <Compile Include="Core\Diagnostics\Tracing\Tracer.cs" />
     <Compile Include="Core\Diagnostics\GeneralExceptionHandler.cs" />
-    <Compile Include="Core\Configuration\SettingsFile.cs" />
     <Compile Include="Ultima\Data\Body.cs" />
     <Compile Include="Ultima\Data\Chairs.cs" />
     <Compile Include="Ultima\Data\ChatMode.cs" />
@@ -277,6 +277,7 @@
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
+    <Compile Include="Ultima\Resources\BodyDef.cs" />
     <Compile Include="Ultima\Resources\EffectData.cs" />
     <Compile Include="Ultima\Resources\Fonts\CharacterAscii.cs" />
     <Compile Include="Ultima\Resources\Fonts\FontAscii.cs" />
@@ -330,7 +331,6 @@
     <Compile Include="Ultima\World\Entities\Effects\MovingEffect.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\Animations\ActionTranslator.cs" />
     <Compile Include="Ultima\World\EntityViews\AEntityView.cs" />
-    <Compile Include="Ultima\World\EntityViews\CorpseView.cs" />
     <Compile Include="Ultima\World\EntityViews\AnimatedItemEffectView.cs" />
     <Compile Include="Ultima\World\EntityViews\LightningEffectView.cs" />
     <Compile Include="Ultima\World\EntityViews\DeferredView.cs" />

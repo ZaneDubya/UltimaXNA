@@ -8,7 +8,7 @@ namespace ExamplePlugin
 {
     class CandleObjectDebugger
     {
-        public void OutputAllCandleTextures()
+        /*public void OutputAllCandleTextures()
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "candle");
             Directory.CreateDirectory(path);
@@ -23,7 +23,7 @@ namespace ExamplePlugin
                     {
                         // get the resource provider
                         IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                        IAnimationFrame[] frames = provider.GetAnimation(candleBodyID, action, direction, 0);
+                        IAnimationFrame[] frames = provider.GetAnimation(candleBodyID, action, direction);
                         if (frames != null)
                         {
                             for (int i = 0; i < frames.Length; i++)
@@ -41,5 +41,6 @@ namespace ExamplePlugin
 
             }
         }
+        */
     }
 }

@@ -190,16 +190,16 @@ namespace UltimaXNA.Ultima.World.EntityViews
         // Code to get frames for drawing
         // ======================================================================
 
-        private IAnimationFrame getFrame(int bodyID, int hue, int facing, int action, float frame, out int frameCount)
+        private IAnimationFrame getFrame(int body, ref int hue, int facing, int action, float frame, out int frameCount)
         {
-            if (bodyID >= 500 && bodyID <= 505)
+            // patch light source animations: candles and torches.
+            if (body >= 500 && body <= 505)
                 patchLightSourceAction(ref action);
 
             frameCount = 0;
 
-            // get the resource provider
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-            IAnimationFrame[] frames = provider.GetAnimation(bodyID, action, facing, hue);
+            IAnimationFrame[] frames = provider.GetAnimation(body, ref hue, action, facing);
             if (frames == null)
                 return null;
             frameCount = frames.Length;
@@ -334,7 +334,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
 
             int frameCount;
-            m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, getFrame(bodyID, hue, facing, animation, frame, out frameCount));
+            IAnimationFrame animframe = getFrame(bodyID, ref hue, facing, animation, frame, out frameCount);
+            m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, animframe);
             m_FrameCount = frameCount;
         }
 

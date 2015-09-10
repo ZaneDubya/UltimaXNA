@@ -43,9 +43,9 @@ namespace UltimaXNA.Ultima
             m_Texmaps = new TexmapResource(game.GraphicsDevice);
         }
 
-        public IAnimationFrame[] GetAnimation(int body, int action, int direction, int hue)
+        public IAnimationFrame[] GetAnimation(int body, ref int hue, int action, int direction)
         {
-            return m_Anim.GetAnimation(body, action, direction, hue);
+            return m_Anim.GetAnimation(body, ref hue, action, direction);
         }
 
         public Texture2D GetUITexture(int textureIndex, bool replaceMask080808 = false)

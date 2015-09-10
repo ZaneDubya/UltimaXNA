@@ -135,7 +135,7 @@ namespace UltimaXNA.Ultima.IO
 
                     if (exePath != null && Directory.Exists(exePath))
                     {
-                        if (InternalClientIsCompatible(exePath))
+                        if (IsClientIsCompatible(exePath))
                         {
                             Tracer.Debug("Compatible: {0}", exePath);
 
@@ -163,7 +163,7 @@ namespace UltimaXNA.Ultima.IO
             }
         }
 
-        private static bool InternalClientIsCompatible(string path)
+        private static bool IsClientIsCompatible(string path)
         {
             IEnumerable<string> files = Directory.EnumerateFiles(path);
             foreach (string filepath in files)
