@@ -20,8 +20,6 @@ namespace UltimaXNA.Configuration
 
         private bool m_IsConsoleEnabled;
         private bool m_ShowFps;
-        private bool m_ShowDataRead;
-        private bool m_ShowDataReadBreakdown;
         private bool m_ShowUIOutlines;
         private bool m_LogPackets;
 
@@ -41,18 +39,6 @@ namespace UltimaXNA.Configuration
         {
             get { return m_ShowUIOutlines; }
             set { SetProperty(ref m_ShowUIOutlines, value); }
-        }
-
-        public bool ShowDataReadBreakdown
-        {
-            get { return m_ShowDataReadBreakdown; }
-            set { SetProperty(ref m_ShowDataReadBreakdown, value); }
-        }
-
-        public bool ShowDataRead
-        {
-            get { return m_ShowDataRead; }
-            set { SetProperty(ref m_ShowDataRead, value); }
         }
 
         public bool ShowFps

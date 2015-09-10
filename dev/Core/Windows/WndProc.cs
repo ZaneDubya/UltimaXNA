@@ -10,8 +10,9 @@
  ***************************************************************************/
 using System;
 using Microsoft.Xna.Framework.Input;
+using UltimaXNA.Core.Input;
 
-namespace UltimaXNA.Core.Input.Windows
+namespace UltimaXNA.Core.Windows
 {
     public delegate void MouseEventHandler(InputEventMouse e);
     public delegate void KeyboardEventHandler(InputEventKeyboard e);
@@ -74,20 +75,20 @@ namespace UltimaXNA.Core.Input.Windows
         /// <summary>
         /// Gets the current pressed Mouse Buttons
         /// </summary>
-        public MouseButtonInternal MouseButtons(MouseState state)
+        public WinMouseButtons MouseButtons(MouseState state)
         {
-            MouseButtonInternal none = MouseButtonInternal.None;
+            WinMouseButtons none = WinMouseButtons.None;
 
             if (state.LeftButton == ButtonState.Pressed)
-                none |= MouseButtonInternal.Left;
+                none |= WinMouseButtons.Left;
             if (state.RightButton == ButtonState.Pressed)
-                none |= MouseButtonInternal.Right;
+                none |= WinMouseButtons.Right;
             if (state.MiddleButton == ButtonState.Pressed)
-                none |= MouseButtonInternal.Middle;
+                none |= WinMouseButtons.Middle;
             if (state.XButton1 == ButtonState.Pressed)
-                none |= MouseButtonInternal.XButton1;
+                none |= WinMouseButtons.XButton1;
             if (state.XButton2 == ButtonState.Pressed)
-                none |= MouseButtonInternal.XButton2;
+                none |= WinMouseButtons.XButton2;
 
             return none;
         }
@@ -138,47 +139,47 @@ namespace UltimaXNA.Core.Input.Windows
                         }
                     case NativeConstants.WM_LBUTTONDOWN:
                         {
-                            WmMouseDown(ref message, MouseButtonInternal.Left, 1);
+                            WmMouseDown(ref message, WinMouseButtons.Left, 1);
                             break;
                         }
                     case NativeConstants.WM_RBUTTONDOWN:
                         {
-                            WmMouseDown(ref message, MouseButtonInternal.Right, 1);
+                            WmMouseDown(ref message, WinMouseButtons.Right, 1);
                             break;
                         }
                     case NativeConstants.WM_MBUTTONDOWN:
                         {
-                            WmMouseDown(ref message, MouseButtonInternal.Middle, 1);
+                            WmMouseDown(ref message, WinMouseButtons.Middle, 1);
                             break;
                         }
                     case NativeConstants.WM_LBUTTONUP:
                         {
-                            WmMouseUp(ref message, MouseButtonInternal.Left, 1);
+                            WmMouseUp(ref message, WinMouseButtons.Left, 1);
                             return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_RBUTTONUP:
                         {
-                            WmMouseUp(ref message, MouseButtonInternal.Right, 1);
+                            WmMouseUp(ref message, WinMouseButtons.Right, 1);
                             return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_MBUTTONUP:
                         {
-                            WmMouseUp(ref message, MouseButtonInternal.Middle, 1);
+                            WmMouseUp(ref message, WinMouseButtons.Middle, 1);
                             return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_LBUTTONDBLCLK:
                         {
-                            WmMouseDown(ref message, MouseButtonInternal.Left, 2);
+                            WmMouseDown(ref message, WinMouseButtons.Left, 2);
                             return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_RBUTTONDBLCLK:
                         {
-                            WmMouseDown(ref message, MouseButtonInternal.Right, 2);
+                            WmMouseDown(ref message, WinMouseButtons.Right, 2);
                             return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_MBUTTONDBLCLK:
                         {
-                            WmMouseDown(ref message, MouseButtonInternal.Middle, 2);
+                            WmMouseDown(ref message, WinMouseButtons.Middle, 2);
                             return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_MOUSEWHEEL:
@@ -211,19 +212,19 @@ namespace UltimaXNA.Core.Input.Windows
             return WP_PASSTHROUGH;
         }
 
-        private MouseButtonInternal translateWParamIntoMouseButtons(int wParam)
+        private WinMouseButtons translateWParamIntoMouseButtons(int wParam)
         {
-            MouseButtonInternal mb = MouseButtonInternal.None;
+            WinMouseButtons mb = WinMouseButtons.None;
             if ((wParam & 0x0001) == 0x0001)
-                mb |= MouseButtonInternal.Left;
+                mb |= WinMouseButtons.Left;
             if ((wParam & 0x0002) == 0x0002)
-                mb |= MouseButtonInternal.Right;
+                mb |= WinMouseButtons.Right;
             if ((wParam & 0x0002) == 0x0010)
-                mb |= MouseButtonInternal.Middle;
+                mb |= WinMouseButtons.Middle;
             if ((wParam & 0x0002) == 0x0020)
-                mb |= MouseButtonInternal.XButton1;
+                mb |= WinMouseButtons.XButton1;
             if ((wParam & 0x0002) == 0x0040)
-                mb |= MouseButtonInternal.XButton2;
+                mb |= WinMouseButtons.XButton2;
             return mb;
         }
 
@@ -232,15 +233,15 @@ namespace UltimaXNA.Core.Input.Windows
         /// </summary>
         /// <param name="wparam"></param>
         /// <returns></returns>
-        private MouseButtonInternal GetXButton(int wparam)
+        private WinMouseButtons GetXButton(int wparam)
         {
             switch (wparam)
             {
-                case 1: return MouseButtonInternal.XButton1;
-                case 2: return MouseButtonInternal.XButton2;
+                case 1: return WinMouseButtons.XButton1;
+                case 2: return WinMouseButtons.XButton2;
             }
 
-            return MouseButtonInternal.None;
+            return WinMouseButtons.None;
         }
 
         /// <summary>
@@ -281,7 +282,7 @@ namespace UltimaXNA.Core.Input.Windows
         /// <param name="message">The Message to parse</param>
         /// <param name="button">The Mouse Button the Message is for</param>
         /// <param name="clicks">The number of clicks for the Message</param>
-        private void WmMouseDown(ref Message message, MouseButtonInternal button, int clicks)
+        private void WmMouseDown(ref Message message, WinMouseButtons button, int clicks)
         {
             // HandleMouseBindings();
             invokeMouseDown(new InputEventMouse(MouseEvent.Down,
@@ -300,7 +301,7 @@ namespace UltimaXNA.Core.Input.Windows
         /// <param name="message">The Message to parse</param>
         /// <param name="button">The Mouse Button the Message is for</param>
         /// <param name="clicks">The number of clicks for the Message</param>
-        private void WmMouseUp(ref Message message, MouseButtonInternal button, int clicks)
+        private void WmMouseUp(ref Message message, WinMouseButtons button, int clicks)
         {
             // HandleMouseBindings();
             invokeMouseUp(new InputEventMouse(MouseEvent.Up,

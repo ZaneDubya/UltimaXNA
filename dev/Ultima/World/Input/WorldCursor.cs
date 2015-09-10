@@ -14,7 +14,7 @@ using System;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;

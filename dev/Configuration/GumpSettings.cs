@@ -20,12 +20,18 @@ namespace UltimaXNA.Configuration
     {
         public const string SectionName = "gump";
 
+        /// <summary>
+        /// The list of last positions where a given gump type was located.
+        /// </summary>
         public Dictionary<string, Point> LastPositions
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// A list of saved gumps, and data describing the same. These are reloaded when the world is started.
+        /// </summary>
         public List<SavedGumpConfig> SavedGumps
         {
             get;

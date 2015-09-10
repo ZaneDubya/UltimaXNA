@@ -37,13 +37,13 @@ namespace UltimaXNA.Configuration
         public int MusicVolume
         {
             get { return m_MusicVolume; }
-            set { SetProperty(ref m_MusicVolume, value); }
+            set{ SetProperty(ref m_MusicVolume, Clamp(value, 0, 100)); }
         }
 
         public int SoundVolume
         {
             get { return m_SoundVolume; }
-            set { SetProperty(ref m_SoundVolume, value); }
+            set { SetProperty(ref m_SoundVolume, Clamp(value, 0, 100)); }
         }
 
         public bool MusicOn

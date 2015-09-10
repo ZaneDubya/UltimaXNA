@@ -9,7 +9,9 @@
  *
  ***************************************************************************/
 
-namespace UltimaXNA.Core.Input.Windows
+using UltimaXNA.Core.Windows;
+
+namespace UltimaXNA.Core.Input
 {
     public class InputEventKeyboard : InputEvent
     {

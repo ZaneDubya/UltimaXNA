@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Windows;
 #endregion
 
 namespace UltimaXNA.Core.UI

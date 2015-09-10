@@ -13,7 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using UltimaXNA.Core;
+using UltimaXNA.Core.Windows;
 using UltimaXNA.Ultima.IO;
 #endregion
 
@@ -65,7 +65,7 @@ namespace UltimaXNA.Ultima.Resources
                 landData = new byte[192];
                 fixed (byte* pTiles = landData)
                 {
-                    NativeMethods.Read(m_LandPatchStream.SafeFileHandle, pTiles, 192);
+                    NativeMethods.ReadBuffer(m_LandPatchStream.SafeFileHandle, pTiles, 192);
                 }
                 return true;
             }
@@ -144,7 +144,7 @@ namespace UltimaXNA.Ultima.Resources
 
                     fixed (byte* pStaticTiles = staticData)
                     {
-                        NativeMethods.Read(m_StaticPatchStream.SafeFileHandle, pStaticTiles, length);
+                        NativeMethods.ReadBuffer(m_StaticPatchStream.SafeFileHandle, pStaticTiles, length);
                     }
 
                     return true;

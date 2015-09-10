@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Resolution.cs
+ *   ResolutionConfig.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  * 
  *   This program is free software; you can redistribute it and/or modify
@@ -15,17 +15,12 @@ using UltimaXNA.Core.ComponentModel;
 namespace UltimaXNA.Configuration
 {
     /// <summary>
-    /// A class that describes a resolution width height pair. Defaults to 1024x768.
+    /// A class that describes a resolution width height pair.
     /// </summary>
     public class ResolutionConfig : NotifyPropertyChangedBase
     {
-        private int m_Height = 768;
-        private int m_Width = 1024;
-
-        public ResolutionConfig()
-        {
-
-        }
+        private int m_Height;
+        private int m_Width;
 
         public ResolutionConfig(int width, int height)
         {

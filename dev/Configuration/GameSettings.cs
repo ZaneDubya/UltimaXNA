@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.Core.Configuration;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Configuration
@@ -65,25 +66,25 @@ namespace UltimaXNA.Configuration
         public int SpeechColor
         {
             get { return m_SpeechColor; }
-            set { SetProperty(ref m_SpeechColor, value); }
+            set { SetProperty(ref m_SpeechColor, Clamp(value, 0, HueData.HueCount - 1)); }
         }
 
         public int EmoteColor
         {
             get { return m_EmoteColor; }
-            set { SetProperty(ref m_EmoteColor, value); }
+            set { SetProperty(ref m_EmoteColor, Clamp(value, 0, HueData.HueCount - 1)); }
         }
 
         public int PartyMsgColor
         {
             get { return m_PartyMsgColor; }
-            set { SetProperty(ref m_PartyMsgColor, value); }
+            set { SetProperty(ref m_PartyMsgColor, Clamp(value, 0, HueData.HueCount - 1)); }
         }
 
         public int GuildMsgColor
         {
             get { return m_GuildMsgColor; }
-            set { SetProperty(ref m_GuildMsgColor, value); }
+            set { SetProperty(ref m_GuildMsgColor, Clamp(value, 0, HueData.HueCount - 1)); }
         }
 
         public bool IgnoreGuildMsg
@@ -95,7 +96,7 @@ namespace UltimaXNA.Configuration
         public int AllianceMsgColor
         {
             get { return m_AllianceMsgColor; }
-            set { SetProperty(ref m_AllianceMsgColor, value); }
+            set { SetProperty(ref m_AllianceMsgColor, Clamp(value, 0, HueData.HueCount - 1)); }
         }
 
         public bool IgnoreAllianceMsg

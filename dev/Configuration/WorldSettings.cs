@@ -10,7 +10,7 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.Core.Configuration;
-using UltimaXNA.Core.Input;
+using UltimaXNA.Core;
 #endregion
 
 namespace UltimaXNA.Configuration
@@ -55,7 +55,12 @@ namespace UltimaXNA.Configuration
         public ResolutionConfig FullScreenResolution
         {
             get { return m_FullScreenResolution; }
-            set { SetProperty(ref m_FullScreenResolution, value); }
+            set
+            {
+                if (!Resolutions.IsValidFullScreenResolution(value))
+                    return;
+                SetProperty(ref m_FullScreenResolution, value);
+            }
         }
 
         public ResolutionConfig WindowResolution
@@ -67,7 +72,12 @@ namespace UltimaXNA.Configuration
         public ResolutionConfig PlayWindowGumpResolution
         {
             get { return m_WorldGumpResolution; }
-            set { SetProperty(ref m_WorldGumpResolution, value); }
+            set
+            {
+                if (!Resolutions.IsValidPlayWindowResolution(value))
+                    return;
+                SetProperty(ref m_WorldGumpResolution, value);
+            }
         }
 
         public bool PlayWindowPixelDoubling

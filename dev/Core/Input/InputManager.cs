@@ -14,8 +14,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Input.Windows;
-using NativeInput = UltimaXNA.Core.Input.Windows.NativeMethods;
+using UltimaXNA.Core.Windows;
 #endregion
 
 namespace UltimaXNA.Core.Input
@@ -75,7 +74,7 @@ namespace UltimaXNA.Core.Input
         {
             get
             {
-                if (NativeInput.GetKeyState((int)WinKeys.ControlKey) < 0)
+                if (NativeMethods.GetKeyState((int)WinKeys.ControlKey) < 0)
                 {
                     return true;
                 }
@@ -87,7 +86,7 @@ namespace UltimaXNA.Core.Input
         {
             get
             {
-                if (NativeInput.GetKeyState((int)WinKeys.ShiftKey) < 0)
+                if (NativeMethods.GetKeyState((int)WinKeys.ShiftKey) < 0)
                 {
                     return true;
                 }
@@ -143,7 +142,7 @@ namespace UltimaXNA.Core.Input
 
         public bool IsKeyDown(WinKeys key)
         {
-            if (NativeInput.GetKeyState((int)key) < 0)
+            if (NativeMethods.GetKeyState((int)key) < 0)
             {
                 return true;
             }

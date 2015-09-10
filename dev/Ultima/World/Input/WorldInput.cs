@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Input;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
@@ -483,27 +483,6 @@ namespace UltimaXNA.Ultima.World.Input
             if(!ContinuousMouseMovementCheck)
             {
                 doKeyboardMovement(frameMS);
-            }
-
-            // debug variables.
-            if(m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.D, false, false, true))
-            {
-                if(!Settings.Debug.ShowDataRead)
-                {
-                    Settings.Debug.ShowDataRead = true;
-                }
-                else
-                {
-                    if(!Settings.Debug.ShowDataReadBreakdown)
-                    {
-                        Settings.Debug.ShowDataReadBreakdown = true;
-                    }
-                    else
-                    {
-                        Settings.Debug.ShowDataRead = false;
-                        Settings.Debug.ShowDataReadBreakdown = false;
-                    }
-                }
             }
 
             // FPS limiting
