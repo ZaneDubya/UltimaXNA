@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Input;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Windows;
 
 namespace UltimaXNA.Core.Patterns.MVC
 {
@@ -23,11 +23,6 @@ namespace UltimaXNA.Core.Patterns.MVC
         }
 
         public virtual void ReceiveMouseInput(Point MousePosition, List<InputEventMouse> events)
-        {
-
-        }
-
-        public virtual void ReceiveInputActions(ActionBinder actions)
         {
 
         }

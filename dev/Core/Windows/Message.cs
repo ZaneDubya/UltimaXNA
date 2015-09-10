@@ -13,7 +13,7 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.Core.Input.Windows
+namespace UltimaXNA.Core.Windows
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Message

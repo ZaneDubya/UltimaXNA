@@ -10,8 +10,9 @@
  ***************************************************************************/
 
 using Microsoft.Xna.Framework;
+using UltimaXNA.Core.Windows;
 
-namespace UltimaXNA.Core.Input.Windows
+namespace UltimaXNA.Core.Input
 {
     public class InputEventMouse : InputEvent
     {
@@ -34,7 +35,7 @@ namespace UltimaXNA.Core.Input.Windows
             get { return (m_clicks / WHEEL_DELTA); }
         }
 
-        private readonly MouseButtonInternal m_button;
+        private readonly WinMouseButtons m_button;
         private readonly int m_clicks;
         private readonly int m_mouseData;
         private readonly int m_x;
@@ -44,15 +45,15 @@ namespace UltimaXNA.Core.Input.Windows
         {
             get
             {
-                if ((m_button & MouseButtonInternal.Left) == MouseButtonInternal.Left)
+                if ((m_button & WinMouseButtons.Left) == WinMouseButtons.Left)
                     return MouseButton.Left;
-                if ((m_button & MouseButtonInternal.Right) == MouseButtonInternal.Right)
+                if ((m_button & WinMouseButtons.Right) == WinMouseButtons.Right)
                     return MouseButton.Right;
-                if ((m_button & MouseButtonInternal.Middle) == MouseButtonInternal.Middle)
+                if ((m_button & WinMouseButtons.Middle) == WinMouseButtons.Middle)
                     return MouseButton.Middle;
-                if ((m_button & MouseButtonInternal.XButton1) == MouseButtonInternal.XButton1)
+                if ((m_button & WinMouseButtons.XButton1) == WinMouseButtons.XButton1)
                     return MouseButton.XButton1;
-                if ((m_button & MouseButtonInternal.XButton2) == MouseButtonInternal.XButton2)
+                if ((m_button & WinMouseButtons.XButton2) == WinMouseButtons.XButton2)
                     return MouseButton.XButton2;
                 return MouseButton.None;
             }
@@ -78,7 +79,7 @@ namespace UltimaXNA.Core.Input.Windows
             get { return new Point(m_x, m_y); }
         }
 
-        public InputEventMouse(MouseEvent eventType, MouseButtonInternal button, int clicks, int x, int y, int mouseData, WinKeys modifiers)
+        public InputEventMouse(MouseEvent eventType, WinMouseButtons button, int clicks, int x, int y, int mouseData, WinKeys modifiers)
             : base(modifiers)
         {
             Vector2 dpi = DpiManager.GetSystemDpiScalar();
@@ -86,8 +87,8 @@ namespace UltimaXNA.Core.Input.Windows
             m_eventType = eventType;
             m_button = button;
             m_clicks = clicks;
-            m_x = (int)(x / dpi.X);//EngineVars.ScreenDPI.X);
-            m_y = (int)(y / dpi.Y);//EngineVars.ScreenDPI.Y);
+            m_x = (int)(x / dpi.X);
+            m_y = (int)(y / dpi.Y);
             m_mouseData = mouseData;
         }
 

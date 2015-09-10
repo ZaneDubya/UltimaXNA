@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.UI
     public class Gump : AControl
     {
         /// <summary>
-        /// If this is true, SaveGump() will be called when the World stops, and LoadGump() will be called when the World starts.
+        /// If this is true, SaveGump() will be called when the World model is stopped, and LoadGump() will be called when the World model restarts.
         /// </summary>
         public bool SaveOnWorldStop
         {

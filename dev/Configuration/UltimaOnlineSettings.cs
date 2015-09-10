@@ -29,7 +29,12 @@ namespace UltimaXNA.Configuration
         public byte[] ClientVersion
         {
             get { return m_ClientVersion; }
-            set { SetProperty(ref m_ClientVersion, value); }
+            set
+            {
+                if (value == null || value.Length != 4)
+                    return;
+                SetProperty(ref m_ClientVersion, value);
+            }
         }
         
         public string DataDirectory

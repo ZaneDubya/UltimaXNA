@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Enums.cs
+ *   WinKeys.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -9,18 +9,8 @@
  *
  ***************************************************************************/
 
-namespace UltimaXNA.Core.Input.Windows
+namespace UltimaXNA.Core.Windows
 {
-    public enum MouseButtonInternal
-    {
-        Left = 0x100000,
-        Middle = 0x400000,
-        None = 0,
-        Right = 0x200000,
-        XButton1 = 0x800000,
-        XButton2 = 0x1000000
-    }
-
     public enum WinKeys
     {
         A = 0x41,
@@ -43,7 +33,7 @@ namespace UltimaXNA.Core.Input.Windows
         CapsLock = 20,
         Clear = 12,
         Control = 0x20000,
-        ControlKey =  0x11,
+        ControlKey = 0x11,
         Crsel = 0xf7,
         D = 0x44,
         D0 = 0x30,

@@ -12,9 +12,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace UltimaXNA.Core.Input.Windows
+namespace UltimaXNA.Core.Windows
 {
-    
     public abstract class MessageHook : IDisposable
     {
         public abstract int HookType { get; }

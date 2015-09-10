@@ -49,13 +49,13 @@ namespace UltimaXNA.Configuration
         public float ClickAndPickupMS
         {
             get { return m_ClickAndPickUpMS; }
-            set { SetProperty(ref m_ClickAndPickUpMS, value); }
+            set { SetProperty(ref m_ClickAndPickUpMS, Clamp(value, 0, 2000)); }
         }
 
         public float DoubleClickMS
         {
             get { return m_DoubleClickMS; }
-            set { SetProperty(ref m_DoubleClickMS, value); }
+            set { SetProperty(ref m_DoubleClickMS, Clamp(value, 0, 2000)); }
         }
 
         

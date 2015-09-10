@@ -134,13 +134,13 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new ResizePic(this, 475, 125, 3600, 151, 310));
             // skin tone
             AddControl(new TextLabelAscii(this, 489, 141, 2036, 9, provider.GetString(3000183)));
-            AddControl(m_SkinHue = new ColorPicker(this, new Rectangle(490, 154, 120, 24), new Rectangle(490, 140, 120, 280), 7, 8, Hues.SkinTones));
+            AddControl(m_SkinHue = new ColorPicker(this, new Rectangle(490, 154, 120, 24), new Rectangle(490, 140, 120, 280), 7, 8, Data.Hues.SkinTones));
             // hair color
             AddControl(new TextLabelAscii(this, 489, 186, 2036, 9, provider.GetString(3000184)));
-            AddControl(m_HairHue = new ColorPicker(this, new Rectangle(490, 199, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, Hues.HairTones));
+            AddControl(m_HairHue = new ColorPicker(this, new Rectangle(490, 199, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, Data.Hues.HairTones));
             // facial hair color (male)
             AddControl(new TextLabelAscii(this, 489, 231, 2036, 9, provider.GetString(3000185)), 1);
-            AddControl(m_FacialHairHue = new ColorPicker(this, new Rectangle(490, 244, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, Hues.HairTones), 1);
+            AddControl(m_FacialHairHue = new ColorPicker(this, new Rectangle(490, 244, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, Data.Hues.HairTones), 1);
 
             // back button
             AddControl(new Button(this, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton), 0);

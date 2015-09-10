@@ -11,7 +11,7 @@
 #region usings
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Windows;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.UI.Controls;

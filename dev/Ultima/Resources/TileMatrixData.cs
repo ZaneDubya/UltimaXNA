@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using UltimaXNA.Core;
+using UltimaXNA.Core.Windows;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.IO;
@@ -327,7 +327,7 @@ namespace UltimaXNA.Ultima.Resources
 
                         fixed (byte* pStaticTiles = m_StaticTileLoadingBuffer)
                         {
-                            NativeMethods.Read(m_StaticDataStream.SafeFileHandle, pStaticTiles, length);
+                            NativeMethods.ReadBuffer(m_StaticDataStream.SafeFileHandle, pStaticTiles, length);
                         }
                         return m_StaticTileLoadingBuffer;
                     }
@@ -371,7 +371,7 @@ namespace UltimaXNA.Ultima.Resources
                 m_MapDataStream.Seek(ptr, SeekOrigin.Begin);
                 fixed (byte* pData = m_bufferedLandChunks[index])
                 {
-                    NativeMethods.Read(m_MapDataStream.SafeFileHandle, pData, m_SizeLandChunkData);
+                    NativeMethods.ReadBuffer(m_MapDataStream.SafeFileHandle, pData, m_SizeLandChunkData);
                 }
                 Metrics.ReportDataRead(m_SizeLandChunkData);
                 return m_bufferedLandChunks[index];
