@@ -63,6 +63,9 @@ namespace UltimaXNA.Ultima.Resources
             bool patched;
             AnimationFrame.SittingTransformation sitting = AnimationFrame.SittingTransformation.None;
 
+            if (body <= 0)
+                return null;
+
             if (!BodyExists(body))
                 BodyDef.TranslateBodyAndHue(ref body, ref hue);
 
