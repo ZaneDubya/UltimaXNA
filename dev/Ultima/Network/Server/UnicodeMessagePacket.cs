@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.Network.Server
         public readonly Serial Serial;
         public readonly short Model;
         public readonly MessageTypes MsgType;
-        public readonly short Hue;
+        public readonly ushort Hue;
         public readonly short Font;
         public readonly string Language;
         public readonly string SpeakerName;
@@ -33,7 +33,7 @@ namespace UltimaXNA.Ultima.Network.Server
             Serial = reader.ReadInt32();
             Model = reader.ReadInt16();
             MsgType = (MessageTypes)reader.ReadByte();
-            Hue = reader.ReadInt16();
+            Hue = reader.ReadUInt16();
             Font = reader.ReadInt16();
             Language = reader.ReadString(4).Trim();
             SpeakerName = reader.ReadString(30).Trim();

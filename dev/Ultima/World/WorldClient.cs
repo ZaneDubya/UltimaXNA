@@ -777,9 +777,9 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveTextMessage(MessageTypes msgType, string text, int font, int hue, Serial serial, string speakerName, bool asUnicode)
+        private void ReceiveTextMessage(MessageTypes msgType, string text, int font, ushort hue, Serial serial, string speakerName, bool asUnicode)
         {
-            PlayerState.Journaling.AddEntry(text);
+            PlayerState.Journaling.AddEntry(text, font, hue, speakerName, asUnicode);
 
             Overhead overhead;
             switch (msgType)

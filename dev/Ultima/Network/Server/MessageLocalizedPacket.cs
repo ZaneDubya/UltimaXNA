@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.Network.Server
         public readonly Serial Serial;
         public readonly int Body;
         public readonly MessageTypes MessageType;
-        public readonly int Hue;
+        public readonly ushort Hue;
         public readonly int Font;
         public readonly int CliLocNumber;
         public readonly string SpeakerName;

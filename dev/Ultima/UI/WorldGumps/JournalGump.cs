@@ -61,9 +61,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Draw(spriteBatch, position);
         }
 
-        private void AddJournalEntry(string text)
+        private void AddJournalEntry(JournalEntry entry)
         {
-            m_JournalEntries.AddEntry(string.Format("<left color='#50422D'>{0}</left><br/>", text));
+            m_JournalEntries.AddEntry(string.Format(
+                "<outline color='#{3}' style='font-family:{1}{2};'>{0}</outline>", entry.Text, entry.AsUnicode ? "uni" : "ascii", 
+                entry.Font, Utility.GetColorFromUshort(Resources.HueData.GetHue(entry.Hue, -2))));
         }
 
         private void InitializeJournalEntries()

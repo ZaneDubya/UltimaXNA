@@ -199,6 +199,7 @@ namespace UltimaXNA.Ultima.World.Entities
         public Overhead AddOverhead(MessageTypes msgType, string text, int fontID, int hue, bool asUnicode)
         {
             Overhead overhead;
+            text = string.Format("<outline style='font-family: {2}{0};'>{1}", fontID, text, asUnicode ? "uni" : "ascii");
 
             for (int i = 0; i < m_Overheads.Count; i++)
             {
@@ -217,7 +218,7 @@ namespace UltimaXNA.Ultima.World.Entities
                 }
             }
 
-            overhead = new Overhead(this, msgType, string.Format("<outline style='font-family: {2}{0};'>{1}", fontID, text, asUnicode ? "uni" : "ascii"));
+            overhead = new Overhead(this, msgType, text);
             overhead.Hue = hue;
             InternalInsertOverhead(overhead);
             return overhead;

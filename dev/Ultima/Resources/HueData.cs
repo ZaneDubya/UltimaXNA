@@ -37,9 +37,9 @@ namespace UltimaXNA.Ultima.Resources
             GetHueData();
         }
 
-        public static ushort GetHue(int index)
+        public static ushort GetHue(int index, int offset)
         {
-            return m_Hues[index & 0x3fff];
+            return m_Hues[(index + offset) & 0x3fff];
         }
 
         static void graphicsDevice_DeviceReset(object sender, EventArgs e)
