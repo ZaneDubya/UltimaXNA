@@ -90,7 +90,7 @@ namespace UltimaXNA.Ultima.World
                     hue = Settings.Game.AllianceMsgColor;
                     break;
             }
-            m_Network.Send(new AsciiSpeechPacket(speechType, hue + 2, 0, "ENU", text));
+            m_Network.Send(new AsciiSpeechPacket(speechType, 0, hue + 2, "ENU", text));
         }
 
         /// <summary>
@@ -168,18 +168,19 @@ namespace UltimaXNA.Ultima.World
 
         public void ChatMessage(string text) // used by gump
         {
-            ChatMessage(text, 0, 0);
+            ChatMessage(text, 0, 0, true);
         }
-        public void ChatMessage(string text, int hue, int font)
+
+        public void ChatMessage(string text, int font, int hue, bool asUnicode)
         {
-            m_ChatQueue.Add(new QueuedMessage(text, hue, font));
+            m_ChatQueue.Add(new QueuedMessage(text, font, hue, asUnicode));
 
             ChatControl chat = ServiceRegistry.GetService<ChatControl>();
             if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)
                 {
-                    chat.AddLine(msg.Text);
+                    chat.AddLine(msg.Text, msg.Font, msg.Hue, msg.AsUnicode);
                 }
                 m_ChatQueue.Clear();
             }
@@ -190,24 +191,26 @@ namespace UltimaXNA.Ultima.World
             public string Text;
             public int Hue;
             public int Font;
+            public bool AsUnicode;
 
-            public QueuedMessage(string text, int hue, int font)
+            public QueuedMessage(string text, int font, int hue, bool asUnicode)
             {
                 Text = text;
                 Hue = hue;
                 Font = font;
+                AsUnicode = asUnicode;
             }
         }
 
-        public void CreateLabel(MessageTypes msgType, Serial serial, string text, int font, int hue)
+        public void CreateLabel(MessageTypes msgType, Serial serial, string text, int font, int hue, bool asUnicode)
         {
             if (serial.IsValid)
             {
-                WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue);
+                WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue, asUnicode);
             }
             else
             {
-                ChatMessage("[LABEL] " + text, font, hue);
+                ChatMessage("[LABEL] " + text, font, hue, asUnicode);
             }
         }
 

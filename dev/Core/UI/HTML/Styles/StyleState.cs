@@ -51,6 +51,11 @@ namespace UltimaXNA.Core.UI.HTML.Styles
         public bool IsItalic = false;
         public bool IsOutlined = false;
 
+        public bool MustDrawnOutline
+        {
+            get { return IsOutlined && !Font.HasBuiltInOutline; }
+        }
+
         public IFont Font; // default value set in manager ctor.
         public Color Color = Color.White;
         public int ColorHue = 2;

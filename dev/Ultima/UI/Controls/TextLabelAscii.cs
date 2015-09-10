@@ -47,17 +47,17 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_Rendered = new RenderedText(string.Empty, m_Width, true);
         }
 
-        public TextLabelAscii(AControl parent, int x, int y, int hue, int fontid, string text, int width = 400)
+        public TextLabelAscii(AControl parent, int x, int y, int font, int hue, string text, int width = 400)
             : this(parent, width)
         {
-            buildGumpling(x, y, hue, fontid, text);
+            buildGumpling(x, y, font, hue, text);
         }
 
-        void buildGumpling(int x, int y, int hue, int fontid, string text)
+        void buildGumpling(int x, int y, int font, int hue, string text)
         {
             Position = new Point(x, y);
             Hue = hue;
-            FontID = fontid;
+            FontID = font;
             Text = text;
         }
 

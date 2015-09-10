@@ -693,19 +693,30 @@ namespace UltimaXNA.Ultima.World
             // get the resource provider
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             string strCliLoc = constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements);
-            ReceiveTextMessage(p.MessageType, strCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
+            ReceiveTextMessage(p.MessageType, strCliLoc, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
         }
 
         private void ReceiveAsciiMessage(IRecvPacket packet)
         {
             AsciiMessagePacket p = (AsciiMessagePacket)packet;
-            ReceiveTextMessage(p.MsgType, p.Text, p.Hue, p.Font, p.Serial, p.Name1);
+            ReceiveTextMessage(p.MsgType, p.Text, p.Font, p.Hue, p.Serial, p.SpeakerName, false);
         }
 
         private void ReceiveUnicodeMessage(IRecvPacket packet)
         {
             UnicodeMessagePacket p = (UnicodeMessagePacket)packet;
-            ReceiveTextMessage(p.MsgType, p.SpokenText, p.Hue, p.Font, p.Serial, p.SpeakerName);
+            ReceiveTextMessage(p.MsgType, p.Text, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
+        }
+
+        private void ReceiveMessageLocalizedAffix(IRecvPacket packet)
+        {
+            MessageLocalizedAffixPacket p = (MessageLocalizedAffixPacket)packet;
+
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
+                constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements), p.Affix);
+            ReceiveTextMessage(p.MessageType, localizedString, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
         }
 
         private string constructCliLoc(string baseCliloc, string arg = null, bool capitalize = false)
@@ -766,7 +777,7 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveTextMessage(MessageTypes msgType, string text, int hue, int font, Serial serial, string speakerName)
+        private void ReceiveTextMessage(MessageTypes msgType, string text, int font, int hue, Serial serial, string speakerName, bool asUnicode)
         {
             PlayerState.Journaling.AddEntry(text);
 
@@ -775,45 +786,44 @@ namespace UltimaXNA.Ultima.World
             {
                 case MessageTypes.Regular:
                 case MessageTypes.SpeechUnknown:
-                    overhead = WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue);
-                    if (overhead != null)
+                    if (serial.IsValid)
                     {
-                        m_World.Interaction.ChatMessage(speakerName + ": " + text, font, hue);
+                        overhead = WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue, asUnicode);
                     }
                     else
                     {
-                        m_World.Interaction.ChatMessage(text, font, hue);
+                        m_World.Interaction.ChatMessage(text, font, hue, asUnicode);
                     }
                     break;
                 case MessageTypes.System:
-                    m_World.Interaction.ChatMessage("[SYSTEM] " + text, font, hue);
+                    m_World.Interaction.ChatMessage("[SYSTEM] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Emote:
-                    m_World.Interaction.ChatMessage("[EMOTE] " + text, font, hue);
+                    m_World.Interaction.ChatMessage("[EMOTE] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Label:
-                    m_World.Interaction.CreateLabel(msgType, serial, text, font, hue);
+                    m_World.Interaction.CreateLabel(msgType, serial, text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Focus: // on player?
-                    m_World.Interaction.ChatMessage("[FOCUS] " + text, font, hue);
+                    m_World.Interaction.ChatMessage("[FOCUS] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Whisper:
-                    m_World.Interaction.ChatMessage("[WHISPER] " + text, font, hue);
+                    m_World.Interaction.ChatMessage("[WHISPER] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Yell:
-                    m_World.Interaction.ChatMessage("[YELL] " + text, font, hue);
+                    m_World.Interaction.ChatMessage("[YELL] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Spell:
-                    m_World.Interaction.ChatMessage("[SPELL] " + text, font, hue);
+                    m_World.Interaction.ChatMessage("[SPELL] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.UIld:
-                    m_World.Interaction.ChatMessage("[UILD] " + text, font, hue);
+                    m_World.Interaction.ChatMessage("[UILD] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Alliance:
-                    m_World.Interaction.ChatMessage("[ALLIANCE] " + text, font, hue);
+                    m_World.Interaction.ChatMessage("[ALLIANCE] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Command:
-                    m_World.Interaction.ChatMessage("[COMMAND] " + text, font, hue);
+                    m_World.Interaction.ChatMessage("[COMMAND] " + text, font, hue, asUnicode);
                     break;
                 default:
                     Tracer.Warn("Speech packet with unknown msgType parameter received. MsgType={0} Msg={1}", msgType, text);
@@ -927,17 +937,6 @@ namespace UltimaXNA.Ultima.World
         //
         // Other packets
         // 
-
-        private void ReceiveMessageLocalizedAffix(IRecvPacket packet)
-        {
-            MessageLocalizedAffixPacket p = (MessageLocalizedAffixPacket)packet;
-
-            // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-            string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
-                constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements), p.Affix);
-            ReceiveTextMessage(p.MessageType, localizedString, p.Hue, p.Font, p.Serial, p.SpeakerName);
-        }
 
         private void ReceiveNewSubserver(IRecvPacket packet)
         {

@@ -66,7 +66,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             ((Button)LastControl).GumpOverID = 5541;
             // center message window backdrop
             AddControl(new ResizePic(this, 160, 70, 2600, 408, 390), 1);
-            AddControl(new TextLabelAscii(this, 266, 112, 2016, 2, provider.GetString(3000050)), 1);
+            AddControl(new TextLabelAscii(this, 266, 112, 2, 2016, provider.GetString(3000050)), 1);
             // delete button
             AddControl(new Button(this, 224, 398, 5530, 5532, ButtonTypes.Activate, 0, (int)Buttons.DeleteCharacterButton), 1);
             ((Button)LastControl).GumpOverID = 5531;
@@ -77,7 +77,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // Page 2 - logging in to server
             // center message window backdrop
             AddControl(new ResizePic(this, 116, 95, 2600, 408, 288), 2);
-            AddControl(new TextLabelAscii(this, 166, 143, 2016, 2, provider.GetString(3000001)), 2);
+            AddControl(new TextLabelAscii(this, 166, 143, 2, 2016, provider.GetString(3000001)), 2);
 
             IsUncloseableWithRMB = true;
         }

@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             if (WorldView.AllLabels)
             {
-                AddOverhead(MessageTypes.Label, Name, 3, NotorietyHue);
+                AddOverhead(MessageTypes.Label, Name, 3, NotorietyHue, false);
             }
 
             if (!m_movement.Position.IsNullPosition)

@@ -290,7 +290,7 @@ namespace UltimaXNA.Core.UI.HTML
                     int styleWidthChild = 0;
                     if (child.Style.IsItalic)
                         styleWidthChild = child.Style.Font.Height / 2;
-                    if (child.Style.IsOutlined)
+                    if (child.Style.MustDrawnOutline)
                         styleWidthChild += 2;
                     if (styleWidthChild > styleWidth)
                         styleWidth = styleWidthChild;
@@ -541,7 +541,7 @@ namespace UltimaXNA.Core.UI.HTML
                         // italic characters need a little extra width if they are at the end of the line.
                         if (atom.Style.IsItalic)
                             styleWidth = font.Height / 2;
-                        if (atom.Style.IsOutlined)
+                        if (atom.Style.MustDrawnOutline)
                             styleWidth += 2;
                         if (ch.YOffset + ch.Height > wordHeight)
                             wordHeight = ch.YOffset + ch.Height;
@@ -636,7 +636,7 @@ namespace UltimaXNA.Core.UI.HTML
                     // HREF links should be colored white, because we will hue them at runtime.
                     uint color = element.Style.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(element.Style.Color);
                     character.WriteToBuffer(ptr, x, y, width, height, font.Baseline,
-                        element.Style.IsBold, element.Style.IsItalic, element.Style.IsUnderlined, element.Style.IsOutlined, color, 0xFF000008);
+                        element.Style.IsBold, element.Style.IsItalic, element.Style.IsUnderlined, element.Style.MustDrawnOutline, color, 0xFF000008);
                     // offset y by ascender for links...
                     if (character.YOffset < 0)
                     {

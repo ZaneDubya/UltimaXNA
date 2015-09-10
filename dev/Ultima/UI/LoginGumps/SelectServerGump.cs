@@ -69,7 +69,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // Page 2 - logging in to server ... with cancel login button
             // center message window backdrop
             AddControl(new ResizePic(this, 116, 95, 2600, 408, 288), 2);
-            AddControl(new TextLabelAscii(this, 166, 143, 2017, 2, provider.GetString(3000053) + "..."), 2);
+            AddControl(new TextLabelAscii(this, 166, 143, 2, 2017, provider.GetString(3000053) + "..."), 2);
             AddControl(new Button(this, 305, 342, 1150, 1152, ButtonTypes.Activate, 0, (int)SelectServerGumpButtons.BackButton), 2);
             ((Button)LastControl).GumpOverID = 1151;
 

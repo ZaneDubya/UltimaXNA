@@ -365,7 +365,7 @@ namespace UltimaXNA.Ultima.World.Input
                 else if(overEntity is StaticItem)
                 {
                     // pop up name of item.
-                    overEntity.AddOverhead(MessageTypes.Label, overEntity.Name, 3, 0);
+                    overEntity.AddOverhead(MessageTypes.Label, overEntity.Name, 3, 0, false);
                     WorldModel.Statics.AddStaticThatNeedsUpdating(overEntity as StaticItem);
                 }
                 else if(overEntity is Item)

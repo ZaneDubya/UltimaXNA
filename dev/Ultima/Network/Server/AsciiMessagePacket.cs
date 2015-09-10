@@ -17,60 +17,24 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class AsciiMessagePacket : RecvPacket
     {
-        readonly Serial m_serial;
-        readonly short m_graphic;
-        readonly MessageTypes m_type;
-        readonly short m_hue;
-        readonly short m_font;
-        readonly string m_name;
-        readonly string m_text;
-
-        public Serial Serial
-        {
-            get { return m_serial; }
-        }
-
-        public short Graphic
-        {
-            get { return m_graphic; }
-        }
-
-        public MessageTypes MsgType
-        {
-            get { return m_type; }
-        }
-
-        public short Hue
-        {
-            get { return m_hue; }
-        }
-
-        public short Font
-        {
-            get { return m_font; }
-        }
-
-        public string Name1
-        {
-            get { return m_name; }
-        } 
-
-        public string Text
-        {
-            get { return m_text; }
-        } 
-
+        public readonly Serial Serial;
+        public readonly short Model;
+        public readonly MessageTypes MsgType;
+        public readonly short Hue;
+        public readonly short Font;
+        public readonly string SpeakerName;
+        public readonly string Text;
 
         public AsciiMessagePacket(PacketReader reader)
             : base(0x1C, "Ascii Message")
         {
-            m_serial = reader.ReadInt32();
-            m_graphic = reader.ReadInt16();
-            m_type = (MessageTypes)reader.ReadByte();
-            m_hue = reader.ReadInt16();
-            m_font = reader.ReadInt16();
-            m_name = reader.ReadString(30);
-            m_text = reader.ReadString();
+            Serial = reader.ReadInt32();
+            Model = reader.ReadInt16();
+            MsgType = (MessageTypes)reader.ReadByte();
+            Hue = reader.ReadInt16();
+            Font = reader.ReadInt16();
+            SpeakerName = reader.ReadString(30).Trim();
+            Text = reader.ReadString();
         }
     }
 }

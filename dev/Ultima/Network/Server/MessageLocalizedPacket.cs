@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.Network.Server
             Hue = reader.ReadUInt16();
             Font = reader.ReadInt16();
             CliLocNumber = reader.ReadInt32();
-            SpeakerName = reader.ReadString(30);
+            SpeakerName = reader.ReadString(30).Trim();
             Arguements = reader.ReadUnicodeStringSafeReverse();
         }
     }

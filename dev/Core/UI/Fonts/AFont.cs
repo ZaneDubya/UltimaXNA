@@ -17,6 +17,12 @@ namespace UltimaXNA.Core.UI.Fonts
 {
     abstract class AFont : IFont
     {
+        public bool HasBuiltInOutline
+        {
+            set;
+            get;
+        }
+
         public int Height
         {
             get;

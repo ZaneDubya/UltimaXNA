@@ -204,9 +204,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Mode = ChatMode.Default;
         }
 
-        public void AddLine(string text)
+        public void AddLine(string text, int font, int hue, bool asUnicode)
         {
-            m_TextEntries.Add(new ChatLineTimed(string.Format("<{1}>{0}</{1}>", text, "big"), Width));
+            m_TextEntries.Add(new ChatLineTimed(string.Format("<outline style='font-family:{1}{2};'>{0}", text, asUnicode ? "uni" : "ascii", font), Width));
         }
     }
 

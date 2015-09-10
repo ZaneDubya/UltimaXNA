@@ -67,7 +67,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_resize.MouseClickEvent += onClickClosedList;
             m_resize.MouseOverEvent += onMouseOverClosedList;
             m_resize.MouseOutEvent += onMouseOutClosedList;
-            m_label = (TextLabelAscii)AddControl(new TextLabelAscii(this, 4, 5, hue_Text, 1, string.Empty), 0);
+            m_label = (TextLabelAscii)AddControl(new TextLabelAscii(this, 4, 5, 1, hue_Text, string.Empty), 0);
             AddControl(new GumpPic(this, width - 22, 5, 2086, 0), 0);
         }
 
@@ -158,7 +158,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_openLabels = new TextLabelAscii[m_visibleItems];
             for (int i = 0; i < m_visibleItems; i++)
             {
-                m_openLabels[i] = new TextLabelAscii(Parent, X + 4, Y + 5 + m_Font.Height * i, 1106, 1, string.Empty);
+                m_openLabels[i] = new TextLabelAscii(Parent, X + 4, Y + 5 + m_Font.Height * i, 1, 1106, string.Empty);
                 ((Gump)Parent).AddControl(m_openLabels[i], this.Page);
             }
         }

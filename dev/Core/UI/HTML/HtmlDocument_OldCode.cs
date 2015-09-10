@@ -81,7 +81,7 @@ namespace UltimaXNA.Core.UI.HTML
                         // italic characters need a little extra width if they are at the end of the line.
                         if (atom.Style.IsItalic)
                             styleWidth = font.Height / 2;
-                        if (atom.Style.IsOutlined)
+                        if (atom.Style.MustDrawnOutline)
                             styleWidth += 2;
                         if (ch.YOffset + ch.Height - lineHeight > descenderHeight)
                             descenderHeight = ch.YOffset + ch.Height - lineHeight;
@@ -276,7 +276,7 @@ namespace UltimaXNA.Core.UI.HTML
                         // HREF links should be colored white, because we will hue them at runtime.
                         uint color = atom.Style.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(atom.Style.Color);
                         character.WriteToBuffer(rPtr, x, y, linewidth, maxHeight, font.Baseline,
-                            atom.Style.IsBold, atom.Style.IsItalic, atom.Style.IsUnderlined, atom.Style.IsOutlined, color, 0xFF000008);
+                            atom.Style.IsBold, atom.Style.IsItalic, atom.Style.IsUnderlined, atom.Style.MustDrawnOutline, color, 0xFF000008);
                     }
                     else if (atoms[i] is ImageElement)
                     {
@@ -351,7 +351,7 @@ namespace UltimaXNA.Core.UI.HTML
 
                     if (atom is CharacterElement && ((CharacterElement)atom).Style.IsItalic)
                         additionalwidth = 2;
-                    else if (atom is CharacterElement && ((CharacterElement)atom).Style.IsOutlined)
+                    else if (atom is CharacterElement && ((CharacterElement)atom).Style.MustDrawnOutline)
                         additionalwidth = 2;
                     else
                         additionalwidth = 0;

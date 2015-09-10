@@ -181,7 +181,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             // this is where we would draw the reverse of the chair texture.
 
-            DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, yOffset);
+            bool isMounted = (Entity is Mobile) ? (Entity as Mobile).IsMounted ? true : false : false;
+            DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, isMounted ? yOffset + 16 : yOffset);
 
             return true;
         }

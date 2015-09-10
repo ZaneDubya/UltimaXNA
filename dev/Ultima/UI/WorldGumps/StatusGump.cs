@@ -78,53 +78,53 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 AddControl(new GumpPic(this, 0, 0, 0x2A6C, 0));
 
-                m_Labels[(int)MobileStats.Name] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 54, 44, 1, 6, m_Mobile.Name));
-                m_Labels[(int)MobileStats.Strength] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 88, 71, 1, 6, m_Mobile.Strength.ToString()));
-                m_Labels[(int)MobileStats.Dexterity] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 88, 99, 1, 6, m_Mobile.Dexterity.ToString()));
-                m_Labels[(int)MobileStats.Intelligence] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 87, 127, 1, 6, m_Mobile.Intelligence.ToString()));
+                m_Labels[(int)MobileStats.Name] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 54, 48, 1, 997, string.Format("<center>{0}", m_Mobile.Name))); // center doesn't work because textlabelascii shrinks to fit.
+                m_Labels[(int)MobileStats.Strength] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 88, 76, 1, 997, m_Mobile.Strength.ToString()));
+                m_Labels[(int)MobileStats.Dexterity] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 88, 104, 1, 997, m_Mobile.Dexterity.ToString()));
+                m_Labels[(int)MobileStats.Intelligence] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 88, 132, 1, 997, m_Mobile.Intelligence.ToString()));
 
-                m_Labels[(int)MobileStats.HealthCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 147, 67, 1, 6, m_Mobile.Health.Current.ToString()));
-                m_Labels[(int)MobileStats.HealthMax] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 147, 77, 1, 6, m_Mobile.Health.Max.ToString()));
+                m_Labels[(int)MobileStats.HealthCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 147, 71, 1, 997, m_Mobile.Health.Current.ToString()));
+                m_Labels[(int)MobileStats.HealthMax] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 147, 82, 1, 997, m_Mobile.Health.Max.ToString()));
 
-                m_Labels[(int)MobileStats.StaminaCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 147, 94, 1, 6, m_Mobile.Stamina.Current.ToString()));
-                m_Labels[(int)MobileStats.StaminaMax] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 147, 105, 1, 6, m_Mobile.Stamina.Max.ToString()));
+                m_Labels[(int)MobileStats.StaminaCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 147, 99, 1, 997, m_Mobile.Stamina.Current.ToString()));
+                m_Labels[(int)MobileStats.StaminaMax] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 147, 110, 1, 997, m_Mobile.Stamina.Max.ToString()));
 
-                m_Labels[(int)MobileStats.ManaCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 148, 122, 1, 6, m_Mobile.Mana.Current.ToString()));
-                m_Labels[(int)MobileStats.ManaMax] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 148, 133, 1, 6, m_Mobile.Mana.Max.ToString()));
+                m_Labels[(int)MobileStats.ManaCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 148, 127, 1, 997, m_Mobile.Mana.Current.ToString()));
+                m_Labels[(int)MobileStats.ManaMax] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 148, 138, 1, 997, m_Mobile.Mana.Max.ToString()));
 
-                m_Labels[(int)MobileStats.Followers] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 289, 127, 1, 6, ConcatCurrentMax(m_Mobile.Followers.Current, m_Mobile.Followers.Max)));
+                m_Labels[(int)MobileStats.Followers] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 289, 132, 1, 997, ConcatCurrentMax(m_Mobile.Followers.Current, m_Mobile.Followers.Max)));
 
-                m_Labels[(int)MobileStats.WeightCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 212, 121, 1, 6, m_Mobile.Weight.Current.ToString()));
-                m_Labels[(int)MobileStats.WeightMax] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 212, 132, 1, 6, m_Mobile.Weight.Max.ToString()));
+                m_Labels[(int)MobileStats.WeightCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 212, 127, 1, 997, m_Mobile.Weight.Current.ToString()));
+                m_Labels[(int)MobileStats.WeightMax] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 212, 138, 1, 997, m_Mobile.Weight.Max.ToString()));
 
-                m_Labels[(int)MobileStats.StatCap] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 219, 71, 1, 6, m_Mobile.StatCap.ToString()));
-                m_Labels[(int)MobileStats.Luck] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 218, 99, 1, 6, m_Mobile.Luck.ToString()));
-                m_Labels[(int)MobileStats.Gold] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 282, 99, 1, 6, m_Mobile.Gold.ToString()));
+                m_Labels[(int)MobileStats.StatCap] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 219, 74, 1, 997, m_Mobile.StatCap.ToString()));
+                m_Labels[(int)MobileStats.Luck] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 218, 102, 1, 997, m_Mobile.Luck.ToString()));
+                m_Labels[(int)MobileStats.Gold] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 282, 102, 1, 997, m_Mobile.Gold.ToString()));
 
-                m_Labels[(int)MobileStats.AR] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 70, 1, 6, m_Mobile.ArmorRating.ToString()));
-                m_Labels[(int)MobileStats.RF] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 85, 1, 6, m_Mobile.ResistFire.ToString()));
-                m_Labels[(int)MobileStats.RC] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 100, 1, 6, m_Mobile.ResistCold.ToString()));
-                m_Labels[(int)MobileStats.RP] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 114, 1, 6, m_Mobile.ResistPoison.ToString()));
-                m_Labels[(int)MobileStats.RE] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 129, 1, 6, m_Mobile.ResistEnergy.ToString()));
+                m_Labels[(int)MobileStats.AR] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 73, 1, 997, m_Mobile.ArmorRating.ToString()));
+                m_Labels[(int)MobileStats.RF] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 90, 1, 997, m_Mobile.ResistFire.ToString()));
+                m_Labels[(int)MobileStats.RC] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 105, 1, 997, m_Mobile.ResistCold.ToString()));
+                m_Labels[(int)MobileStats.RP] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 119, 1, 997, m_Mobile.ResistPoison.ToString()));
+                m_Labels[(int)MobileStats.RE] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 135, 1, 997, m_Mobile.ResistEnergy.ToString()));
 
-                m_Labels[(int)MobileStats.Damage] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 277, 70, 1, 6, ConcatCurrentMax(m_Mobile.DamageMin, m_Mobile.DamageMax)));
+                m_Labels[(int)MobileStats.Damage] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 277, 75, 1, 997, ConcatCurrentMax(m_Mobile.DamageMin, m_Mobile.DamageMax)));
             }
             else
             {
                 AddControl(new GumpPic(this, 0, 0, 0x802, 0));
 
-                m_Labels[(int)MobileStats.Name] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 37, 0, 6, m_Mobile.Name));
-                m_Labels[(int)MobileStats.Strength] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 57, 0, 6, m_Mobile.Strength.ToString()));
-                m_Labels[(int)MobileStats.Dexterity] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 69, 0, 6, m_Mobile.Dexterity.ToString()));
-                m_Labels[(int)MobileStats.Intelligence] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 81, 0, 6, m_Mobile.Intelligence.ToString()));
-                m_Labels[(int)MobileStats.Sex] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 93, 0, 6, m_Mobile.Flags.IsFemale ? "F" : "M"));
-                m_Labels[(int)MobileStats.AR] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 105, 0, 6, m_Mobile.ArmorRating.ToString()));
+                m_Labels[(int)MobileStats.Name] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 37, 6, 0, m_Mobile.Name));
+                m_Labels[(int)MobileStats.Strength] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 57, 6, 0, m_Mobile.Strength.ToString()));
+                m_Labels[(int)MobileStats.Dexterity] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 69, 6, 0, m_Mobile.Dexterity.ToString()));
+                m_Labels[(int)MobileStats.Intelligence] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 81, 6, 0, m_Mobile.Intelligence.ToString()));
+                m_Labels[(int)MobileStats.Sex] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 93, 6, 0, m_Mobile.Flags.IsFemale ? "F" : "M"));
+                m_Labels[(int)MobileStats.AR] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 84, 105, 6, 0, m_Mobile.ArmorRating.ToString()));
 
-                m_Labels[(int)MobileStats.HealthCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 57, 0, 6, m_Mobile.Health.Current.ToString() + '/' + m_Mobile.Health.Max.ToString()));
-                m_Labels[(int)MobileStats.ManaCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 69, 0, 6, m_Mobile.Mana.Current.ToString() + '/' + m_Mobile.Mana.Max.ToString()));
-                m_Labels[(int)MobileStats.StaminaCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 81, 0, 6, m_Mobile.Stamina.Current.ToString() + '/' + m_Mobile.Stamina.Max.ToString()));
-                m_Labels[(int)MobileStats.Gold] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 93, 0, 6, m_Mobile.Gold.ToString()));
-                m_Labels[(int)MobileStats.WeightCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 105, 0, 6, m_Mobile.Weight.Current.ToString() + '/' + m_Mobile.Weight.Max.ToString()));
+                m_Labels[(int)MobileStats.HealthCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 57, 6, 0, m_Mobile.Health.Current.ToString() + '/' + m_Mobile.Health.Max.ToString()));
+                m_Labels[(int)MobileStats.ManaCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 69, 6, 0, m_Mobile.Mana.Current.ToString() + '/' + m_Mobile.Mana.Max.ToString()));
+                m_Labels[(int)MobileStats.StaminaCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 81, 6, 0, m_Mobile.Stamina.Current.ToString() + '/' + m_Mobile.Stamina.Max.ToString()));
+                m_Labels[(int)MobileStats.Gold] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 93, 6, 0, m_Mobile.Gold.ToString()));
+                m_Labels[(int)MobileStats.WeightCurrent] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 172, 105, 6, 0, m_Mobile.Weight.Current.ToString() + '/' + m_Mobile.Weight.Max.ToString()));
             }
         }
 
@@ -144,7 +144,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 // The label will only update if the value has changed.
                 if (UltimaXNA.Ultima.Data.Features.EnableAOS)
                 {
-                    m_Labels[(int)MobileStats.Name].Text = m_Mobile.Name;
+                    m_Labels[(int)MobileStats.Name].Text = string.Format("<center>{0}", m_Mobile.Name);
                     m_Labels[(int)MobileStats.Strength].Text = m_Mobile.Strength.ToString();
                     m_Labels[(int)MobileStats.Dexterity].Text = m_Mobile.Dexterity.ToString();
                     m_Labels[(int)MobileStats.Intelligence].Text = m_Mobile.Intelligence.ToString();

@@ -121,12 +121,12 @@ namespace UltimaXNA.Ultima.World.Managers
             m_Entities_Queued.Clear();
         }
 
-        public Overhead AddOverhead(MessageTypes msgType, Serial serial, string text, int fontID, int hue)
+        public Overhead AddOverhead(MessageTypes msgType, Serial serial, string text, int fontID, int hue, bool asUnicode)
         {
             if (m_Entities.ContainsKey(serial))
             {
                 AEntity ownerEntity = m_Entities[serial];
-                Overhead overhead = ownerEntity.AddOverhead(msgType, text, fontID, hue);
+                Overhead overhead = ownerEntity.AddOverhead(msgType, text, fontID, hue, asUnicode);
                 return overhead;
             }
             else

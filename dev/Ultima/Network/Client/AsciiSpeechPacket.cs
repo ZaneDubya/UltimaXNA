@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.Network.Client
     {
         const byte HasTriggers = 0xC0;
 
-        public AsciiSpeechPacket(AsciiSpeechPacketTypes type, int hue, int font, string lang, string text)
+        public AsciiSpeechPacket(AsciiSpeechPacketTypes type, int font, int hue, string lang, string text)
             : base(0xAD, "Ascii Speech")
         {
             // get triggers

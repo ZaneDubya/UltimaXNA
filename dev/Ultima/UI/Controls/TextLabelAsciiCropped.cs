@@ -41,19 +41,19 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         }
 
-        public TextLabelAsciiCropped(AControl parent, int x, int y, int width, int height, int hue, int fontid, string text)
+        public TextLabelAsciiCropped(AControl parent, int x, int y, int width, int height, int font, int hue, string text)
             : this(parent)
         {
-            buildGumpling(x, y, width, height, hue, fontid, text);
+            buildGumpling(x, y, width, height, font, hue, text);
         }
 
-        void buildGumpling(int x, int y, int width, int height, int hue, int fontid, string text)
+        void buildGumpling(int x, int y, int width, int height, int font, int hue, string text)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);
             m_Rendered = new RenderedText(string.Empty, width);
             Hue = hue;
-            FontID = fontid;
+            FontID = font;
             Text = text;
         }
 
