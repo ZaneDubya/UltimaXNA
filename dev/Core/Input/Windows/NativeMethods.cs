@@ -294,48 +294,48 @@ namespace UltimaXNA.Core.Input.Windows
     {
         // new methods ...
         [DllImport("Imm32.dll")]
-        public static extern IntPtr ImmGetContext(IntPtr hWnd);
+        internal static extern IntPtr ImmGetContext(IntPtr hWnd);
 
         [DllImport("Imm32.dll")]
-        public static extern IntPtr ImmAssociateContext(IntPtr hWnd, IntPtr hIMC);
+        internal static extern IntPtr ImmAssociateContext(IntPtr hWnd, IntPtr hIMC);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        internal static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
-        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        internal static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         // old methods ...
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
-        public static extern int MultiByteToWideChar(int CodePage, int dwFlags, byte[] lpMultiByteStr, int cchMultiByte, char[] lpWideCharStr, int cchWideChar);
+        internal static extern int MultiByteToWideChar(int CodePage, int dwFlags, byte[] lpMultiByteStr, int cchMultiByte, char[] lpWideCharStr, int cchWideChar);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        public static extern short GetKeyState(int keyCode);
+        internal static extern short GetKeyState(int keyCode);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool CloseHandle(IntPtr hObject);
+        internal static extern bool CloseHandle(IntPtr hObject);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern IntPtr SetWindowsHookEx(int hookType, WndProcHandler callback, IntPtr hMod, uint dwThreadId);
+        internal static extern IntPtr SetWindowsHookEx(int hookType, WndProcHandler callback, IntPtr hMod, uint dwThreadId);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+        internal static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern bool UnhookWindowsHookEx(IntPtr hhk);
+        internal static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetMessage(out Message lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+        internal static extern bool GetMessage(out Message lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         [DllImport("user32.dll", EntryPoint = "TranslateMessage")]
-        public static extern bool TranslateMessage(ref Message m);
+        internal static extern bool TranslateMessage(ref Message m);
 
         [DllImport("user32.dll")]
-        public static extern uint GetWindowThreadProcessId(IntPtr window, IntPtr module);
+        internal static extern uint GetWindowThreadProcessId(IntPtr window, IntPtr module);
     }
 }
