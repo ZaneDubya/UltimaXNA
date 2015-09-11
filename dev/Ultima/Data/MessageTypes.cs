@@ -17,6 +17,7 @@ namespace UltimaXNA.Ultima.Data
         System = 0x01,
         Emote = 0x02,
         SpeechUnknown = 0x03,
+        Information = 0x04,     //SphereServer uses it for overhead information messages
         Label = 0x06,
         Focus = 0x07,
         Whisper = 0x08,
