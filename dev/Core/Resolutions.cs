@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using UltimaXNA.Configuration;
+using Microsoft.Xna.Framework;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace UltimaXNA.Core
 {
@@ -9,10 +12,20 @@ namespace UltimaXNA.Core
         public static readonly List<ResolutionConfig> FullScreenResolutionsList;
         public static readonly List<ResolutionConfig> PlayWindowResolutionsList;
 
-        static Resolutions()
+        public static void SetScreenSize(GameWindow window)
         {
-            FullScreenResolutionsList = new List<ResolutionConfig>();
-            PlayWindowResolutionsList = new List<ResolutionConfig>();
+            Microsoft.Xna.Framework.Rectangle game;
+            System.Drawing.Rectangle screen;
+
+            if (window != null)
+            {
+                game = window.ClientBounds;
+                screen = Screen.GetWorkingArea(new System.Drawing.Rectangle(game.X, game.Y, game.Width, game.Height));
+            }
+            else
+            {
+                screen = Screen.GetWorkingArea(new System.Drawing.Point(0, 0));
+            }
 
             foreach (DisplayMode mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
             {
@@ -27,11 +40,19 @@ namespace UltimaXNA.Core
 
             foreach (ResolutionConfig res in FullScreenResolutionsList)
             {
-                if (!PlayWindowResolutionsList.Contains(res) && res.Width < 2048 && res.Height < 2048)
+                if (!PlayWindowResolutionsList.Contains(res) && res.Width <= screen.Width && res.Height <= screen.Height)
                 {
                     PlayWindowResolutionsList.Add(res);
                 }
             }
+        }
+
+        static Resolutions()
+        {
+            FullScreenResolutionsList = new List<ResolutionConfig>();
+            PlayWindowResolutionsList = new List<ResolutionConfig>();
+
+            SetScreenSize(null);
         }
 
         public static bool IsValidFullScreenResolution(ResolutionConfig resolution)

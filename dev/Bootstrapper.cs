@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region Usings
-
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -76,6 +75,7 @@ namespace UltimaXNA
 
             using (UltimaGame engine = new UltimaGame())
             {
+                Resolutions.SetScreenSize(engine.Window);
                 engine.Run();
             }
 

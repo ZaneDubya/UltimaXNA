@@ -226,6 +226,11 @@ namespace UltimaXNA
 
             if(!IsMinimized)
             {
+                if (ActiveModel is WorldModel)
+                    CheckWindowSize(Settings.World.PlayWindowGumpResolution.Width, Settings.World.PlayWindowGumpResolution.Height);
+                else
+                    CheckWindowSize(800, 600);
+                
                 ActiveModel.GetView()
                     .Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
@@ -345,20 +350,20 @@ namespace UltimaXNA
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
             GraphicsDeviceManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             GraphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
-            Window.ClientSizeChanged += new EventHandler<EventArgs>(OnWindowSizeChanged);
         }
 
-        private void OnWindowSizeChanged(object sender, EventArgs e)
+        private void CheckWindowSize(int minWidth, int minHeight)
         {
-            GameWindow window = (sender as GameWindow);
+            GameWindow window = this.Window; // (sender as GameWindow);
             ResolutionConfig resolution = new ResolutionConfig(window.ClientBounds.Width, window.ClientBounds.Height);
             // this only occurs when the world is active. Make sure that we don't reduce the window size
             // smaller than the world gump size.
-            if (resolution.Width < Settings.World.PlayWindowGumpResolution.Width)
-                resolution.Width = Settings.World.PlayWindowGumpResolution.Width;
-            if (resolution.Height < Settings.World.PlayWindowGumpResolution.Height)
-                resolution.Height = Settings.World.PlayWindowGumpResolution.Height;
-            SetGraphicsDeviceWidthHeight(resolution);
+            if (resolution.Width < minWidth)
+                resolution.Width = minWidth;
+            if (resolution.Height < minHeight)
+                resolution.Height = minHeight;
+            if (resolution.Width != window.ClientBounds.Width || resolution.Height != window.ClientBounds.Height)
+                SetGraphicsDeviceWidthHeight(resolution);
         }
 
         private void SetGraphicsDeviceWidthHeight(ResolutionConfig resolution)
