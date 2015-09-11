@@ -779,6 +779,8 @@ namespace UltimaXNA.Ultima.World
 
         private void ReceiveTextMessage(MessageTypes msgType, string text, int font, ushort hue, Serial serial, string speakerName, bool asUnicode)
         {
+            if (speakerName == "System")
+                speakerName = string.Empty;
             PlayerState.Journaling.AddEntry(text, font, hue, speakerName, asUnicode);
 
             Overhead overhead;
@@ -878,7 +880,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveOpenPaperdoll(IRecvPacket packet)
         {
             OpenPaperdollPacket p = packet as OpenPaperdollPacket;
-            if (m_UserInterface.GetControl<JournalGump>(p.Serial) == null)
+            if (m_UserInterface.GetControl<PaperDollGump>(p.Serial) == null)
                 m_UserInterface.AddControl(new PaperDollGump(p.Serial), 400, 100);
         }
 
