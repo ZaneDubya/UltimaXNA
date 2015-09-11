@@ -825,6 +825,9 @@ namespace UltimaXNA.Ultima.World
                 case MessageTypes.Command:
                     m_World.Interaction.ChatMessage("[COMMAND] " + text, font, hue, asUnicode);
                     break;
+                case MessageTypes.Information:
+                    m_World.Interaction.CreateLabel(msgType, serial, text, font, hue, asUnicode);
+                    break;
                 default:
                     Tracer.Warn("Speech packet with unknown msgType parameter received. MsgType={0} Msg={1}", msgType, text);
                     break;
