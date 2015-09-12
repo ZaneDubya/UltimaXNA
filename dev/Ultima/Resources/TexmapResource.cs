@@ -24,6 +24,8 @@ namespace UltimaXNA.Ultima.Resources
         private AFileIndex m_Index = FileManager.CreateFileIndex("texidx.mul", "texmaps.mul", 0x4000, -1); // !!! must find patch file reference for texmap.
         private GraphicsDevice m_Graphics;
 
+        private const int DEFAULT_TEXTURE = 0x007F; // index 127 is the first 'unused' texture.
+
         public TexmapResource(GraphicsDevice graphics)
         {
             m_Graphics = graphics;
@@ -54,7 +56,7 @@ namespace UltimaXNA.Ultima.Resources
             if (reader.Stream.Length == 0)
             {
                 Tracer.Warn("Requested texmap texture #{0} does not exist. Replacing with 'unused' graphic.", index);
-                return null;
+                return GetTexmapTexture(DEFAULT_TEXTURE);
             }
 
             int metrics_dataread_start = (int)reader.Position;
