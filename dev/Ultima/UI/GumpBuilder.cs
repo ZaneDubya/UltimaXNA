@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using System;
+using System.Text.RegularExpressions;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.UI.Controls;
@@ -29,7 +30,7 @@ namespace UltimaXNA.Ultima.UI
 
             for (int i = 0; i < gumpPieces.Length; i++)
             {
-                string[] gumpParams = gumpPieces[i].Split(' ');
+                string[] gumpParams = Regex.Split(gumpPieces[i], @"\s+");
                 switch (gumpParams[0])
                 {
                     case "button":
