@@ -226,7 +226,7 @@ namespace UltimaXNA.Core.Network
 
                 m_ServerEndPoint = new IPEndPoint(m_ServerAddress, port);
 
-                Tracer.Debug("Connecting...");
+                Tracer.Debug("Connecting to {0}:{1}...", m_ServerAddress, port);
 
                 m_ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 m_ServerSocket.Connect(m_ServerEndPoint);
