@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   LoginScene.cs
+ *   LoginState.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,11 +19,11 @@ namespace UltimaXNA.Ultima.Login.States
 {
     public class LoginState : AState
     {
-        LoginGump m_LoginGump;
+        private LoginGump m_LoginGump;
 
-        UserInterfaceService m_UserInterface;
-        InputManager m_Input;
-        LoginModel m_Login;
+        private UserInterfaceService m_UserInterface;
+        private InputManager m_Input;
+        private LoginModel m_Login;
 
         public LoginState()
             : base()

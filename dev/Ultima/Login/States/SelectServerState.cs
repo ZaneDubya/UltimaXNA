@@ -40,6 +40,43 @@ namespace UltimaXNA.Ultima.Login.States
             m_SelectServerGump.OnBackToLoginScreen += OnBackToLoginScreen;
             m_SelectServerGump.OnSelectLastServer += OnSelectLastServer;
             m_SelectServerGump.OnSelectServer += OnSelectServer;
+
+            m_Login.Client.OnWaitingForRelay += DoRelay;
+            m_Login.Client.OnHasCharacterList += SwitchToSelectChar;
+
+            SelectAServerIfOnlyOneServer();
+        }
+
+        public override void Dispose()
+        {
+            m_SelectServerGump.OnBackToLoginScreen -= OnBackToLoginScreen;
+            m_SelectServerGump.OnSelectLastServer -= OnSelectLastServer;
+            m_SelectServerGump.OnSelectServer -= OnSelectServer;
+            m_SelectServerGump.Dispose();
+
+            m_Login.Client.OnWaitingForRelay -= DoRelay;
+            m_Login.Client.OnHasCharacterList -= SwitchToSelectChar;
+
+            base.Dispose();
+        }
+
+        private void SelectAServerIfOnlyOneServer()
+        {
+            if (ServerList.List.Length == 1)
+            {
+                OnSelectServer(0);
+            }
+        }
+
+        private void DoRelay()
+        {
+            // we must now send the relay packet.
+            m_Login.Client.Relay();
+        }
+
+        private void SwitchToSelectChar()
+        {
+            Manager.CurrentState = new CharacterListState();
         }
 
         public override void Update(double totalTime, double frameTime)
@@ -51,15 +88,9 @@ namespace UltimaXNA.Ultima.Login.States
                 switch (m_Login.Client.Status)
                 {
                     case LoginClientStatus.LoginServer_HasServerList:
-                        if (ServerList.List.Length == 1)
-                        {
-                            OnSelectServer(0);
-                        }
                         // This is where we're supposed to be while waiting to select a server.
                         break;
                     case LoginClientStatus.LoginServer_WaitingForRelay:
-                        // we must now send the relay packet.
-                        m_Login.Client.Relay();
                         break;
                     case LoginClientStatus.LoginServer_Relaying:
                         // relaying to the server we will log in to ...
@@ -69,7 +100,6 @@ namespace UltimaXNA.Ultima.Login.States
                         break;
                     case LoginClientStatus.GameServer_CharList:
                         // we've got the char list
-                        Manager.CurrentState = new CharacterListState();
                         break;
                     case LoginClientStatus.WorldServer_InWorld:
                         // we've connected! Client takes us into the world and disposes of this Model.
@@ -79,15 +109,6 @@ namespace UltimaXNA.Ultima.Login.States
                         throw (new Exception("Unknown UltimaClientStatus in ServerSelectScene:Update"));
                 }
             }
-        }
-
-        public override void Dispose()
-        {
-            m_SelectServerGump.OnBackToLoginScreen -= OnBackToLoginScreen;
-            m_SelectServerGump.OnSelectLastServer -= OnSelectLastServer;
-            m_SelectServerGump.OnSelectServer -= OnSelectServer;
-            m_SelectServerGump.Dispose();
-            base.Dispose();
         }
 
         public void OnBackToLoginScreen()
