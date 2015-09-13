@@ -88,7 +88,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             gumpID2 = Int32.Parse(arguements[4]);
             buttonType = Int32.Parse(arguements[5]);
             param = Int32.Parse(arguements[6]);
-            buttonID = Int32.Parse(arguements[7]);
+            buttonID = 0;
+            if( arguements.Length > 7 )
+                buttonID = Int32.Parse(arguements[7]);
             buildGumpling(x, y, gumpID1, gumpID2, (ButtonTypes)buttonType, param, buttonID);
         }
 
