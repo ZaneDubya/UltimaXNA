@@ -369,7 +369,6 @@
     <Compile Include="Ultima\Resources\Fonts\FontUnicode.cs" />
     <Compile Include="Ultima\Resources\FontsResource.cs" />
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
-    <Compile Include="Ultima\Login\States\HueTestState.cs" />
     <Compile Include="Ultima\Player\JournalData.cs" />
     <Compile Include="Ultima\Login\LoginClient.cs" />
     <Compile Include="Ultima\World\Input\MousePicking.cs" />
