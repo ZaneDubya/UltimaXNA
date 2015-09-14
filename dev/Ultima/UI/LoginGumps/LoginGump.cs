@@ -36,7 +36,6 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
     public class LoginGump : Gump
     {
         public event LoginEvent OnLogin;
-        public event Action<AControl, int, int, MouseButton> OnClickCredits;
 
         public LoginGump()
             : base(0, 0)
@@ -81,7 +80,6 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new GumpPic(this, 0, 0, 0x15A0, 0));
             // credits
             AddControl(new Button(this, 10, 450, 0x15A8, 0x15A7, ButtonTypes.Activate, 0, (int)LoginGumpButtons.CreditsButtons));
-            (LastControl as Button).MouseClickEvent += OnClickCredits;
 
             IsUncloseableWithRMB = true;
         }
@@ -111,7 +109,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                     break;
                 }
                 case LoginGumpButtons.CreditsButtons:
-
+                    UserInterface.AddControl(new CreditsGump(), 0, 0);
                     break;
             }
 
