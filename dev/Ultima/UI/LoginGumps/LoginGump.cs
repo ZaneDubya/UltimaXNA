@@ -9,8 +9,11 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using System.Security;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
@@ -21,7 +24,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
     enum LoginGumpButtons
     {
         QuitButton = 0,
-        LoginButton = 1
+        LoginButton = 1,
+        CreditsButtons = 2
     }
     enum LoginGumpTextFields
     {
@@ -42,7 +46,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             int hue = 902; // dark grey
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 0x0588));
-            AddControl(new ResizePic(this, 68, 285, 0x13BE, 520, 190));
+            AddControl(new ResizePic(this, 96, 285, 0x13BE, 492, 190));
             AddControl(new GumpPic(this, 0, 0, 0x157C, 0)); // 0x2329 - upper-left border graphic
             AddControl(new GumpPic(this, 294, 42, 0x058A, 0)); // 0x2329 - castle graphic
 
@@ -72,6 +76,11 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // Version information
             AddControl(new HtmlGumpling(this, 120, 440, 400, 20, 0, 0, "<center><medium><outline><font color='#DDDDDD'>" + Utility.VersionString));
 
+            // flag graphic
+            AddControl(new GumpPic(this, 0, 0, 0x15A0, 0));
+            // credits
+            AddControl(new Button(this, 10, 450, 0x15A8, 0x15A7, ButtonTypes.Activate, 0, (int)LoginGumpButtons.CreditsButtons));
+
             IsUncloseableWithRMB = true;
         }
 
@@ -87,11 +96,10 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                     break;
                 case LoginGumpButtons.LoginButton:
                 {
-                    var secureStr = new SecureString();
-
+                    SecureString secureStr = new SecureString();
                     if (password.Length > 0)
                     {
-                        foreach (var c in password.ToCharArray())
+                        foreach (char c in password.ToCharArray())
                         {
                             secureStr.AppendChar(c);
                         }
@@ -100,6 +108,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                     OnLogin(Settings.Server.ServerAddress, Settings.Server.ServerPort, accountName, secureStr);
                     break;
                 }
+                case LoginGumpButtons.CreditsButtons:
+                    UserInterface.AddControl(new CreditsGump(), 0, 0);
+                    break;
             }
 
             Settings.Server.UserName = accountName;

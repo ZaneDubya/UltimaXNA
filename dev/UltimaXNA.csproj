@@ -298,6 +298,7 @@
     <Compile Include="Ultima\UI\Controls\ColorPickerBox.cs" />
     <Compile Include="Ultima\UI\Controls\EquipmentSlot.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicWithWidth.cs" />
+    <Compile Include="Ultima\UI\LoginGumps\CreditsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ContextMenuGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\LogoutGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\MobileHealthTrackerGump.cs" />
@@ -690,6 +691,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Data\credits.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

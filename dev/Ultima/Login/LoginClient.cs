@@ -53,6 +53,9 @@ namespace UltimaXNA.Ultima.Login
 
         public LoginClientStatus Status { get; protected set; }
 
+        public event Action OnWaitingForRelay;
+        public event Action OnHasCharacterList;
+
         public LoginClient()
         {
             m_Network = ServiceRegistry.GetService<INetworkClient>();
@@ -280,6 +283,8 @@ namespace UltimaXNA.Ultima.Login
             Characters.SetCharacterList(p.Characters);
             Characters.SetStartingLocations(p.Locations);
             Status = LoginClientStatus.GameServer_CharList;
+            if (OnHasCharacterList != null)
+                OnHasCharacterList();
         }
 
         private void ReceiveServerList(IRecvPacket packet)
@@ -324,6 +329,8 @@ namespace UltimaXNA.Ultima.Login
             // server for both shard selection and world, we don't need to disconnect.
             m_Network.IsDecompressionEnabled = true;
             Status = LoginClientStatus.LoginServer_WaitingForRelay;
+            if (OnWaitingForRelay != null)
+                OnWaitingForRelay();
         }
 
         private void ReceiveEnableFeatures(IRecvPacket packet)
