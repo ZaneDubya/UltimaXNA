@@ -37,15 +37,16 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                 DrawTexture = provider.GetItemTexture(m_DisplayItemID);
 
-                if(DrawTexture == null)
-                {
+                if (DrawTexture == null) // ' no draw ' item.
                     return false;
-                }
 
                 DrawArea = new Rectangle(DrawTexture.Width / 2 - IsometricRenderer.TILE_SIZE_INTEGER_HALF, DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickObjects;
                 DrawFlip = false;
             }
+
+            if (DrawTexture == null) // ' no draw ' item.
+                return false;
 
             // Update Z
             DrawArea.Y = DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER + (Entity.Z * 4);
