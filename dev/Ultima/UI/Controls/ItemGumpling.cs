@@ -57,6 +57,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             Item = item;
         }
 
+        public override void Dispose()
+        {
+            UpdateLabel(true);
+            base.Dispose();
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
             if (Item.IsDisposed)
@@ -76,6 +82,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                 sendClickIfNoDoubleClick = false;
                 m_World.Interaction.SingleClick(Item);
             }
+
+            UpdateLabel();
+
             base.Update(totalMS, frameMS);
         }
 
@@ -201,6 +210,27 @@ namespace UltimaXNA.Ultima.UI.Controls
                 else
                 {
                     m_World.Interaction.PickupItem(Item, InternalGetPickupOffset(m_ClickPoint));
+                }
+            }
+        }
+
+        private HtmlGumpling m_Label = null;
+
+        private void UpdateLabel(bool isDisposing = false)
+        {
+            if (!isDisposing && Item.Overheads.Count > 0 && m_Label == null)
+            {
+                InputManager input = ServiceRegistry.GetService<InputManager>();
+                UserInterface.AddControl(new HtmlGumpling(null, 0, 0, 200, 32, 0, 0,
+                    string.Format("<center><span style='font-family: ascii3;'>{0}", Item.Overheads[0].Text)),
+                    input.MousePosition.X - 100, input.MousePosition.Y - 6);
+            }
+            else
+            {
+                if (m_Label != null)
+                {
+                    m_Label.Dispose();
+                    m_Label = null;
                 }
             }
         }
