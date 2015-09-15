@@ -221,9 +221,10 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (!isDisposing && Item.Overheads.Count > 0 && m_Label == null)
             {
                 InputManager input = ServiceRegistry.GetService<InputManager>();
-                UserInterface.AddControl(new HtmlGumpling(null, 0, 0, 200, 32, 0, 0,
-                    string.Format("<center><span style='font-family: ascii3;'>{0}", Item.Overheads[0].Text)),
+                UserInterface.AddControl(m_Label = new HtmlGumpling(null, 0, 0, 200, 32, 0, 0,
+                    string.Format("<center><span style='font-family: ascii3;'>{0}</center>", Item.Overheads[0].Text)),
                     input.MousePosition.X - 100, input.MousePosition.Y - 6);
+                m_Label.MetaData.Layer = UILayer.Over;
             }
             else
             {
