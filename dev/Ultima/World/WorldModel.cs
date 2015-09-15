@@ -185,6 +185,7 @@ namespace UltimaXNA.Ultima.World
             m_Engine.SetupWindowForWorld();
             m_UserInterface.Cursor = Cursor = new WorldCursor(this);
             Client.Initialize();
+            Player.PlayerState.Journaling.AddEntry("Welcome to Ultima Online!", 9, 0x3B4, string.Empty, false);
         }
 
         protected override void OnDispose()

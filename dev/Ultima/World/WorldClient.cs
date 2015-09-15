@@ -788,17 +788,27 @@ namespace UltimaXNA.Ultima.World
                     if (serial.IsValid)
                     {
                         overhead = WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue, asUnicode);
+                        PlayerState.Journaling.AddEntry(text, font, hue, speakerName, asUnicode);
                     }
                     else
                     {
                         m_World.Interaction.ChatMessage(text, font, hue, asUnicode);
+                        PlayerState.Journaling.AddEntry(text, font, hue, string.Empty, asUnicode);
                     }
                     break;
                 case MessageTypes.System:
                     m_World.Interaction.ChatMessage("[SYSTEM] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Emote:
-                    m_World.Interaction.ChatMessage("[EMOTE] " + text, font, hue, asUnicode);
+                    if (serial.IsValid)
+                    {
+                        overhead = WorldModel.Entities.AddOverhead(msgType, serial, string.Format("* {0} *", text), font, hue, asUnicode);
+                        PlayerState.Journaling.AddEntry(string.Format("* {0} *", text), font, hue, speakerName, asUnicode);
+                    }
+                    else
+                    {
+                        PlayerState.Journaling.AddEntry(text, font, hue, string.Format("* {0} *", text), asUnicode);
+                    }
                     break;
                 case MessageTypes.Label:
                     m_World.Interaction.CreateLabel(msgType, serial, text, font, hue, asUnicode);

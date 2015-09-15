@@ -204,7 +204,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public void AddLine(string text, int font, int hue, bool asUnicode)
         {
-            m_TextEntries.Add(new ChatLineTimed(string.Format("<outline style='font-family:{1}{2};'>{0}", text, asUnicode ? "uni" : "ascii", font), Width));
+            m_TextEntries.Add(new ChatLineTimed(string.Format("<outline color='#{3}' style='font-family:{1}{2};'>{0}", 
+                text, asUnicode ? "uni" : "ascii", font, Utility.GetColorFromUshort(Resources.HueData.GetHue(hue, -1))), 
+                Width));
         }
     }
 
