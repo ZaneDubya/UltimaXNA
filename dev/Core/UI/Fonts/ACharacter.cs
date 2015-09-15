@@ -43,12 +43,13 @@ namespace UltimaXNA.Core.UI.Fonts
             set;
         }
 
-        protected bool UsePassedColor = true;
+        protected bool HuePassedColor = false;
 
         protected uint[] m_PixelData;
 
         public unsafe void WriteToBuffer(uint* dstPtr, int dx, int dy, int linewidth, int maxHeight, int baseLine, bool isBold, bool isItalic, bool isUnderlined, bool isOutlined, uint color, uint outline)
         {
+            uint inColor = color;
             if (m_PixelData != null)
             {
                 fixed (uint* srcPtr = m_PixelData)
@@ -66,8 +67,13 @@ namespace UltimaXNA.Core.UI.Fonts
                         {
                             if (*src != 0x00000000)
                             {
-                                if (!UsePassedColor)
-                                    color = *src;
+                                if (HuePassedColor)
+                                {
+                                    uint r = (uint)((*src & 0x000000ff) * ((float)(inColor & 0x000000ff) / 0xff));
+                                    uint g = (uint)((*src & 0x0000ff00) * ((float)((inColor >> 08) & 0x000000ff) / 0xff)) & 0x0000ff00;
+                                    uint b = (uint)((*src & 0x00ff0000) * ((float)((inColor >> 16) & 0x000000ff) / 0xff)) & 0x00ff0000;
+                                    color = 0xff000000 + b + g + r;
+                                }
 
                                 if (isOutlined)
                                 {

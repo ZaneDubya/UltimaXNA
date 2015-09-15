@@ -779,10 +779,7 @@ namespace UltimaXNA.Ultima.World
 
         private void ReceiveTextMessage(MessageTypes msgType, string text, int font, ushort hue, Serial serial, string speakerName, bool asUnicode)
         {
-            if (speakerName == "System")
-                speakerName = string.Empty;
-            PlayerState.Journaling.AddEntry(text, font, hue, speakerName, asUnicode);
-
+            // PlayerState.Journaling.AddEntry(text, font, hue, speakerName, asUnicode);
             Overhead overhead;
             switch (msgType)
             {
@@ -805,6 +802,7 @@ namespace UltimaXNA.Ultima.World
                     break;
                 case MessageTypes.Label:
                     m_World.Interaction.CreateLabel(msgType, serial, text, font, hue, asUnicode);
+                    PlayerState.Journaling.AddEntry(text, font, hue, "You see", asUnicode);
                     break;
                 case MessageTypes.Focus: // on player?
                     m_World.Interaction.ChatMessage("[FOCUS] " + text, font, hue, asUnicode);

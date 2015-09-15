@@ -65,8 +65,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             string text = string.Format("{0}{1}", entry.SpeakerName != string.Empty ? entry.SpeakerName + ": " : string.Empty, entry.Text);
             m_JournalEntries.AddEntry(string.Format(
-                "<outline color='#{3}' style='font-family:{1}{2};'>{0}</outline>", text, entry.AsUnicode ? "uni" : "ascii", 
-                entry.Font, Utility.GetColorFromUshort(Resources.HueData.GetHue(entry.Hue, -1))));
+                // "<span color='#{3}' style='font-family:{1}{2};'>{0}</span>", text, entry.AsUnicode ? "uni" : "ascii", entry.Font,
+                "<span color='#{1}' style='font-family:ascii9;'>{0}</span>", text, 
+                Utility.GetColorFromUshort(Resources.HueData.GetHue(entry.Hue, -1))));
         }
 
         private void InitializeJournalEntries()

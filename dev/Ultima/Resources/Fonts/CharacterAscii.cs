@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.Resources.Fonts
         {
             Width = reader.ReadByte();
             Height = reader.ReadByte();
-            UsePassedColor = false;
+            HuePassedColor = true;
 
             reader.ReadByte(); // byte delimeter?
             int startY = Height;
@@ -47,8 +47,8 @@ namespace UltimaXNA.Ultima.Resources.Fonts
 
                         if (pixel != 0)
                         {
-                            if (pixel == 0x4e73) // off-grey color, normalize to white
-                                pixel = 0xffff;
+                            //if (pixel == 0x4e73) // off-grey color, normalize to white
+                            //    pixel = 0xffff;
                             pixels[i] = (uint)(0xFF000000 + (
                                 ((((pixel >> 10) & 0x1F) * 0xFF / 0x1F)) |
                                 ((((pixel >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
