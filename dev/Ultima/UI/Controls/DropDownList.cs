@@ -36,7 +36,6 @@ namespace UltimaXNA.Ultima.UI.Controls
         const int hue_Text = 1107;
         const int hue_TextSelected = 588;
 
-        UserInterfaceService m_UserInterface;
         IFont m_Font;
 
         public DropDownList(AControl parent)
@@ -44,7 +43,6 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             HandlesMouseInput = true;
 
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_Font = ServiceRegistry.GetService<IResourceProvider>().GetAsciiFont(1);
         }
 
@@ -92,9 +90,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                 // if we have moused off the open list, close it. We check to see if the mouse is over:
                 // the resizepic for the closed list (because it takes one update cycle to open the list)
                 // the resizepic for the open list, and the scroll bar if it is loaded.
-                if (m_UserInterface.MouseOverControl != m_openResizePic &&
-                    m_UserInterface.MouseOverControl != m_resize &&
-                    (m_openScrollBar == null ? false : m_UserInterface.MouseOverControl != m_openScrollBar))
+                if (UserInterface.MouseOverControl != m_openResizePic &&
+                    UserInterface.MouseOverControl != m_resize &&
+                    (m_openScrollBar == null ? false : UserInterface.MouseOverControl != m_openScrollBar))
                 {
                     closeOpenList();
                 }

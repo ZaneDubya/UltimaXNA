@@ -50,15 +50,11 @@ namespace UltimaXNA.Ultima.UI.Controls
         private RenderedText m_RenderedText;
         private RenderedText m_Carat;
 
-        private UserInterfaceService m_UserInterface;
-
         public TextEntry(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;
             HandlesKeyboardFocus = true;
-
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public TextEntry(AControl parent, string[] arguements, string[] lines)
@@ -101,7 +97,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_UserInterface.KeyboardFocusControl == this)
+            if (UserInterface.KeyboardFocusControl == this)
             {
                 // if we're not already focused, turn the carat on immediately.
                 // if we're using the legacy carat, keep it visible. Else blink it every x seconds.

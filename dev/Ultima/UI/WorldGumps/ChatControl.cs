@@ -32,7 +32,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private List<ChatLineTimed> m_TextEntries;
         private List<Tuple<ChatMode, string>> m_MessageHistory;
 
-        private UserInterfaceService m_UserInterface;
         private InputManager m_Input;
         private WorldModel m_World;
 
@@ -97,7 +96,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_MessageHistory = new List<Tuple<ChatMode, string>>();
 
             m_Input = ServiceRegistry.GetService<InputManager>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_World = ServiceRegistry.GetService<WorldModel>();
 
             IsUncloseableWithRMB = true;

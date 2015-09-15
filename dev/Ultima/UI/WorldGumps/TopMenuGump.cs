@@ -22,7 +22,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class TopMenuGump : Gump
     {
-        UserInterfaceService m_UserInterface;
         WorldModel m_World;
         INetworkClient m_Client;
 
@@ -58,7 +57,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 5, 3, 5537, 5539, 0, 1, 0), 2);
             ((Button)LastControl).GumpOverID = 5538;
 
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_World = ServiceRegistry.GetService<WorldModel>();
             m_Client = ServiceRegistry.GetService<INetworkClient>();
 
@@ -80,10 +78,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     break;
                 case Buttons.Paperdoll:
                     Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();
-                    if (m_UserInterface.GetControl<PaperDollGump>(player.Serial) == null)
+                    if (UserInterface.GetControl<PaperDollGump>(player.Serial) == null)
                         m_Client.Send(new DoubleClickPacket(player.Serial | Serial.ProtectedAction)); // additional flag keeps us from being dismounted.
                     else
-                        m_UserInterface.RemoveControl<PaperDollGump>(player.Serial);
+                        UserInterface.RemoveControl<PaperDollGump>(player.Serial);
                     break;
                 case Buttons.Inventory:
                     // opens the player's backpack.
@@ -92,20 +90,20 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     m_World.Interaction.DoubleClick(backpack);
                     break;
                 case Buttons.Journal:
-                    if (m_UserInterface.GetControl<JournalGump>() == null)
-                        m_UserInterface.AddControl(new JournalGump(), 80, 80);
+                    if (UserInterface.GetControl<JournalGump>() == null)
+                        UserInterface.AddControl(new JournalGump(), 80, 80);
                     else
-                        m_UserInterface.RemoveControl<JournalGump>();
+                        UserInterface.RemoveControl<JournalGump>();
                     break;
                 case Buttons.Chat:
                     break;
                 case Buttons.Help:
                     break;
                 case Buttons.Question:
-                    if (m_UserInterface.GetControl<DebugGump>() == null)
-                        m_UserInterface.AddControl(new DebugGump(), 50, 50);
+                    if (UserInterface.GetControl<DebugGump>() == null)
+                        UserInterface.AddControl(new DebugGump(), 50, 50);
                     else
-                        m_UserInterface.RemoveControl<DebugGump>();
+                        UserInterface.RemoveControl<DebugGump>();
                     break;
             }
         }
