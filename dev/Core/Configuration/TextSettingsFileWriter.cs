@@ -185,6 +185,8 @@ namespace UltimaXNA.Core.Configuration
                     else if (property.PropertyType.IsClass && property.PropertyType != typeof(String))
                     {
                         object cValue = m_Serializer.Deserialize(value, property.PropertyType);
+                        if (cValue == null)
+                            continue;
                         property.SetValue(section.Value, Convert.ChangeType(cValue, property.PropertyType), null);
                     }
                     else

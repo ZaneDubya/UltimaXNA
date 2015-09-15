@@ -30,9 +30,9 @@ namespace UltimaXNA.Configuration
 
         public WorldSettings()
         {
-            FullScreenResolution = new ResolutionConfig(1024, 768);
-            WindowResolution = new ResolutionConfig(1024, 768);
-            PlayWindowGumpResolution = new ResolutionConfig(1024, 768);
+            FullScreenResolution = new ResolutionConfig();
+            WindowResolution = new ResolutionConfig();
+            PlayWindowGumpResolution = new ResolutionConfig();
             m_PlayWindowPixelDoubling = false;
             IsMaximized = false;
             Mouse = new MouseConfig();
@@ -75,7 +75,7 @@ namespace UltimaXNA.Configuration
             set
             {
                 if (!Resolutions.IsValidPlayWindowResolution(value))
-                    return;
+                    SetProperty(ref m_WorldGumpResolution, new ResolutionConfig());
                 SetProperty(ref m_WorldGumpResolution, value);
             }
         }

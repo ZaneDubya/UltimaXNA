@@ -24,8 +24,8 @@ namespace UltimaXNA.Configuration
 
         public ResolutionConfig()
         {
-            Width = 1024;
-            Height = 768;
+            Width = 800;
+            Height = 600;
         }
 
         public ResolutionConfig(int width, int height)
