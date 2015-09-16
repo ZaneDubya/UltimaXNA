@@ -68,14 +68,10 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         RenderedText m_Texture;
 
-        UserInterfaceService m_UserInterface;
-
         public Button(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;
-
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public Button(AControl parent, string[] arguements)
@@ -151,7 +147,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (MouseDownOnThis && m_gumpTextures[kGump_Down] != null)
                 return m_gumpTextures[kGump_Down];
-            else if (m_UserInterface.MouseOverControl == this && m_gumpTextures[kGump_Over] != null)
+            else if (UserInterface.MouseOverControl == this && m_gumpTextures[kGump_Over] != null)
                 return m_gumpTextures[kGump_Over];
             else
                 return m_gumpTextures[kGump_Up];

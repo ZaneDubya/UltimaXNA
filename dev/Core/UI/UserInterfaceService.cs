@@ -26,13 +26,13 @@ namespace UltimaXNA.Core.UI
         // Private variables
         // ======================================================================
         // All open controls:
-        List<AControl> m_Controls = null;
+        private List<AControl> m_Controls = null;
 
         // List of controls that the Cursor is over, with the control at index 0 being the frontmost control:
-        AControl m_MouseOverControl = null;
+        private AControl m_MouseOverControl = null;
 
         // Controls that the Cursor was over when a mouse button was clicked. We allow for five buttons:
-        AControl[] m_MouseDownControl = new AControl[5];
+        private AControl[] m_MouseDownControl = new AControl[5];
 
         // private services
         private readonly InputManager m_Input;
@@ -227,8 +227,9 @@ namespace UltimaXNA.Core.UI
         {
             OrderControlsBasedOnUILayerMetaData();
 
-            foreach (AControl c in m_Controls)
+            for (int i = 0; i < m_Controls.Count; i++)
             {
+                AControl c = m_Controls[i];
                 if (!c.IsInitialized)
                     c.Initialize();
                 c.Update(totalMS, frameMS);

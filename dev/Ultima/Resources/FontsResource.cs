@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.Resources
         internal AFont GetAsciiFont(int index)
         {
             if (index < 0 || index >= AsciiFontCount)
-                return m_AsciiFonts[0];
+                return m_AsciiFonts[9];
             return m_AsciiFonts[index];
         }
 

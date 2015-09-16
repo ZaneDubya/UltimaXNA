@@ -43,7 +43,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             private set;
         }
 
-        UserInterfaceService m_UserInterface;
         WorldModel m_World;
         INetworkClient m_Client;
 
@@ -74,7 +73,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         private void BuildGump()
         {
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_World = ServiceRegistry.GetService<WorldModel>();
             m_Client = ServiceRegistry.GetService<INetworkClient>();
 
@@ -214,25 +212,25 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     m_Client.Send(new RequestHelpPacket());
                     break;
                 case Buttons.Options:
-                    if (m_UserInterface.GetControl<OptionsGump>() == null)
-                        m_UserInterface.AddControl(new OptionsGump(), 80, 80);
+                    if (UserInterface.GetControl<OptionsGump>() == null)
+                        UserInterface.AddControl(new OptionsGump(), 80, 80);
                     else
-                        m_UserInterface.RemoveControl<OptionsGump>();
+                        UserInterface.RemoveControl<OptionsGump>();
                     break;
                 case Buttons.LogOut:
                     // MsgBoxGump g = MsgBoxGump.Show("Quit Ultima Online?", MsgBoxTypes.OkCancel);
                     // g.OnClose = logout_OnClose;
-                    m_UserInterface.AddControl(new LogoutGump(), 0, 0);
+                    UserInterface.AddControl(new LogoutGump(), 0, 0);
                     break;
                 case Buttons.Quests:
                     m_Client.Send(new QuestGumpRequestPacket(Mobile.Serial));
                     break;
                 case Buttons.Skills:
                     m_Client.Send(new GetPlayerStatusPacket(0x05, Mobile.Serial));
-                    if (m_UserInterface.GetControl<SkillsGump>() == null)
-                        m_UserInterface.AddControl(new SkillsGump(), 80, 80);
+                    if (UserInterface.GetControl<SkillsGump>() == null)
+                        UserInterface.AddControl(new SkillsGump(), 80, 80);
                     else
-                        m_UserInterface.RemoveControl<SkillsGump>();
+                        UserInterface.RemoveControl<SkillsGump>();
                     break;
                 case Buttons.Guild:
                     m_Client.Send(new GuildGumpRequestPacket(Mobile.Serial));
