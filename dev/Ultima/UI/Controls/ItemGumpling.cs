@@ -27,13 +27,13 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool HighlightOnMouseOver = true;
 
         protected Texture2D m_Texture = null;
+        private HtmlGumpling m_Label = null;
 
         private bool m_ClickedCanDrag = false;
         private float m_PickUpTime;
         private Point m_ClickPoint;
         private bool m_SendClickIfNoDoubleClick = false;
         private float m_SingleClickTime;
-        private HtmlGumpling m_Label;
 
         private readonly WorldModel m_World;
 
@@ -104,24 +104,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                 spriteBatch.Draw2D(m_Texture, new Vector3(position.X - 5, position.Y - 5, 0), hue);
             }
             spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), hue);
-
-            // draw label
-            if (Item.Overheads.Count > 0)
-            {
-                if (m_Label == null)
-                {
-                    AddControl(m_Label = new HtmlGumpling(this, 0, m_Texture.Height / 2 - 8, 140, 32, 0, 0, 
-                        string.Format("<span style='font-family: ascii3;'>{0}</span>", Item.Overheads[0].Text)));
-                }
-            }
-            else
-            {
-                if (m_Label != null)
-                {
-                    m_Label.Dispose();
-                    m_Label = null;
-                }
-            }
 
             base.Draw(spriteBatch, position);
         }
@@ -234,21 +216,21 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        private HtmlGumpling m_Label = null;
-
         private void UpdateLabel(bool isDisposing = false)
         {
-            if (!isDisposing && Item.Overheads.Count > 0 && m_Label == null)
+            if (!isDisposing && Item.Overheads.Count > 0)
             {
-                InputManager input = ServiceRegistry.GetService<InputManager>();
-                UserInterface.AddControl(m_Label = new HtmlGumpling(null, 0, 0, 200, 32, 0, 0,
-                    string.Format("<center><span style='font-family: ascii3;'>{0}</center>", Item.Overheads[0].Text)),
-                    input.MousePosition.X - 100, input.MousePosition.Y - 6);
-                m_Label.MetaData.Layer = UILayer.Over;
+                if (m_Label == null)
+                {
+                    InputManager input = ServiceRegistry.GetService<InputManager>();
+                    UserInterface.AddControl(m_Label = new HtmlGumpling(null, 0, 0, 200, 32, 0, 0,
+                        string.Format("<center><span style='font-family: ascii3;'>{0}</center>", Item.Overheads[0].Text)),
+                        input.MousePosition.X - 100, input.MousePosition.Y - 12);
+                    m_Label.MetaData.Layer = UILayer.Over;
+                }
             }
-            else
+            else if (m_Label != null)
             {
-                if (m_Label != null)
                 {
                     m_Label.Dispose();
                     m_Label = null;
