@@ -198,6 +198,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             set;
         }
 
+        public bool PlayerCanChangeName = false;
+
         public int Strength, Dexterity, Intelligence, StatCap, Luck, Gold;
         public CurrentMaxValue Health, Stamina, Mana;
         public CurrentMaxValue Followers;

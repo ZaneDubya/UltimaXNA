@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.World
         public void Initialize()
         {
             Register<DamagePacket>(0x0B, "Damage", 0x07, new TypedPacketReceiveHandler(ReceiveDamage));
-            Register<MobileStatusCompactPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(ReceiveStatusInfo));
+            Register<StatusInfoPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(ReceiveStatusInfo));
             Register<ObjectInfoPacket>(0x1A, "World Item", -1, new TypedPacketReceiveHandler(ReceiveWorldItem));
             Register<AsciiMessagePacket>(0x1C, "Ascii Meessage", -1, new TypedPacketReceiveHandler(ReceiveAsciiMessage));
             Register<RemoveEntityPacket>(0x1D, "Remove Entity", 5, new TypedPacketReceiveHandler(ReceiveDeleteObject));
@@ -1019,9 +1019,9 @@ namespace UltimaXNA.Ultima.World
 
         private void ReceiveStatusInfo(IRecvPacket packet)
         {
-            MobileStatusCompactPacket p = (MobileStatusCompactPacket)packet;
+            StatusInfoPacket p = (StatusInfoPacket)packet;
 
-            if (p.StatusType >= 6)
+            if (p.StatusTypeFlag >= 6)
             {
                 throw (new Exception("KR Status not handled."));
             }
@@ -1037,8 +1037,8 @@ namespace UltimaXNA.Ultima.World
             mobile.Health.Update(p.CurrentHealth, p.MaxHealth);
             mobile.Stamina.Update(p.CurrentStamina, p.MaxStamina);
             mobile.Mana.Update(p.CurrentMana, p.MaxMana);
-            mobile.Followers.Update(p.FollowersCurrent, p.FollowersMax);
-            mobile.Weight.Update(p.Weight, p.WeightMax);
+            mobile.Followers.Update(p.Followers, p.MaxFollowers);
+            mobile.Weight.Update(p.Weight, p.MaxWeight);
             mobile.StatCap = p.StatCap;
             mobile.Luck = p.Luck;
             mobile.Gold = p.GoldInInventory;
@@ -1047,9 +1047,9 @@ namespace UltimaXNA.Ultima.World
             mobile.ResistCold = p.ResistCold;
             mobile.ResistPoison = p.ResistPoison;
             mobile.ResistEnergy = p.ResistEnergy;
-            mobile.DamageMin = p.DamageMin;
-            mobile.DamageMax = p.DamageMax;
-            //  other stuff unhandled !!!
+            mobile.DamageMin = p.DmgMin;
+            mobile.DamageMax = p.DmgMax;
+            mobile.PlayerCanChangeName = p.NameChangeFlag;
         }
 
         private void ReceiveTime(IRecvPacket packet)
