@@ -320,7 +320,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                             }
                             else
                             {
-                                m_MaxPage += 1;
                                 isRightPage = true;
                             }
                         }
