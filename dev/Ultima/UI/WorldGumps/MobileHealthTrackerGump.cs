@@ -13,6 +13,8 @@ using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Ultima.Network.Client;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -109,7 +111,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        void Background_MouseDoubleClickEvent(AControl caller, int x, int y, MouseButton button)
+        private void Background_MouseDoubleClickEvent(AControl caller, int x, int y, MouseButton button)
         {
             if (Mobile.IsClientEntity)
             {
@@ -129,6 +131,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 m_NameEntry.IsEditable = false;
                 m_NameEntry.LeadingHtmlTag = "<span color='#444' style='font-family:uni0;'>";
             }
+        }
+
+        public override void OnKeyboardReturn(int textID, string text)
+        {
+            INetworkClient client = ServiceRegistry.GetService<INetworkClient>();
+            client.Send(new RenameCharacterPacket(Mobile.Serial, text));
         }
     }
 }
