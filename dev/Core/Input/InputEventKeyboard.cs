@@ -27,13 +27,19 @@ namespace UltimaXNA.Core.Input
             get
             {
                 if (m_keyChar != WinKeys.None)
-                    return (char)m_keyChar;
+                {
+                    char ch = CultureHandler.TranslateChar((char)m_keyChar);
+                    return (char)ch;
+                }
                 else
                     return '\0';
             }
         }
 
-        public void OverrideKeyChar(WinKeys newChar) { m_keyChar = newChar; }
+        public void OverrideKeyChar(WinKeys newChar)
+        {
+            m_keyChar = newChar;
+        }
 
         public bool IsChar
         {

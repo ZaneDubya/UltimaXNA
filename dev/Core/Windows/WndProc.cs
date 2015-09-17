@@ -120,6 +120,8 @@ namespace UltimaXNA.Core.Windows
                             
                             break;
                         }
+                    case NativeConstants.WM_UNICHAR:
+                        break;
                     case NativeConstants.WM_SYSKEYDOWN:
                     case NativeConstants.WM_SYSKEYUP:
                     case NativeConstants.WM_SYSCHAR:
@@ -334,14 +336,13 @@ namespace UltimaXNA.Core.Windows
                     (int)(long)message.LParam,
                     ModifierKeys
                     );
-                IntPtr zero = (IntPtr)0;// (char)((ushort)((long)message.WParam));
+                IntPtr zero = (IntPtr)0;
                 invokeChar(e);
             }
             else
             {
                 // wm_(sys)keydown: http://msdn.microsoft.com/en-us/library/ms912654.aspx
                 // wm_(sys)keyup: http://msdn.microsoft.com/en-us/library/ms646281(VS.85).aspx
-
 
                 if ((message.Id == NativeConstants.WM_KEYDOWN) || (message.Id == NativeConstants.WM_SYSKEYDOWN))
                 {

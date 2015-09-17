@@ -71,5 +71,44 @@ namespace UltimaXNA.Core.Windows
 
         [DllImport("user32.dll")]
         internal static extern uint GetWindowThreadProcessId(IntPtr window, IntPtr module);
+
+        internal static int LOWORD(IntPtr val)
+        {
+            return (unchecked((int)(long)val)) & 0xFFFF;
+        }
+
+        internal static int MAKELCID(int languageID, int sortID)
+        {
+            return ((0xFFFF & languageID) | (((0x000F) & sortID) << 16));
+        }
+
+        internal static int MAKELANGID(int primaryLang, int subLang)
+        {
+            return ((((ushort)(subLang)) << 10) | (ushort)(primaryLang));
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern int GetLocaleInfo(int locale, int lcType, out uint lpLCData, int cchData);
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetKeyboardLayout(uint idThread);
+
+        internal static uint GetCurrentCodePage()
+        {
+            // Get the keyboard layout for the current thread.
+            IntPtr keybdLayout = GetKeyboardLayout(0);
+
+            // Extract the language ID from it, contained in its low-order word.
+            int langID = LOWORD(keybdLayout);
+
+            // Call the GetLocaleInfo function to retrieve the default ANSI code page
+            // associated with that language ID.
+            uint codePage = 0;
+            GetLocaleInfo(MAKELCID(langID, NativeConstants.SORT_DEFAULT),
+                           NativeConstants.LOCALE_IDEFAULTANSICODEPAGE | NativeConstants.LOCALE_RETURN_NUMBER,
+                           out codePage,
+                           Marshal.SizeOf(codePage));
+            return codePage;
+        }
     }
 }

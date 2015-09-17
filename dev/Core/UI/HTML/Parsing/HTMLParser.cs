@@ -284,6 +284,11 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// </summary>
 		byte[] bHTML;
 
+        /// <summary>
+        /// The input html string. Saved because we parse the html as bytes, but we want to output unicode chars.
+        /// </summary>
+        string m_OriginalHtml;
+
 		/// <summary>
 		/// Current position pointing to byte in bHTML
 		/// </summary>
@@ -596,7 +601,12 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// <param name="p_oHTML">String with HTML in it</param>
 		public void Init(string p_oHTML)
 		{
-			Init(Encoding.Default.GetBytes(p_oHTML));
+            // set default encoding
+            if (oEnc == null)
+                oEnc = Encoding.Default;
+
+            m_OriginalHtml = p_oHTML;
+            Init(Encoding.Default.GetBytes(p_oHTML));
 		}
 
 		/// <summary>
@@ -617,7 +627,8 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		public void Init(byte[] p_bHTML,int p_iHtmlLength)
 		{
 			// set default encoding
-			oEnc=Encoding.Default;
+            if (oEnc == null)
+			    oEnc=Encoding.Default;
 
 			CleanUp();
 		
@@ -1020,8 +1031,8 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 					return null;
 
 				oChunk.oType=HTMLchunkType.Text;
-				oChunk.oHTML=oEnc.GetString(bHTML,oChunk.iChunkOffset,oChunk.iChunkLength);
-
+                // oChunk.oHTML = oEnc.GetString(bHTML, oChunk.iChunkOffset, oChunk.iChunkLength);
+                oChunk.oHTML = m_OriginalHtml.Substring(oChunk.iChunkOffset, oChunk.iChunkLength);
 				return oChunk;
 			}
 

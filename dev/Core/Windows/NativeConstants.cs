@@ -113,6 +113,7 @@ namespace UltimaXNA.Core.Windows
         public const int WM_SYSCHAR = 0x106;
         public const int WM_SYSDEADCHAR = 0x107;
         public const int WM_KEYLAST = 0x108;
+        public const int WM_UNICHAR = 0x109;
 
         public const int WM_IME_STARTCOMPOSITION = 0x10D;
         public const int WM_IME_ENDCOMPOSITION = 0x10E;
@@ -261,5 +262,9 @@ namespace UltimaXNA.Core.Windows
         public const int DLGC_WANTCHARS = 0x0080;
         public const int DLGC_WANTTAB = 0x0002;
         public const int DLGC_HASSETSEL = 0x0008;
+
+        public const int LOCALE_IDEFAULTANSICODEPAGE = 0x1004;
+        public const int LOCALE_RETURN_NUMBER = 0x20000000;
+        public const int SORT_DEFAULT = 0x0;
     }
 }
