@@ -655,7 +655,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        public bool HandlesMouseInput
+        public virtual bool HandlesMouseInput
         {
             get
             {
@@ -810,7 +810,7 @@ namespace UltimaXNA.Core.UI
         private bool m_HandlesKeyboardFocus = false;
 
         // public methods
-        public bool HandlesKeyboardFocus
+        public virtual bool HandlesKeyboardFocus
         {
             get
             {

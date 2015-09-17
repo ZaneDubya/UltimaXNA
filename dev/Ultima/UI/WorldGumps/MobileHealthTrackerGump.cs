@@ -65,7 +65,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 AddControl(m_BarBGs[0] = new GumpPic(this, 34, 38, 0x0805, 0));
                 m_Bars = new GumpPicWithWidth[1];
                 AddControl(m_Bars[0] = new GumpPicWithWidth(this, 34, 38, 0x0806, 0, 1f));
-                AddControl(new HtmlGumpling(this, 17, 13, 120, 20, 0, 0, String.Format("<span color='#000' style='font-family:uni0;'>{0}", mobile.Name)));
+                AddControl(new TextEntry(this, 17, 13, 124, 20, 0, 0, 99, mobile.Name));
+                ((TextEntry)LastControl).LeadingHtmlTag = "<span color='#000' style='font-family:uni0;'>";
+                ((TextEntry)LastControl).IsEditable = false;
             }
 
             // bars should not handle mouse input, pass it to the background gump.

@@ -29,6 +29,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool NumericOnly = false;
         public string LeadingHtmlTag = string.Empty;
         public string LeadingText = string.Empty;
+        public bool IsEditable = true;
 
         public string Text
         {
@@ -40,6 +41,24 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             get;
             set;
+        }
+
+        public override bool HandlesMouseInput
+        {
+            get { return base.HandlesMouseInput & IsEditable; }
+            set
+            {
+                base.HandlesMouseInput = value;
+            }
+        }
+
+        public override bool HandlesKeyboardFocus
+        {
+            get { return base.HandlesKeyboardFocus & IsEditable; }
+            set
+            {
+                base.HandlesKeyboardFocus = value;
+            }
         }
 
         private bool m_IsFocused = false;
@@ -140,16 +159,24 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             Point caratPosition = new Point(position.X, position.Y);
 
-            if (m_RenderedText.Width + m_Carat.Width <= Width)
+            if (IsEditable)
             {
-                m_RenderedText.Draw(spriteBatch, position, Utility.GetHueVector(Hue));
-                caratPosition.X += m_RenderedText.Width;
+                if (m_RenderedText.Width + m_Carat.Width <= Width)
+                {
+                    m_RenderedText.Draw(spriteBatch, position, Utility.GetHueVector(Hue));
+                    caratPosition.X += m_RenderedText.Width;
+                }
+                else
+                {
+                    int textOffset = m_RenderedText.Width - (Width - m_Carat.Width);
+                    m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0, Utility.GetHueVector(Hue));
+                    caratPosition.X += (Width - m_Carat.Width);
+                }
             }
             else
             {
-                int textOffset = m_RenderedText.Width - (Width - m_Carat.Width);
-                m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0, Utility.GetHueVector(Hue));
-                caratPosition.X += (Width - m_Carat.Width);
+                caratPosition.X = 0;
+                m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0, Utility.GetHueVector(Hue));
             }
 
 
@@ -188,6 +215,10 @@ namespace UltimaXNA.Ultima.UI.Controls
                     }
                     break;
                 default:
+                    // place a char, so long as it's within the widths limit.
+                    if (Text.Length >= LimitSize)
+                        return;
+
                     if (NumericOnly && !char.IsNumber(e.KeyChar))
                         return;
 
