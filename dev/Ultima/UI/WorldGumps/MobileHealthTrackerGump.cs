@@ -9,14 +9,10 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -32,6 +28,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private GumpPic m_Background;
         private GumpPicWithWidth[] m_Bars;
         private GumpPic[] m_BarBGs;
+        private TextEntry m_NameEntry;
 
         public MobileHealthTrackerGump(Mobile mobile)
             : base(mobile.Serial, 0)
@@ -65,17 +62,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 AddControl(m_BarBGs[0] = new GumpPic(this, 34, 38, 0x0805, 0));
                 m_Bars = new GumpPicWithWidth[1];
                 AddControl(m_Bars[0] = new GumpPicWithWidth(this, 34, 38, 0x0806, 0, 1f));
-                AddControl(new TextEntry(this, 17, 16, 124, 20, 0, 0, 99, mobile.Name));
-                if (mobile.PlayerCanChangeName)
-                {
-                    ((TextEntry)LastControl).IsEditable = true;
-                    ((TextEntry)LastControl).LeadingHtmlTag = "<span color='#808' style='font-family:ascii1;'>";
-                }
-                else
-                {
-                    ((TextEntry)LastControl).IsEditable = false;
-                    ((TextEntry)LastControl).LeadingHtmlTag = "<span color='#666' style='font-family:ascii1;'>";
-                }
+                AddControl(m_NameEntry = new TextEntry(this, 17, 16, 124, 20, 0, 0, 99, mobile.Name));
+                SetupMobileNameEntry();
             }
 
             // bars should not handle mouse input, pass it to the background gump.
@@ -114,6 +102,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 // this doesn't change anything, but might as well leave it in incase we do want to change the graphic
                 // based on some future condition.
                 m_Background.GumpID = 0x0804;
+                if (Mobile.PlayerCanChangeName != m_NameEntry.IsEditable)
+                    SetupMobileNameEntry();
             }
 
             base.Update(totalMS, frameMS);
@@ -124,6 +114,20 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (Mobile.IsClientEntity)
             {
                 StatusGump.Toggle(Mobile.Serial);
+            }
+        }
+
+        private void SetupMobileNameEntry()
+        {
+            if (Mobile.PlayerCanChangeName)
+            {
+                m_NameEntry.IsEditable = true;
+                m_NameEntry.LeadingHtmlTag = "<span color='#808' style='font-family:uni0;'>";
+            }
+            else
+            {
+                m_NameEntry.IsEditable = false;
+                m_NameEntry.LeadingHtmlTag = "<span color='#444' style='font-family:uni0;'>";
             }
         }
     }

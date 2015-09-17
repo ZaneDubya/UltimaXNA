@@ -13,7 +13,7 @@ namespace UltimaXNA.Ultima.Data
 {
     public enum MessageTypes
     {
-        Regular = 0x00,
+        Normal = 0x00,
         System = 0x01,
         Emote = 0x02,
         SpeechUnknown = 0x03,
@@ -24,10 +24,10 @@ namespace UltimaXNA.Ultima.Data
         Yell = 0x09,
         Spell = 0x0A,
 
-        UIld = 0x0D,
+        Guild = 0x0D,
         Alliance = 0x0E,
         Command = 0x0F,
 
-        Encoded = 0xC0
+        EncodedTriggers = 0xC0
     }
 }

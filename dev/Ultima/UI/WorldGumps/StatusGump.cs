@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (ui.GetControl<StatusGump>() == null)
             {
                 INetworkClient client = ServiceRegistry.GetService<INetworkClient>();
-                client.Send(new GetPlayerStatusPacket(0x04, serial));
+                client.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, serial));
                 ui.AddControl(new StatusGump(), 200, 400);
             }
             else

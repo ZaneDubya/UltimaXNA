@@ -12,38 +12,21 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    // from http://docs.polserver.com/packets/index.php?Packet=0xAD
-    public enum AsciiSpeechPacketTypes
-    {
-        Normal = 0x00,
-        System = 0x01,
-        Emote = 0x02,
-        Message = 0x06,
-        MessageWithName = 0x07,
-        Whisper = 0x08,
-        Yell = 0x09,
-        Spell = 0x0A,
-        Guild = 0x0D,
-        Alliance = 0x0E,
-        Command = 0x0F,
-    }
-
     public class AsciiSpeechPacket : SendPacket
     {
-        const byte HasTriggers = 0xC0;
-
-        public AsciiSpeechPacket(AsciiSpeechPacketTypes type, int font, int hue, string lang, string text)
+        public AsciiSpeechPacket(MessageTypes type, int font, int hue, string lang, string text)
             : base(0xAD, "Ascii Speech")
         {
             // get triggers
             int triggerCount; int[] triggers;
             SpeechData.GetSpeechTriggers(text, lang, out triggerCount, out triggers);
             if (triggerCount > 0)
-                type = (AsciiSpeechPacketTypes)((byte)type | HasTriggers);
+                type = (MessageTypes)(type | MessageTypes.EncodedTriggers);
 
             Stream.Write((byte)type);
             Stream.Write((short)hue);

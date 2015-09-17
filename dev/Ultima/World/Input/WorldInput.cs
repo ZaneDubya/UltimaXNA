@@ -425,6 +425,8 @@ namespace UltimaXNA.Ultima.World.Input
                 }
                 else if(overEntity is Mobile)
                 {
+                    // request basic stats - gives us the name rename flag
+                    m_Network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, overEntity.Serial));
                     // drag off a status gump for this mobile.
                     MobileHealthTrackerGump gump = new MobileHealthTrackerGump(overEntity as Mobile);
                     m_UserInterface.AddControl(gump, e.X - 77, e.Y - 30);

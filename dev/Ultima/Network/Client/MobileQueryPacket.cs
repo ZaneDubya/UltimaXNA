@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   GetPlayerStatusPacket.cs
+ *   MobileQueryPacket.cs
  *   Copyright (c) 2009 UltimaXNA Development Team
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -14,12 +14,19 @@ using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    public class GetPlayerStatusPacket : SendPacket
+    public class MobileQueryPacket : SendPacket
     {
-        public GetPlayerStatusPacket(byte type, Serial serial)
+        public enum StatusType : byte
+        {
+            GodClient = 0x00,
+            BasicStatus = 0x04,
+            Skills = 0x05
+        }
+
+        public MobileQueryPacket(StatusType type, Serial serial)
             : base(0x34, "Get Player Status", 10)
         {
-            Stream.Write(0xEDEDEDED);//Unknown
+            Stream.Write(0xEDEDEDED); // always 0xEDEDEDED in legacy client
             Stream.Write((byte)type);
             Stream.Write(serial);
         }

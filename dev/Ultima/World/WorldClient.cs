@@ -226,7 +226,7 @@ namespace UltimaXNA.Ultima.World
 
         public void GetMySkills()
         {
-            m_Network.Send(new GetPlayerStatusPacket(0x05, WorldModel.PlayerSerial));
+            m_Network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.Skills, WorldModel.PlayerSerial));
         }
 
         public void SendClientScreenSize()
@@ -241,7 +241,7 @@ namespace UltimaXNA.Ultima.World
 
         public void GetMyBasicStatus()
         {
-            m_Network.Send(new GetPlayerStatusPacket(0x04, WorldModel.PlayerSerial));
+            m_Network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, WorldModel.PlayerSerial));
         }
 
         private void ReceiveTargetCursor(IRecvPacket packet)
@@ -463,6 +463,8 @@ namespace UltimaXNA.Ultima.World
                 mobile.Name = "Unknown";
                 m_Network.Send(new RequestNamePacket(p.Serial));
             }
+
+            m_Network.Send(new SingleClickPacket(p.Serial)); // look at the object so we receive its stats.
         }
 
         private void ReceiveDeathAnimation(IRecvPacket packet)
@@ -783,7 +785,7 @@ namespace UltimaXNA.Ultima.World
             Overhead overhead;
             switch (msgType)
             {
-                case MessageTypes.Regular:
+                case MessageTypes.Normal:
                 case MessageTypes.SpeechUnknown:
                     if (serial.IsValid)
                     {
@@ -826,7 +828,7 @@ namespace UltimaXNA.Ultima.World
                 case MessageTypes.Spell:
                     m_World.Interaction.ChatMessage("[SPELL] " + text, font, hue, asUnicode);
                     break;
-                case MessageTypes.UIld:
+                case MessageTypes.Guild:
                     m_World.Interaction.ChatMessage("[UILD] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Alliance:

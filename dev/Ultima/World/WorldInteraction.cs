@@ -52,41 +52,40 @@ namespace UltimaXNA.Ultima.World
             set
             {
                 m_lastTarget = value;
-                // send last target packet to server.
-                m_Network.Send(new GetPlayerStatusPacket(0x04, m_lastTarget));
+                m_Network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, m_lastTarget));
             }
         }
 
         public void SendSpeech(string text, ChatMode mode) // used by chatwindow.
         {
-            AsciiSpeechPacketTypes speechType = AsciiSpeechPacketTypes.Normal;
+            MessageTypes speechType = MessageTypes.Normal;
             int hue = 0;
 
             switch (mode)
             {
                 case ChatMode.Default:
-                    speechType = AsciiSpeechPacketTypes.Normal;
+                    speechType = MessageTypes.Normal;
                     hue = Settings.Game.SpeechColor;
                     break;
                 case ChatMode.Whisper:
-                    speechType = AsciiSpeechPacketTypes.Whisper;
+                    speechType = MessageTypes.Whisper;
                     hue = Settings.Game.SpeechColor;
                     break;
                 case ChatMode.Emote:
-                    speechType = AsciiSpeechPacketTypes.Emote;
+                    speechType = MessageTypes.Emote;
                     hue = Settings.Game.EmoteColor;
                     break;
                 case ChatMode.Party:
                     // not yet implemented
-                    speechType = AsciiSpeechPacketTypes.Normal;
+                    speechType = MessageTypes.Normal;
                     hue = Settings.Game.SpeechColor;
                     break;
                 case ChatMode.Guild:
-                    speechType = AsciiSpeechPacketTypes.Guild;
+                    speechType = MessageTypes.Guild;
                     hue = Settings.Game.GuildMsgColor;
                     break;
                 case ChatMode.Alliance:
-                    speechType = AsciiSpeechPacketTypes.Alliance;
+                    speechType = MessageTypes.Alliance;
                     hue = Settings.Game.AllianceMsgColor;
                     break;
             }

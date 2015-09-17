@@ -409,7 +409,7 @@
     <Compile Include="Ultima\Network\Client\DropToLayerPacket.cs" />
     <Compile Include="Ultima\Network\Client\GameLoginPacket.cs" />
     <Compile Include="Ultima\Network\Client\GeneralInformationPackets.cs" />
-    <Compile Include="Ultima\Network\Client\GetPlayerStatusPacket.cs" />
+    <Compile Include="Ultima\Network\Client\MobileQueryPacket.cs" />
     <Compile Include="Ultima\Network\Client\GumpMenuSelectPacket.cs" />
     <Compile Include="Ultima\Network\Client\GumpTextEntryDialogReplyPacket.cs" />
     <Compile Include="Ultima\Network\Client\LoginCharacterPacket.cs" />

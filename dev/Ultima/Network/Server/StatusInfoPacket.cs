@@ -57,44 +57,46 @@ namespace UltimaXNA.Ultima.Network.Server
             PlayerName = reader.ReadString(30);
             CurrentHealth = reader.ReadInt16();
             MaxHealth = reader.ReadInt16();
-            byte change = reader.ReadByte();
-            NameChangeFlag = change != 0; // 0x1 = allowed, 0 = not allowed
+            NameChangeFlag = reader.ReadByte() != 0x00; // 0x1 = allowed, 0 = not allowed
             StatusTypeFlag = reader.ReadByte();
-            Sex = (Genders)reader.ReadByte(); // 0=male, 1=female
-            Strength = reader.ReadInt16();
-            Dexterity = reader.ReadInt16();
-            Intelligence = reader.ReadInt16();
-            CurrentStamina = reader.ReadInt16();
-            MaxStamina = reader.ReadInt16();
-            CurrentMana = reader.ReadInt16();
-            MaxMana = reader.ReadInt16();
-            GoldInInventory = reader.ReadInt32();
-            ArmorRating = reader.ReadInt16();
-            Weight = reader.ReadInt16();
-
-            if (StatusTypeFlag >= 5)
+            if (StatusTypeFlag > 0)
             {
-                MaxWeight = reader.ReadInt16();
-                Race = (Races)reader.ReadByte();
-            }
+                Sex = (Genders)reader.ReadByte(); // 0=male, 1=female
+                Strength = reader.ReadInt16();
+                Dexterity = reader.ReadInt16();
+                Intelligence = reader.ReadInt16();
+                CurrentStamina = reader.ReadInt16();
+                MaxStamina = reader.ReadInt16();
+                CurrentMana = reader.ReadInt16();
+                MaxMana = reader.ReadInt16();
+                GoldInInventory = reader.ReadInt32();
+                ArmorRating = reader.ReadInt16();
+                Weight = reader.ReadInt16();
 
-            if (StatusTypeFlag >= 3)
-            {
-                StatCap = reader.ReadInt16();
-                Followers = reader.ReadByte();
-                MaxFollowers = reader.ReadByte();
-            }
+                if (StatusTypeFlag >= 5)
+                {
+                    MaxWeight = reader.ReadInt16();
+                    Race = (Races)reader.ReadByte();
+                }
 
-            if (StatusTypeFlag >= 4)
-            {
-                ResistFire = reader.ReadInt16();
-                ResistCold = reader.ReadInt16();
-                ResistPoison = reader.ReadInt16();
-                ResistEnergy = reader.ReadInt16();
-                Luck = reader.ReadInt16();
-                DmgMin = reader.ReadInt16();
-                DmgMax = reader.ReadInt16();
-                TithingPoints = reader.ReadInt16();
+                if (StatusTypeFlag >= 3)
+                {
+                    StatCap = reader.ReadInt16();
+                    Followers = reader.ReadByte();
+                    MaxFollowers = reader.ReadByte();
+                }
+
+                if (StatusTypeFlag >= 4)
+                {
+                    ResistFire = reader.ReadInt16();
+                    ResistCold = reader.ReadInt16();
+                    ResistPoison = reader.ReadInt16();
+                    ResistEnergy = reader.ReadInt16();
+                    Luck = reader.ReadInt16();
+                    DmgMin = reader.ReadInt16();
+                    DmgMax = reader.ReadInt16();
+                    TithingPoints = reader.ReadInt16();
+                }
             }
         }
     }

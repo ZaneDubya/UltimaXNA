@@ -29,7 +29,21 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool NumericOnly = false;
         public string LeadingHtmlTag = string.Empty;
         public string LeadingText = string.Empty;
-        public bool IsEditable = true;
+
+        private bool m_IsEditable = true;
+        public bool IsEditable
+        {
+            get { return m_IsEditable; }
+            set
+            {
+                if (value != m_IsEditable)
+                {
+                    m_IsEditable = value;
+                    if (m_IsEditable)
+                        UserInterface.KeyboardFocusControl = this;
+                }
+            }
+        }
 
         public string Text
         {

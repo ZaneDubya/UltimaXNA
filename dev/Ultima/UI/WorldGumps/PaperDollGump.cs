@@ -226,7 +226,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     m_Client.Send(new QuestGumpRequestPacket(Mobile.Serial));
                     break;
                 case Buttons.Skills:
-                    m_Client.Send(new GetPlayerStatusPacket(0x05, Mobile.Serial));
+                    m_Client.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.Skills, Mobile.Serial));
                     if (UserInterface.GetControl<SkillsGump>() == null)
                         UserInterface.AddControl(new SkillsGump(), 80, 80);
                     else
