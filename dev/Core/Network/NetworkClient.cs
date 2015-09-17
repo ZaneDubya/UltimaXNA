@@ -25,7 +25,10 @@ namespace UltimaXNA.Core.Network
         private readonly HuffmanDecompression m_Decompression;
         private readonly List<PacketHandler>[] m_TypedHandlers;
         private readonly List<PacketHandler>[][] m_ExtendedTypedHandlers;
-        private readonly List<QueuedPacket> m_QueuedPackets = new List<QueuedPacket>();
+        private readonly object m_SyncRoot = new object();
+
+        private Queue<QueuedPacket> m_Queue = new Queue<QueuedPacket>();
+        private Queue<QueuedPacket> m_WorkingQueue = new Queue<QueuedPacket>();
 
         private Socket m_ServerSocket;
         private IPAddress m_ServerAddress;
@@ -186,7 +189,11 @@ namespace UltimaXNA.Core.Network
 
         public bool Connect(string ipAddressOrHostName, int port)
         {
-            m_QueuedPackets.Clear();
+            lock (m_SyncRoot)
+            {
+                m_WorkingQueue.Clear();
+            }
+
             if (m_ReceiveBuffer != null)
                 Array.Clear(m_ReceiveBuffer, 0, m_ReceiveBuffer.Length);
             m_ReceiveBufferPosition = 0;
@@ -457,22 +464,27 @@ namespace UltimaXNA.Core.Network
 
         private void AddPacket(string name, PacketHandler packetHandler, byte[] packetBuffer, int realLength)
         {
-            lock (m_QueuedPackets)
+            lock (m_SyncRoot)
             {
-                m_QueuedPackets.Add(new QueuedPacket(name, packetHandler, packetBuffer, realLength));
+                m_WorkingQueue.Enqueue(new QueuedPacket(name, packetHandler, packetBuffer, realLength));
             }
         }
 
         public void Slice()
         {
-            lock (m_QueuedPackets)
+            lock (m_SyncRoot)
             {
-                foreach (QueuedPacket i in m_QueuedPackets)
-                {
-                    LogPacket(i.PacketBuffer, i.Name, i.RealLength);
-                    InvokeHandler(i.PacketHandler, i.PacketBuffer, i.RealLength);
-                }
-                m_QueuedPackets.Clear();
+                var temp = m_WorkingQueue;
+                m_WorkingQueue = m_Queue;
+                m_Queue = temp;
+            }
+
+            while (m_Queue.Count > 0)
+            {
+                var packet = m_Queue.Dequeue();
+
+                LogPacket(packet.PacketBuffer, packet.Name, packet.RealLength);
+                InvokeHandler(packet.PacketHandler, packet.PacketBuffer, packet.RealLength);
             }
         }
 
