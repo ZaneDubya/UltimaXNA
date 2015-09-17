@@ -65,9 +65,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 AddControl(m_BarBGs[0] = new GumpPic(this, 34, 38, 0x0805, 0));
                 m_Bars = new GumpPicWithWidth[1];
                 AddControl(m_Bars[0] = new GumpPicWithWidth(this, 34, 38, 0x0806, 0, 1f));
-                AddControl(new TextEntry(this, 17, 13, 124, 20, 0, 0, 99, mobile.Name));
-                ((TextEntry)LastControl).LeadingHtmlTag = "<span color='#000' style='font-family:uni0;'>";
-                ((TextEntry)LastControl).IsEditable = false;
+                AddControl(new TextEntry(this, 17, 16, 124, 20, 0, 0, 99, mobile.Name));
+                if (mobile.PlayerCanChangeName)
+                {
+                    ((TextEntry)LastControl).IsEditable = true;
+                    ((TextEntry)LastControl).LeadingHtmlTag = "<span color='#808' style='font-family:ascii1;'>";
+                }
+                else
+                {
+                    ((TextEntry)LastControl).IsEditable = false;
+                    ((TextEntry)LastControl).LeadingHtmlTag = "<span color='#666' style='font-family:ascii1;'>";
+                }
             }
 
             // bars should not handle mouse input, pass it to the background gump.

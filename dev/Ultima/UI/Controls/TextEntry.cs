@@ -216,7 +216,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     break;
                 default:
                     // place a char, so long as it's within the widths limit.
-                    if (Text.Length >= LimitSize)
+                    if (LimitSize != 0 && Text.Length >= LimitSize)
                         return;
 
                     if (NumericOnly && !char.IsNumber(e.KeyChar))

@@ -57,7 +57,8 @@ namespace UltimaXNA.Ultima.Network.Server
             PlayerName = reader.ReadString(30);
             CurrentHealth = reader.ReadInt16();
             MaxHealth = reader.ReadInt16();
-            NameChangeFlag = reader.ReadByte() != 0; // 0x1 = allowed, 0 = not allowed
+            byte change = reader.ReadByte();
+            NameChangeFlag = change != 0; // 0x1 = allowed, 0 = not allowed
             StatusTypeFlag = reader.ReadByte();
             Sex = (Genders)reader.ReadByte(); // 0=male, 1=female
             Strength = reader.ReadInt16();
