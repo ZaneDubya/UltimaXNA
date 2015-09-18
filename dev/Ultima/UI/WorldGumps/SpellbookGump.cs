@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using System.Collections.Generic;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
@@ -100,6 +101,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private GumpPic m_PageCornerRight;
         private int m_MaxPage = 0;
         private bool m_RenderedSpellInfoPage = false;
+        private Dictionary<int, List<int>> m_Spells = new Dictionary<int, List<int>>();
+        private List<KeyValuePair<int, int>> m_SpellList = new List<KeyValuePair<int, int>>();
 
         private void CreateMageryGumplings()
         {
@@ -147,32 +150,33 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     1 + (i / 2));
             }
 
-            // add indexes and spell pages.
             m_MaxPage = 4;
-            int currentSpellPage = 5;
-            bool isRightPage = false;
+
+            // Begin checking which spells are in the spellbook and add them to m_Spells list
+
+            int totalSpells = 0;
             for (int spellCircle = 0; spellCircle < 8; spellCircle++)
             {
                 for (int spellIndex = 1; spellIndex <= 8; spellIndex++)
                 {
                     if (m_Spellbook.HasSpell(spellCircle, spellIndex))
                     {
-                        m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#532' hovercolor='#800' activecolor='#611' style='font-family=uni0; text-decoration=none;'>{0}</a><br/>",
-                            Magery.GetSpell(spellCircle * 8 + spellIndex).Name,
-                            currentSpellPage);
-                        if (isRightPage)
+                        if (m_Spells.ContainsKey(spellCircle))
                         {
-                            currentSpellPage++;
-                            isRightPage = false;
+                            m_Spells[spellCircle].Add(spellIndex);
                         }
                         else
                         {
-                            m_MaxPage += 1;
-                            isRightPage = true;
+                            m_Spells.Add(spellCircle, new List<int> { spellIndex });
                         }
+
+                        m_SpellList.Add(new KeyValuePair<int, int>(spellCircle, spellIndex));
+                        totalSpells++;
                     }
                 }
             }
+
+            m_MaxPage = m_MaxPage + ((totalSpells + 1) / 2); // The number of additional spell info pages needed
 
             SetActivePage(1);
         }
@@ -301,32 +305,41 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 page = 1;
             if (page > m_MaxPage)
                 page = m_MaxPage;
-            if (page > 4 && m_RenderedSpellInfoPage == false)
+
+            int currentPage = page;
+            int currentSpellCircle = currentPage * 2 - 2; // 0 indexed
+            int currentSpellInfoIndex = currentPage * 2 - 10; 
+            for (int currentCol = 0; currentCol < 2; currentCol++)
             {
-                int currentSpellPage = 5;
-                bool isRightPage = false;
-                for (int spellCircle = 0; spellCircle < 8; spellCircle++)
+                bool isRightPage = (currentCol + 1 == 2);
+                currentSpellInfoIndex += currentCol; 
+
+                // Create Spell Index page
+                if (currentPage <= 4)
                 {
-                    for (int spellIndex = 1; spellIndex <= 8; spellIndex++)
+                    m_Indexes[currentSpellCircle].Text = "";
+                    if(m_Spells.ContainsKey(currentSpellCircle))
                     {
-                        int spellIndexAll = spellCircle * 8 + spellIndex;
-                        if (m_Spellbook.HasSpell(spellCircle, spellIndex))
+                        foreach (int spell in m_Spells[currentSpellCircle])
                         {
-                            CreateSpellPage(currentSpellPage, isRightPage, spellCircle, Magery.GetSpell(spellIndexAll));
-                            if (isRightPage)
-                            {
-                                currentSpellPage++;
-                                isRightPage = false;
-                            }
-                            else
-                            {
-                                isRightPage = true;
-                            }
+                            m_Indexes[currentSpellCircle].Text += string.Format("<a href='page={1}' color='#532' hovercolor='#800' activecolor='#611' style='font-family=uni0; text-decoration=none;'>{0}</a><br/>",
+                                Magery.GetSpell(currentSpellCircle * 8 + spell).Name,
+                                m_MaxPage); // thsi needs to be corrected to the right spell info page
+
                         }
                     }
+                    currentSpellCircle++;
                 }
-                m_RenderedSpellInfoPage = true;
+                else
+                {
+                    // Create Spell Info Page
+                    if (currentSpellInfoIndex < m_SpellList.Count)
+                    {
+                        CreateSpellPage(page, isRightPage, m_SpellList[currentSpellInfoIndex].Key, Magery.GetSpell(m_SpellList[currentSpellInfoIndex].Key * 8 + m_SpellList[currentSpellInfoIndex].Value));
+                    }
+                }
             }
+
             ActivePage = page;
             // hide the page corners if we're at the first or final page.
             m_PageCornerLeft.Page = (ActivePage != 1) ? 0 : int.MaxValue;
