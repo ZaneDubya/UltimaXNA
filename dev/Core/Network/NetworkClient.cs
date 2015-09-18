@@ -474,14 +474,14 @@ namespace UltimaXNA.Core.Network
         {
             lock (m_SyncRoot)
             {
-                var temp = m_WorkingQueue;
+                Queue<QueuedPacket> temp = m_WorkingQueue;
                 m_WorkingQueue = m_Queue;
                 m_Queue = temp;
             }
 
             while (m_Queue.Count > 0)
             {
-                var packet = m_Queue.Dequeue();
+                QueuedPacket packet = m_Queue.Dequeue();
 
                 LogPacket(packet.PacketBuffer, packet.Name, packet.RealLength);
                 InvokeHandler(packet.PacketHandler, packet.PacketBuffer, packet.RealLength);
