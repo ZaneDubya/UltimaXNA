@@ -25,9 +25,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // ================================================================================
         // Private variables
         // ================================================================================
-        SpellBook m_Spellbook;
-        HtmlGumpling[] m_CircleHeaders;
-        HtmlGumpling[] m_Indexes;
+        private SpellBook m_Spellbook;
+        private HtmlGumpling[] m_CircleHeaders;
+        private HtmlGumpling[] m_Indexes;
 
         // ================================================================================
         // Private services 
