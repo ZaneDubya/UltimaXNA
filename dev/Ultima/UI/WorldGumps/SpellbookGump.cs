@@ -100,8 +100,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private GumpPic m_PageCornerLeft;
         private GumpPic m_PageCornerRight;
         private int m_MaxPage = 0;
-        private bool m_RenderedSpellInfoPage = false;
-        private Dictionary<int, List<int>> m_Spells = new Dictionary<int, List<int>>();
         private List<KeyValuePair<int, int>> m_SpellList = new List<KeyValuePair<int, int>>();
 
         private void CreateMageryGumplings()
@@ -161,15 +159,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 {
                     if (m_Spellbook.HasSpell(spellCircle, spellIndex))
                     {
-                        if (m_Spells.ContainsKey(spellCircle))
-                        {
-                            m_Spells[spellCircle].Add(spellIndex);
-                        }
-                        else
-                        {
-                            m_Spells.Add(spellCircle, new List<int> { spellIndex });
-                        }
-
                         m_SpellList.Add(new KeyValuePair<int, int>(spellCircle, spellIndex));
                         totalSpells++;
                     }
@@ -307,8 +296,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 page = m_MaxPage;
 
             int currentPage = page;
-            int currentSpellCircle = currentPage * 2 - 2; // 0 indexed
-            int currentSpellInfoIndex = currentPage * 2 - 10; 
+            int currentSpellCircle = currentPage * 2 - 2; // chooses the right spell circle to print on index page
+            int currentSpellInfoIndex = currentPage * 2 - 10; // keeps track of which spell info page to print
             for (int currentCol = 0; currentCol < 2; currentCol++)
             {
                 bool isRightPage = (currentCol + 1 == 2);
@@ -318,14 +307,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 if (currentPage <= 4)
                 {
                     m_Indexes[currentSpellCircle].Text = "";
-                    if(m_Spells.ContainsKey(currentSpellCircle))
+                    foreach (KeyValuePair<int, int> spell in m_SpellList)
                     {
-                        foreach (int spell in m_Spells[currentSpellCircle])
+                        if (spell.Key == currentSpellCircle)
                         {
+                            int currentSpellInfoPage = m_SpellList.IndexOf(spell) / 2;
                             m_Indexes[currentSpellCircle].Text += string.Format("<a href='page={1}' color='#532' hovercolor='#800' activecolor='#611' style='font-family=uni0; text-decoration=none;'>{0}</a><br/>",
-                                Magery.GetSpell(currentSpellCircle * 8 + spell).Name,
-                                m_MaxPage); // thsi needs to be corrected to the right spell info page
-
+                                Magery.GetSpell(currentSpellCircle * 8 + spell.Value).Name,
+                                5 + currentSpellInfoPage);
                         }
                     }
                     currentSpellCircle++;
