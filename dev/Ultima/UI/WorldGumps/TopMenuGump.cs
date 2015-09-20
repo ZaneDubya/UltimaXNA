@@ -22,8 +22,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class TopMenuGump : Gump
     {
-        WorldModel m_World;
-        INetworkClient m_Client;
+        private WorldModel m_World;
+        private INetworkClient m_Client;
 
         public TopMenuGump()
             : base(0, 0)
