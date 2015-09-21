@@ -49,7 +49,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 
         public void ReceiveSpellData(SpellBookTypes sbType, ulong sbBitfield)
         {
-            bool entityUpdated = true;
+            bool entityUpdated = false;
 
             if (BookType != sbType)
             {
@@ -57,7 +57,11 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
                 entityUpdated = true;
             }
 
-            m_SpellsBitfield = sbBitfield;
+            if (m_SpellsBitfield != sbBitfield)
+            {
+                m_SpellsBitfield = sbBitfield;
+                entityUpdated = true;
+            }
 
             if (entityUpdated && OnEntityUpdated != null)
                 OnEntityUpdated();

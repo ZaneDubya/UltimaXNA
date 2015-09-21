@@ -153,6 +153,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // Begin checking which spells are in the spellbook and add them to m_Spells list
 
             int totalSpells = 0;
+            m_SpellList.Clear();
             for (int spellCircle = 0; spellCircle < 8; spellCircle++)
             {
                 for (int spellIndex = 1; spellIndex <= 8; spellIndex++)
