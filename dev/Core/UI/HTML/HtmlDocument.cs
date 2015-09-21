@@ -315,7 +315,7 @@ namespace UltimaXNA.Core.UI.HTML
                 }
             }
 
-            if (widthMinLongest < root.Width)
+           if (widthMinLongest < root.Width)
                 widthMinLongest = root.Width;
             if (widthMaxLongest < root.Width)
                 widthMaxLongest = root.Width;
@@ -350,7 +350,7 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y, out ascender);
             }
-            else if (root.Layout_MinWidth <= root.Width) // 2
+            else //if(root.Layout_MinWidth <= root.Width) // 2
             {
                 // get the amount of extra width that we could fill.
                 int extraRequestedWidth = 0;
@@ -376,11 +376,19 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y, out ascender);
             }
-            else // 3
+            /*else // 3
             {
-                // just display an error message and call it a day?
+                // just display an error message and call it a day? 
+             *
+             * 
+             * 
+             *  Is this even needed?
+             *  
+             * 
+             * 
+             * 
                 root.Err_Cant_Fit_Children = true;
-            }
+            }*/
 
             if (ascender < Ascender)
                 Ascender = ascender;
