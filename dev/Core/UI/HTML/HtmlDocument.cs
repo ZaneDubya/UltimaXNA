@@ -294,7 +294,7 @@ namespace UltimaXNA.Core.UI.HTML
                     if (child.Style.MustDrawnOutline)
                         styleWidthChild += 2;
                     if (styleWidthChild > styleWidth)
-                        styleWidth = styleWidthChild;
+                            styleWidth = styleWidthChild;
                 }
 
                 if (child.IsThisAtomALineBreak)
@@ -327,7 +327,7 @@ namespace UltimaXNA.Core.UI.HTML
         {
             // 1. Determine if all blocks can fit on one line with max width.
             //      -> If yes, then place all blocks!
-            // 2. If not 1, can all blocks fit on one line with min width?
+            // 2. If not 1, can all blocks fit on one line with min width? Additionally, is it just one long block?
             //      -> If yes, then place all blocks and expand the ones that want additional width until there is no more width to fill.
             // 3. If not 2:
             //      -> Flow blocks to the next y line until all remaining blocks can fit on one line.
@@ -350,7 +350,7 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y, out ascender);
             }
-            else //if(root.Layout_MinWidth <= root.Width) // 2
+            else if (root.Layout_MinWidth <= root.Width || root.Layout_MinWidth == root.Layout_MaxWidth) // 2 - root.Layout_MinWidth == root.Layout_MaxWidth to account for trolls
             {
                 // get the amount of extra width that we could fill.
                 int extraRequestedWidth = 0;
@@ -376,19 +376,11 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y, out ascender);
             }
-            /*else // 3
+            else // 3
             {
-                // just display an error message and call it a day? 
-             *
-             * 
-             * 
-             *  Is this even needed?
-             *  
-             * 
-             * 
-             * 
+                // just display an error message and call it a day?
                 root.Err_Cant_Fit_Children = true;
-            }*/
+            }
 
             if (ascender < Ascender)
                 Ascender = ascender;
@@ -577,15 +569,13 @@ namespace UltimaXNA.Core.UI.HTML
         /// </summary>
         private void LayoutElements_BreakWordAtLineEnd(List<AElement> elements, int start, int lineWidth, List<AElement> word, int wordWidth, int styleWidth)
         {
-            CharacterElement dash = new Elements.CharacterElement(word[0].Style, '-');
             CharacterElement lineend = new Elements.CharacterElement(word[0].Style, '\n');
-            int width = dash.Width + lineend.Width + styleWidth + 2;
+            int width = lineend.Width + styleWidth + 2;
             for (int i = 0; i < word.Count; i++)
             {
                 width += word[i].Width;
                 if (width >= lineWidth)
                 {
-                    elements.Insert(start + i, dash);
                     elements.Insert(start + i + 1, lineend);
                     return;
                 }
