@@ -44,7 +44,12 @@ namespace UltimaXNA.Ultima.World.Entities
             MessageType = msgType;
             Text = text;
 
-            m_TimePersist = 5000;
+            string plainText = text.Substring(text.IndexOf('>') + 1);
+           
+            // Every speech message lasts at least 2.5s, and increases by 100ms for every char, to a max of 10s
+            m_TimePersist = 2500 + (plainText.Length * 100);
+            if (m_TimePersist > 10000)
+                m_TimePersist = 10000;
         }
 
         public void ResetTimer()

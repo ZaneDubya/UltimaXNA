@@ -124,7 +124,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Text = text;
             LimitSize = limitSize;
             m_CaratBlinkOn = false;
-            m_RenderedText = new RenderedText(string.Empty, 512, true);
+            m_RenderedText = new RenderedText(string.Empty, 2048, true);
             m_Carat = new RenderedText(string.Empty, 16, true);
         }
 
