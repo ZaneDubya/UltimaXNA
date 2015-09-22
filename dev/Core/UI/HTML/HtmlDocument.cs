@@ -329,6 +329,7 @@ namespace UltimaXNA.Core.UI.HTML
             //      -> If yes, then place all blocks!
             // 2. If not 1, can all blocks fit on one line with min width?
             //      -> If yes, then place all blocks and expand the ones that want additional width until there is no more width to fill.
+            //      ** root.Layout_MinWidth == root.Layout_MaxWidth accounts for one long word, but what if multiple words don't fit on one line?
             // 3. If not 2:
             //      -> Flow blocks to the next y line until all remaining blocks can fit on one line.
             //      -> Expand remaining blocks, and start all over again.
@@ -350,7 +351,7 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y, out ascender);
             }
-            else if (root.Layout_MinWidth <= root.Width) // 2
+            else if (root.Layout_MinWidth <= root.Width || root.Layout_MinWidth == root.Layout_MaxWidth) // 2
             {
                 // get the amount of extra width that we could fill.
                 int extraRequestedWidth = 0;
@@ -569,15 +570,13 @@ namespace UltimaXNA.Core.UI.HTML
         /// </summary>
         private void LayoutElements_BreakWordAtLineEnd(List<AElement> elements, int start, int lineWidth, List<AElement> word, int wordWidth, int styleWidth)
         {
-            CharacterElement dash = new Elements.CharacterElement(word[0].Style, '-');
             CharacterElement lineend = new Elements.CharacterElement(word[0].Style, '\n');
-            int width = dash.Width + lineend.Width + styleWidth + 2;
+            int width = lineend.Width + styleWidth + 2;
             for (int i = 0; i < word.Count; i++)
             {
                 width += word[i].Width;
                 if (width >= lineWidth)
                 {
-                    elements.Insert(start + i, dash);
                     elements.Insert(start + i + 1, lineend);
                     return;
                 }

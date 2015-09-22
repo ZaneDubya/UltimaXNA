@@ -101,7 +101,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Size = new Point(m_WorldWidth + BorderWidth * 2, m_WorldHeight + BorderHeight * 2);
             AddControl(m_Border = new ResizePic(this, 0, 0, 0xa3c, Width, Height));
             AddControl(m_Viewport = new WorldViewport(this, BorderWidth, BorderHeight, m_WorldWidth, m_WorldHeight));
-            AddControl(m_ChatWindow = new ChatControl(this, BorderWidth, BorderHeight, 400, m_WorldHeight));
+            AddControl(m_ChatWindow = new ChatControl(this, BorderWidth, BorderHeight, m_WorldWidth, m_WorldHeight));
             ServiceRegistry.Register<ChatControl>(m_ChatWindow);
         }
     }
