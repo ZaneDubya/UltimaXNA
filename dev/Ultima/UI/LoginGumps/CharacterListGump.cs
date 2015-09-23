@@ -29,6 +29,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public event EventWithNoParams OnBackToSelectServer;
         public event EventWithInt OnLoginWithCharacter;
 
+        private bool m_isWorldLoading = false;
+
         enum Buttons
         {
             QuitButton,
@@ -109,10 +111,13 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             }
 
             InputManager input = ServiceRegistry.GetService<InputManager>();
-            if (input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Enter, false, false, false))
+            if (input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Enter, false, false, false) && !m_isWorldLoading)
             {
                 if (m_characterNames.Length > 0)
+                {
                     OnLoginWithCharacter(0);
+                    m_isWorldLoading = true;
+                }
             }
 
             base.Update(totalMS, frameMS);
