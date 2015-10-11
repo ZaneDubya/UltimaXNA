@@ -29,6 +29,7 @@ using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World;
+using UltimaXNA.Configuration.Properties;
 #endregion
 
 namespace UltimaXNA
@@ -190,7 +191,7 @@ namespace UltimaXNA
                 Profiler.ExitContext("OutOfContext");
             Profiler.EnterContext("Update");
 
-            IsFixedTimeStep = Settings.Game.IsFixedTimeStep;
+            IsFixedTimeStep = Settings.Engine.IsFixedTimeStep;
 
             if(!IsRunning)
             {
@@ -227,7 +228,7 @@ namespace UltimaXNA
             if(!IsMinimized)
             {
                 if (ActiveModel is WorldModel)
-                    CheckWindowSize(Settings.World.PlayWindowGumpResolution.Width, Settings.World.PlayWindowGumpResolution.Height);
+                    CheckWindowSize(Settings.UserInterface.PlayWindowGumpResolution.Width, Settings.UserInterface.PlayWindowGumpResolution.Height);
                 else
                     CheckWindowSize(800, 600);
                 
@@ -263,14 +264,14 @@ namespace UltimaXNA
         {
             Restore();
             Window.AllowUserResizing = false;
-            SetGraphicsDeviceWidthHeight(new ResolutionConfig(800, 600)); // a wee bit bigger than legacy. Looks nicer.
+            SetGraphicsDeviceWidthHeight(new ResolutionProperty(800, 600)); // a wee bit bigger than legacy. Looks nicer.
         }
 
         public void SetupWindowForWorld()
         {
             Window.AllowUserResizing = true;
-            SetGraphicsDeviceWidthHeight(Settings.World.WindowResolution);
-            if (Settings.World.IsMaximized)
+            SetGraphicsDeviceWidthHeight(Settings.UserInterface.WindowResolution);
+            if (Settings.UserInterface.IsMaximized)
             {
                 Maximize();
             }
@@ -280,11 +281,11 @@ namespace UltimaXNA
         {
             if (IsMaximized)
             {
-                Settings.World.IsMaximized = true;
+                Settings.UserInterface.IsMaximized = true;
             }
             else
             {
-                Settings.World.WindowResolution = new ResolutionConfig(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
+                Settings.UserInterface.WindowResolution = new ResolutionProperty(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
             }
         }
 
@@ -355,7 +356,7 @@ namespace UltimaXNA
         private void CheckWindowSize(int minWidth, int minHeight)
         {
             GameWindow window = this.Window; // (sender as GameWindow);
-            ResolutionConfig resolution = new ResolutionConfig(window.ClientBounds.Width, window.ClientBounds.Height);
+            ResolutionProperty resolution = new ResolutionProperty(window.ClientBounds.Width, window.ClientBounds.Height);
             // this only occurs when the world is active. Make sure that we don't reduce the window size
             // smaller than the world gump size.
             if (resolution.Width < minWidth)
@@ -366,11 +367,11 @@ namespace UltimaXNA
                 SetGraphicsDeviceWidthHeight(resolution);
         }
 
-        private void SetGraphicsDeviceWidthHeight(ResolutionConfig resolution)
+        private void SetGraphicsDeviceWidthHeight(ResolutionProperty resolution)
         {
             GraphicsDeviceManager.PreferredBackBufferWidth = resolution.Width;
             GraphicsDeviceManager.PreferredBackBufferHeight = resolution.Height;
-            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = Settings.Game.IsVSyncEnabled;
+            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = Settings.Engine.IsVSyncEnabled;
             GraphicsDeviceManager.ApplyChanges();
         }
 

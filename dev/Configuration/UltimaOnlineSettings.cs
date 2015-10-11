@@ -23,9 +23,19 @@ namespace UltimaXNA.Configuration
 
         public UltimaOnlineSettings()
         {
+            // NOTE FROM ZaneDubya: DO NOT CHANGE ClientVersion from 6.0.6.2.
+            // We are focusing our efforts on getting a specific version of the client working.
+            // Once we have this version working, we will attempt to support additional versions.
+            // We will not support any issues you experience after changing this value.
             ClientVersion = new byte[] {6, 0, 6, 2};
         }
 
+        /// <summary>
+        /// The patch version which is sent to the server. Hardcoded to 6.0.6.2.
+        /// RunUO (and possibly other server software) rely on the client's reported
+        /// patch version to enable/disable certain packets and features. You WILL have
+        /// issues if you change this out of a given range of supported values.
+        /// </summary>
         public byte[] ClientVersion
         {
             get { return m_ClientVersion; }
@@ -33,10 +43,16 @@ namespace UltimaXNA.Configuration
             {
                 if (value == null || value.Length != 4)
                     return;
+                // Do not remove this check. See above.
+                if (value != new byte[] { 6, 0, 6, 2 })
+                    return;
                 SetProperty(ref m_ClientVersion, value);
             }
         }
         
+        /// <summary>
+        /// The directory where the Ultima Online resource files and executable are located.
+        /// </summary>
         public string DataDirectory
         {
             get { return m_DataDirectory; }

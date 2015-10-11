@@ -43,8 +43,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             m_Model = ServiceRegistry.GetService<WorldModel>();
 
-            m_WorldWidth = Settings.World.PlayWindowGumpResolution.Width;
-            m_WorldHeight = Settings.World.PlayWindowGumpResolution.Height;
+            m_WorldWidth = Settings.UserInterface.PlayWindowGumpResolution.Width;
+            m_WorldHeight = Settings.UserInterface.PlayWindowGumpResolution.Height;
 
             Position = new Point(32, 32);
             OnResize();
@@ -58,10 +58,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_WorldWidth != Settings.World.PlayWindowGumpResolution.Width || m_WorldHeight != Settings.World.PlayWindowGumpResolution.Height)
+            if (m_WorldWidth != Settings.UserInterface.PlayWindowGumpResolution.Width || m_WorldHeight != Settings.UserInterface.PlayWindowGumpResolution.Height)
             {
-                m_WorldWidth = Settings.World.PlayWindowGumpResolution.Width;
-                m_WorldHeight = Settings.World.PlayWindowGumpResolution.Height;
+                m_WorldWidth = Settings.UserInterface.PlayWindowGumpResolution.Width;
+                m_WorldHeight = Settings.UserInterface.PlayWindowGumpResolution.Height;
                 OnResize();
             }
 

@@ -12,23 +12,23 @@
 using UltimaXNA.Core.ComponentModel;
 #endregion
 
-namespace UltimaXNA.Configuration
+namespace UltimaXNA.Configuration.Properties
 {
     /// <summary>
     /// A class that describes a resolution width height pair.
     /// </summary>
-    public class ResolutionConfig : NotifyPropertyChangedBase
+    public class ResolutionProperty : NotifyPropertyChangedBase
     {
         private int m_Height;
         private int m_Width;
 
-        public ResolutionConfig()
+        public ResolutionProperty()
         {
             Width = 800;
             Height = 600;
         }
 
-        public ResolutionConfig(int width, int height)
+        public ResolutionProperty(int width, int height)
         {
             Width = width;
             Height = height;

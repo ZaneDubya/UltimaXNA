@@ -130,14 +130,14 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
-    <Compile Include="Configuration\MouseConfig.cs" />
+    <Compile Include="Configuration\Properties\MouseProperty.cs" />
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="Configuration\SavedGumpConfig.cs" />
-    <Compile Include="Configuration\WorldSettings.cs" />
+    <Compile Include="Configuration\Properties\SavedGumpProperty.cs" />
+    <Compile Include="Configuration\UserInterfaceSettings.cs" />
     <Compile Include="Core\Audio\ASound.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
-    <Compile Include="Configuration\ResolutionConfig.cs" />
+    <Compile Include="Configuration\Properties\ResolutionProperty.cs" />
     <Compile Include="Core\Configuration\SettingsFile.cs" />
     <Compile Include="Core\Configuration\TextSettingsFileWriter.cs" />
     <Compile Include="Core\Diagnostics\EventLevels.cs" />
@@ -232,8 +232,8 @@
     <Compile Include="Core\Audio\VolumeState.cs" />
     <Compile Include="Ultima\AUltimaModel.cs" />
     <Compile Include="Configuration\DebugSettings.cs" />
-    <Compile Include="Configuration\GameSettings.cs" />
-    <Compile Include="Configuration\ServerSettings.cs" />
+    <Compile Include="Configuration\EngineSettings.cs" />
+    <Compile Include="Configuration\LoginSettings.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Core\Configuration\ASettingsSection.cs" />
     <Compile Include="Configuration\UltimaOnlineSettings.cs" />

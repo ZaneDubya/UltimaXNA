@@ -23,6 +23,7 @@ using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Managers;
 using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Configuration.Properties;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -236,7 +237,7 @@ namespace UltimaXNA.Ultima.World
         public void LoginToWorld()
         {
             m_UserInterface.AddControl(new WorldViewGump(), 0, 0); // world gump will restore its position on load.
-            if (!Settings.World.MenuBarDisabled)
+            if (!Settings.UserInterface.MenuBarDisabled)
             {
                 m_UserInterface.AddControl(new TopMenuGump(), 0, 0); // by default at the top of the screen.
             }
@@ -281,7 +282,7 @@ namespace UltimaXNA.Ultima.World
                         Dictionary<string, object> data;
                         if ((gump as Gump).SaveGump(out data))
                         {
-                            Settings.Gumps.SavedGumps.Add(new Configuration.SavedGumpConfig(gump.GetType(), data));
+                            Settings.Gumps.SavedGumps.Add(new SavedGumpProperty(gump.GetType(), data));
                         }
                     }
                 }
@@ -290,7 +291,7 @@ namespace UltimaXNA.Ultima.World
 
         private void RestoreSavedGumps()
         {
-            foreach (Configuration.SavedGumpConfig savedGump in Settings.Gumps.SavedGumps)
+            foreach (SavedGumpProperty savedGump in Settings.Gumps.SavedGumps)
             {
                 try
                 {

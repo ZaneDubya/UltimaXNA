@@ -385,9 +385,6 @@ namespace UltimaXNA.Core.UI
             if (!IsInitialized || !IsVisible)
                 return;
 
-            if (Settings.Debug.ShowUIOutlines)
-                DebugDrawBounds(spriteBatch, position, Color.White);
-
             foreach (AControl c in Children)
             {
                 if ((c.Page == 0) || (c.Page == ActivePage))
@@ -724,7 +721,7 @@ namespace UltimaXNA.Core.UI
             }
             else
             {
-                m_MaxTimeForDoubleClick = (float)UltimaGame.TotalMS + Settings.World.Mouse.DoubleClickMS;
+                m_MaxTimeForDoubleClick = (float)UltimaGame.TotalMS + Settings.UserInterface.Mouse.DoubleClickMS;
             }
 
             if (button == MouseButton.Right && !IsUncloseableWithRMB)

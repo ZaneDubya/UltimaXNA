@@ -4,13 +4,14 @@ using UltimaXNA.Configuration;
 using Microsoft.Xna.Framework;
 using System.Drawing;
 using System.Windows.Forms;
+using UltimaXNA.Configuration.Properties;
 
 namespace UltimaXNA.Core
 {
     internal class Resolutions
     {
-        public static readonly List<ResolutionConfig> FullScreenResolutionsList;
-        public static readonly List<ResolutionConfig> PlayWindowResolutionsList;
+        public static readonly List<ResolutionProperty> FullScreenResolutionsList;
+        public static readonly List<ResolutionProperty> PlayWindowResolutionsList;
 
         public static void SetScreenSize(GameWindow window)
         {
@@ -31,14 +32,14 @@ namespace UltimaXNA.Core
             {
                 if (mode.Format != SurfaceFormat.Color)
                     continue;
-                ResolutionConfig res = new ResolutionConfig(mode.Width, mode.Height);
+                ResolutionProperty res = new ResolutionProperty(mode.Width, mode.Height);
                 if (!FullScreenResolutionsList.Contains(res))
                 {
                     FullScreenResolutionsList.Add(res);
                 }
             }
 
-            foreach (ResolutionConfig res in FullScreenResolutionsList)
+            foreach (ResolutionProperty res in FullScreenResolutionsList)
             {
                 if (!PlayWindowResolutionsList.Contains(res) && res.Width <= screen.Width && res.Height <= screen.Height)
                 {
@@ -49,23 +50,23 @@ namespace UltimaXNA.Core
 
         static Resolutions()
         {
-            FullScreenResolutionsList = new List<ResolutionConfig>();
-            PlayWindowResolutionsList = new List<ResolutionConfig>();
+            FullScreenResolutionsList = new List<ResolutionProperty>();
+            PlayWindowResolutionsList = new List<ResolutionProperty>();
 
             SetScreenSize(null);
         }
 
-        public static bool IsValidFullScreenResolution(ResolutionConfig resolution)
+        public static bool IsValidFullScreenResolution(ResolutionProperty resolution)
         {
-            foreach (ResolutionConfig res in FullScreenResolutionsList)
+            foreach (ResolutionProperty res in FullScreenResolutionsList)
                 if (resolution.Width == res.Width && resolution.Height == res.Height)
                     return true;
             return false;
         }
 
-        public static bool IsValidPlayWindowResolution(ResolutionConfig resolution)
+        public static bool IsValidPlayWindowResolution(ResolutionProperty resolution)
         {
-            foreach (ResolutionConfig res in PlayWindowResolutionsList)
+            foreach (ResolutionProperty res in PlayWindowResolutionsList)
                 if (resolution.Width == res.Width && resolution.Height == res.Height)
                     return true;
             return false;

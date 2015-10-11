@@ -13,9 +13,9 @@ using UltimaXNA.Core.ComponentModel;
 using UltimaXNA.Core.Input;
 #endregion
 
-namespace UltimaXNA.Configuration
+namespace UltimaXNA.Configuration.Properties
 {
-    public class MouseConfig : NotifyPropertyChangedBase
+    public class MouseProperty : NotifyPropertyChangedBase
     {
         private MouseButton m_InteractionButton = MouseButton.Left;
         private MouseButton m_MovementButton = MouseButton.Right;
@@ -23,7 +23,7 @@ namespace UltimaXNA.Configuration
         private float m_ClickAndPickUpMS = 800f; // this is close to what the legacy client uses.
         private float m_DoubleClickMS = 400f;
 
-        public MouseConfig()
+        public MouseProperty()
         {
 
         }

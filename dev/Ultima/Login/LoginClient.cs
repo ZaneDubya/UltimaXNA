@@ -182,7 +182,7 @@ namespace UltimaXNA.Ultima.Login
         {
             Status = LoginClientStatus.LoginServer_LoggingIn;
 
-            m_Network.Send(new LoginPacket(Settings.Server.UserName, Password.ConvertToUnsecureString()));
+            m_Network.Send(new LoginPacket(Settings.Login.UserName, Password.ConvertToUnsecureString()));
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace UltimaXNA.Ultima.Login
         public void Relay()
         {
             Status = LoginClientStatus.LoginServer_Relaying;
-            m_Network.Send(new GameLoginPacket(m_ServerRelayKey, Settings.Server.UserName, Password.ConvertToUnsecureString()));
+            m_Network.Send(new GameLoginPacket(m_ServerRelayKey, Settings.Login.UserName, Password.ConvertToUnsecureString()));
         }
 
         /// <summary>

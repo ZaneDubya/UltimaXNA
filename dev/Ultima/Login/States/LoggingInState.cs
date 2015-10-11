@@ -62,8 +62,8 @@ namespace UltimaXNA.Ultima.Login.States
                     switch (m_Login.Client.Status)
                     {
                         case LoginClientStatus.Unconnected:
-                            string serverAddress = Settings.Server.ServerAddress;
-                            int serverPort = Settings.Server.ServerPort;
+                            string serverAddress = Settings.Login.ServerAddress;
+                            int serverPort = Settings.Login.ServerPort;
                             m_Login.Client.Connect(serverAddress, serverPort);
                             break;
                         case LoginClientStatus.LoginServer_Connecting:

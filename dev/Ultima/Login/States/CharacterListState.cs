@@ -65,13 +65,13 @@ namespace UltimaXNA.Ultima.Login.States
                 switch (m_Login.Client.Status)
                 {
                     case LoginClientStatus.GameServer_CharList:
-                        if (!m_autoSelectedCharacter && Settings.Game.AutoSelectLastCharacter && !string.IsNullOrWhiteSpace(Settings.Game.LastCharacterName))
+                        if (!m_autoSelectedCharacter && Settings.Login.AutoSelectLastCharacter && !string.IsNullOrWhiteSpace(Settings.Login.LastCharacterName))
                         {
                             m_autoSelectedCharacter = true;
 
                             for(int i = 0; i < Characters.List.Length; i++)
                             {
-                                if(Characters.List[i].Name == Settings.Game.LastCharacterName)
+                                if(Characters.List[i].Name == Settings.Login.LastCharacterName)
                                 {
                                     OnLoginWithCharacter(i);
                                 }

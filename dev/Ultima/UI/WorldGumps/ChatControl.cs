@@ -48,37 +48,37 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 {
                     case ChatMode.Default:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>", 
-                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.SpeechColor, 1)));
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.SpeechColor, 1)));
                         m_TextEntry.LeadingText = string.Empty;
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Whisper:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
-                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.SpeechColor, 1)));
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.SpeechColor, 1)));
                         m_TextEntry.LeadingText = "Whisper: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Emote: // emote
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
-                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.EmoteColor, 1)));
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.EmoteColor, 1)));
                         m_TextEntry.LeadingText = "Emote: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Party: // party
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
-                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.PartyMsgColor, 1)));
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.PartyMsgColor, 1)));
                         m_TextEntry.LeadingText = "Party: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Guild: // guild
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
-                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.GuildMsgColor, 1)));
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.GuildMsgColor, 1)));
                         m_TextEntry.LeadingText = "Guild: ";
                         m_TextEntry.Text = string.Empty;
                         break;
                     case ChatMode.Alliance: // alliance
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
-                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.Game.AllianceMsgColor, 1)));
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.AllianceMsgColor, 1)));
                         m_TextEntry.LeadingText = "Alliance: ";
                         m_TextEntry.Text = string.Empty;
                         break;
