@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
-            HueVector = Utility.GetHueVector(Entity.Hue);
+            HueVector = Utility.GetHueVector(Entity.Hue, false, false, true);
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
         }
 

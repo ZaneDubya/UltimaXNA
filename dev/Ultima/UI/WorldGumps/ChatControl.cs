@@ -252,7 +252,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public void Draw(SpriteBatchUI sb, Point position)
         {
-            m_Texture.Draw(sb, position, Utility.GetHueVector(0, false, (m_alpha < 1.0f)));
+            m_Texture.Draw(sb, position, Utility.GetHueVector(0, false, (m_alpha < 1.0f), true));
         }
 
         public void Dispose()

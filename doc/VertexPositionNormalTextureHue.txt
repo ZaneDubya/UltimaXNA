@@ -4,4 +4,6 @@ If Hue.y == 0, do not hue.
 If Hue.y == 1, hue the entire sprite with index == Hue.x
 If Hue.y == 2, hue only the grayscale pixels of the sprite with index == Hue.x
 
+In addition, if Hue.y |= 4, do not decrease the brightness of the text with lighting.
+
 Hue.z is the transparency of the sprite. 0 == opaque, 1 == completely transparent.
