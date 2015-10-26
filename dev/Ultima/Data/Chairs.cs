@@ -19,6 +19,9 @@ using UltimaXNA.Ultima.Resources;
 
 namespace UltimaXNA.Ultima.Data
 {
+    /// <summary>
+    /// Contains a list of all chair objects, which are hardcoded in the legacy client.
+    /// </summary>
     public static class Chairs
     {
         private static Dictionary<int, ChairData> m_Chairs;
@@ -26,7 +29,7 @@ namespace UltimaXNA.Ultima.Data
         static Chairs()
         {
             m_Chairs = new Dictionary<int, ChairData>();
-            // 0x0459 - 0x045C - marbe benches
+            // 0x0459 - 0x045C - marble benches
             AddChairData(0x0459, Direction.South, ChairType.ReversibleFacing);
             AddChairData(0x045A, Direction.East, ChairType.ReversibleFacing);
             AddChairData(0x045B, Direction.South, ChairType.ReversibleFacing);
