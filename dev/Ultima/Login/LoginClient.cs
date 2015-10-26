@@ -145,7 +145,7 @@ namespace UltimaXNA.Ultima.Login
             {
                 Status = LoginClientStatus.LoginServer_WaitingForLogin;
 
-                var clientVersion = Settings.UltimaOnline.ClientVersion;
+                byte[] clientVersion = Settings.UltimaOnline.ClientVersion;
 
                 if (clientVersion.Length != 4)
                     Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");

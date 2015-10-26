@@ -9,6 +9,8 @@
  *
  ***************************************************************************/
 #region usings
+using System.Collections;
+using System.Collections.Generic;
 using UltimaXNA.Core.Configuration;
 #endregion
 
@@ -44,7 +46,7 @@ namespace UltimaXNA.Configuration
                 if (value == null || value.Length != 4)
                     return;
                 // Do not remove this check. See above.
-                if (value != new byte[] { 6, 0, 6, 2 })
+                if (value[0] != 6 || value[1] != 0 || value[2] != 6 || value[3] != 2)
                     return;
                 SetProperty(ref m_ClientVersion, value);
             }
