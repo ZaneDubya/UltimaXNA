@@ -96,6 +96,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
         {
+            if (m_Item == null)
+                return;
+
             // if click, we wait for a moment before picking it up. This allows a single click.
             m_ClickedCanDrag = true;
             m_PickUpTime = (float)UltimaGame.TotalMS + Settings.UserInterface.Mouse.ClickAndPickupMS;
@@ -104,6 +107,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override void OnMouseOver(int x, int y)
         {
+            if (m_Item == null)
+                return;
+
             // if we have not yet picked up the item, AND we've moved more than 3 pixels total away from the original item, pick it up!
             if (m_ClickedCanDrag && (Math.Abs(m_ClickPoint.X - x) + Math.Abs(m_ClickPoint.Y - y) > 3))
             {
@@ -114,6 +120,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override void OnMouseClick(int x, int y, MouseButton button)
         {
+            if (m_Item == null)
+                return;
+
             if (m_ClickedCanDrag)
             {
                 m_ClickedCanDrag = false;
@@ -124,6 +133,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override void OnMouseDoubleClick(int x, int y, MouseButton button)
         {
+            if (m_Item == null)
+                return;
+
             m_World.Interaction.DoubleClick(m_Item);
             m_SendClickIfNoDoubleClick = false;
         }
