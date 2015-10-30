@@ -194,30 +194,32 @@ namespace UltimaXNA.Ultima.World.WorldViews
                     }
 
                     List<AEntity> entities = tile.Entities;
-
+                    bool draw = true;
                     for (int i = 0; i < entities.Count; i++)
                     {
+                        if (entities[i] is DeferredEntity)
+                            deferredToRemove.Add(entities[i]);
+
                         if (!m_DrawTerrain)
                         {
-                            if (entities[i] is Ground)
-                                break;
-                            else if (entities[i].Z > tile.Ground.Z)
-                                break;
+                            if ((entities[i] is Ground) || (entities[i].Z > tile.Ground.Z))
+                                draw = false;
                         }
 
                         if ((entities[i].Z >= m_DrawMaxItemAltitude || (m_DrawMaxItemAltitude != 255 && entities[i] is Item && (entities[i] as Item).ItemData.IsRoof)) && !(entities[i] is Ground))
-                            continue;
-
-                        AEntityView view = entities[i].GetView();
-
-                        if (view != null)
                         {
-                            if (view.Draw(m_SpriteBatch, drawPosition, overList, map, !m_UnderSurface))
-                                CountEntitiesRendered++;
+                            continue;
                         }
 
-                        if (entities[i] is DeferredEntity)
-                            deferredToRemove.Add(entities[i]);
+                        if (draw)
+                        {
+                            AEntityView view = entities[i].GetView();
+                            if (view != null)
+                            {
+                                if (view.Draw(m_SpriteBatch, drawPosition, overList, map, !m_UnderSurface))
+                                    CountEntitiesRendered++;
+                            }
+                        }
                     }
 
                     foreach (AEntity deferred in deferredToRemove)
@@ -249,8 +251,10 @@ namespace UltimaXNA.Ultima.World.WorldViews
             int renderDimensionsDiff = Math.Abs(renderDimensions.X - renderDimensions.Y);
             renderDimensionsDiff -= renderDimensionsDiff % 2; // make sure this is an even number...
 
-            // when the player entity is higher (z) in the world, we must offset the first row drawn. This variable MUST be a multiple of 2 and MUST be positive.
-            int firstZOffset = (int)Math.Abs(((center.Z + center.Z_offset) / 11));
+            // when the player entity is at a higher z altitude in the world, we must offset the first row drawn so that tiles at lower altitudes are drawn.
+            // The reverse is not true - at lower altitutdes, higher tiles are never on screen. This is an artifact of UO's isometric projection.
+            // Note: The value of this variable MUST be a multiple of 2 and MUST be positive.
+            int firstZOffset = (center.Z > 0) ? (int)Math.Abs(((center.Z + center.Z_offset) / 11)) : 0;
             // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen. This may still skip VERY tall objects (those weird jungle trees?)
 
             firstTile = new Point(center.X - firstZOffset, center.Y - renderDimensions.Y - firstZOffset);
