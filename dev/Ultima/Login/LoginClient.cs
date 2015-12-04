@@ -16,6 +16,7 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.Login.Servers;
 using UltimaXNA.Ultima.Network.Client;
@@ -31,6 +32,7 @@ namespace UltimaXNA.Ultima.Login
     {
         private Timer m_KeepAliveTimer;
 
+        private readonly Version m_OldSupportedFeatureVersion = new Version(6, 0, 14, 2);
         private readonly INetworkClient m_Network;
         private readonly UltimaGame m_Engine;
         private readonly UserInterfaceService m_UserInterface;
@@ -83,8 +85,16 @@ namespace UltimaXNA.Ultima.Login
             Register<ServerRelayPacket>(0x8C, "ServerRelay", 11, ReceiveServerRelay);
             Register<ServerListPacket>(0xA8, "Game Server List", -1, ReceiveServerList);
             Register<CharacterCityListPacket>(0xA9, "Characters / Starting Locations", -1, ReceiveCharacterList);
-            Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, ReceiveEnableFeatures);
-            Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
+
+            if (FileManager.IsUnknownClientVersion || FileManager.Version < m_OldSupportedFeatureVersion)
+            {
+                Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, ReceiveEnableFeatures);
+            }
+            else
+            {
+                Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
+            }
+
             Register<VersionRequestPacket>(0xBD, "Version Request", -1, ReceiveVersionRequest);
         }
 

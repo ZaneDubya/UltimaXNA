@@ -10,9 +10,11 @@
 #region usings
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network.Compression;
 #endregion
@@ -38,6 +40,7 @@ namespace UltimaXNA.Core.Network
         private bool m_IsConnected;
         private bool m_AppendNextMessage;
 
+        private byte[] m_DecompressionBuffer;
         private byte[] m_ReceiveBuffer;
         private byte[] m_AppendData;
 
@@ -120,6 +123,16 @@ namespace UltimaXNA.Core.Network
             }
 
             TypedPacketHandler handler = new TypedPacketHandler(id, name, type, length, onReceive);
+
+            if (m_TypedHandlers[id].Any())
+            {
+                var requiredLength = m_TypedHandlers[id][0].Length;
+
+                Guard.Requires(requiredLength == length,
+                    "Invalid packet length.  All packet handlers for 0x{0:X2} must specify a length of {1}.", id,
+                    requiredLength);
+            }
+
             m_TypedHandlers[id].Add(handler);
         }
 
@@ -335,11 +348,13 @@ namespace UltimaXNA.Core.Network
             try
             {
                 Socket socket = state.Socket;
+
                 if (socket.Connected == false)
                 {
                     Disconnect();
                     return;
                 }
+
                 int length = socket.EndReceive(result);
 
                 if (length > 0)
@@ -353,101 +368,14 @@ namespace UltimaXNA.Core.Network
 
                     if (m_IsDecompressionEnabled)
                     {
-                        int outsize = 0;
-                        byte[] data;
-
-                        if (m_AppendNextMessage)
-                        {
-                            m_AppendNextMessage = false;
-                            data = new byte[m_AppendData.Length + length];
-
-                            Buffer.BlockCopy(m_AppendData, 0, data, 0, m_AppendData.Length);
-                            Buffer.BlockCopy(buffer, 0, data, m_AppendData.Length, length);
-                        }
-                        else
-                        {
-                            data = new byte[length];
-                            Buffer.BlockCopy(buffer, 0, data, 0, length);
-                        }
-
-                        while (m_Decompression.DecompressOnePacket(ref data, data.Length, ref m_ReceiveBuffer, ref outsize))
-                        {
-                            int realLength;
-                            PacketHandler packetHandler;
-                            List<PacketHandler> packetHandlers = GetHandlers(m_ReceiveBuffer[0], m_ReceiveBuffer[1]);
-
-                            if (!GetPacketSizeAndHandler(packetHandlers, outsize, out realLength, out packetHandler))
-                            {
-                                Tracer.Warn("Unhandled packet with id: 0x{0:x2}, possible subid: 0x{1:x2}", m_ReceiveBuffer[0], m_ReceiveBuffer[1]);
-                                m_ReceiveBufferPosition = 0;
-                                break;
-                            }
-                            
-                            if (realLength != outsize)
-                            {
-                                throw new Exception("Bad packet size!");
-                            }
-
-                            byte[] packetBuffer = new byte[realLength];
-                            Buffer.BlockCopy(m_ReceiveBuffer, 0, packetBuffer, 0, realLength);
-
-                            string name = packetHandler.Name;
-                            AddPacket(name, packetHandler, packetBuffer, realLength);
-                        }
-
-                        // We've run out of data to parse, or the packet was incomplete. If the packet was incomplete,
-                        // we should save what's left for socket receive event.
-                        if (data.Length > 0)
-                        {
-                            m_AppendNextMessage = true;
-                            m_AppendData = data;
-                        }
+                        DecompressBuffer(ref buffer, ref length);
                     }
-                    else
-                    {
-                        Buffer.BlockCopy(buffer, 0, m_ReceiveBuffer, m_ReceiveBufferPosition, length);
 
-                        m_ReceiveBufferPosition += length;
+                    Buffer.BlockCopy(buffer, 0, m_ReceiveBuffer, m_ReceiveBufferPosition, length);
 
-                        int currentIndex = 0;
+                    m_ReceiveBufferPosition += length;
 
-                        while (currentIndex < m_ReceiveBufferPosition)
-                        {
-                            int realLength;
-                            PacketHandler packetHandler;
-                            List<PacketHandler> packetHandlers = GetHandlers(m_ReceiveBuffer[currentIndex], m_ReceiveBuffer[currentIndex + 1]);
-
-                            if (!GetPacketSizeAndHandler(packetHandlers, -1, out realLength, out packetHandler))
-                            {
-                                currentIndex = 0;
-                                m_ReceiveBufferPosition = 0;
-                                break;
-                            }
-
-                            if ((m_ReceiveBufferPosition - currentIndex) >= realLength)
-                            {
-                                byte[] packetBuffer = new byte[realLength];
-                                Buffer.BlockCopy(m_ReceiveBuffer, currentIndex, packetBuffer, 0, realLength);
-
-                                string name = packetHandler.Name;
-                                AddPacket(name, packetHandler, packetBuffer, realLength);
-
-                                currentIndex += realLength;
-                            }
-                            else
-                            {
-                                //Need more data
-                                break;
-                            }
-                        }
-
-                        m_ReceiveBufferPosition -= currentIndex;
-
-                        if (m_ReceiveBufferPosition > 0)
-                        {
-                            Buffer.BlockCopy(m_ReceiveBuffer, currentIndex, m_ReceiveBuffer, 0, m_ReceiveBufferPosition);
-                        }
-                    }
+                    ProcessReceiveBuffer();
                 }
 
                 if (m_ServerSocket != null)
@@ -459,6 +387,93 @@ namespace UltimaXNA.Core.Network
             {
                 Tracer.Debug(e.ToString());
                 Disconnect();
+            }
+        }
+
+        private void DecompressBuffer(ref byte[] buffer, ref int length)
+        {
+            if (m_DecompressionBuffer == null)
+            {
+                m_DecompressionBuffer = new byte[0x10000];
+            }
+
+            byte[] data;
+
+            if (m_AppendNextMessage)
+            {
+                m_AppendNextMessage = false;
+
+                data = new byte[m_AppendData.Length + length];
+
+                Buffer.BlockCopy(m_AppendData, 0, data, 0, m_AppendData.Length);
+                Buffer.BlockCopy(buffer, 0, data, m_AppendData.Length, length);
+            }
+            else
+            {
+                data = new byte[length];
+                Buffer.BlockCopy(buffer, 0, data, 0, length);
+            }
+
+            int outSize;
+            int offset = 0;
+
+            while (m_Decompression.DecompressChunk(ref data, data.Length, ref m_DecompressionBuffer, offset, out outSize))
+            {
+                offset += outSize;
+            }
+
+            buffer = m_DecompressionBuffer;
+            length = offset;
+
+            // We've run out of data to parse, or the packet was incomplete. If the packet was incomplete,
+            // we should save what's left for the next socket receive event.
+            if (data.Length > 0)
+            {
+                m_AppendNextMessage = true;
+                m_AppendData = data;
+            }
+        }
+
+        private void ProcessReceiveBuffer()
+        {
+            int index = 0;
+
+            while (index < m_ReceiveBufferPosition)
+            {
+                int realLength;
+                PacketHandler packetHandler;
+                List<PacketHandler> packetHandlers = GetHandlers(m_ReceiveBuffer[index], m_ReceiveBuffer[index + 1]);
+
+                if (!GetPacketSizeAndHandler(packetHandlers, m_ReceiveBuffer, index, out realLength, out packetHandler))
+                {
+                    Tracer.Warn("Unhandled packet with id: 0x{0:x2}, possible subid: 0x{1:x2}", m_ReceiveBuffer[0], m_ReceiveBuffer[1]);
+                    index = 0;
+                    m_ReceiveBufferPosition = 0;
+                    break;
+                }
+
+                if ((m_ReceiveBufferPosition - index) >= realLength)
+                {
+                    byte[] packetBuffer = new byte[realLength];
+                    Buffer.BlockCopy(m_ReceiveBuffer, index, packetBuffer, 0, realLength);
+
+                    string name = packetHandler.Name;
+                    AddPacket(name, packetHandler, packetBuffer, realLength);
+
+                    index += realLength;
+                }
+                else
+                {
+                    //Need more data
+                    break;
+                }
+            }
+
+            m_ReceiveBufferPosition -= index;
+
+            if (m_ReceiveBufferPosition > 0)
+            {
+                Buffer.BlockCopy(m_ReceiveBuffer, index, m_ReceiveBuffer, 0, m_ReceiveBufferPosition);
             }
         }
 
@@ -492,10 +507,9 @@ namespace UltimaXNA.Core.Network
         /// Determines the correct packet size of the packet, and if there is a packetHandler that will handle this packet.
         /// </summary>
         /// <param name="packetHandlers">List of possible packet handlers for this packet. A packet handler with length of -1 must be first, if any.</param>
-        /// <param name="expectedLength">-1 if expected length is unknown, otherwise value of expected length.</param>
         /// <param name="realLength">The real length of the packet.</param>
         /// <returns>True if there is a packetHandler that will handle this packet.</returns>
-        private bool GetPacketSizeAndHandler(List<PacketHandler> packetHandlers, int expectedLength, out int realLength, out PacketHandler packetHandler)
+        private bool GetPacketSizeAndHandler(List<PacketHandler> packetHandlers, byte[] buffer, int offset, out int realLength, out PacketHandler packetHandler)
         {
             realLength = 0;
             packetHandler = null;
@@ -507,17 +521,14 @@ namespace UltimaXNA.Core.Network
             {
                 if (ph.Length == -1)
                 {
-                    realLength = m_ReceiveBuffer[2] | (m_ReceiveBuffer[1] << 8);
+                    realLength = buffer[offset + 2] | (buffer[offset + 1] << 8);
                     packetHandler = ph;
                     return true;
                 }
-                else if (expectedLength == -1 || expectedLength == ph.Length)
-                {
-                    // note that this is never run when ph.Length == -1, as it would have been true in the previous if statement.
-                    realLength = ph.Length;
-                    packetHandler = ph;
-                    return true;
-                }
+                
+                realLength = ph.Length;
+                packetHandler = ph;
+                return true;
             }
               
             return false; 
