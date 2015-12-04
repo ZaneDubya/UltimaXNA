@@ -1,0 +1,64 @@
+Clint.XNA
+    dev/Core/Graphics/SpriteBatch3D.cs - original draft, much changed since.
+    dev/Ultima/World/Maps/Map.cs - orginial draft, much changed since.
+
+gitter-badger
+readme.md
+    Added Gitter link.
+
+slayde1970
+dev/Ultima/IO/RadarColorData.cs
+	Fixed radar Colors array length init for 7.0.7.1 and newer clients.
+
+Aatu
+UltimaXNA/UltimaXNA/Input/Events/InputEventKeyboard.cs
+UltimaXNA/UltimaXNA/Input/InputState.cs
+UltimaXNA/UltimaXNA/Input/WndProc.cs
+	Added KeyChar handling.
+	Made WmKeyEvent method on WM_CHAR or WM_SYSCHAR functional.
+
+robertdeclaux
+dev/UltimaEntities/MobileMovement.cs
+	Changed the way that mobiles are blocked on diagonal movement.
+dev/UltimaGUI/WorldGumps/ChatWindow.cs
+	Added prev/next functionality.
+dev/UltimaGUI/WorldGumps/JournalGump.cs
+	Added journal functionality.
+
+sgorman
+UltimaXNA/UltimaXNA/Code/Network/GameClient.cs
+UltimaXNA/UltimaXNA/Code/GUI/GUI.cs
+	Added m_ReceiveDragItem method in GameClient.
+	Added functionality to allow movement of items between containers.
+
+smjert
+UltimaXNA/UltimaXNA/Code/DataLocal/TileData.cs
+	Added stair itemIDs and removed extraneous this. qualifiers. Actually, this came from RunUO...
+UltimaXNA/UltimaXNA/Code/GameObjects/Movement.cs
+    Added stair handling (since removed by RunUO pasteover).
+UltimaXNA/UltimaXNA/Code/TileEngine/Map.cs
+    Added methods IsStaticItem, IsGOTile, GetStatics, GetGOTiles, OnStairs
+UltimaXNA/UltimaXNA/Code/DataLocal/Animations.cs
+    Mount animation index conversions.
+    Added mount animation data handling (in Ultima namespace)
+    Added speed calculation, distance calculation (since rewritten).
+    
+    
+    
+RunUO
+    dev/Utility.cs - only the ToBoolean method.
+    dev/Core/Network/Compression/ZlibDecompression.cs - in its entirety.
+    dev/Data/containers.cfg  - 100%.
+    dev/Data/bodytable.cfg - 100%
+    dev/Ultima/Serial.cs  - almost all.
+    dev/Ultima/Data/Body.cs - in its entirety.
+    dev/Ultima/IO/ContainerData.cs - almost all.
+    dev/Ultima/IO/ParticleData.cs - in its entirety.
+    dev/Ultima/IO/TileMatrixData.cs - about 90%
+    dev/Ultima/IO/TileMatrixDataPatch.cs  - about 90%
+    dev/Ultima/IO/TileData.cs - stair ids (copdied by Smjert)
+    dev/Ultima/Network/Server/DeleteResultPacket.cs - DeleteResult enum
+    dev/Ultima/World/Position3D.cs - base tile set/get, offsets are mine.
+    dev/Ultima/World/Entities/Mobiles/MobileMovement.cs - unknown. 50?
+    dev/Ultima/World/Entities/Mobiles/MobileMovementCheck.cs - unknown. 50?
+    

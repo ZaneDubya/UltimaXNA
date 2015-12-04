@@ -12,6 +12,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Configuration;
+using UltimaXNA.Configuration.Properties;
 #endregion
 
 namespace UltimaXNA.Configuration
@@ -32,7 +33,7 @@ namespace UltimaXNA.Configuration
         /// <summary>
         /// A list of saved gumps, and data describing the same. These are reloaded when the world is started.
         /// </summary>
-        public List<SavedGumpConfig> SavedGumps
+        public List<SavedGumpProperty> SavedGumps
         {
             get;
             set;
@@ -41,7 +42,7 @@ namespace UltimaXNA.Configuration
         public GumpSettings()
         {
             LastPositions = new Dictionary<string, Point>();
-            SavedGumps = new List<SavedGumpConfig>();
+            SavedGumps = new List<SavedGumpProperty>();
         }
 
         public Point GetLastPosition(string gumpID, Point defaultPosition)

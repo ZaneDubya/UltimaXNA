@@ -20,22 +20,15 @@ namespace UltimaXNA.Ultima.World.Entities
 {
     public class DeferredEntity : AEntity
     {
-        private int m_Z;
-        public new int Z
-        {
-            get { return m_Z; }
-        }
-
         private Vector3 m_DrawPosition;
         private AEntityView m_BaseView;
 
         public DeferredEntity(AEntity entity, Vector3 drawPosition, int z)
             : base(entity.Serial, entity.Map)
         {
-
             m_BaseView = GetBaseView(entity);
             m_DrawPosition = drawPosition;
-            m_Z = z;
+            Position.Set(int.MinValue, int.MinValue, z);
         }
 
         private AEntityView GetBaseView(AEntity entity)
@@ -58,6 +51,11 @@ namespace UltimaXNA.Ultima.World.Entities
         protected override AEntityView CreateView()
         {
             return new DeferredView(this, m_DrawPosition, m_BaseView);
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + " | deferred";
         }
     }
 }

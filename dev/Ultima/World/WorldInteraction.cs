@@ -65,28 +65,28 @@ namespace UltimaXNA.Ultima.World
             {
                 case ChatMode.Default:
                     speechType = MessageTypes.Normal;
-                    hue = Settings.Game.SpeechColor;
+                    hue = Settings.UserInterface.SpeechColor;
                     break;
                 case ChatMode.Whisper:
                     speechType = MessageTypes.Whisper;
-                    hue = Settings.Game.SpeechColor;
+                    hue = Settings.UserInterface.SpeechColor;
                     break;
                 case ChatMode.Emote:
                     speechType = MessageTypes.Emote;
-                    hue = Settings.Game.EmoteColor;
+                    hue = Settings.UserInterface.EmoteColor;
                     break;
                 case ChatMode.Party:
                     // not yet implemented
                     speechType = MessageTypes.Normal;
-                    hue = Settings.Game.SpeechColor;
+                    hue = Settings.UserInterface.SpeechColor;
                     break;
                 case ChatMode.Guild:
                     speechType = MessageTypes.Guild;
-                    hue = Settings.Game.GuildMsgColor;
+                    hue = Settings.UserInterface.GuildMsgColor;
                     break;
                 case ChatMode.Alliance:
                     speechType = MessageTypes.Alliance;
-                    hue = Settings.Game.AllianceMsgColor;
+                    hue = Settings.UserInterface.AllianceMsgColor;
                     break;
             }
             m_Network.Send(new AsciiSpeechPacket(speechType, 0, hue + 2, "ENU", text));

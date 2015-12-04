@@ -27,6 +27,7 @@ using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Configuration.Properties;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -90,7 +91,7 @@ namespace UltimaXNA.Ultima.World.Input
         {
             MouseOverItem = null;
 
-            if (IsHoldingItem && m_Input.HandleMouseEvent(MouseEvent.Up, Settings.World.Mouse.InteractionButton))
+            if (IsHoldingItem && m_Input.HandleMouseEvent(MouseEvent.Up, Settings.UserInterface.Mouse.InteractionButton))
             {
                 if (m_World.Input.IsMouseOverUI)
                 {
@@ -213,7 +214,7 @@ namespace UltimaXNA.Ultima.World.Input
                     SetTargeting(TargetType.Nothing, 0);
                 }
 
-                if (m_Input.HandleMouseEvent(MouseEvent.Click, Settings.World.Mouse.InteractionButton))
+                if (m_Input.HandleMouseEvent(MouseEvent.Click, Settings.UserInterface.Mouse.InteractionButton))
                 {
                     // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
                     switch (m_Targeting)
@@ -347,7 +348,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else if ((m_World.Input.ContinuousMouseMovementCheck || m_World.Input.IsMouseOverWorld) && !m_UserInterface.IsModalControlOpen)
             {
-                ResolutionConfig resolution = Settings.World.PlayWindowGumpResolution;
+                ResolutionProperty resolution = Settings.UserInterface.PlayWindowGumpResolution;
                 Direction mouseDirection = DirectionHelper.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), m_World.Input.MouseOverWorldPosition);
 
                 int artIndex = 0;

@@ -60,7 +60,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // Password
             AddControl(new TextLabelAscii(this, 181, 386, 2, hue, provider.GetString(3000103)));
             // name field
-            TextEntry g1 = new TextEntry(this, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, Settings.Server.UserName);
+            TextEntry g1 = new TextEntry(this, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, Settings.Login.UserName);
             g1.LeadingHtmlTag = "<basefont color=#000000><big>";
             AddControl(new ResizePic(this, g1));
             AddControl(g1);
@@ -105,7 +105,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                         }
                     }
 
-                    OnLogin(Settings.Server.ServerAddress, Settings.Server.ServerPort, accountName, secureStr);
+                    OnLogin(Settings.Login.ServerAddress, Settings.Login.ServerPort, accountName, secureStr);
                     break;
                 }
                 case LoginGumpButtons.CreditsButtons:
@@ -113,7 +113,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                     break;
             }
 
-            Settings.Server.UserName = accountName;
+            Settings.Login.UserName = accountName;
         }
         public override void OnKeyboardReturn(int textID, string text)
         {

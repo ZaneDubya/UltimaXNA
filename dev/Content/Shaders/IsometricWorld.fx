@@ -64,6 +64,14 @@ float4 PixelShader_Hue(PS_INPUT IN) : COLOR0
 	if (color.a == 0)
 		discard;
 
+	// flag for no lighting
+	bool drawLighting = true;
+	if (IN.Hue.y >= 4)
+	{
+		IN.Hue.y -= 4;
+		drawLighting = false;
+	}
+
 	// Hue the color if the hue vector y component is greater than 0.
 	if (IN.Hue.y > 0)
 	{
@@ -97,7 +105,7 @@ float4 PixelShader_Hue(PS_INPUT IN) : COLOR0
 	color *= alpha;
 
 	// Darken the color based on the ambient lighting and the normal.
-	if (DrawLighting)
+	if (DrawLighting && drawLighting)
 	{
 		float3 light = normalize(lightDirection);
 		float3 normal = normalize(IN.Normal);

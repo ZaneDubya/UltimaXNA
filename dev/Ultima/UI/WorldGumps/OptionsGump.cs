@@ -18,6 +18,7 @@ using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Core;
+using UltimaXNA.Configuration.Properties;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -148,10 +149,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settting affect your interface."), 5);
 
             AddControl(new TextLabelAscii(this, 85, 85, 9, 1, @"Your character will always run if this is checked"), 5);
-            m_AlwaysRun = (CheckBox)AddControl(new CheckBox(this, 60, 80, 210, 211, Settings.World.AlwaysRun, 61), 5);
+            m_AlwaysRun = (CheckBox)AddControl(new CheckBox(this, 60, 80, 210, 211, Settings.UserInterface.AlwaysRun, 61), 5);
 
             AddControl(new TextLabelAscii(this, 85, 115, 9, 1, @"Disable the Menu Bar"), 5);
-            m_MenuBarDisabled = (CheckBox)AddControl(new CheckBox(this, 60, 110, 210, 211, Settings.World.MenuBarDisabled, 61), 5);
+            m_MenuBarDisabled = (CheckBox)AddControl(new CheckBox(this, 60, 110, 210, 211, Settings.UserInterface.MenuBarDisabled, 61), 5);
 
             // page 6 Display
             AddControl(new Button(this, 576, 110, 227, 227, ButtonTypes.SwitchPage, 6, (int)Buttons.Display),6);
@@ -159,13 +160,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settting affect your display, and adjusting some of them may improve your graphics performance.", 430), 6);
 
             AddControl(new TextLabelAscii(this, 85, 80, 9, 1, @"Enable vertical synchronization"), 6);
-            m_IsVSyncEnabled = (CheckBox)AddControl(new CheckBox(this, 60, 80, 210, 211, Settings.Game.IsVSyncEnabled, 61), 6);
+            m_IsVSyncEnabled = (CheckBox)AddControl(new CheckBox(this, 60, 80, 210, 211, Settings.Engine.IsVSyncEnabled, 61), 6);
 
             AddControl(new TextLabelAscii(this, 85, 100, 9, 1, @"Some unused option"), 6);
             AddControl(new CheckBox(this, 60, 100, 210, 211, false, 62), 6);
 
             AddControl(new TextLabelAscii(this, 85, 120, 9, 1, @"Use full screen display"), 6);
-            AddControl(new CheckBox(this, 60, 120, 210, 211, Settings.World.IsMaximized, 61), 6);
+            AddControl(new CheckBox(this, 60, 120, 210, 211, Settings.UserInterface.IsMaximized, 61), 6);
             
             AddControl(new TextLabelAscii(this, 60, 150, 9, 1, @"Full Screen Resolution:"), 6);
             m_DropDownFullScreenResolutions = (DropDownList)AddControl(new DropDownList(this, 60, 165, 122, CreateResolutionsStringArrayFromList(Resolutions.FullScreenResolutionsList), 10, GetCurrentFullScreenIndex(), false), 6);
@@ -174,25 +175,25 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_DropDownPlayWindowResolutions = (DropDownList)AddControl(new DropDownList(this, 60, 205, 122, CreateResolutionsStringArrayFromList(Resolutions.PlayWindowResolutionsList), 10, GetCurrentPlayWindowIndex(), false), 6);
 
             AddControl(new TextLabelAscii(this, 85, 235, 9, 1, @"Speech color"), 6);
-            m_SpeechColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 235, 15, 15), new Rectangle(60, 235, 450, 150), 30, 10, Hues.TextTones, Settings.Game.SpeechColor), 6);
+            m_SpeechColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 235, 15, 15), new Rectangle(60, 235, 450, 150), 30, 10, Hues.TextTones, Settings.UserInterface.SpeechColor), 6);
 
             AddControl(new TextLabelAscii(this, 85, 255, 9, 1, @"Emote color"), 6);
-            m_EmoteColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 255, 15, 15), new Rectangle(60, 255, 450, 150), 30, 10, Hues.TextTones, Settings.Game.EmoteColor), 6);
+            m_EmoteColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 255, 15, 15), new Rectangle(60, 255, 450, 150), 30, 10, Hues.TextTones, Settings.UserInterface.EmoteColor), 6);
 
             AddControl(new TextLabelAscii(this, 85, 275, 9, 1, @"Party message color"), 6);
-            m_PartyMsgColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 275, 15, 15), new Rectangle(60, 275, 450, 150), 30, 10, Hues.TextTones, Settings.Game.PartyMsgColor), 6);
+            m_PartyMsgColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 275, 15, 15), new Rectangle(60, 275, 450, 150), 30, 10, Hues.TextTones, Settings.UserInterface.PartyMsgColor), 6);
 
             AddControl(new TextLabelAscii(this, 85, 295, 9, 1, @"Guild message color"), 6);
-            m_GuildMsgColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 295, 15, 15), new Rectangle(60, 295, 450, 150), 30, 10, Hues.TextTones, Settings.Game.GuildMsgColor), 6);
+            m_GuildMsgColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 295, 15, 15), new Rectangle(60, 295, 450, 150), 30, 10, Hues.TextTones, Settings.UserInterface.GuildMsgColor), 6);
 
             AddControl(new TextLabelAscii(this, 85, 315, 9, 1, @"Ignore guild messages"), 6);
-            m_IgnoreGuildMsg = (CheckBox)AddControl(new CheckBox(this, 60, 315, 210, 211, Settings.Game.IgnoreGuildMsg, 62), 6);
+            m_IgnoreGuildMsg = (CheckBox)AddControl(new CheckBox(this, 60, 315, 210, 211, Settings.UserInterface.IgnoreGuildMsg, 62), 6);
 
             AddControl(new TextLabelAscii(this, 85, 335, 9, 1, @"Alliance message color"), 6);
-            m_AllianceMsgColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 335, 15, 15), new Rectangle(60, 335, 450, 150), 30, 10, Hues.TextTones, Settings.Game.AllianceMsgColor), 6);
+            m_AllianceMsgColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 335, 15, 15), new Rectangle(60, 335, 450, 150), 30, 10, Hues.TextTones, Settings.UserInterface.AllianceMsgColor), 6);
 
             AddControl(new TextLabelAscii(this, 85, 355, 9, 1, @"Ignore alliance messages"), 6);
-            m_IgnoreAllianceMsg = (CheckBox)AddControl(new CheckBox(this, 60, 355, 210, 211, Settings.Game.IgnoreAllianceMsg, 62), 6);
+            m_IgnoreAllianceMsg = (CheckBox)AddControl(new CheckBox(this, 60, 355, 210, 211, Settings.UserInterface.IgnoreAllianceMsg, 62), 6);
 
             // page 7 Reputation system
             AddControl(new Button(this, 576, 180, 229, 229, ButtonTypes.SwitchPage, 7, (int)Buttons.Reputation),7);
@@ -236,10 +237,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public int GetCurrentFullScreenIndex()
         {
-            string res = string.Format("{0}x{1}", Settings.World.FullScreenResolution.Width, Settings.World.FullScreenResolution.Height);
+            string res = string.Format("{0}x{1}", Settings.UserInterface.FullScreenResolution.Width, Settings.UserInterface.FullScreenResolution.Height);
             for (int i = 0; i < Resolutions.FullScreenResolutionsList.Count; i++)
             {
-                if (Resolutions.FullScreenResolutionsList[i].Width == Settings.World.FullScreenResolution.Width && Resolutions.FullScreenResolutionsList[i].Height == Settings.World.FullScreenResolution.Height)
+                if (Resolutions.FullScreenResolutionsList[i].Width == Settings.UserInterface.FullScreenResolution.Width && Resolutions.FullScreenResolutionsList[i].Height == Settings.UserInterface.FullScreenResolution.Height)
                     return i;
             }
             return -1;
@@ -247,16 +248,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public int GetCurrentPlayWindowIndex()
         {
-            string res = string.Format("{0}x{1}", Settings.World.PlayWindowGumpResolution.Width, Settings.World.PlayWindowGumpResolution.Height);
+            string res = string.Format("{0}x{1}", Settings.UserInterface.PlayWindowGumpResolution.Width, Settings.UserInterface.PlayWindowGumpResolution.Height);
             for (int i = 0; i < Resolutions.PlayWindowResolutionsList.Count; i++)
             {
-                if (Resolutions.PlayWindowResolutionsList[i].Width == Settings.World.PlayWindowGumpResolution.Width && Resolutions.PlayWindowResolutionsList[i].Height == Settings.World.PlayWindowGumpResolution.Height)
+                if (Resolutions.PlayWindowResolutionsList[i].Width == Settings.UserInterface.PlayWindowGumpResolution.Width && Resolutions.PlayWindowResolutionsList[i].Height == Settings.UserInterface.PlayWindowGumpResolution.Height)
                     return i;
             }
             return -1;
         }
 
-        public string[] CreateResolutionsStringArrayFromList(List<ResolutionConfig> resolutions)
+        public string[] CreateResolutionsStringArrayFromList(List<ResolutionProperty> resolutions)
         {
             string[] array = new string[resolutions.Count];
             for (int i = 0; i < resolutions.Count; i++)
@@ -274,31 +275,31 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Settings.Audio.FootStepSoundOn = m_FootStepSoundOn.IsChecked;
 
             //interface
-            Settings.World.AlwaysRun = m_AlwaysRun.IsChecked;
-            Settings.World.MenuBarDisabled = m_MenuBarDisabled.IsChecked;
-            Settings.World.FullScreenResolution = new ResolutionConfig(Resolutions.FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Width, Resolutions.FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Height);
-            Settings.World.PlayWindowGumpResolution = new ResolutionConfig(Resolutions.PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Width, Resolutions.PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Height);
-            Settings.Game.IsVSyncEnabled = m_IsVSyncEnabled.IsChecked;
+            Settings.UserInterface.AlwaysRun = m_AlwaysRun.IsChecked;
+            Settings.UserInterface.MenuBarDisabled = m_MenuBarDisabled.IsChecked;
+            Settings.UserInterface.FullScreenResolution = new ResolutionProperty(Resolutions.FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Width, Resolutions.FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Height);
+            Settings.UserInterface.PlayWindowGumpResolution = new ResolutionProperty(Resolutions.PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Width, Resolutions.PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Height);
+            Settings.Engine.IsVSyncEnabled = m_IsVSyncEnabled.IsChecked;
             Settings.Debug.IsConsoleEnabled = m_IsConsoleEnabled.IsChecked;
             Settings.Debug.ShowFps = m_ShowFps.IsChecked;
 
-            Settings.Game.SpeechColor = m_SpeechColor.Index;
-            Settings.Game.EmoteColor = m_EmoteColor.Index;
-            Settings.Game.PartyMsgColor = m_PartyMsgColor.Index;
-            Settings.Game.GuildMsgColor = m_GuildMsgColor.Index;
-            Settings.Game.IgnoreGuildMsg = m_IgnoreGuildMsg.IsChecked;
-            Settings.Game.AllianceMsgColor = m_AllianceMsgColor.Index;
-            Settings.Game.IgnoreAllianceMsg = m_IgnoreAllianceMsg.IsChecked;
+            Settings.UserInterface.SpeechColor = m_SpeechColor.Index;
+            Settings.UserInterface.EmoteColor = m_EmoteColor.Index;
+            Settings.UserInterface.PartyMsgColor = m_PartyMsgColor.Index;
+            Settings.UserInterface.GuildMsgColor = m_GuildMsgColor.Index;
+            Settings.UserInterface.IgnoreGuildMsg = m_IgnoreGuildMsg.IsChecked;
+            Settings.UserInterface.AllianceMsgColor = m_AllianceMsgColor.Index;
+            Settings.UserInterface.IgnoreAllianceMsg = m_IgnoreAllianceMsg.IsChecked;
             SwitchTopMenuGump();
         }
 
         public void SwitchTopMenuGump()
         {
-            if (!Settings.World.MenuBarDisabled && m_UserInterface.GetControl<TopMenuGump>() == null)
+            if (!Settings.UserInterface.MenuBarDisabled && m_UserInterface.GetControl<TopMenuGump>() == null)
             {
                 m_UserInterface.AddControl(new TopMenuGump(), 0, 0); // by default at the top of the screen.
             }
-            else if (Settings.World.MenuBarDisabled && m_UserInterface.GetControl<TopMenuGump>() != null)
+            else if (Settings.UserInterface.MenuBarDisabled && m_UserInterface.GetControl<TopMenuGump>() != null)
             {
                 m_UserInterface.GetControl<TopMenuGump>().Dispose();
             }

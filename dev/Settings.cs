@@ -22,10 +22,10 @@ namespace UltimaXNA
         private static readonly SettingsFile s_File;
 
         private DebugSettings m_Debug;
-        private GameSettings m_Game;
+        private EngineSettings m_Engine;
         private GumpSettings m_Gumps;
-        private WorldSettings m_World;
-        private ServerSettings m_Server;
+        private UserInterfaceSettings m_UI;
+        private LoginSettings m_Login;
         private UltimaOnlineSettings m_UltimaOnline;
         private AudioSettings m_Audio;
 
@@ -35,10 +35,10 @@ namespace UltimaXNA
             s_File = new SettingsFile("settings.cfg");
 
             s_Instance.m_Debug = CreateOrOpenSection<DebugSettings>(DebugSettings.SectionName);
-            s_Instance.m_Server = CreateOrOpenSection<ServerSettings>(ServerSettings.SectionName);
+            s_Instance.m_Login = CreateOrOpenSection<LoginSettings>(LoginSettings.SectionName);
             s_Instance.m_UltimaOnline = CreateOrOpenSection<UltimaOnlineSettings>(UltimaOnlineSettings.SectionName);
-            s_Instance.m_Game = CreateOrOpenSection<GameSettings>(GameSettings.SectionName);
-            s_Instance.m_World = CreateOrOpenSection<WorldSettings>(WorldSettings.SectionName);
+            s_Instance.m_Engine = CreateOrOpenSection<EngineSettings>(EngineSettings.SectionName);
+            s_Instance.m_UI = CreateOrOpenSection<UserInterfaceSettings>(UserInterfaceSettings.SectionName);
             s_Instance.m_Gumps = CreateOrOpenSection<GumpSettings>(GumpSettings.SectionName);
             s_Instance.m_Audio = CreateOrOpenSection<AudioSettings>(AudioSettings.SectionName);
             
@@ -55,9 +55,9 @@ namespace UltimaXNA
             get { return s_Instance.m_Debug; }
         }
 
-        public static ServerSettings Server
+        public static LoginSettings Login
         {
-            get { return s_Instance.m_Server; }
+            get { return s_Instance.m_Login; }
         }
 
         public static UltimaOnlineSettings UltimaOnline
@@ -65,9 +65,9 @@ namespace UltimaXNA
             get { return s_Instance.m_UltimaOnline; }
         }
 
-        public static GameSettings Game
+        public static EngineSettings Engine
         {
-            get { return s_Instance.m_Game; }
+            get { return s_Instance.m_Engine; }
         }
 
         public static GumpSettings Gumps
@@ -75,9 +75,9 @@ namespace UltimaXNA
             get { return s_Instance.m_Gumps; }
         }
 
-        public static WorldSettings World
+        public static UserInterfaceSettings UserInterface
         {
-            get { return s_Instance.m_World; }
+            get { return s_Instance.m_UI; }
         }
 
         public static AudioSettings Audio

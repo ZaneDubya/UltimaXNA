@@ -73,15 +73,15 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
         public void Update(Map map, Position3D center, MousePicking mousePick)
         {
-            int pixelScale = (Settings.World.PlayWindowPixelDoubling) ? 2 : 1;
-            if (m_RenderTargetSprites == null || m_RenderTargetSprites.Width != Settings.World.PlayWindowGumpResolution.Width / pixelScale || m_RenderTargetSprites.Height != Settings.World.PlayWindowGumpResolution.Height / pixelScale)
+            int pixelScale = (Settings.UserInterface.PlayWindowPixelDoubling) ? 2 : 1;
+            if (m_RenderTargetSprites == null || m_RenderTargetSprites.Width != Settings.UserInterface.PlayWindowGumpResolution.Width / pixelScale || m_RenderTargetSprites.Height != Settings.UserInterface.PlayWindowGumpResolution.Height / pixelScale)
             {
                 if (m_RenderTargetSprites != null)
                     m_RenderTargetSprites.Dispose();
                 m_RenderTargetSprites = new RenderTarget2D(
                     m_SpriteBatch.GraphicsDevice, 
-                    Settings.World.PlayWindowGumpResolution.Width / pixelScale, 
-                    Settings.World.PlayWindowGumpResolution.Height / pixelScale, 
+                    Settings.UserInterface.PlayWindowGumpResolution.Width / pixelScale, 
+                    Settings.UserInterface.PlayWindowGumpResolution.Height / pixelScale, 
                     false, 
                     SurfaceFormat.Color, 
                     DepthFormat.Depth24Stencil8, 
@@ -194,30 +194,32 @@ namespace UltimaXNA.Ultima.World.WorldViews
                     }
 
                     List<AEntity> entities = tile.Entities;
-
+                    bool draw = true;
                     for (int i = 0; i < entities.Count; i++)
                     {
+                        if (entities[i] is DeferredEntity)
+                            deferredToRemove.Add(entities[i]);
+
                         if (!m_DrawTerrain)
                         {
-                            if (entities[i] is Ground)
-                                break;
-                            else if (entities[i].Z > tile.Ground.Z)
-                                break;
+                            if ((entities[i] is Ground) || (entities[i].Z > tile.Ground.Z))
+                                draw = false;
                         }
 
                         if ((entities[i].Z >= m_DrawMaxItemAltitude || (m_DrawMaxItemAltitude != 255 && entities[i] is Item && (entities[i] as Item).ItemData.IsRoof)) && !(entities[i] is Ground))
-                            continue;
-
-                        AEntityView view = entities[i].GetView();
-
-                        if (view != null)
                         {
-                            if (view.Draw(m_SpriteBatch, drawPosition, overList, map, !m_UnderSurface))
-                                CountEntitiesRendered++;
+                            continue;
                         }
 
-                        if (entities[i] is DeferredEntity)
-                            deferredToRemove.Add(entities[i]);
+                        if (draw)
+                        {
+                            AEntityView view = entities[i].GetView();
+                            if (view != null)
+                            {
+                                if (view.Draw(m_SpriteBatch, drawPosition, overList, map, !m_UnderSurface))
+                                    CountEntitiesRendered++;
+                            }
+                        }
                     }
 
                     foreach (AEntity deferred in deferredToRemove)
@@ -242,15 +244,17 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
         private void CalculateViewport(Position3D center, int overDrawTilesOnSides, int overDrawTilesOnTopAndBottom, out Point firstTile, out Vector2 renderOffset, out Point renderDimensions)
         {
-            int pixelScale = (Settings.World.PlayWindowPixelDoubling) ? 2 : 1;
+            int pixelScale = (Settings.UserInterface.PlayWindowPixelDoubling) ? 2 : 1;
 
-            renderDimensions.Y = Settings.World.PlayWindowGumpResolution.Height / pixelScale / TILE_SIZE_INTEGER + overDrawTilesOnTopAndBottom; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
-            renderDimensions.X = Settings.World.PlayWindowGumpResolution.Width / pixelScale / TILE_SIZE_INTEGER + overDrawTilesOnSides; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
+            renderDimensions.Y = Settings.UserInterface.PlayWindowGumpResolution.Height / pixelScale / TILE_SIZE_INTEGER + overDrawTilesOnTopAndBottom; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
+            renderDimensions.X = Settings.UserInterface.PlayWindowGumpResolution.Width / pixelScale / TILE_SIZE_INTEGER + overDrawTilesOnSides; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
             int renderDimensionsDiff = Math.Abs(renderDimensions.X - renderDimensions.Y);
             renderDimensionsDiff -= renderDimensionsDiff % 2; // make sure this is an even number...
 
-            // when the player entity is higher (z) in the world, we must offset the first row drawn. This variable MUST be a multiple of 2 and MUST be positive.
-            int firstZOffset = (int)Math.Abs(((center.Z + center.Z_offset) / 11));
+            // when the player entity is at a higher z altitude in the world, we must offset the first row drawn so that tiles at lower altitudes are drawn.
+            // The reverse is not true - at lower altitutdes, higher tiles are never on screen. This is an artifact of UO's isometric projection.
+            // Note: The value of this variable MUST be a multiple of 2 and MUST be positive.
+            int firstZOffset = (center.Z > 0) ? (int)Math.Abs(((center.Z + center.Z_offset) / 11)) : 0;
             // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen. This may still skip VERY tall objects (those weird jungle trees?)
 
             firstTile = new Point(center.X - firstZOffset, center.Y - renderDimensions.Y - firstZOffset);
@@ -265,12 +269,12 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 firstTile.Y -= renderDimensionsDiff / 2;
             }
 
-            renderOffset.X = (((Settings.World.PlayWindowGumpResolution.Width / pixelScale) + ((renderDimensions.Y) * TILE_SIZE_INTEGER)) / 2) - TILE_SIZE_FLOAT_HALF;
+            renderOffset.X = (((Settings.UserInterface.PlayWindowGumpResolution.Width / pixelScale) + ((renderDimensions.Y) * TILE_SIZE_INTEGER)) / 2) - TILE_SIZE_FLOAT_HALF;
             renderOffset.X -= (int)((center.X_offset - center.Y_offset) * TILE_SIZE_FLOAT_HALF);
             renderOffset.X -= (firstTile.X - firstTile.Y) * TILE_SIZE_FLOAT_HALF;
             renderOffset.X += renderDimensionsDiff * TILE_SIZE_FLOAT_HALF;
 
-            renderOffset.Y = ((Settings.World.PlayWindowGumpResolution.Height / pixelScale) / 2 - (renderDimensions.Y * TILE_SIZE_INTEGER / 2));
+            renderOffset.Y = ((Settings.UserInterface.PlayWindowGumpResolution.Height / pixelScale) / 2 - (renderDimensions.Y * TILE_SIZE_INTEGER / 2));
             renderOffset.Y += ((center.Z + center.Z_offset) * 4);
             renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * TILE_SIZE_FLOAT_HALF);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * TILE_SIZE_FLOAT_HALF;

@@ -24,6 +24,7 @@ using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Core.Extensions;
+using UltimaXNA.Configuration.Properties;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -142,7 +143,7 @@ namespace UltimaXNA.Ultima.World.Input
 
                 // In all cases, where we are moving and the move button was released, stop moving.
                 if (ContinuousMouseMovementCheck &&
-                   m_Input.HandleMouseEvent(MouseEvent.Up, Settings.World.Mouse.MovementButton))
+                   m_Input.HandleMouseEvent(MouseEvent.Up, Settings.UserInterface.Mouse.MovementButton))
                 {
                     ContinuousMouseMovementCheck = false;
                 }
@@ -159,7 +160,7 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     MousePick.PickOnly = PickType.PickEverything;
                     MousePick.Position = MouseOverWorldPosition;
-                    if (Settings.World.PlayWindowPixelDoubling)
+                    if (Settings.UserInterface.PlayWindowPixelDoubling)
                         MousePick.Position = MousePick.Position.DivideBy(2);
                 }
                 else
@@ -185,7 +186,7 @@ namespace UltimaXNA.Ultima.World.Input
             // if the move button is pressed, change facing and move based on mouse cursor direction.
             if(ContinuousMouseMovementCheck)
             {
-                ResolutionConfig resolution = Settings.World.PlayWindowGumpResolution;
+                ResolutionProperty resolution = Settings.UserInterface.PlayWindowGumpResolution;
                 Point centerScreen = new Point(resolution.Width / 2, resolution.Height / 2);
                 Direction mouseDirection = DirectionHelper.DirectionFromPoints(centerScreen, MouseOverWorldPosition);
 
@@ -199,7 +200,7 @@ namespace UltimaXNA.Ultima.World.Input
                     // add the running flag if the mouse cursor is far enough away from the center of the screen.
                     float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(centerScreen, MouseOverWorldPosition);
 
-                    if (distanceFromCenterOfScreen >= 150.0f || Settings.World.AlwaysRun)
+                    if (distanceFromCenterOfScreen >= 150.0f || Settings.UserInterface.AlwaysRun)
                     {
                         moveDirection |= Direction.Running;
                     }
@@ -442,11 +443,11 @@ namespace UltimaXNA.Ultima.World.Input
             List<InputEventMouse> events = m_Input.GetMouseEvents();
             foreach (InputEventMouse e in events)
             {
-                if (e.Button == Settings.World.Mouse.MovementButton)
+                if (e.Button == Settings.UserInterface.Mouse.MovementButton)
                 {
                     onMoveButton(e);
                 }
-                else if (e.Button == Settings.World.Mouse.InteractionButton)
+                else if (e.Button == Settings.UserInterface.Mouse.InteractionButton)
                 {
                     if(e.EventType == MouseEvent.Click)
                     {
@@ -490,7 +491,7 @@ namespace UltimaXNA.Ultima.World.Input
             // FPS limiting
             if(m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.F, false, true, false))
             {
-                Settings.Game.IsFixedTimeStep = !Settings.Game.IsFixedTimeStep;
+                Settings.Engine.IsFixedTimeStep = !Settings.Engine.IsFixedTimeStep;
             }
 
             // Display FPS
@@ -502,7 +503,7 @@ namespace UltimaXNA.Ultima.World.Input
             // Mouse enable / disable
             if(m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.M, false, true, false))
             {
-                Settings.World.Mouse.IsEnabled = !Settings.World.Mouse.IsEnabled;
+                Settings.UserInterface.Mouse.IsEnabled = !Settings.UserInterface.Mouse.IsEnabled;
             }
         }
 
@@ -542,7 +543,7 @@ namespace UltimaXNA.Ultima.World.Input
             m_QueuedEvent_InQueue = true;
             m_QueuedEntity = overEntity;
             m_QueuedEntityPosition = overEntityPoint;
-            m_QueuedEvent_DequeueAt = Settings.World.Mouse.DoubleClickMS;
+            m_QueuedEvent_DequeueAt = Settings.UserInterface.Mouse.DoubleClickMS;
             m_QueuedEvent = e;
         }
 

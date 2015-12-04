@@ -75,7 +75,7 @@ namespace UltimaXNA
 
             using (UltimaGame engine = new UltimaGame())
             {
-                Resolutions.SetScreenSize(engine.Window);
+                Resolutions.SetWindowSize(engine.Window);
                 engine.Run();
             }
 

@@ -207,29 +207,6 @@ namespace UltimaXNA
         }
         #endregion
 
-        public static int GetDistanceToSqrt(int orgx, int orgy, int goalx, int goaly)
-        {
-            int xDelta = goalx - orgx;
-            int yDelta = goaly - orgy;
-
-            return (int)Math.Sqrt((xDelta * xDelta) + (yDelta * yDelta));
-        }
-
-        public static Type GetTypeFromAppDomain(string typeName)
-        {
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            Type type = null;
-
-            for (int i = 0; i < assemblies.Length && type == null; i++)
-            {
-                type = (from t in assemblies[i].GetTypes()
-                        where t.Name.Equals(typeName, StringComparison.CurrentCultureIgnoreCase)
-                        select t).FirstOrDefault();
-            }
-
-            return type;
-        }
-
         // Color utilities, made freely available on http://snowxna.wordpress.com/
         #region ColorUtility
         private static readonly char[] HexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
@@ -423,10 +400,10 @@ namespace UltimaXNA
 
         public static Vector3 GetHueVector(int hue)
         {
-            return GetHueVector(hue, false, false);
+            return GetHueVector(hue, false, false, false);
         }
 
-        public static Vector3 GetHueVector(int hue, bool partial, bool transparent)
+        public static Vector3 GetHueVector(int hue, bool partial, bool transparent, bool noLighting)
         {
             if ((hue & 0x4000) != 0)
                 transparent = true;
@@ -436,7 +413,7 @@ namespace UltimaXNA
             if (hue == 0)
                 return new Vector3(0, 0, transparent ? 0.5f : 0);
 
-            return new Vector3(hue & 0x0FFF, partial ? 2 : 1, transparent ? 0.5f : 0);
+            return new Vector3(hue & 0x0FFF, (noLighting ? 4 : 0) + (partial ? 2 : 1), transparent ? 0.5f : 0);
         }
 
         /// <summary>

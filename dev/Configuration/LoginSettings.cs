@@ -14,18 +14,22 @@ using UltimaXNA.Core.Configuration;
 
 namespace UltimaXNA.Configuration
 {
-    public sealed class ServerSettings : ASettingsSection
+    public sealed class LoginSettings : ASettingsSection
     {
         public const string SectionName = "server";
 
         private string m_ServerAddress;
         private int m_ServerPort;
         private string m_UserName;
+        private bool m_AutoSelectLastCharacter;
+        private string m_LastCharacterName;
 
-        public ServerSettings()
+        public LoginSettings()
         {
             ServerAddress = "127.0.0.1";
             ServerPort = 2593;
+            LastCharacterName = string.Empty;
+            AutoSelectLastCharacter = false;
         }
 
         public string UserName
@@ -44,6 +48,18 @@ namespace UltimaXNA.Configuration
         {
             get { return m_ServerAddress; }
             set { SetProperty(ref m_ServerAddress, value); }
+        }
+
+        public string LastCharacterName
+        {
+            get { return m_LastCharacterName; }
+            set { SetProperty(ref m_LastCharacterName, value); }
+        }
+
+        public bool AutoSelectLastCharacter
+        {
+            get { return m_AutoSelectLastCharacter; }
+            set { SetProperty(ref m_AutoSelectLastCharacter, value); }
         }
     }
 }

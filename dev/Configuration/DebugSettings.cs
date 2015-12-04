@@ -20,33 +20,36 @@ namespace UltimaXNA.Configuration
 
         private bool m_IsConsoleEnabled;
         private bool m_ShowFps;
-        private bool m_ShowUIOutlines;
         private bool m_LogPackets;
 
         public DebugSettings()
         {
+            LogPackets = false;
             IsConsoleEnabled = true;
             ShowFps = true;
         }
 
+        /// <summary>
+        /// If true, all received packets will be logged to Tracer.Debug, and any active Tracer listeners (console, debug.txt file logger)
+        /// </summary>
         public bool LogPackets
         {
             get { return m_LogPackets; }
             set { SetProperty(ref m_LogPackets, value); }
         }
-        
-        public bool ShowUIOutlines
-        {
-            get { return m_ShowUIOutlines; }
-            set { SetProperty(ref m_ShowUIOutlines, value); }
-        }
 
+        /// <summary>
+        /// If true, FPS should display either in the window caption or in the game window. (not currently enabled).
+        /// </summary>
         public bool ShowFps
         {
             get { return m_ShowFps; }
             set { SetProperty(ref m_ShowFps, value); }
         }
 
+        /// <summary>
+        /// If true, a console window which will display debug and error messages should appear at runtime. This may not work in Release configurations.
+        /// </summary>
         public bool IsConsoleEnabled
         {
             get { return m_IsConsoleEnabled; }

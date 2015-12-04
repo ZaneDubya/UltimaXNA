@@ -226,7 +226,7 @@ namespace UltimaXNA.Core.UI
                         srcImage.Height = texture.Height;
 
                     sb.Draw2D(texture, new Vector3(position.X, position.Y, 0),
-                        srcImage, Utility.GetHueVector(0, false, false));
+                        srcImage, Utility.GetHueVector(0, false, false, true));
                 }
             }
         }
