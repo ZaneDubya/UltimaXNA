@@ -50,7 +50,7 @@ namespace UltimaXNA.Ultima.Login.Servers
         public ServerListEntry(PacketReader reader)
         {
             index = (ushort)reader.ReadInt16();
-            name = reader.ReadString(30);
+            name = reader.ReadString(32);
             percentFull = reader.ReadByte();
             timezone = reader.ReadByte();
             address = (uint)reader.ReadInt32();

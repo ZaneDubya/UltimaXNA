@@ -61,9 +61,12 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new HtmlGumpling(this, 402, 72, 50, 20, 0, 0, provider.GetString(1044577)), 1);
             AddControl(new HtmlGumpling(this, 472, 72, 80, 20, 0, 0, provider.GetString(1044578)), 1);
             // display the serverlist the server list.
+            int idx = 0;
             foreach (ServerListEntry e in ServerList.List)
             {
-                AddControl(new HtmlGumpling(this, 224, 104, 200, 20, 0, 0, "<big><a href=\"SHARD=" + e.Index + "\" style=\"text-decoration: none\">" + e.Name + "</a></big>"), 1);
+                // HINT: Do not use e.Index in place of idx: e.Index may non start from 0, or may contain holes, expecially on POL server
+                AddControl(new HtmlGumpling(this, 224, 104 + idx * 25, 200, 20, 0, 0, "<big><a href=\"SHARD=" + e.Index + "\" style=\"text-decoration: none\">" + e.Name + "</a></big>"), 1);
+                idx++;
             }
 
             // Page 2 - logging in to server ... with cancel login button
