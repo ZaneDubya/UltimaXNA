@@ -302,33 +302,28 @@ namespace UltimaXNA.Core.Network.Compression
             return 1;
         }
 
-        public bool DecompressChunk(ref byte[] src, int srcSize, ref byte[] dest, int destOffset, out int destSize)
+        public bool DecompressChunk(ref byte[] src, ref int srcOffset, int srcLength, ref byte[] dest, int destOffset, out int destLength)
         {
             Array.Clear(dest, destOffset, dest.Length - destOffset);
 
-            destSize = 0;
-
+            destLength = 0;
+            
+            int end = srcOffset + srcLength;
             int node = 0;
             int destPos = destOffset;
             int bitNum = 8;
-            int srcPos = 0;
 
-            while (srcPos < srcSize)
+            while (srcOffset < end)
             {
-                var leaf = GetBit(src[srcPos], bitNum);
+                var leaf = GetBit(src[srcOffset], bitNum);
                 var leafValue = dec_tree[node, leaf];
 
                 // all numbers below 1 (0..-256) are codewords
                 // if the halt codeword has been found, skip this byte
                 if (leafValue == -256)
                 {
-                    srcPos++;
-                    byte[] newsource = new byte[srcSize - srcPos];
-
-                    Array.Copy(src, srcPos, newsource, 0, srcSize - srcPos);
-
-                    src = newsource;
-                    destSize = destPos - destOffset;
+                    srcOffset++;
+                    destLength = destPos - destOffset;
 
                     return true;
                 }
@@ -345,18 +340,18 @@ namespace UltimaXNA.Core.Network.Compression
                 if (bitNum < 1)
                 {
                     bitNum = 8;
-                    srcPos++;
+                    srcOffset++;
                 }
 
                 // check to see if the current codeword has no end
                 // if not, make it an incomplete byte
-                if (srcPos == srcSize)
+                if (srcOffset == srcLength)
                 {
                     return false;
                 }
             }
 
-            destSize = destPos - destOffset;
+            destLength = destPos - destOffset;
 
             return false;
         }
