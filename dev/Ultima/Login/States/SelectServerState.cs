@@ -64,7 +64,8 @@ namespace UltimaXNA.Ultima.Login.States
         {
             if (ServerList.List.Length == 1)
             {
-                OnSelectServer(0);
+                // HINT: First server is not always 0 index, expecially on POL
+                OnSelectServer(ServerList.List[0].Index);
             }
         }
 
