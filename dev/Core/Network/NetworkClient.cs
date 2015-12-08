@@ -126,7 +126,7 @@ namespace UltimaXNA.Core.Network
 
             if (m_TypedHandlers[id].Any())
             {
-                var requiredLength = m_TypedHandlers[id][0].Length;
+                int requiredLength = m_TypedHandlers[id][0].Length;
 
                 Guard.Requires(requiredLength == length,
                     "Invalid packet length.  All packet handlers for 0x{0:X2} must specify a length of {1}.", id,
