@@ -197,6 +197,7 @@
     <Compile Include="Core\Input\KeyboardEvent.cs" />
     <Compile Include="Core\Input\MouseButton.cs" />
     <Compile Include="Core\Input\MouseEvent.cs" />
+    <Compile Include="Core\IO\BufferPool.cs" />
     <Compile Include="Core\Resolutions.cs" />
     <Compile Include="Core\Windows\CultureHandler.cs" />
     <Compile Include="Core\Windows\WinMouseButtons.cs" />
@@ -224,6 +225,7 @@
     <Compile Include="Core\PluginManager.cs" />
     <Compile Include="Core\UI\RenderedTextList.cs" />
     <Compile Include="Core\UI\RenderedText.cs" />
+    <Compile Include="Disposable.cs" />
     <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Core\Audio\AudioEffects.cs" />
     <Compile Include="Ultima\Audio\AudioService.cs" />
