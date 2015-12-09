@@ -36,10 +36,10 @@ namespace UltimaXNA.Core.Network
             set { m_DataLength = value; }
         }
 
-        public SocketState(Socket socket, int bufferSize)
+        public SocketState(Socket socket, byte[] buffer)
         {
             m_Socket = socket;
-            m_Buffer = new byte[bufferSize];
+            m_Buffer = buffer;
             m_DataLength = 0;
         }
     }

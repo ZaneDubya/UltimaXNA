@@ -21,6 +21,7 @@ using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Player;
@@ -42,6 +43,8 @@ namespace UltimaXNA.Ultima.World
         private Timer m_KeepAliveTimer;
         private INetworkClient m_Network;
         private UserInterfaceService m_UserInterface;
+
+        private readonly Version m_OldAddItemToContainerVersion = new Version("6.0.1.7");
 
         private WorldModel m_World;
 
@@ -68,8 +71,16 @@ namespace UltimaXNA.Ultima.World
             Register<MoveAcknowledgePacket>(0x22, "Move Acknowledged", 3, new TypedPacketReceiveHandler(ReceiveMoveAck));
             Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
             Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
-            Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 20, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
-            Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 21, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
+
+            if (FileManager.IsUnknownClientVersion || FileManager.Version < m_OldAddItemToContainerVersion)
+            {
+                Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 20, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
+            }
+            else
+            {
+                Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 21, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
+            }
+
             Register<LiftRejectionPacket>(0x27, "Lift Rejection", 2, new TypedPacketReceiveHandler(ReceiveRejectMoveItemRequest));
             Register<ResurrectionMenuPacket>(0x2C, "Resurect menu", 2, new TypedPacketReceiveHandler(ReceiveResurrectionMenu));
             Register<MobileAttributesPacket>(0x2D, "Mob Attributes", 17, new TypedPacketReceiveHandler(ReceiveMobileAttributes));

@@ -266,7 +266,7 @@ namespace UltimaXNA.Core.Input
                 addEvent(new InputEventMouse(MouseEvent.DragEnd, e));
                 m_MouseIsDragging = false;
             }
-            else
+            else if (m_LastMouseDown != null)
             {
                 if(!DistanceBetweenPoints(m_LastMouseDown.Position, e.Position, MouseClickMaxDelta))
                 {

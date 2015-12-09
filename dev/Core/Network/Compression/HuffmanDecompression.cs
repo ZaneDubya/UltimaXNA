@@ -302,63 +302,57 @@ namespace UltimaXNA.Core.Network.Compression
             return 1;
         }
 
-        public bool DecompressOnePacket(ref byte[] src, int src_size, ref byte[] dest, ref int dest_size)
+        public bool DecompressChunk(ref byte[] src, ref int srcOffset, int srcLength, ref byte[] dest, int destOffset, out int destLength)
         {
-            Array.Clear(dest, 0, dest.Length); dest_size = 0;
-            int node = 0, leaf = 0, leaf_value = 0, dest_pos = 0, bit_num = 8, src_pos = 0;
+            Array.Clear(dest, destOffset, dest.Length - destOffset);
 
-            while (src_pos < src_size)
+            destLength = 0;
+            
+            int end = srcOffset + srcLength;
+            int node = 0;
+            int destPos = destOffset;
+            int bitNum = 8;
+
+            while (srcOffset < end)
             {
-                leaf = GetBit(src[src_pos], bit_num);
-                leaf_value = dec_tree[node, leaf];
+                var leaf = GetBit(src[srcOffset], bitNum);
+                var leafValue = dec_tree[node, leaf];
 
                 // all numbers below 1 (0..-256) are codewords
                 // if the halt codeword has been found, skip this byte
-                if (leaf_value == -256)
+                if (leafValue == -256)
                 {
-                    bit_num = 8; node = 0; src_pos++;
-                    byte[] newsource = new byte[src_size - src_pos];
-                    Array.Copy(src, src_pos, newsource, 0, src_size - src_pos);
-                    src = newsource;
-                    dest_size = dest_pos;
+                    srcOffset++;
+                    destLength = destPos - destOffset;
+
                     return true;
                 }
-                else if (leaf_value < 1)
+                
+                if (leafValue < 1)
                 {
-                    dest[dest_pos] = (byte)-leaf_value;
-                    leaf_value = 0; dest_pos++;
+                    dest[destPos] = (byte)-leafValue;
+                    leafValue = 0; destPos++;
                 }
 
-                bit_num--; node = leaf_value;
+                bitNum--; node = leafValue;
+
                 /* if its the end of the byte, go to the next byte */
-                if (bit_num < 1)
+                if (bitNum < 1)
                 {
-                    bit_num = 8;
-                    src_pos++;
+                    bitNum = 8;
+                    srcOffset++;
                 }
 
                 // check to see if the current codeword has no end
                 // if not, make it an incomplete byte
-                if (src_pos == src_size)
+                if (srcOffset == srcLength)
                 {
-                    if (node != 0)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        return false;
-                        //throw new Exception("Incomplete byte at node = 0");
-                    }
+                    return false;
                 }
-                /*if(obj != NULL && src_pos == *src_size && node)
-                {
-                obj->incomplete_byte = src[src_pos-1];
-                obj->has_incomplete = 1;
-                }*/
             }
 
-            dest_size = dest_pos;
+            destLength = destPos - destOffset;
+
             return false;
         }
 

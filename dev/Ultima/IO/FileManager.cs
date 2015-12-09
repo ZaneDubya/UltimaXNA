@@ -52,6 +52,7 @@ namespace UltimaXNA.Ultima.IO
                 @"Electronic Arts\EA Games\"
             };
 
+        private static readonly Version m_UnknownClientVersion = new Version("0.0.0.0");
         private static readonly Version m_ConvertedToUOPVersion = new Version("7.0.24.0");
         private static string m_FileDirectory;
         private static Version m_Version;
@@ -64,6 +65,11 @@ namespace UltimaXNA.Ultima.IO
         public static bool Is64Bit
         {
             get { return IntPtr.Size == 8; } 
+        }
+
+        public static bool IsUnknownClientVersion
+        {
+            get { return Version == m_UnknownClientVersion; }
         }
 
         public static Version Version
@@ -85,7 +91,7 @@ namespace UltimaXNA.Ultima.IO
                     }
                     else
                     {
-                        m_Version = new Version("0.0.0.0");
+                        m_Version = m_UnknownClientVersion;
                     }
                 }
 
