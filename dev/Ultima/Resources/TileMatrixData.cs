@@ -62,7 +62,7 @@ namespace UltimaXNA.Ultima.Resources
         {
             FileStream staticIndexStream;
 
-            var mapPath = FileManager.GetFilePath(String.Format("map{0}.mul", index));
+            string mapPath = FileManager.GetFilePath(String.Format("map{0}.mul", index));
 
             if (File.Exists(mapPath))
             {
@@ -88,7 +88,7 @@ namespace UltimaXNA.Ultima.Resources
                 if (index == 1)
                 {
                     uint trammel = 0;
-                    var mapPath2 = FileManager.GetFilePath(String.Format("map{0}.mul", trammel));
+                    string mapPath2 = FileManager.GetFilePath(String.Format("map{0}.mul", trammel));
 
                     if (File.Exists(mapPath2))
                     {

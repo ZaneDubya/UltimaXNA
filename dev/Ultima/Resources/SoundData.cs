@@ -73,7 +73,7 @@ namespace UltimaXNA.Ultima.Resources
                 data = reader.ReadBytes(length - 40);
 
                 name = Encoding.ASCII.GetString(stringBuffer).Trim();
-                var end = name.IndexOf("\0");
+                int end = name.IndexOf("\0");
                 name = name.Substring(0, end);
                 Metrics.ReportDataRead((int)reader.Position - streamStart);
 
