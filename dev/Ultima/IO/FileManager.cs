@@ -78,11 +78,11 @@ namespace UltimaXNA.Ultima.IO
             {
                 if (m_Version == null)
                 {
-                    var clientExe = GetPath("client.exe");
+                    string clientExe = GetPath("client.exe");
 
                     if (File.Exists(clientExe))
                     {
-                        var fileVersionInfo = FileVersionInfo.GetVersionInfo(clientExe);
+                        FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(clientExe);
                         m_Version = new Version(
                             fileVersionInfo.FileMajorPart,
                             fileVersionInfo.FileMinorPart,
