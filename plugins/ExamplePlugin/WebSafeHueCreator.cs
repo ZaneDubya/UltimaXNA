@@ -20,19 +20,19 @@ namespace ExamplePlugin
             for (int i = 0; i < 216; i++)
             {
                 int nearestHue = -1;
-                var distance = double.MaxValue;
-                var dbl_input_red = toMatches[i] & 0x0000ff;
-                var dbl_input_green = (toMatches[i] & 0x00ff00) >> 8;
-                var dbl_input_blue = (toMatches[i] & 0xff0000) >> 16;
+                double distance = double.MaxValue;
+                uint dbl_input_red = toMatches[i] & 0x0000ff;
+                uint dbl_input_green = (toMatches[i] & 0x00ff00) >> 8;
+                uint dbl_input_blue = (toMatches[i] & 0xff0000) >> 16;
                 for (int j = 0; j < HueData.HueCount; j++)
                 {
                     // compute the Euclidean distance between the two colors
                     // note, that the alpha-component is not used in this example
-                    var dbl_test_red = Math.Pow(Convert.ToDouble(hues[j] & 0x0000ff) - dbl_input_red, 2.0);
-                    var dbl_test_green = Math.Pow(Convert.ToDouble((hues[j] & 0x00ff00) >> 8) - dbl_input_green, 2.0);
-                    var dbl_test_blue = Math.Pow(Convert.ToDouble((hues[j] & 0xff0000) >> 16) - dbl_input_blue, 2.0);
+                    double dbl_test_red = Math.Pow(Convert.ToDouble(hues[j] & 0x0000ff) - dbl_input_red, 2.0);
+                    double dbl_test_green = Math.Pow(Convert.ToDouble((hues[j] & 0x00ff00) >> 8) - dbl_input_green, 2.0);
+                    double dbl_test_blue = Math.Pow(Convert.ToDouble((hues[j] & 0xff0000) >> 16) - dbl_input_blue, 2.0);
 
-                    var temp = Math.Sqrt(dbl_test_blue + dbl_test_green + dbl_test_red);
+                    double temp = Math.Sqrt(dbl_test_blue + dbl_test_green + dbl_test_red);
                     // explore the result and store the nearest color
                     if (temp == 0.0)
                     {

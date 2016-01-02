@@ -315,8 +315,8 @@ namespace UltimaXNA.Core.Network.Compression
 
             while (srcOffset < end)
             {
-                var leaf = GetBit(src[srcOffset], bitNum);
-                var leafValue = dec_tree[node, leaf];
+                int leaf = GetBit(src[srcOffset], bitNum);
+                int leafValue = dec_tree[node, leaf];
 
                 // all numbers below 1 (0..-256) are codewords
                 // if the halt codeword has been found, skip this byte
