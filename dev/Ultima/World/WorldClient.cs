@@ -72,7 +72,7 @@ namespace UltimaXNA.Ultima.World
             Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
             Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
 
-            if (FileManager.IsUnknownClientVersion || FileManager.Version < m_OldAddItemToContainerVersion)
+            if (ClientVersion.Version < m_OldAddItemToContainerVersion)
             {
                 Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 20, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
             }

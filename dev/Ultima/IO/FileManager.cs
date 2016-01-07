@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.IO.UOP;
 #endregion
 
@@ -52,10 +53,7 @@ namespace UltimaXNA.Ultima.IO
                 @"Electronic Arts\EA Games\"
             };
 
-        private static readonly Version m_UnknownClientVersion = new Version("0.0.0.0");
-        private static readonly Version m_ConvertedToUOPVersion = new Version("7.0.24.0");
         private static string m_FileDirectory;
-        private static Version m_Version;
 
         public static string DataPath
         {
@@ -67,49 +65,12 @@ namespace UltimaXNA.Ultima.IO
             get { return IntPtr.Size == 8; } 
         }
 
-        public static bool IsUnknownClientVersion
-        {
-            get { return Version == m_UnknownClientVersion; }
-        }
-
-        public static Version Version
-        {
-            get
-            {
-                if (m_Version == null)
-                {
-                    string clientExe = GetPath("client.exe");
-
-                    if (File.Exists(clientExe))
-                    {
-                        FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(clientExe);
-                        m_Version = new Version(
-                            fileVersionInfo.FileMajorPart,
-                            fileVersionInfo.FileMinorPart,
-                            fileVersionInfo.FileBuildPart,
-                            fileVersionInfo.FilePrivatePart);
-                    }
-                    else
-                    {
-                        m_Version = m_UnknownClientVersion;
-                    }
-                }
-
-                return m_Version;
-            }
-        }
-
-        public static bool IsUopFormat
-        {
-            get { return Version >= m_ConvertedToUOPVersion; }
-        }
-
         /// <summary>
         /// Returns 0xffff if the client files are UOP format, 0x3fff otherwise.
         /// </summary>
         public static int ItemIDMask
         {
-            get { return IsUopFormat ? 0xffff : 0x3fff; }
+            get { return ClientVersion.IsUopFormat ? 0xffff : 0x3fff; }
         }
 
         static FileManager()

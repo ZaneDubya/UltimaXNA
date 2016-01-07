@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UltimaXNA.Core.Windows;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.IO;
 #endregion
 
@@ -52,7 +53,7 @@ namespace UltimaXNA.Ultima.Resources
 
         public unsafe bool TryGetLandPatch(uint blockX, uint blockY, ref byte[] landData)
         {
-            if (FileManager.IsUopFormat)
+            if (ClientVersion.IsUopFormat)
                 return false;
 
             uint key = MakeChunkKey(blockX, blockY);
@@ -77,7 +78,7 @@ namespace UltimaXNA.Ultima.Resources
         {
             m_LandPatchPtrs = new Dictionary<uint, uint>();
 
-            if (FileManager.IsUopFormat)
+            if (ClientVersion.IsUopFormat)
                 return 0;
 
             m_LandPatchStream = FileManager.GetFile(landPath);
@@ -119,7 +120,7 @@ namespace UltimaXNA.Ultima.Resources
             try
             {
 
-                if (FileManager.IsUopFormat)
+                if (ClientVersion.IsUopFormat)
                 {
                     length = 0;
                     return false;

@@ -31,8 +31,7 @@ namespace UltimaXNA.Ultima.Login
     public class LoginClient : IDisposable
     {
         private Timer m_KeepAliveTimer;
-
-        private readonly Version m_OldSupportedFeatureVersion = new Version(6, 0, 14, 2);
+        
         private readonly INetworkClient m_Network;
         private readonly UltimaGame m_Engine;
         private readonly UserInterfaceService m_UserInterface;
@@ -60,6 +59,8 @@ namespace UltimaXNA.Ultima.Login
 
         public LoginClient()
         {
+            ClientVersion.ClearVersion(); // only unlocked after server sends 0xbd version request packet.
+
             m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_Engine = ServiceRegistry.GetService<UltimaGame>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
@@ -85,15 +86,7 @@ namespace UltimaXNA.Ultima.Login
             Register<ServerRelayPacket>(0x8C, "ServerRelay", 11, ReceiveServerRelay);
             Register<ServerListPacket>(0xA8, "Game Server List", -1, ReceiveServerList);
             Register<CharacterCityListPacket>(0xA9, "Characters / Starting Locations", -1, ReceiveCharacterList);
-
-            if (FileManager.IsUnknownClientVersion || FileManager.Version < m_OldSupportedFeatureVersion)
-            {
-                Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, ReceiveEnableFeatures);
-            }
-            else
-            {
-                Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
-            }
+            Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, ReceiveEnableFeatures);
 
             Register<VersionRequestPacket>(0xBD, "Version Request", -1, ReceiveVersionRequest);
         }
@@ -138,6 +131,19 @@ namespace UltimaXNA.Ultima.Login
         {
             m_RegisteredHandlers.Add(new Tuple<int, TypedPacketReceiveHandler>(id, onReceive));
             m_Network.Register<T>(id, name, length, onReceive);
+        }
+
+        public void Unregister(int id)
+        {
+            for (int i = 0; i < m_RegisteredHandlers.Count; i++)
+            {
+                if (m_RegisteredHandlers[i].Item1 == id)
+                {
+                    m_Network.Unregister(m_RegisteredHandlers[i].Item1, m_RegisteredHandlers[i].Item2);
+                    m_RegisteredHandlers.RemoveAt(i);
+                    i--;
+                }
+            }
         }
 
         /// <summary>
@@ -271,6 +277,14 @@ namespace UltimaXNA.Ultima.Login
             }
             else
             {
+                ClientVersion.UnlockVersion();
+                if (ClientVersion.HasExtendedClientFeatures)
+                {
+                    Tracer.Info("Client version is greater than 6.0.14.2, enabling extended 0xB9 packet.");
+                    Unregister(0xB9);
+                    Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
+                    
+                }
                 m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.ClientVersion));
             }
         }

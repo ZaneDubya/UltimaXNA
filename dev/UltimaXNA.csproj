@@ -279,6 +279,7 @@
     <Compile Include="Ultima\Data\Genders.cs" />
     <Compile Include="Ultima\Data\SpellbookData.cs" />
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
+    <Compile Include="Ultima\Data\ClientVersion.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
     <Compile Include="Ultima\Resources\BodyDef.cs" />
