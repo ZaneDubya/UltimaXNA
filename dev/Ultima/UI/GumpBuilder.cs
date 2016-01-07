@@ -31,7 +31,7 @@ namespace UltimaXNA.Ultima.UI
             for (int i = 0; i < gumpPieces.Length; i++)
             {
                 string[] gumpParams = Regex.Split(gumpPieces[i], @"\s+");
-                switch (gumpParams[0])
+                switch (gumpParams[0].ToLower())
                 {
                     case "button":
                         // Button [x] [y] [released-id] [pressed-id] [quit] [page-id] [return-value]
