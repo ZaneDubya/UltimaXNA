@@ -391,7 +391,8 @@ namespace UltimaXNA.Ultima.Login
             // delay loading until we do.
             if (Status != LoginClientStatus.WorldServer_InWorld)
             {
-                if (m_QueuedLoginConfirmPacket != null && (m_Engine.QueuedModel as WorldModel).MapIndex >= 0)
+                uint currentMapIndex = (m_Engine.QueuedModel as WorldModel).MapIndex; // will be 0xffffffff if no map
+                if (m_QueuedLoginConfirmPacket != null && (currentMapIndex != 0xffffffff))
                 {
                     Status = LoginClientStatus.WorldServer_InWorld;
 
