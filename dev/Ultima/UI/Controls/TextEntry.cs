@@ -21,6 +21,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class TextEntry : AControl
     {
+        private string m_Text;
+        private bool m_IsEditable = true;
+
         public int Hue = 0;
         public int EntryID = 0;
         public int LimitSize = 0;
@@ -30,7 +33,6 @@ namespace UltimaXNA.Ultima.UI.Controls
         public string LeadingHtmlTag = string.Empty;
         public string LeadingText = string.Empty;
 
-        private bool m_IsEditable = true;
         public bool IsEditable
         {
             get { return m_IsEditable; }
@@ -47,8 +49,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public string Text
         {
-            get;
-            set;
+            get { return m_Text == null ? string.Empty : m_Text; }
+            set { m_Text = value; }
         }
 
         public bool LegacyCarat
@@ -230,6 +232,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     break;
                 default:
                     // place a char, so long as it's within the widths limit.
+
                     if (LimitSize != 0 && Text.Length >= LimitSize)
                         return;
 
