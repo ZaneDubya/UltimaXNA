@@ -67,6 +67,8 @@ namespace UltimaXNA.Ultima.World
             AEntity player = WorldModel.Entities.GetPlayerEntity();
             if (player == null)
                 return;
+            if (Model.Map == null)
+                return;
 
             Position3D center = player.Position;
             if ((player as Mobile).IsAlive)
