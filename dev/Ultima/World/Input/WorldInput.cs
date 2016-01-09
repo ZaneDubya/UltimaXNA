@@ -1,31 +1,33 @@
 ﻿/***************************************************************************
  *   WorldInput.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
- *   
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
-using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
-using UltimaXNA.Configuration;
+using System.Collections.Generic;
+using UltimaXNA.Configuration.Properties;
+using UltimaXNA.Core.Extensions;
 using UltimaXNA.Core.Input;
-using UltimaXNA.Core.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Core.Windows;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.UI.WorldGumps;
-using UltimaXNA.Core.Extensions;
-using UltimaXNA.Configuration.Properties;
-#endregion
+
+#endregion usings
 
 namespace UltimaXNA.Ultima.World.Input
 {
@@ -47,6 +49,7 @@ namespace UltimaXNA.Ultima.World.Input
 
         // keyboard movement variables.
         private double m_PauseBeforeKeyboardMovementMS;
+
         private double m_TimeSinceMovementButtonPressed;
         private Vector2 m_dragOffset;
 
@@ -78,10 +81,10 @@ namespace UltimaXNA.Ultima.World.Input
             get { return m_ContinuousMouseMovementCheck; }
             set
             {
-                if(m_ContinuousMouseMovementCheck != value)
+                if (m_ContinuousMouseMovementCheck != value)
                 {
                     m_ContinuousMouseMovementCheck = value;
-                    if(m_ContinuousMouseMovementCheck)
+                    if (m_ContinuousMouseMovementCheck)
                     {
                         m_UserInterface.AddInputBlocker(this);
                     }
@@ -184,7 +187,7 @@ namespace UltimaXNA.Ultima.World.Input
                 return;
 
             // if the move button is pressed, change facing and move based on mouse cursor direction.
-            if(ContinuousMouseMovementCheck)
+            if (ContinuousMouseMovementCheck)
             {
                 ResolutionProperty resolution = Settings.UserInterface.PlayWindowGumpResolution;
                 Point centerScreen = new Point(resolution.Width / 2, resolution.Height / 2);
@@ -192,7 +195,7 @@ namespace UltimaXNA.Ultima.World.Input
 
                 m_TimeSinceMovementButtonPressed += frameMS;
 
-                if(m_TimeSinceMovementButtonPressed >= c_PauseBeforeMouseMovementMS)
+                if (m_TimeSinceMovementButtonPressed >= c_PauseBeforeMouseMovementMS)
                 {
                     // Get the move direction.
                     Direction moveDirection = mouseDirection;
@@ -211,7 +214,7 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     // Get the move direction.
                     Direction facing = mouseDirection;
-                    if(player.Facing != facing)
+                    if (player.Facing != facing)
                     {
                         // Tell the player entity to change facing to this direction.
                         player.PlayerMobile_ChangeFacing(facing);
@@ -234,21 +237,21 @@ namespace UltimaXNA.Ultima.World.Input
             if (player == null)
                 return;
 
-            if(m_PauseBeforeKeyboardMovementMS < c_PauseBeforeKeyboardMovementMS)
+            if (m_PauseBeforeKeyboardMovementMS < c_PauseBeforeKeyboardMovementMS)
             {
-                if(m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Up, false, false, false))
+                if (m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Up, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
-                if(m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Down, false, false, false))
+                if (m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Down, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
-                if(m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Left, false, false, false))
+                if (m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Left, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
-                if(m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Right, false, false, false))
+                if (m_Input.HandleKeyboardEvent(KeyboardEvent.Up, WinKeys.Right, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
@@ -258,23 +261,23 @@ namespace UltimaXNA.Ultima.World.Input
             bool left = m_Input.IsKeyDown(WinKeys.Left);
             bool right = m_Input.IsKeyDown(WinKeys.Right);
             bool down = m_Input.IsKeyDown(WinKeys.Down);
-            if(up | left | right | down)
+            if (up | left | right | down)
             {
                 // Allow a short span of time (50ms) to get all the keys pressed.
                 // Otherwise, when moving diagonally, we would only get the first key
                 // in most circumstances and the second key a frame or two later - but
                 // too late, we would already be moving in the non-diagonal direction :(
                 m_PauseBeforeKeyboardMovementMS += frameMS;
-                if(m_PauseBeforeKeyboardMovementMS >= c_PauseBeforeKeyboardFacingMS)
+                if (m_PauseBeforeKeyboardMovementMS >= c_PauseBeforeKeyboardFacingMS)
                 {
                     Direction facing = Direction.Up;
-                    if(up)
+                    if (up)
                     {
-                        if(left)
+                        if (left)
                         {
                             facing = Direction.West;
                         }
-                        else if(m_Input.IsKeyDown(WinKeys.Right))
+                        else if (m_Input.IsKeyDown(WinKeys.Right))
                         {
                             facing = Direction.North;
                         }
@@ -283,13 +286,13 @@ namespace UltimaXNA.Ultima.World.Input
                             facing = Direction.Up;
                         }
                     }
-                    else if(down)
+                    else if (down)
                     {
-                        if(left)
+                        if (left)
                         {
                             facing = Direction.South;
                         }
-                        else if(right)
+                        else if (right)
                         {
                             facing = Direction.East;
                         }
@@ -300,26 +303,26 @@ namespace UltimaXNA.Ultima.World.Input
                     }
                     else
                     {
-                        if(left)
+                        if (left)
                         {
                             facing = Direction.Left;
                         }
-                        else if(right)
+                        else if (right)
                         {
                             facing = Direction.Right;
                         }
                     }
 
                     // only send messages if we're not moving.
-                    if(!player.IsMoving)
+                    if (!player.IsMoving)
                     {
-                        if(m_PauseBeforeKeyboardMovementMS >= c_PauseBeforeKeyboardMovementMS)
+                        if (m_PauseBeforeKeyboardMovementMS >= c_PauseBeforeKeyboardMovementMS)
                         {
                             player.PlayerMobile_Move(facing);
                         }
                         else
                         {
-                            if(player.Facing != facing)
+                            if (player.Facing != facing)
                             {
                                 player.PlayerMobile_ChangeFacing(facing);
                             }
@@ -335,12 +338,12 @@ namespace UltimaXNA.Ultima.World.Input
 
         private void onMoveButton(InputEventMouse e)
         {
-            if(e.EventType == MouseEvent.Down)
+            if (e.EventType == MouseEvent.Down)
             {
                 // keep moving as long as the move button is down.
                 ContinuousMouseMovementCheck = true;
             }
-            else if(e.EventType == MouseEvent.Up)
+            else if (e.EventType == MouseEvent.Up)
             {
                 // If the movement mouse button has been released, stop moving.
                 ContinuousMouseMovementCheck = false;
@@ -351,51 +354,51 @@ namespace UltimaXNA.Ultima.World.Input
 
         private void onInteractButton(InputEventMouse e, AEntity overEntity, Vector2 overEntityPoint)
         {
-            if(e.EventType == MouseEvent.Down)
+            if (e.EventType == MouseEvent.Down)
             {
                 // prepare to pick this item up.
                 m_DraggingEntity = overEntity;
                 m_dragOffset = overEntityPoint;
             }
-            else if(e.EventType == MouseEvent.Click)
+            else if (e.EventType == MouseEvent.Click)
             {
-                if(overEntity is Ground)
+                if (overEntity is Ground)
                 {
                     // no action.
                 }
-                else if(overEntity is StaticItem)
+                else if (overEntity is StaticItem)
                 {
                     // pop up name of item.
                     overEntity.AddOverhead(MessageTypes.Label, overEntity.Name, 3, 0, false);
                     WorldModel.Statics.AddStaticThatNeedsUpdating(overEntity as StaticItem);
                 }
-                else if(overEntity is Item)
+                else if (overEntity is Item)
                 {
                     // request context menu
                     World.Interaction.SingleClick(overEntity);
                 }
-                else if(overEntity is Mobile)
+                else if (overEntity is Mobile)
                 {
                     // request context menu
                     World.Interaction.SingleClick(overEntity);
                 }
             }
-            else if(e.EventType == MouseEvent.DoubleClick)
+            else if (e.EventType == MouseEvent.DoubleClick)
             {
-                if(overEntity is Ground)
+                if (overEntity is Ground)
                 {
                     // no action.
                 }
-                else if(overEntity is StaticItem)
+                else if (overEntity is StaticItem)
                 {
                     // no action.
                 }
-                else if(overEntity is Item)
+                else if (overEntity is Item)
                 {
                     // request context menu
                     World.Interaction.DoubleClick(overEntity);
                 }
-                else if(overEntity is Mobile)
+                else if (overEntity is Mobile)
                 {
                     // Send double click packet.
                     // Set LastTarget == targeted Mobile.
@@ -409,22 +412,22 @@ namespace UltimaXNA.Ultima.World.Input
                     }
                 }
             }
-            else if(e.EventType == MouseEvent.DragBegin)
+            else if (e.EventType == MouseEvent.DragBegin)
             {
-                if(overEntity is Ground)
+                if (overEntity is Ground)
                 {
                     // no action.
                 }
-                else if(overEntity is StaticItem)
+                else if (overEntity is StaticItem)
                 {
                     // no action.
                 }
-                else if(overEntity is Item)
+                else if (overEntity is Item)
                 {
                     // attempt to pick up item.
                     World.Interaction.PickupItem((Item)overEntity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
                 }
-                else if(overEntity is Mobile)
+                else if (overEntity is Mobile)
                 {
                     // request basic stats - gives us the name rename flag
                     m_Network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, overEntity.Serial));
@@ -449,12 +452,12 @@ namespace UltimaXNA.Ultima.World.Input
                 }
                 else if (e.Button == Settings.UserInterface.Mouse.InteractionButton)
                 {
-                    if(e.EventType == MouseEvent.Click)
+                    if (e.EventType == MouseEvent.Click)
                     {
                         InternalQueueSingleClick(e, MousePick.MouseOverObject, MousePick.MouseOverObjectPoint);
                         continue;
                     }
-                    if(e.EventType == MouseEvent.DoubleClick)
+                    if (e.EventType == MouseEvent.DoubleClick)
                     {
                         ClearQueuedClick();
                     }
@@ -465,13 +468,25 @@ namespace UltimaXNA.Ultima.World.Input
             InternalCheckQueuedClick(frameMS);
         }
 
+        private delegate void myMacroDelegate(XMacro xmcr);
+
         private void InternalParseKeyboard(double frameMS)
         {
+            using (XMacro XMCR = m_Input.HandleKeyboardEventForMacros())//checking keypress macro event
+            {
+                if (XMCR != null)//if macro found
+                {
+                    //ASYC METHOD FOR MULTIPLE MACRO COMBO
+                    myMacroDelegate worker = new myMacroDelegate(Settings.Macro.UseMacro);//ASYNC METHOD CALLING
+                    worker.BeginInvoke(XMCR, null, null);
+                }
+            }
+            //////////////
             // all names mode
             WorldView.AllLabels = (m_Input.IsShiftDown && m_Input.IsCtrlDown);
 
-            // Warmode toggle:
-            if(m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Tab, false, false, false))
+            // Warmode toggle: (maybe moving to macro manager)
+            if (m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Tab, false, false, false))
             {
                 m_Network.Send(new RequestWarModePacket(!WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode));
             }
@@ -483,25 +498,25 @@ namespace UltimaXNA.Ultima.World.Input
             }
 
             // movement with arrow keys if the player is not moving and the mouse isn't moving the player.
-            if(!ContinuousMouseMovementCheck)
+            if (!ContinuousMouseMovementCheck)
             {
                 doKeyboardMovement(frameMS);
             }
 
             // FPS limiting
-            if(m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.F, false, true, false))
+            if (m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.F, false, true, false))
             {
                 Settings.Engine.IsFixedTimeStep = !Settings.Engine.IsFixedTimeStep;
             }
 
             // Display FPS
-            if(m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.F, false, true, true))
+            if (m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.F, false, true, true))
             {
                 Settings.Debug.ShowFps = !Settings.Debug.ShowFps;
             }
 
             // Mouse enable / disable
-            if(m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.M, false, true, false))
+            if (m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.M, false, true, false))
             {
                 Settings.UserInterface.Mouse.IsEnabled = !Settings.UserInterface.Mouse.IsEnabled;
             }
@@ -513,6 +528,7 @@ namespace UltimaXNA.Ultima.World.Input
         // This allows time for the player to potentially double-click on an object.
         // If the player does so, this will cancel the single-click event.
         private AEntity m_QueuedEntity;
+
         private Vector2 m_QueuedEntityPosition;
         private InputEventMouse m_QueuedEvent;
         private double m_QueuedEvent_DequeueAt;
@@ -527,10 +543,10 @@ namespace UltimaXNA.Ultima.World.Input
 
         private void InternalCheckQueuedClick(double frameMS)
         {
-            if(m_QueuedEvent_InQueue)
+            if (m_QueuedEvent_InQueue)
             {
                 m_QueuedEvent_DequeueAt -= frameMS;
-                if(m_QueuedEvent_DequeueAt <= 0d)
+                if (m_QueuedEvent_DequeueAt <= 0d)
                 {
                     onInteractButton(m_QueuedEvent, m_QueuedEntity, m_QueuedEntityPosition);
                     ClearQueuedClick();
@@ -547,6 +563,6 @@ namespace UltimaXNA.Ultima.World.Input
             m_QueuedEvent = e;
         }
 
-        #endregion
+        #endregion QueuedClicks
     }
 }

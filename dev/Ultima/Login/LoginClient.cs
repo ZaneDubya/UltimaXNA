@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Security;
 using System.Threading;
+using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
@@ -237,6 +238,7 @@ namespace UltimaXNA.Ultima.Login
                 {
                     m_Engine.QueuedModel = new WorldModel();
                     m_Network.Send(new LoginCharacterPacket(Characters.List[index].Name, index, Utility.IPAddress));
+                    Settings.Macro.UserMacros = new XKey(Characters.List[index].Name);
                 }
             }
         }

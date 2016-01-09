@@ -1,22 +1,24 @@
 ﻿/***************************************************************************
  *   AControl.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
- * 
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
-using UltimaXNA.Core.Windows;
-#endregion
+
+#endregion usings
 
 namespace UltimaXNA.Core.UI
 {
@@ -29,6 +31,7 @@ namespace UltimaXNA.Core.UI
         // Private variables
         // ================================================================================
         private Rectangle m_Area = new Rectangle();
+
         private ControlMetaData m_MetaData = null;
         private List<AControl> m_Children = null;
 
@@ -44,7 +47,9 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         // Public properties
         // ================================================================================
+
         #region Public properties
+
         /// <summary>
         /// An identifier for this control. Can be used to differentiate controls of the same type. Used by UO as a 'Serial'
         /// </summary>
@@ -91,7 +96,7 @@ namespace UltimaXNA.Core.UI
         public bool IsEnabled
         {
             get;
-            private set;
+            set;
         }
 
         /// <summary>
@@ -135,7 +140,36 @@ namespace UltimaXNA.Core.UI
         /// <summary>
         /// If true, the gump will draw. Not visible gumps still update and receive mouse input (but not keyboard input).
         /// </summary>
+        private bool _isvisible = true;
+
         public bool IsVisible
+        {
+            get
+            {
+                return _isvisible;
+            }
+            set
+            {
+                _isvisible = value;
+                HandlesKeyboardFocus = _isvisible;
+            }
+        }
+
+        private bool _isedit = true;
+
+        public bool IsEditable
+        {
+            get { return _isedit; }
+            set
+            {
+                _isedit = value;
+            }
+        }
+
+        /// <summary>
+        /// If true, the gump will draw. Not visible gumps still update and receive mouse input (but not keyboard input).
+        /// </summary>
+        public int IDs
         {
             get;
             set;
@@ -153,9 +187,11 @@ namespace UltimaXNA.Core.UI
                 return m_Children;
             }
         }
-        #endregion
+
+        #endregion Public properties
 
         #region Position and Area properties
+
         public int X { get { return m_Area.X; } }
         public int Y { get { return m_Area.Y; } }
 
@@ -177,7 +213,10 @@ namespace UltimaXNA.Core.UI
 
         public virtual int Width
         {
-            get { return m_Area.Width; }
+            get
+            {
+                return m_Area.Width;
+            }
             set
             {
                 m_Area.Width = value;
@@ -186,7 +225,10 @@ namespace UltimaXNA.Core.UI
 
         public virtual int Height
         {
-            get { return m_Area.Height; }
+            get
+            {
+                return m_Area.Height;
+            }
             set
             {
                 m_Area.Height = value;
@@ -209,6 +251,7 @@ namespace UltimaXNA.Core.UI
                 }
             }
         }
+
         public Point Size
         {
             get { return new Point(m_Area.Width, m_Area.Height); }
@@ -218,9 +261,11 @@ namespace UltimaXNA.Core.UI
                 m_Area.Height = value.Y;
             }
         }
-        #endregion
+
+        #endregion Position and Area properties
 
         #region Page
+
         /// <summary>
         /// This's control's drawing/input page index. On Update() and Draw(), only those controls with Page == 0 or
         /// Page == Parent.ActivePage will accept input and be drawn.
@@ -231,7 +276,8 @@ namespace UltimaXNA.Core.UI
             set;
         }
 
-        int m_ActivePage = 0; // we always draw m_activePage and Page 0.
+        private int m_ActivePage = 0; // we always draw m_activePage and Page 0.
+
         /// <summary>
         /// This control's active page index. On Update and Draw(), this control will send update to and draw all children with Page == 0 or
         /// Page == this.Page.
@@ -269,36 +315,45 @@ namespace UltimaXNA.Core.UI
                 }
             }
         }
-        #endregion
+
+        #endregion Page
 
         #region Events
+
         /// <summary>
         /// An event that other objects can use to be notified when this control is clicked.
         /// </summary>
         internal event Action<AControl, int, int, MouseButton> MouseClickEvent;
+
         /// <summary>
         /// An event that other objects can use to be notified when this control is double-clicked.
         /// </summary>
         internal event Action<AControl, int, int, MouseButton> MouseDoubleClickEvent;
+
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse down event.
         /// </summary>
         internal event Action<AControl, int, int, MouseButton> MouseDownEvent;
+
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse up event.
         /// </summary>
         internal event Action<AControl, int, int, MouseButton> MouseUpEvent;
+
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse over event.
         /// </summary>
         internal event Action<AControl, int, int> MouseOverEvent;
+
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse out event.
         /// </summary>
         internal event Action<AControl, int, int> MouseOutEvent;
-        #endregion
+
+        #endregion Events
 
         #region Parent control variables
+
         public AControl Parent
         {
             get;
@@ -342,13 +397,15 @@ namespace UltimaXNA.Core.UI
                     return 0;
             }
         }
-        #endregion
+
+        #endregion Parent control variables
 
         // ================================================================================
         // Ctor, Init, Dispose, Update, and Draw
         // ================================================================================
         public AControl(AControl parent)
         {
+            IDs = -1;
             Parent = parent;
             Page = 0;
             UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
@@ -372,7 +429,7 @@ namespace UltimaXNA.Core.UI
 
         public virtual void Update(double totalMS, double frameMS)
         {
-            if (!IsInitialized || IsDisposed)
+            if (!IsInitialized || IsDisposed || !IsVisible)
                 return;
 
             InitializeControls();
@@ -382,7 +439,7 @@ namespace UltimaXNA.Core.UI
 
         virtual public void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            if (!IsInitialized || !IsVisible)
+            if (!IsInitialized)
                 return;
 
             foreach (AControl c in Children)
@@ -401,6 +458,13 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         // Child control methods
         // ================================================================================
+        public T AddControl<T>(AControl c, int page = 0) where T : AControl
+        {
+            c.Page = page;
+            Children.Add(c);
+            return LastControl as T;
+        }
+
         public AControl AddControl(AControl c, int page = 0)
         {
             c.Page = page;
@@ -543,61 +607,56 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         // Overrideable methods
         // ================================================================================
+
         #region OverrideableMethods
+
         protected virtual void OnMouseDown(int x, int y, MouseButton button)
         {
-
         }
 
         protected virtual void OnMouseUp(int x, int y, MouseButton button)
         {
-
         }
 
         protected virtual void OnMouseOver(int x, int y)
         {
-
         }
 
         protected virtual void OnMouseOut(int x, int y)
         {
-
         }
 
         protected virtual void OnMouseClick(int x, int y, MouseButton button)
         {
-
         }
 
         protected virtual void OnMouseDoubleClick(int x, int y, MouseButton button)
         {
-
         }
 
         protected virtual void OnKeyboardInput(InputEventKeyboard e)
         {
-
         }
 
         protected virtual void OnInitialize()
         {
-
         }
 
         protected virtual void OnMove()
         {
-
         }
 
         protected virtual bool IsPointWithinControl(int x, int y)
         {
             return true;
         }
-        #endregion
+
+        #endregion OverrideableMethods
 
         // ================================================================================
         // Tooltip handling code - shows text when the player mouses over this control.
         // ================================================================================
+
         #region Tooltip
 
         private string m_Tooltip = null;
@@ -630,14 +689,17 @@ namespace UltimaXNA.Core.UI
             m_Tooltip = null;
         }
 
-        #endregion
+        #endregion Tooltip
 
         // ================================================================================
         // Mouse handling code
         // ================================================================================
+
         #region MouseInput
+
         // private variables
         private bool m_HandlesMouseInput = false;
+
         private float m_MaxTimeForDoubleClick = 0f;
         private Point m_LastClickPosition;
 
@@ -797,12 +859,15 @@ namespace UltimaXNA.Core.UI
             else
                 return focusedControls.ToArray();
         }
-        #endregion
+
+        #endregion MouseInput
 
         // ================================================================================
         // Keyboard handling code
         // ================================================================================
+
         #region KeyboardInput
+
         // private variables
         private bool m_HandlesKeyboardFocus = false;
 
@@ -874,16 +939,21 @@ namespace UltimaXNA.Core.UI
             return null;
         }
 
-        #endregion
+        #endregion KeyboardInput
 
         // ================================================================================
         // Debug control boundary drawing code
         // ================================================================================
+
         #region DebugBoundaryDrawing
+
         private Texture2D m_BoundsTexture;
 
         protected void DebugDrawBounds(SpriteBatchUI spriteBatch, Point position, Color color)
         {
+            if (!IsVisible)
+                return;
+
             if (m_BoundsTexture == null)
             {
                 m_BoundsTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
@@ -895,7 +965,8 @@ namespace UltimaXNA.Core.UI
             spriteBatch.Draw2D(m_BoundsTexture, new Rectangle(position.X, position.Y + Height - 1, Width, 1), Vector3.Zero);
             spriteBatch.Draw2D(m_BoundsTexture, new Rectangle(position.X, position.Y, 1, Height), Vector3.Zero);
             spriteBatch.Draw2D(m_BoundsTexture, new Rectangle(position.X + Width - 1, position.Y, 1, Height), Vector3.Zero);
-        #endregion
+
+            #endregion DebugBoundaryDrawing
         }
     }
 }

@@ -1,25 +1,24 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
     /// <summary>
     /// A checkbox control.
     /// </summary>
-    class CheckBox : AControl
+    internal class CheckBox : AControl
     {
         private Texture2D m_Inactive, m_Active;
 
         public bool IsChecked
         {
             get;
-            protected set;
+            set;
         }
 
         public CheckBox(AControl parent)
@@ -50,7 +49,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, inactiveID, activeID, initialState, switchID);
         }
 
-        void buildGumpling(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
+        private void buildGumpling(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
         {
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             m_Inactive = provider.GetUITexture(inactiveID);

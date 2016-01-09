@@ -1,14 +1,16 @@
 ﻿/***************************************************************************
  *   PaperDollGump.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
- *   
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
+
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
@@ -16,16 +18,18 @@ using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-#endregion
+
+#endregion usings
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    class PaperDollGump: Gump
+    internal class PaperDollGump : Gump
     {
-        enum Buttons
+        private enum Buttons
         {
             Help,
             Options,
@@ -43,8 +47,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             private set;
         }
 
-        WorldModel m_World;
-        INetworkClient m_Client;
+        public string Tittle
+        {
+            get;
+            private set;
+        }
+
+        private WorldModel m_World;
+        private INetworkClient m_Client;
 
         private bool m_IsWarMode;
         private Button m_WarModeBtn;
@@ -57,16 +67,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public PaperDollGump()
             : base(0, 0)
         {
-            
         }
 
-        public PaperDollGump(Serial serial)
+        public PaperDollGump(Serial serial, string mobileTittle)
             : this()
         {
             Mobile mobile = WorldModel.Entities.GetObject<Mobile>(serial, false);
             if (mobile != null)
             {
                 Mobile = mobile;
+                Tittle = mobileTittle;
                 BuildGump();
             }
         }
@@ -146,13 +156,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             // name and title
-            AddControl(new HtmlGumpling(this, 36, 262, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", Mobile.Name)));
-            AddControl(new HtmlGumpling(this, 35, 262, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", Mobile.Name)));
+            AddControl(new HtmlGumpling(this, 34, 259, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", Tittle)));
+            AddControl(new HtmlGumpling(this, 35, 260, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", Tittle)));
         }
 
         public override void Dispose()
         {
-            m_VirtueMenuButton.MouseDoubleClickEvent -= VirtueMenu_MouseDoubleClickEvent;
+            if (m_VirtueMenuButton != null)
+                m_VirtueMenuButton.MouseDoubleClickEvent -= VirtueMenu_MouseDoubleClickEvent;
             base.Dispose();
         }
 
@@ -211,20 +222,24 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.Help:
                     m_Client.Send(new RequestHelpPacket());
                     break;
+
                 case Buttons.Options:
                     if (UserInterface.GetControl<OptionsGump>() == null)
                         UserInterface.AddControl(new OptionsGump(), 80, 80);
                     else
                         UserInterface.RemoveControl<OptionsGump>();
                     break;
+
                 case Buttons.LogOut:
                     // MsgBoxGump g = MsgBoxGump.Show("Quit Ultima Online?", MsgBoxTypes.OkCancel);
                     // g.OnClose = logout_OnClose;
                     UserInterface.AddControl(new LogoutGump(), 0, 0);
                     break;
+
                 case Buttons.Quests:
                     m_Client.Send(new QuestGumpRequestPacket(Mobile.Serial));
                     break;
+
                 case Buttons.Skills:
                     m_Client.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.Skills, Mobile.Serial));
                     if (UserInterface.GetControl<SkillsGump>() == null)
@@ -232,19 +247,22 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     else
                         UserInterface.RemoveControl<SkillsGump>();
                     break;
+
                 case Buttons.Guild:
                     m_Client.Send(new GuildGumpRequestPacket(Mobile.Serial));
                     break;
+
                 case Buttons.PeaceWarToggle:
                     m_World.Interaction.ToggleWarMode();
                     break;
+
                 case Buttons.Status:
                     StatusGump.Toggle(Mobile.Serial);
                     break;
             }
         }
 
-        void logout_OnClose()
+        private void logout_OnClose()
         {
             m_World.Disconnect();
         }

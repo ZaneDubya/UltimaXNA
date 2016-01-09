@@ -8,10 +8,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
+
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-#endregion
+
+#endregion usings
 
 namespace UltimaXNA.Ultima.Network.Server
 {
@@ -23,7 +26,7 @@ namespace UltimaXNA.Ultima.Network.Server
             set;
         }
 
-        public string MobileName
+        public string MobileTittle
         {
             get;
             set;
@@ -33,7 +36,7 @@ namespace UltimaXNA.Ultima.Network.Server
             : base(0x88, "Open Paperdoll")
         {
             Serial = reader.ReadInt32();
-            MobileName = reader.ReadStringSafe(60);
+            MobileTittle = reader.ReadStringSafe(60);
             //+flags
         }
     }
