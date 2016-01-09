@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
  *   AGumpPic.cs
- *   
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -8,17 +8,14 @@
  *
  ***************************************************************************/
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    class AGumpPic : AControl
+    internal class AGumpPic : AControl
     {
         protected Texture2D m_Texture = null;
         private int m_LastFrameGumpID = -1;
@@ -40,6 +37,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             get;
             set;
         }
+
+        //public bool isVisible { get { return base.IsVisible; } set { base.IsVisible = value; } }
 
         public AGumpPic(AControl parent)
             : base(parent)
@@ -63,7 +62,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_Texture = provider.GetUITexture(GumpID);
                 Size = new Point(m_Texture.Width, m_Texture.Height);
             }
-
             base.Update(totalMS, frameMS);
         }
 

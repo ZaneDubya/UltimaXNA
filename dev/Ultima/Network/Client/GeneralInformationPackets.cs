@@ -7,9 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
+
 using UltimaXNA.Core.Network.Packets;
-#endregion
+
+#endregion usings
 
 namespace UltimaXNA.Ultima.Network.Client
 {

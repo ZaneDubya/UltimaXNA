@@ -1,28 +1,30 @@
 ﻿/***************************************************************************
  *   ResizePic.cs
- *   
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
-using System;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
-#endregion
+
+#endregion usings
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
     public class ResizePic : AControl
     {
-        Texture2D[] m_bgGumps = null;
-        int GumpID = 0;
+        private Texture2D[] m_bgGumps = null;
+        private int GumpID = 0;
 
         public ResizePic(AControl parent)
             : base(parent)
@@ -52,15 +54,15 @@ namespace UltimaXNA.Ultima.UI.Controls
         public ResizePic(AControl parent, AControl createBackgroundAroundThisControl)
             : this(parent)
         {
-            buildGumpling(createBackgroundAroundThisControl.X - 4, 
-                createBackgroundAroundThisControl.Y - 4, 
+            buildGumpling(createBackgroundAroundThisControl.X - 4,
+                createBackgroundAroundThisControl.Y - 4,
                 9350,
-                createBackgroundAroundThisControl.Width + 8, 
+                createBackgroundAroundThisControl.Width + 8,
                 createBackgroundAroundThisControl.Height + 8);
             Page = createBackgroundAroundThisControl.Page;
         }
 
-        void buildGumpling(int x, int y, int gumpID, int width, int height)
+        private void buildGumpling(int x, int y, int gumpID, int width, int height)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);
