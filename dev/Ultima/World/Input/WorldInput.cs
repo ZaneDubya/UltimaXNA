@@ -10,7 +10,6 @@
  ***************************************************************************/
 
 #region usings
-
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Configuration.Properties;
@@ -26,8 +25,7 @@ using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-
-#endregion usings
+#endregion
 
 namespace UltimaXNA.Ultima.World.Input
 {
@@ -563,6 +561,6 @@ namespace UltimaXNA.Ultima.World.Input
             m_QueuedEvent = e;
         }
 
-        #endregion QueuedClicks
+        #endregion
     }
 }

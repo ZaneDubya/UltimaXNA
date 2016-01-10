@@ -10,7 +10,6 @@
  ***************************************************************************/
 
 #region usings
-
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
@@ -22,8 +21,7 @@ using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-
-#endregion usings
+#endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
@@ -47,7 +45,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             private set;
         }
 
-        public string Tittle
+        public string Title
         {
             get;
             private set;
@@ -69,14 +67,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
         }
 
-        public PaperDollGump(Serial serial, string mobileTittle)
+        public PaperDollGump(Serial serial, string mobileTitle)
             : this()
         {
             Mobile mobile = WorldModel.Entities.GetObject<Mobile>(serial, false);
             if (mobile != null)
             {
                 Mobile = mobile;
-                Tittle = mobileTittle;
+                Title = mobileTitle;
                 BuildGump();
             }
         }
@@ -156,8 +154,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             // name and title
-            AddControl(new HtmlGumpling(this, 34, 259, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", Tittle)));
-            AddControl(new HtmlGumpling(this, 35, 260, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", Tittle)));
+            AddControl(new HtmlGumpling(this, 34, 259, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", Title)));
+            AddControl(new HtmlGumpling(this, 35, 260, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", Title)));
         }
 
         public override void Dispose()

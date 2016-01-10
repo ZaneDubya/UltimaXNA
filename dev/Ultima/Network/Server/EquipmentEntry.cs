@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server

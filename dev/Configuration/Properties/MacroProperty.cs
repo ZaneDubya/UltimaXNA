@@ -124,7 +124,7 @@ namespace UltimaXNA.Configuration.Properties
                         xmcr.Keystroke = (WinKeys)int.Parse(keyInfo[0]);
                     }
 
-                    #endregion baddd
+                    #endregion
 
                     xmcr.Shift = keyInfo[1] == "1" ? true : false;
                     xmcr.Alt = keyInfo[2] == "1" ? true : false;
@@ -550,5 +550,5 @@ namespace UltimaXNA.Configuration.Properties
         Summon_Water = 62,
     }
 
-    #endregion NEED I ??
+    #endregion
 }

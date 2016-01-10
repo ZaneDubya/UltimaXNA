@@ -10,7 +10,6 @@
  ***************************************************************************/
 
 #region usings
-
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -22,8 +21,7 @@ using UltimaXNA.Core.Windows;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
-
-#endregion usings
+#endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
@@ -73,7 +71,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private List<XMacro> deletedMacros = new List<XMacro>();
         private List<XMacro> addedMacros = new List<XMacro>();
 
-        #endregion about macro options
+        #endregion
 
         private double m_RefreshTime = 0d;
         private TextLabelAscii[] m_Labels = new TextLabelAscii[2];
@@ -146,10 +144,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 0, 320, 236, 236, ButtonTypes.SwitchPage, 4, (int)Buttons.Macros), 4);
             AddControl(new TextLabelAscii(this, 250, 20, 2, 1, @"Macro Options"), 4);
             AddControl(new TextLabelAscii(this, 60, 40, 9, 1, @""), 4);
-            AddControl(new Button(this, 180, 60, 2460, 2461, ButtonTypes.SwitchMacro, 4, (int)Buttons.MAdd), 4); // add
-            AddControl(new Button(this, 234, 60, 2463, 2464, ButtonTypes.SwitchMacro, 4, (int)Buttons.MDelete), 4); // delete
-            AddControl(new Button(this, 302, 60, 2466, 2467, ButtonTypes.SwitchMacro, 4, (int)Buttons.MPrevious), 4); // previous
-            AddControl(new Button(this, 386, 60, 2469, 2470, ButtonTypes.SwitchMacro, 4, (int)Buttons.MNext), 4); // next
+            AddControl(new Button(this, 180, 60, 2460, 2461, ButtonTypes.Activate, 4, (int)Buttons.MAdd), 4); // add
+            AddControl(new Button(this, 234, 60, 2463, 2464, ButtonTypes.Activate, 4, (int)Buttons.MDelete), 4); // delete
+            AddControl(new Button(this, 302, 60, 2466, 2467, ButtonTypes.Activate, 4, (int)Buttons.MPrevious), 4); // previous
+            AddControl(new Button(this, 386, 60, 2469, 2470, ButtonTypes.Activate, 4, (int)Buttons.MNext), 4); // next
             AddControl(new TextLabelAscii(this, 125, 85, 9, 1, @"Keystroke"), 4);
             //here is controlling key press event
             KeyPressControl myKeyPress = new KeyPressControl(this, 130, 100, 57, 14, 4000);
@@ -446,7 +444,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     xmcr.Keystroke = (WinKeys)Enum.Parse(typeof(WinKeys), m_MacroKeyPress.Text, true);
                 }
 
-                #endregion baddd
+                #endregion
 
                 //xmcr.Keystroke = (WinKeys)Enum.Parse(typeof(WinKeys), m_MacroKeyPress.Text, true);
                 xmcr.Shift = m_chkShift.IsChecked;

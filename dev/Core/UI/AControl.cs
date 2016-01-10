@@ -10,15 +10,13 @@
  ***************************************************************************/
 
 #region usings
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
-
-#endregion usings
+#endregion
 
 namespace UltimaXNA.Core.UI
 {
@@ -31,7 +29,6 @@ namespace UltimaXNA.Core.UI
         // Private variables
         // ================================================================================
         private Rectangle m_Area = new Rectangle();
-
         private ControlMetaData m_MetaData = null;
         private List<AControl> m_Children = null;
 
@@ -47,9 +44,7 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         // Public properties
         // ================================================================================
-
         #region Public properties
-
         /// <summary>
         /// An identifier for this control. Can be used to differentiate controls of the same type. Used by UO as a 'Serial'
         /// </summary>
@@ -140,18 +135,18 @@ namespace UltimaXNA.Core.UI
         /// <summary>
         /// If true, the gump will draw. Not visible gumps still update and receive mouse input (but not keyboard input).
         /// </summary>
-        private bool _isvisible = true;
+        private bool m_Isvisible = true;
 
         public bool IsVisible
         {
             get
             {
-                return _isvisible;
+                return m_Isvisible;
             }
             set
             {
-                _isvisible = value;
-                HandlesKeyboardFocus = _isvisible;
+                m_Isvisible = value;
+                HandlesKeyboardFocus = m_Isvisible;
             }
         }
 
@@ -188,7 +183,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        #endregion Public properties
+        #endregion
 
         #region Position and Area properties
 
@@ -262,7 +257,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        #endregion Position and Area properties
+        #endregion
 
         #region Page
 
@@ -316,7 +311,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        #endregion Page
+        #endregion
 
         #region Events
 
@@ -350,7 +345,7 @@ namespace UltimaXNA.Core.UI
         /// </summary>
         internal event Action<AControl, int, int> MouseOutEvent;
 
-        #endregion Events
+        #endregion
 
         #region Parent control variables
 
@@ -398,7 +393,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        #endregion Parent control variables
+        #endregion
 
         // ================================================================================
         // Ctor, Init, Dispose, Update, and Draw
@@ -651,7 +646,7 @@ namespace UltimaXNA.Core.UI
             return true;
         }
 
-        #endregion OverrideableMethods
+        #endregion
 
         // ================================================================================
         // Tooltip handling code - shows text when the player mouses over this control.
@@ -689,7 +684,7 @@ namespace UltimaXNA.Core.UI
             m_Tooltip = null;
         }
 
-        #endregion Tooltip
+        #endregion
 
         // ================================================================================
         // Mouse handling code
@@ -860,7 +855,7 @@ namespace UltimaXNA.Core.UI
                 return focusedControls.ToArray();
         }
 
-        #endregion MouseInput
+        #endregion
 
         // ================================================================================
         // Keyboard handling code
@@ -939,7 +934,7 @@ namespace UltimaXNA.Core.UI
             return null;
         }
 
-        #endregion KeyboardInput
+        #endregion
 
         // ================================================================================
         // Debug control boundary drawing code
@@ -966,7 +961,7 @@ namespace UltimaXNA.Core.UI
             spriteBatch.Draw2D(m_BoundsTexture, new Rectangle(position.X, position.Y, 1, Height), Vector3.Zero);
             spriteBatch.Draw2D(m_BoundsTexture, new Rectangle(position.X + Width - 1, position.Y, 1, Height), Vector3.Zero);
 
-            #endregion DebugBoundaryDrawing
+            #endregion
         }
     }
 }
