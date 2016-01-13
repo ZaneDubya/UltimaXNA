@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UltimaXNA.Configuration.Macros;
 using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core;
 using UltimaXNA.Core.UI;
@@ -172,7 +173,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 //number of action
                 AddControl(new TextLabelAscii(this, 84, 155 + y, 9, 1, (i + 1).ToString()), 4);
                 //here is action dropdown list (i need ID variable for find in controls)
-                m_ActionTypeList[i] = AddControl<MacroDropDownList>(new MacroDropDownList(this, 100, 150 + y, 215, Settings.fromList<Macro>(Settings.Macro.actionTypes), 10, 0, false, (i + 1000), true), 4);
+                m_ActionTypeList[i] = AddControl<MacroDropDownList>(new MacroDropDownList(this, 100, 150 + y, 215, Settings.fromList<MacroDefinition>(Settings.Macro.actionTypes), 10, 0, false, (i + 1000), true), 4);
                 //here is value dropdown list (i need ID variable for find in controls)
                 m_Action1List[i] = AddControl<MacroDropDownList>(new MacroDropDownList(this, 330, 150 + y, 190, new string[] { }, 10, 0, false, (i + 2000), false), 4);
                 //visual control about resizable picture
@@ -288,7 +289,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 m_ActionTypeList[i].Index = MCR.actionList[i].actionID;//SELECTED ACTION
                 if (MCR.actionList[i].valueID != -1)
                 {
-                    if (!m_Action1List[i].m_firstvisible)
+                    if (!m_Action1List[i].IsFirstvisible)
                     {
                         m_Action1List[i].CreateVisual();//ACTIVATED VISUAL
                     }
@@ -297,13 +298,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 }
                 else if (MCR.actionList[i].valueText != "N")
                 {
-                    if (!m_Action1List[i].m_firstvisible)
+                    if (!m_Action1List[i].IsFirstvisible)
                     {
                         m_Action1List[i].CreateVisual();//ACTIVATED VISUAL
                     }
                     //m_Action1List[i].m_scrollButton.IsVisible = false;//SCROLL İCON İT'S REALLY PROBLEM FOR ME :( İ CAN'T TO MYSELF SO I USED SELF METHOD
-                    m_Action1List[i].m_scrollButton.IsVisible = true;
-                    m_Action1List[i].m_items.Clear();
+                    m_Action1List[i].ScrollButton.IsVisible = true;
+                    m_Action1List[i].Items.Clear();
                     m_Action1List[i].IsVisible = true;
                     m_Action1Text[i].IsEditable = true;
                     m_Action1Text[i].IsVisible = true;
@@ -413,8 +414,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 m_ActionTypeList[i].Index = 0;
                 m_Action1List[i].IsVisible = false;
-                if (m_Action1List[i].m_firstvisible)
-                    m_Action1List[i].m_scrollButton.IsVisible = false;
+                if (m_Action1List[i].IsFirstvisible)
+                    m_Action1List[i].ScrollButton.IsVisible = false;
 
                 m_Action1Text[i].Text = "";
                 m_Action1Text[i].IsVisible = isEditable;

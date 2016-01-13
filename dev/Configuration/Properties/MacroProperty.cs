@@ -4,37 +4,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
+using UltimaXNA.Configuration.Macros;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Windows;
 
 namespace UltimaXNA.Configuration.Properties
 {
-    public enum MacroType { Skill, Spell, Display, Text, Move, ArmDisarm, None }
-
-    public interface IMacro//maybe i dont need interface
-    {
-        int PacketInfo { get; set; } //identification of action for example: send packet
-        string Name { get; set; }
-        MacroType Type { get; set; }
-        bool isActionType { get; set; }
-    }
-
-    public struct Macro : IMacro
-    {
-        public int PacketInfo { get; set; }
-        public string Name { get; set; }
-        public MacroType Type { get; set; }
-        public bool isActionType { get; set; }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-    }
-
     public class XKey
     {
         public int Count { get { return xnaMacros.Count; } }
@@ -386,169 +363,43 @@ namespace UltimaXNA.Configuration.Properties
         }
     }
 
-    public class XAction //I NEED DISPOSIBLE CLASS
+    public class XAction
     {
-        //referance to= Settings.Macro.actionTypes //vbbb...
-        public int actionID = -1;
+        public MacroDefinition Macro;
 
-        public int valueID = -1;
-        public string valueText = "N";
+        private bool m_IsInteger = true;
+        private int m_ValueInteger = -1;
+        private string m_ValueString = null;
+
+        public int ValueInteger
+        {
+            set
+            {
+                m_IsInteger = true;
+                m_ValueInteger = value;
+            }
+            get
+            {
+                return m_ValueInteger;
+            }
+        }
+
+        public string ValueString
+        {
+            set
+            {
+                m_IsInteger = false;
+                m_ValueString = value;
+            }
+            get
+            {
+                return m_ValueString;
+            }
+        }
 
         public override string ToString()
         {
-            return string.Format("\0{0}\a{1}\a{2}", actionID, valueID, valueText);
+            return string.Format("\0{0}\a{1}", Macro.Name, (m_IsInteger ? m_ValueInteger.ToString() : m_ValueString));
         }
     }
-
-    #region NEED I ??
-
-    public enum Spells : int
-    {
-        Clumsy = 1,
-
-        [EnumMember(Value = "Create Food")]
-        Create_Food = 2,
-
-        Feeblemind = 3,
-        Heal = 4,
-
-        [EnumMember(Value = "Magic Arrow")]
-        Magic_Arrow = 5,
-
-        [EnumMember(Value = "Night Sight")]
-        Night_Sight = 6,
-
-        [EnumMember(Value = "Reactive Armor")]
-        Reactive_Armor = 7,
-
-        WeakenAgility = 8,
-        Cunning = 9,
-        Cure = 10,
-        Harm = 11,
-
-        [EnumMember(Value = "Magic Trap")]
-        Magic_Trap = 12,
-
-        [EnumMember(Value = "Magic Untrap")]
-        Magic_Untrap = 13,
-
-        Protection = 14,
-        Strength = 15,
-        Bless = 16,
-        Firball = 17,
-
-        [EnumMember(Value = "Magic Lock")]
-        Magic_Lock = 18,
-
-        Poison = 19,
-        Telekinesis = 20,
-        Teleport = 21,
-
-        [EnumMember(Value = "Magic Unlock")]
-        Magic_Unlock = 22,
-
-        [EnumMember(Value = "Wall of Stone")]
-        Wall_of_Stone = 23,
-
-        Archcure = 24,
-
-        ArchprotectionCurse = 25,
-
-        [EnumMember(Value = "Fire Field")]
-        Fire_Field = 26,
-
-        [EnumMember(Value = "Greater Heal")]
-        Greater_Heal = 27,
-
-        Lightning = 28,
-
-        [EnumMember(Value = "Mana Drain")]
-        Mana_Drain = 29,
-
-        Recall = 30,
-
-        [EnumMember(Value = "Blade Spirit")]
-        Blade_Spirit = 31,
-
-        [EnumMember(Value = "Dispel Field")]
-        Dispel_Field = 32,
-
-        Incognito = 33,
-
-        [EnumMember(Value = "Magic Reflection")]
-        Magic_Reflection = 34,
-
-        [EnumMember(Value = "Mind Blast")]
-        Mind_Blast = 35,
-
-        Paralyze = 36,
-
-        [EnumMember(Value = "Poison Field")]
-        Poison_Field = 37,
-
-        [EnumMember(Value = "Summon Creature")]
-        Summon_Creature = 38,
-
-        Dispel = 39,
-
-        [EnumMember(Value = "Energy Bolt")]
-        Energy_Bolt = 40,
-
-        Explosion = 41,
-        Invisibility = 42,
-        Mark = 43,
-
-        [EnumMember(Value = "Mass Curse")]
-        Mass_Curse = 44,
-
-        [EnumMember(Value = "Paralyze Field")]
-        Paralyze_Field = 45,
-
-        Reveal = 46,
-
-        [EnumMember(Value = "Chain Lightning")]
-        Chain_Lightning = 47,
-
-        [EnumMember(Value = "Energy Field")]
-        Energy_Field = 48,
-
-        Flamestrike = 49,
-
-        [EnumMember(Value = "Gate Travel")]
-        Gate_Travel = 50,
-
-        [EnumMember(Value = "Mana Vampire")]
-        Mana_Vampire = 51,
-
-        [EnumMember(Value = "Mass Dispell")]
-        Mass_Dispell = 52,
-
-        [EnumMember(Value = "Meteor Swarm")]
-        Meteor_Swarm = 53,
-
-        Polymorph = 54,
-        Earthquake = 55,
-
-        [EnumMember(Value = "Energy Vortex")]
-        Energy_Vortex = 56,
-
-        Resurrection = 57,
-
-        [EnumMember(Value = "Summon Air")]
-        Summon_Air = 58,
-
-        [EnumMember(Value = "Summon Demon")]
-        Summon_Demon = 59,
-
-        [EnumMember(Value = "Summon Earth")]
-        Summon_Earth = 60,
-
-        [EnumMember(Value = "Summon Fire")]
-        Summon_Fire = 61,
-
-        [EnumMember(Value = "Summon Water")]
-        Summon_Water = 62,
-    }
-
-    #endregion
 }

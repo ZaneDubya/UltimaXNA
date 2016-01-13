@@ -1,10 +1,27 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace UltimaXNA.Ultima.Data
 {
-    static class Magery
+    static class SpellsMagery
     {
         private static Dictionary<int, SpellDefinition> s_Spells;
+        private static ReadOnlyCollection<SpellDefinition> s_ReadOnlySpells;
+
+        public static ReadOnlyCollection<SpellDefinition> Spells
+        {
+            get
+            {
+                if (s_ReadOnlySpells == null)
+                {
+                    List<SpellDefinition> spells = new List<SpellDefinition>();
+                    for (int i = 1; i <= 64; i++)
+                        spells.Add(s_Spells[i]);
+                    s_ReadOnlySpells = new ReadOnlyCollection<SpellDefinition>(spells);
+                }
+                return s_ReadOnlySpells;
+            }
+        }
 
         public static SpellDefinition GetSpell(int spellIndex)
         {
@@ -14,7 +31,7 @@ namespace UltimaXNA.Ultima.Data
             return SpellDefinition.EmptySpell;
         }
 
-        static Magery()
+        static SpellsMagery()
         {
             s_Spells = new Dictionary<int, SpellDefinition>()
             {

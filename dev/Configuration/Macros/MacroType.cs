@@ -1,0 +1,32 @@
+﻿namespace UltimaXNA.Configuration.Macros
+{
+    public enum MacroType
+    {
+        None,
+        UseSkill,
+        CastSpell,
+        OpenGump,
+        CloseGump,
+        Move,
+        ArmDisarm,
+        Say,
+        Emote,
+        Whisper,
+        Yell,
+        ToggleWarPeace,
+        Paste,
+        MinimizeWindow,
+        MaximizeWindow,
+        EmoteBow,
+        EmoteSalute,
+        QuitGame,
+        ShowAllNames,
+        LastTarget,
+        TargetSelf,
+        WaitForTarget,
+        NextTarget,
+        Delay,
+        CloseAllGumps,
+        SetAlwaysRun
+    }
+}

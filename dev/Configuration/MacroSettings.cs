@@ -12,10 +12,12 @@
 #region usings
 using System.Collections.Generic;
 using System.Threading;
+using UltimaXNA.Configuration.Macros;
 using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
@@ -28,208 +30,141 @@ namespace UltimaXNA.Core.Configuration
 
         public static string SectionName = "macro";
 
-        public List<Macro> actionTypes = new List<Macro>();
-        public List<Macro> Moves = new List<Macro>();
-        public List<Macro> Displays = new List<Macro>();
-        public List<Macro> useSkills = new List<Macro>();
-        public List<Macro> castSpell = new List<Macro>();
-        public List<Macro> armDisarm = new List<Macro>();
+        public List<MacroDefinition> actionTypes = new List<MacroDefinition>();
+        public List<MacroDefinition> Moves = new List<MacroDefinition>();
+        public List<MacroDefinition> Displays = new List<MacroDefinition>();
+        public List<MacroDefinition> useSkills = new List<MacroDefinition>();
+        public List<MacroDefinition> castSpell = new List<MacroDefinition>();
+        public List<MacroDefinition> armDisarm = new List<MacroDefinition>();
 
         public MacroSettings()
         {
-            //MacroType enum for dropdownlist controll
-            //ACTION TYPES ADDED
-            actionTypes.Add(new Macro() { Name = "NONE", Type = MacroType.None, isActionType = true });//0.
-            actionTypes.Add(new Macro() { Name = "Say", Type = MacroType.Text, isActionType = true });//1
-            actionTypes.Add(new Macro() { Name = "Emote", Type = MacroType.Text, isActionType = true });//2
-            actionTypes.Add(new Macro() { Name = "Whisper", Type = MacroType.Text, isActionType = true });//3
-            actionTypes.Add(new Macro() { Name = "Yell", Type = MacroType.Text, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "Walk", Type = MacroType.Move, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "War/Peace", Type = MacroType.None, isActionType = true });//6.
-            actionTypes.Add(new Macro() { Name = "Paste", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "Open", Type = MacroType.Display, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "Close", Type = MacroType.Display, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "Minimize", Type = MacroType.Display, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "Maximize", Type = MacroType.Display, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "OpenDoor", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "UseSkill", Type = MacroType.Skill, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "LastSkill", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "CastSpell", Type = MacroType.Spell, isActionType = true });//15.
-            actionTypes.Add(new Macro() { Name = "LastSpell", Type = MacroType.None, isActionType = true });//16
-            actionTypes.Add(new Macro() { Name = "LastObject", Type = MacroType.None, isActionType = true });//17
-            actionTypes.Add(new Macro() { Name = "Bow", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "Salute", Type = MacroType.None, isActionType = true });//19
-            actionTypes.Add(new Macro() { Name = "QuitGame", Type = MacroType.None, isActionType = true });//20
-            actionTypes.Add(new Macro() { Name = "AllNames", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "LastTarget", Type = MacroType.None, isActionType = true });//22.
-            actionTypes.Add(new Macro() { Name = "TargetSelf", Type = MacroType.None, isActionType = true });//23
-            actionTypes.Add(new Macro() { Name = "Arm/Disarm", Type = MacroType.ArmDisarm, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "WaitForTarg", Type = MacroType.None, isActionType = true });//25
-            actionTypes.Add(new Macro() { Name = "TargetNext", Type = MacroType.None, isActionType = true });//26
-            actionTypes.Add(new Macro() { Name = "AttackLast", Type = MacroType.None, isActionType = true });//27
-            actionTypes.Add(new Macro() { Name = "Delay", Type = MacroType.Text, isActionType = true });//28
+            // ==============================================================================================================
+            // Action Macros
+            // ==============================================================================================================
+            actionTypes.Add(new MacroDefinition("NONE", MacroType.None));
+            actionTypes.Add(new MacroDefinition() { Name = "Say", Type = MacroType.Say});
+            actionTypes.Add(new MacroDefinition() { Name = "Emote", Type = MacroType.Emote});
+            actionTypes.Add(new MacroDefinition() { Name = "Whisper", Type = MacroType.Whisper });
+            actionTypes.Add(new MacroDefinition() { Name = "Yell", Type = MacroType.Yell});
+            actionTypes.Add(new MacroDefinition() { Name = "Move", Type = MacroType.Move});
+            actionTypes.Add(new MacroDefinition() { Name = "Toggle War/Peace", Type = MacroType.ToggleWarPeace});
+            actionTypes.Add(new MacroDefinition() { Name = "Paste", Type = MacroType.Paste});
+            actionTypes.Add(new MacroDefinition() { Name = "Open Gump", Type = MacroType.OpenGump});
+            actionTypes.Add(new MacroDefinition() { Name = "Close Gump", Type = MacroType.CloseGump});
+            actionTypes.Add(new MacroDefinition() { Name = "Minimize", Type = MacroType.MinimizeWindow });
+            actionTypes.Add(new MacroDefinition() { Name = "Maximize", Type = MacroType.MaximizeWindow});
+            // actionTypes.Add(new MacroDefinition() { Name = "OpenDoor", Type = MacroType.None}); - not yet implmented in client
+            actionTypes.Add(new MacroDefinition() { Name = "UseSkill", Type = MacroType.UseSkill});
+            // actionTypes.Add(new MacroDefinition() { Name = "LastSkill", Type = MacroType.None}); - not yet implmented in client
+            actionTypes.Add(new MacroDefinition() { Name = "CastSpell", Type = MacroType.CastSpell});
+            // actionTypes.Add(new MacroDefinition() { Name = "LastSpell", Type = MacroType.None}); - not yet added 
+            // actionTypes.Add(new MacroDefinition() { Name = "LastObject", Type = MacroType.None}); - what does this do?
+            actionTypes.Add(new MacroDefinition() { Name = "Bow", Type = MacroType.EmoteBow});
+            actionTypes.Add(new MacroDefinition() { Name = "Salute", Type = MacroType.EmoteSalute});
+            actionTypes.Add(new MacroDefinition() { Name = "QuitGame", Type = MacroType.QuitGame});//20
+            actionTypes.Add(new MacroDefinition() { Name = "AllNames", Type = MacroType.ShowAllNames});
+            actionTypes.Add(new MacroDefinition() { Name = "LastTarget", Type = MacroType.LastTarget });//22.
+            actionTypes.Add(new MacroDefinition() { Name = "TargetSelf", Type = MacroType.TargetSelf});//23
+            actionTypes.Add(new MacroDefinition() { Name = "Arm/Disarm", Type = MacroType.ArmDisarm});
+            actionTypes.Add(new MacroDefinition() { Name = "Wait For Target", Type = MacroType.WaitForTarget });//25
+            actionTypes.Add(new MacroDefinition() { Name = "Target Next", Type = MacroType.NextTarget });//26
+            // actionTypes.Add(new MacroDefinition() { Name = "AttackLast", Type = MacroType.None}); - what does this do?
+            // actionTypes.Add(new MacroDefinition() { Name = "Delay", Type = MacroType.Delay}); - not yet implmented in client
             ///I don't know about continue
-            actionTypes.Add(new Macro() { Name = "CircleTrans", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "CloseGumps", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "AlwaysRun", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "SaveDesktop", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "KillGumpOpen", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "PrimaryAbility", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "SecondaryAbility", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "EquipLastWeapon", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "SetUpdateRange", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "ModifyUpdateRange", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "IncreaseUpdateRange", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "DecreaseUpdateRange", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "MaxUpdateRange", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "MinUpdateRange", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "DefaultUpdateRange", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "UpdateRangeInfo", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "EnableRangeColor", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "DisableRangeColor", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "ToggleRangeColor", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "InvokeVirtue", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "SelectNext", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "SelectPrevious", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "SelectNearest", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "AttackSelectedTarget", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "UseSelectedTarget", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "CurrentTarget", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "TargetSystemOn/Off", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "ToggleBuffIconWindow", Type = MacroType.None, isActionType = true });
-            actionTypes.Add(new Macro() { Name = "BandageSelfBandageTarget", Type = MacroType.None, isActionType = true });
-            //ACTION TYPES FINISHED
+            // actionTypes.Add(new MacroDefinition() { Name = "CircleTrans", Type = MacroType.None}); - not yet implmented in client
+            actionTypes.Add(new MacroDefinition() { Name = "Close All Gumps", Type = MacroType.CloseAllGumps });
+            actionTypes.Add(new MacroDefinition() { Name = "AlwaysRun", Type = MacroType.SetAlwaysRun });
+            actionTypes.Add(new MacroDefinition() { Name = "Save Desktop", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "KillGumpOpen", Type = MacroType.None}); - what does this do?
 
-            //MOVE POSITIONS ADDED
-            //Positions.Add(new Macro() { Name = "NONE", Type = MacroType.Move });
-            Moves.Add(new Macro() { Name = "NW (top)", Type = MacroType.Move });
-            Moves.Add(new Macro() { Name = "N (top-right)", Type = MacroType.Move });
-            Moves.Add(new Macro() { Name = "NE (right)", Type = MacroType.Move });
-            Moves.Add(new Macro() { Name = "E (bottom-right)", Type = MacroType.Move });
-            Moves.Add(new Macro() { Name = "SE (bottom)", Type = MacroType.Move });
-            Moves.Add(new Macro() { Name = "S (bottom-left)", Type = MacroType.Move });
-            Moves.Add(new Macro() { Name = "SW (left)", Type = MacroType.Move });
-            Moves.Add(new Macro() { Name = "W (top-left)", Type = MacroType.Move });
-            //MOVE POSITIONS FINISHED
+            // These haven't been implemented in the client yet:
+            // actionTypes.Add(new MacroDefinition() { Name = "PrimaryAbility", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "SecondaryAbility", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "EquipLastWeapon", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "SetUpdateRange", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "ModifyUpdateRange", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "IncreaseUpdateRange", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "DecreaseUpdateRange", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "MaxUpdateRange", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "MinUpdateRange", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "DefaultUpdateRange", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "UpdateRangeInfo", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "EnableRangeColor", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "DisableRangeColor", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "ToggleRangeColor", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "InvokeVirtue", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "SelectNext", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "SelectPrevious", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "SelectNearest", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "AttackSelectedTarget", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "UseSelectedTarget", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "CurrentTarget", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "Target System On/Off", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "ToggleBuffIconWindow", Type = MacroType.None});
+            // actionTypes.Add(new MacroDefinition() { Name = "BandageSelfBandageTarget", Type = MacroType.None});
 
-            //DISPLAYS ADDED
-            Displays.Add(new Macro() { Name = "Configuration", Type = MacroType.Display });//0
-            Displays.Add(new Macro() { Name = "Paperdoll", Type = MacroType.Display });//1
-            Displays.Add(new Macro() { Name = "Status", Type = MacroType.Display });//2
-            Displays.Add(new Macro() { Name = "Journal", Type = MacroType.Display });//3
-            Displays.Add(new Macro() { Name = "Skills", Type = MacroType.Display });//4
-            Displays.Add(new Macro() { Name = "MageSpellbook", Type = MacroType.Display });
-            Displays.Add(new Macro() { Name = "Chat", Type = MacroType.Display });//6
-            Displays.Add(new Macro() { Name = "Backpack", Type = MacroType.Display });//7
-            Displays.Add(new Macro() { Name = "Overview", Type = MacroType.Display });//8
-            Displays.Add(new Macro() { Name = "Mail", Type = MacroType.Display });
-            Displays.Add(new Macro() { Name = "PartyManifest", Type = MacroType.Display });
-            Displays.Add(new Macro() { Name = "PartyChat", Type = MacroType.Display });
-            Displays.Add(new Macro() { Name = "NecroSpellbook", Type = MacroType.Display });
-            Displays.Add(new Macro() { Name = "PaladinSpellbook", Type = MacroType.Display });//13
-            Displays.Add(new Macro() { Name = "CombatBook", Type = MacroType.Display });
-            Displays.Add(new Macro() { Name = "BushidoSpellbook", Type = MacroType.Display });
-            Displays.Add(new Macro() { Name = "NinjitsuSpellbook", Type = MacroType.Display });
-            Displays.Add(new Macro() { Name = "Guild", Type = MacroType.Display });
-            Displays.Add(new Macro() { Name = "SpellWeavingSpellbook", Type = MacroType.Display });//18
-            Displays.Add(new Macro() { Name = "QuestLog", Type = MacroType.Display });//19
-            //DISPLAYS FINISHED
+            // ==============================================================================================================
+            // Move Macros
+            // ==============================================================================================================
+            Moves.Add(new MacroDefinition() { Name = "NW (top)", Type = MacroType.Move, Index = (int)Direction.Up });
+            Moves.Add(new MacroDefinition() { Name = "N (top-right)", Type = MacroType.Move, Index = (int)Direction.North });
+            Moves.Add(new MacroDefinition() { Name = "NE (right)", Type = MacroType.Move, Index = (int)Direction.Right });
+            Moves.Add(new MacroDefinition() { Name = "E (bottom-right)", Type = MacroType.Move, Index = (int)Direction.East });
+            Moves.Add(new MacroDefinition() { Name = "SE (bottom)", Type = MacroType.Move, Index = (int)Direction.Down });
+            Moves.Add(new MacroDefinition() { Name = "S (bottom-left)", Type = MacroType.Move, Index = (int)Direction.South });
+            Moves.Add(new MacroDefinition() { Name = "SW (left)", Type = MacroType.Move, Index = (int)Direction.Left });
+            Moves.Add(new MacroDefinition() { Name = "W (top-left)", Type = MacroType.Move, Index = (int)Direction.West });
 
-            //USESKILLS ADDED
-            useSkills.Add(new Macro() { Name = "Anatomy", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Animal Lore", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Animal Taming", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Arms Lore", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Begging", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Cartography", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Detecting Hidden", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Discordance", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Evaluating Intelligence", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Forensic Evaluation", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Hiding", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Inscription", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Item Identification", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Meditation", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Peacemaking", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Poisoning", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Provocation", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Remove Trap", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Spirit Speak", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Stealing", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Stealth", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Taste Identification", Type = MacroType.Skill });
-            useSkills.Add(new Macro() { Name = "Tracking", Type = MacroType.Skill });
-            //USESKILLS FINISHED
+            // ==============================================================================================================
+            // Display Macros
+            // ==============================================================================================================
+            Displays.Add(new MacroDefinition() { Name = "Configuration", Type = MacroType.OpenGump, Index = (int)MacroDisplay.Configuration });//0
+            Displays.Add(new MacroDefinition() { Name = "Paperdoll", Type = MacroType.OpenGump, Index = (int)MacroDisplay.Paperdoll });//1
+            Displays.Add(new MacroDefinition() { Name = "Status", Type = MacroType.OpenGump, Index = (int)MacroDisplay.Status });//2
+            Displays.Add(new MacroDefinition() { Name = "Journal", Type = MacroType.OpenGump, Index = (int)MacroDisplay.Journal });//3
+            Displays.Add(new MacroDefinition() { Name = "Skills", Type = MacroType.OpenGump, Index = (int)MacroDisplay.Skills });//4
+            Displays.Add(new MacroDefinition() { Name = "MageSpellbook", Type = MacroType.OpenGump, Index = (int)MacroDisplay.MageSpellbook });
+            Displays.Add(new MacroDefinition() { Name = "Chat", Type = MacroType.OpenGump, Index = (int)MacroDisplay.Chat });//6
+            Displays.Add(new MacroDefinition() { Name = "Backpack", Type = MacroType.OpenGump, Index = (int)MacroDisplay.Backpack });//7
+            Displays.Add(new MacroDefinition() { Name = "Overview", Type = MacroType.OpenGump, Index = (int)MacroDisplay.Overview });//8
+            Displays.Add(new MacroDefinition() { Name = "Mail", Type = MacroType.OpenGump, Index = (int)MacroDisplay.Mail });
+            Displays.Add(new MacroDefinition() { Name = "PartyManifest", Type = MacroType.OpenGump, Index = (int)MacroDisplay.PartyManifest });
+            Displays.Add(new MacroDefinition() { Name = "PartyChat", Type = MacroType.OpenGump, Index = (int)MacroDisplay.PartyChat });
+            Displays.Add(new MacroDefinition() { Name = "NecroSpellbook", Type = MacroType.OpenGump, Index = (int)MacroDisplay.NecroSpellbook });
+            Displays.Add(new MacroDefinition() { Name = "PaladinSpellbook", Type = MacroType.OpenGump, Index = (int)MacroDisplay.PaladinSpellbook });//13
+            Displays.Add(new MacroDefinition() { Name = "CombatBook", Type = MacroType.OpenGump, Index = (int)MacroDisplay.CombatBook });
+            Displays.Add(new MacroDefinition() { Name = "BushidoSpellbook", Type = MacroType.OpenGump, Index = (int)MacroDisplay.BushidoSpellbook });
+            Displays.Add(new MacroDefinition() { Name = "NinjitsuSpellbook", Type = MacroType.OpenGump, Index = (int)MacroDisplay.NinjitsuSpellbook });
+            Displays.Add(new MacroDefinition() { Name = "Guild", Type = MacroType.OpenGump, Index = (int)MacroDisplay.Guild });
+            Displays.Add(new MacroDefinition() { Name = "SpellWeavingSpellbook", Type = MacroType.OpenGump, Index = (int)MacroDisplay.SpellWeavingSpellbook });//18
+            Displays.Add(new MacroDefinition() { Name = "QuestLog", Type = MacroType.OpenGump, Index = (int)MacroDisplay.QuestLog });//19
 
-            //CASTSPELL ADDED
-            castSpell.Add(new Macro() { Name = "Clumsy", Type = MacroType.Spell });//0.
-            castSpell.Add(new Macro() { Name = "Create Food", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Feeblemind", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Heal", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Magic Arrow", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Night Sight", Type = MacroType.Spell });//5
-            castSpell.Add(new Macro() { Name = "Reactive Armor", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "WeakenAgility", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Cunning", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Cure", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Harm", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Magic Trap", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Magic Untrap", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Protection", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Strength", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Bless", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Firball", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Magic Lock", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Poison", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Telekinesis", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Teleport", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Magic Unlock", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Wall of Stone", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Archcure", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "ArchprotectionCurse", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Fire Field", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Greater Heal", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Lightning", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Mana Drain", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Recall", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Blade Spirit", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Dispel Field", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Incognito", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Magic Reflection", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Mind Blast", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Paralyze", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Poison Field", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Summon Creature", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Dispel", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Energy Bolt", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Explosion", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Invisibility", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Mark", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Mass Curse", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Paralyze Field", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Reveal", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Chain Lightning", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Energy Field", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Flamestrike", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Gate Travel", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Mana Vampire", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Mass Dispell", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Meteor Swarm", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Polymorph", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Earthquake", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Energy Vortex", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Resurrection", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Summon Air", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Summon Demon", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Summon Earth", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Summon Fire", Type = MacroType.Spell });
-            castSpell.Add(new Macro() { Name = "Summon Water", Type = MacroType.Spell });
-            //CASTSPELL FINISHED
+            // ==============================================================================================================
+            // Use Skill Macros
+            // ==============================================================================================================
+            foreach (KeyValuePair<int, SkillEntry> pair in PlayerState.Skills.List)
+            {
+                SkillEntry skill = pair.Value;
+                if (skill.HasUseButton)
+                {
+                    useSkills.Add(new MacroDefinition(skill.Name, MacroType.UseSkill, skill.Index));
+                }
+            }
 
-            //ARMDISARM ADDED
-            armDisarm.Add(new Macro() { Name = "Left Hand", Type = MacroType.ArmDisarm });
-            armDisarm.Add(new Macro() { Name = "Right Hand", Type = MacroType.ArmDisarm });
-            //ARMDISARM FINISHED
+            // ==============================================================================================================
+            // Cast Spell Macros
+            // ==============================================================================================================
+            foreach (SpellDefinition spell in SpellsMagery.Spells)
+            {
+                castSpell.Add(new MacroDefinition(spell.Name, MacroType.CastSpell, spell.ID);
+            }
+
+            // ==============================================================================================================
+            // Arm/Disarm Macros
+            // ==============================================================================================================
+            armDisarm.Add(new MacroDefinition("Main Hand", MacroType.ArmDisarm, (int)MacroArmDisarm.MainHand));
+            armDisarm.Add(new MacroDefinition("Off Hand", MacroType.ArmDisarm, (int)MacroArmDisarm.OffHand));
         }
 
         public void UseMacro(XMacro macro)
@@ -245,30 +180,30 @@ namespace UltimaXNA.Core.Configuration
                     break;
                 }
                 int CurrentValueID = macro.actionList[i].valueID;
-                Macro action = actionTypes[CurrentActionID];
+                MacroDefinition action = actionTypes[CurrentActionID];
                 string valueText = macro.actionList[i].valueText;
 
                 if (action.Type == MacroType.Skill)
                 {
-                    Macro valueObj = useSkills[CurrentValueID];
-                    world.Interaction.UseSkill(CurrentValueID + 1);//i can't do it (+1 for index starting 0)
+                    MacroDefinition valueObj = useSkills[CurrentValueID];
+                    world.Interaction.UseSkill(CurrentValueID);
                 }
                 else if (action.Type == MacroType.Spell)
                 {
-                    Macro valueObj = castSpell[CurrentValueID];
-                    world.Interaction.CastSpell(CurrentValueID + 1);//i can't do it (+1 for index starting 0)
+                    MacroDefinition valueObj = castSpell[CurrentValueID];
+                    world.Interaction.CastSpell(CurrentValueID);
                 }
                 else if (action.Type == MacroType.Display)
                 {
-                    Macro valueObj = Displays[CurrentValueID];
+                    MacroDefinition valueObj = Displays[CurrentValueID];
                 }
                 else if (action.Type == MacroType.Move)
                 {
-                    Macro valueObj = Moves[CurrentValueID];
+                    MacroDefinition valueObj = Moves[CurrentValueID];
                 }
                 else if (action.Type == MacroType.ArmDisarm)
                 {
-                    Macro valueObj = armDisarm[macro.actionList[i].valueID];
+                    MacroDefinition valueObj = armDisarm[macro.actionList[i].valueID];
                 }
                 else if ((action.Type == MacroType.None) || action.Name == "Delay")//delay using textentry,so it is EXCEPTION FOR IT
                 {

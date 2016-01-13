@@ -131,6 +131,10 @@
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
     <Compile Include="Configuration\MacroSettings.cs" />
+    <Compile Include="Configuration\Macros\MacroArmDisarm.cs" />
+    <Compile Include="Configuration\Macros\MacroDefinition.cs" />
+    <Compile Include="Configuration\Macros\MacroDisplay.cs" />
+    <Compile Include="Configuration\Macros\MacroType.cs" />
     <Compile Include="Configuration\Properties\MacroProperty.cs" />
     <Compile Include="Configuration\Properties\MouseProperty.cs" />
     <Compile Include="Bootstrapper.cs" />
@@ -273,7 +277,7 @@
     <Compile Include="Ultima\Data\ContextMenuItem.cs" />
     <Compile Include="Ultima\Data\HouseRevisionState.cs" />
     <Compile Include="Ultima\Data\Hues.cs" />
-    <Compile Include="Ultima\Data\Magery.cs" />
+    <Compile Include="Ultima\Data\SpellsMagery.cs" />
     <Compile Include="Core\Data\Pair.cs" />
     <Compile Include="Ultima\Data\Races.cs" />
     <Compile Include="Ultima\Data\Reagents.cs" />
@@ -717,6 +721,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Ultima\Input\" />
     <Folder Include="Ultima\IO\Fonts\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
