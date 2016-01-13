@@ -8,14 +8,10 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server
@@ -105,7 +101,7 @@ namespace UltimaXNA.Ultima.Network.Server
                     CloseGumpButtonID = reader.ReadInt32();
                     break;
                 case 0x06:
-                    receivePartySystem(reader);//party system incomplete
+                    // party system, not implemented.
                     break;
                 case 0x8: // Set cursor color / set map
                     MapID = reader.ReadByte();
@@ -132,120 +128,6 @@ namespace UltimaXNA.Ultima.Network.Server
                     // do nothing. This unhandled subcommand will raise an error in UltimaClient.cs.
                     break;
             }
-        }
-
-        private void receivePartySystem(PacketReader r)
-        {
-            UltimaGame m_Engine = ServiceRegistry.GetService<UltimaGame>();
-            int num = r.ReadByte();
-            switch (num)
-            {
-                case 1:
-                    {
-                        //pvSrc.ReturnName = "Party Member List";
-                        int num2 = r.ReadByte();
-                        Mobile[] mobileArray = new Mobile[num2];
-                        for (int i = 0; i < num2; i++)
-                        {
-                            mobileArray[i] = WorldModel.Entities.GetObject<Mobile>((Serial)r.ReadInt32(), false);
-                            mobileArray[i].QueryStats();
-                        }
-                        Party.State = PartyState.Joined;
-                        Party.Members = mobileArray;
-
-                        int num4 = (20 + Settings.UserInterface.WindowResolution.Height) - 50;
-                        for (int j = 0; j < num2; j++)
-                        {
-                            if (!mobileArray[j].IsClientEntity)
-                            {
-                                if (mobileArray[j].StatusBar == null)
-                                {
-                                    mobileArray[j].OpenStatus(false);
-                                    if (mobileArray[j].StatusBar != null)
-                                    {
-                                        //mobileArray[j].StatusBar.Gump.X = ((Engine.GameX + Engine.GameWidth) - 30) - mobileArray[j].StatusBar.Gump.Width;
-                                        //mobileArray[j].StatusBar.Gump.Y = num4 - mobileArray[j].StatusBar.Gump.Height;
-                                        //num4 -= mobileArray[j].StatusBar.Gump.Height + 5;
-                                    }
-                                }
-                                else
-                                {
-                                    //num4 -= mobileArray[j].StatusBar.Gump.Height + 5;
-                                }
-                            }
-                        }
-                        return;
-                    }
-                case 2:
-                    {
-                        //pvSrc.ReturnName = "Remove Party Member";
-                        int num6 = r.ReadByte();
-                        int num7 = r.ReadInt32();
-                        Mobile[] mobileArray2 = new Mobile[num6];
-                        for (int k = 0; k < num6; k++)
-                        {
-                            mobileArray2[k] = WorldModel.Entities.GetObject<Mobile>((Serial)r.ReadInt32(), false); 
-                            mobileArray2[k].QueryStats();
-                        }
-                        Party.State = PartyState.Joined;
-                        Party.Members = mobileArray2;
-                        return;
-                    }
-                case 3:
-                case 4:
-                    {
-                        string str2;
-                        //IHue hue;
-                        //pvSrc.ReturnName = (num == 3) ? "Private Party Message" : "Public Party Message";
-                        int serial = r.ReadInt32();
-                        string str = r.ReadUnicodeString();
-                        Mobile mobile = WorldModel.Entities.GetObject<Mobile>((Serial)serial, false);
-                        if (((mobile == null) || ((str2 = mobile.Name) == null)) || ((str2 = str2.Trim()).Length <= 0))
-                        {
-                            str2 = "Someone";
-                        }
-                        if (str == "I'm stunned !!")
-                        {
-                            //hue = Hues.Load(0x22);
-                            if (mobile != null)
-                            {
-                                //Engine.Sounds.PlaySound(0x157, mobile.X, mobile.Y, mobile.Z);
-                            }
-                        }
-                        else if (str.StartsWith("I stunned ") && str.EndsWith(" !!"))
-                        {
-                            //hue = Hues.Load(0x22);
-                            if (mobile != null)
-                            {
-                                //Engine.Sounds.PlaySound(0x1e1, mobile.X, mobile.Y, mobile.Z);
-                            }
-                        }
-                        else if (str.StartsWith("Changing last target to "))
-                        {
-                            //hue = Hues.Load(0x35);
-                        }
-                        else if (num == 3)
-                        {
-                            //hue = Hues.Load(World.CharData.WhisperHue);
-                        }
-                        else
-                        {
-                            //hue = Hues.Load(World.CharData.TextHue);
-                        }
-                        //Engine.AddTextMessage(string.Format("<{0}{1}> {2}", (num == 3) ? "Whisper: " : "", str2, str), Engine.DefaultFont, hue);
-                        return;
-                    }
-                case 7:
-                    {
-                        //pvSrc.ReturnName = "Party Invitation";
-                        int num10 = r.ReadInt32();
-                        Party.State = PartyState.Joining;
-                        Party.Leader = WorldModel.Entities.GetObject<Mobile>((Serial)num10, false);
-                        return;
-                    }
-            }
-            //pvSrc.ReturnName = "Unknown Party Message";
-            //pvSrc.Trace();
         }
 
         private void receiveSpellBookContents(PacketReader reader)

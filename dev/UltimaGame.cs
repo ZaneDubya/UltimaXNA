@@ -30,7 +30,6 @@ using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Configuration.Properties;
-using System.Drawing;
 #endregion
 
 namespace UltimaXNA
@@ -108,7 +107,6 @@ namespace UltimaXNA
             get;
             private set;
         }
-        public Size WindowSize { get { return new Size(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);  } }
 
         protected AudioService Audio
         {

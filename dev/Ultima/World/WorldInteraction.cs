@@ -76,111 +76,16 @@ namespace UltimaXNA.Ultima.World
                     hue = Settings.UserInterface.EmoteColor;
                     break;
                 case ChatMode.Party:
-                    speechType = MessageTypes.Party;
-                    hue = Settings.UserInterface.PartyMsgColor;
-                    string ptCmd = text.ToLower();
-                    switch (Party.State)
-                    {
-                        case PartyState.Alone:
-                            if (!ptCmd.StartsWith("add"))
-                            {
-                                //AddTextMessage(string.Format("Note to self: {0}", cmd.Substring(1)), DefaultFont, Hues.Load(0x3b2));
-                                break;
-                            }
-                            m_Network.Send(new PParty_AddMember());
-                            break;
-
-                        case PartyState.Joining:
-                            {
-                                if (!ptCmd.StartsWith("accept"))
-                                {
-                                    if (ptCmd.StartsWith("decline"))
-                                    {
-                                        m_Network.Send(new PParty_Decline(Party.Leader));
-                                    }
-                                    else
-                                    {
-                                        //AddTextMessage("Use '/accept' or '/decline'.", DefaultFont, Hues.Load(0x3b2));
-                                    }
-                                    break;
-                                }
-                                m_Network.Send(new PParty_Accept(Party.Leader));
-                                break;
-                            }
-                        case PartyState.Joined:
-                            {
-                                if (!Party.IsLeader || !ptCmd.StartsWith("add"))
-                                {
-                                    if (Party.IsLeader && ptCmd.StartsWith("rem"))
-                                    {
-                                        m_Network.Send(new PParty_RemoveMember());
-                                    }
-                                    else if (ptCmd.StartsWith("quit"))
-                                    {
-                                        m_Network.Send(new PParty_Quit());
-                                    }
-                                    else if (ptCmd.StartsWith("loot on"))
-                                    {
-                                        m_Network.Send(new PParty_SetCanLoot(true));
-                                    }
-                                    else if (ptCmd.StartsWith("loot off"))
-                                    {
-                                       m_Network.Send(new PParty_SetCanLoot(false));
-                                    }
-                                    else if (ptCmd.StartsWith("loot"))
-                                    {
-                                        //AddTextMessage("Use '/loot on' or '/loot off'.");
-                                    }
-                                    else if (Party.Members.Length > 1)
-                                    {
-                                        if ((ptCmd.Length >= 2) && char.IsDigit(ptCmd, 1))
-                                        {
-                                            try
-                                            {
-                                                int index = Convert.ToInt32(ptCmd.Substring(1, 1)) - 1;
-                                                if ((index >= 0) && (index < Party.Members.Length))
-                                                {
-                                                    if (index == Party.Index)
-                                                    {
-                                                        //AddTextMessage(string.Format("Note to self: {0}", cmd.Substring(2)), DefaultFont, Hues.Load(0x3b2));
-                                                    }
-                                                    else
-                                                    {
-                                                        string str4;
-                                                        Mobile mobile = WorldModel.Entities.GetPlayerEntity();
-                                                        if (((mobile == null) || ((str4 = mobile.Name) == null)) || ((str4 = str4.Trim()).Length <= 0))
-                                                        {
-                                                            str4 = "You";
-                                                        }
-                                                        //AddTextMessage(string.Format("<{0}> {1}", str4, cmd.Substring(2)), DefaultFont, Hues.Load(World.CharData.WhisperHue));
-                                                        m_Network.Send(new PParty_PrivateMessage(Party.Members[index], ptCmd.Substring(2)));
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                            catch
-                                            {
-                                            }
-                                        }
-                                        m_Network.Send(new PParty_PublicMessage(ptCmd));
-                                    }
-                                    else
-                                    {
-                                        //AddTextMessage(string.Format("Note to self: {0}", cmd.Substring(1)), DefaultFont, Hues.Load(0x3b2));
-                                    }
-                                    break;
-                                }
-                                m_Network.Send(new PParty_AddMember());
-                                break;
-                            }
-                    }
+                    // not yet implemented
+                    speechType = MessageTypes.Normal;
+                    hue = Settings.UserInterface.SpeechColor;
                     break;
                 case ChatMode.Guild:
                     speechType = MessageTypes.Guild;
                     hue = Settings.UserInterface.GuildMsgColor;
                     break;
                 case ChatMode.Alliance:
-                    speechType = MessageTypes.Party;
+                    speechType = MessageTypes.Alliance;
                     hue = Settings.UserInterface.AllianceMsgColor;
                     break;
             }

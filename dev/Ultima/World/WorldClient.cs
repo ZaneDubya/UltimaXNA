@@ -134,9 +134,6 @@ namespace UltimaXNA.Ultima.World
             Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(ReceiveSendCustomHouse));
             Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(ReceiveToolTipRevision));
             Register<CompressedGumpPacket>(0xDD, "Compressed Gump", -1, new TypedPacketReceiveHandler(ReceiveCompressedGump));
-            
-            Register<CompressedGumpPacket>(240, "Custom Ack Party Location", -1, new TypedPacketReceiveHandler(Custom_AckPartyLocs));//Party member location refresh
-
 
             /* Deprecated (not used by RunUO) and/or not implmented
              * Left them here incase we need to implement in the future
@@ -845,8 +842,8 @@ namespace UltimaXNA.Ultima.World
                 case MessageTypes.Guild:
                     m_World.Interaction.ChatMessage("[UILD] " + text, font, hue, asUnicode);
                     break;
-                case MessageTypes.Party:
-                    m_World.Interaction.ChatMessage("[Party] " + text, font, hue, asUnicode);
+                case MessageTypes.Alliance:
+                    m_World.Interaction.ChatMessage("[ALLIANCE] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Command:
                     m_World.Interaction.ChatMessage("[COMMAND] " + text, font, hue, asUnicode);
@@ -1109,10 +1106,7 @@ namespace UltimaXNA.Ultima.World
         {
             announce_UnhandledPacket(packet);
         }
-        private void Custom_AckPartyLocs(IRecvPacket packet)
-        {
-            AckPartyLocation p = (AckPartyLocation)packet;//for party system
-        }
+
         private void ReceiveGeneralInfo(IRecvPacket packet)
         {
             // Documented here: http://docs.polserver.com/packets/index.php?Packet=0xBF
@@ -1129,7 +1123,7 @@ namespace UltimaXNA.Ultima.World
                     }
                     break;
                 case 0x06: // party system
-                    //announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 case 0x08: // set map
                     m_World.MapIndex = p.MapID;

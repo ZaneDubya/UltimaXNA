@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.Login.States
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_Login = ServiceRegistry.GetService<LoginModel>();
             m_Login.Client.StartKeepAlivePackets();
-            m_Login.Client.StartPartyLocationQuery();//for party member location query 
+
             m_CharListGump = (CharacterListGump)m_UserInterface.AddControl(new CharacterListGump(), 0, 0);
             m_CharListGump.OnBackToSelectServer += OnBackToSelectServer;
             m_CharListGump.OnLoginWithCharacter += OnLoginWithCharacter;

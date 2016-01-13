@@ -22,7 +22,6 @@ using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.Login.Servers;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
-using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
@@ -101,44 +100,6 @@ namespace UltimaXNA.Ultima.Login
                 TimeSpan.Zero,
                 TimeSpan.FromSeconds(60));
         }
-        /// <summary>
-        /// //////////////////////
-        /// </summary>
-        Timer m_PartyLocationQuery;
-        public void StartPartyLocationQuery()
-        {
-            m_PartyLocationQuery = new Timer(
-                e => QueryLocation(),
-                null,
-                TimeSpan.Zero,
-                TimeSpan.FromSeconds(0.5));
-        }
-        private void QueryLocation()
-        {
-            if (!m_Network.IsConnected)
-            {
-                stopQueryLocation();
-                return;
-            }
-            for (int k = 0; k < Party.Members.Length; k++)
-            {
-                Mobile mobile = Party.Members[k];
-                if (((mobile != null) && !mobile.IsClientEntity) /*&& !mobile.Visible*/)
-                {
-                    m_Network.Send(new PPE_QueryPartyLocs());
-                    break;
-                }
-            }
-        }
-        private void stopQueryLocation()
-        {
-            if (m_KeepAliveTimer != null)
-                m_KeepAliveTimer.Dispose();
-        }
-        /// <summary>
-        /// //////////////////////////////////////////////
-        /// </summary>
-        /// 
 
         private void StopKeepAlivePackets()
         {
@@ -278,7 +239,6 @@ namespace UltimaXNA.Ultima.Login
                     m_Engine.QueuedModel = new WorldModel();
                     m_Network.Send(new LoginCharacterPacket(Characters.List[index].Name, index, Utility.IPAddress));
                     Settings.Macro.UserMacros = new XKey(Characters.List[index].Name);
-                    Party.State = PartyState.Alone;
                 }
             }
         }
