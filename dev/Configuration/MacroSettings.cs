@@ -8,12 +8,17 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
- using System.Collections.Generic;
+
+#region usings
+using System.Collections.Generic;
 using System.Threading;
 using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
+#endregion
 
 namespace UltimaXNA.Core.Configuration
 {
@@ -276,27 +281,28 @@ namespace UltimaXNA.Core.Configuration
 
                             break;
 
-                        case 22://TARGET SELF CALLING
+                        case 22://LAST TARGET CALLING
 
                             break;
 
-                        case 23://ARM-DISARM CALLING
+                        case 23://TARGET SELF CALLING
+                            Mobile _self = WorldModel.Entities.GetPlayerEntity();
+                            m_Network.Send(new TargetObjectPacket(_self, 486));
+                            break;
+
+                        case 24://ARM-DISARM CALLING
 
                             break;
 
-                        case 24://WAITFORTARG CALLING
+                        case 25://WAITFORTARG CALLING
 
                             break;
 
-                        case 25://TARGETNEXT CALLING
+                        case 26://TARGETNEXT CALLING
 
                             break;
 
-                        case 26://ATTACK LAST CALLING
-
-                            break;
-
-                        case 27:
+                        case 27://ATTACK LAST CALLING
 
                             break;
 
