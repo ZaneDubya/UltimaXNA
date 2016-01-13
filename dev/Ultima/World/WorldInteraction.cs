@@ -141,16 +141,16 @@ namespace UltimaXNA.Ultima.World
                                     }
                                     else if (Party.Members.Length > 1)
                                     {
-                                        if ((ptCmd.Length >= 2) && char.IsDigit(ptCmd, 1))
+                                        if ((ptCmd.Length >=1) && char.IsDigit(ptCmd, 0))
                                         {
                                             try
                                             {
-                                                int index = Convert.ToInt32(ptCmd.Substring(1, 1)) - 1;
+                                                int index = Convert.ToInt32(ptCmd.Substring(0, 1)) - 1;
                                                 if ((index >= 0) && (index < Party.Members.Length))
                                                 {
                                                     if (index == Party.Index)
                                                     {
-                                                        ChatMessage(string.Format("Note to self: {0}", ptCmd.Substring(2)), 3, 10, false);
+                                                        ChatMessage(string.Format("Note to self: {0}", text.Substring(2)), 3, 10, false);
                                                     }
                                                     else
                                                     {

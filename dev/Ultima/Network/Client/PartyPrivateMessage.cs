@@ -13,7 +13,7 @@ namespace UltimaXNA.Ultima.Network.Client
         {
             Stream.Write((short)6);
             Stream.Write((byte)3);
-            Stream.Write(who.Serial);
+            Stream.Write((int)who.Serial);
             Stream.WriteBigUniNull(text);
             Stream.Write((short)0);
         }
