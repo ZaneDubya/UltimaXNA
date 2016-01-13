@@ -135,20 +135,7 @@ namespace UltimaXNA.Core.UI
         /// <summary>
         /// If true, the gump will draw. Not visible gumps still update and receive mouse input (but not keyboard input).
         /// </summary>
-        private bool m_Isvisible = true;
-
-        public bool IsVisible
-        {
-            get
-            {
-                return m_Isvisible;
-            }
-            set
-            {
-                m_Isvisible = value;
-                HandlesKeyboardFocus = m_Isvisible;
-            }
-        }
+        public bool IsVisible { get; set; }
 
         private bool _isedit = true;
 
