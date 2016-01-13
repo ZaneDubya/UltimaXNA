@@ -100,7 +100,7 @@ namespace UltimaXNA.Ultima.World
                                     }
                                     else
                                     {
-                                        //AddTextMessage("Use '/accept' or '/decline'.", DefaultFont, Hues.Load(0x3b2));
+                                        ChatMessage("Use '/accept' or '/decline'.", 3, 10, false);
                                     }
                                     break;
                                 }
@@ -115,6 +115,14 @@ namespace UltimaXNA.Ultima.World
                                     {
                                         m_Network.Send(new PParty_RemoveMember());
                                     }
+                                    else if (ptCmd.StartsWith("accept"))
+                                    {
+                                        ChatMessage("You already in a party, so You cannot accept any party", 3, 10, false);
+                                    }
+                                    else if (ptCmd.StartsWith("decline"))
+                                    {
+                                        ChatMessage("If you need quit the party. please use /quit", 3, 10, false);
+                                    }
                                     else if (ptCmd.StartsWith("quit"))
                                     {
                                         m_Network.Send(new PParty_Quit());
@@ -125,11 +133,11 @@ namespace UltimaXNA.Ultima.World
                                     }
                                     else if (ptCmd.StartsWith("loot off"))
                                     {
-                                       m_Network.Send(new PParty_SetCanLoot(false));
+                                        m_Network.Send(new PParty_SetCanLoot(false));
                                     }
                                     else if (ptCmd.StartsWith("loot"))
                                     {
-                                        //AddTextMessage("Use '/loot on' or '/loot off'.");
+                                        ChatMessage("Use '/loot on' or '/loot off'.", 3, 10, false);
                                     }
                                     else if (Party.Members.Length > 1)
                                     {
@@ -142,7 +150,7 @@ namespace UltimaXNA.Ultima.World
                                                 {
                                                     if (index == Party.Index)
                                                     {
-                                                        //AddTextMessage(string.Format("Note to self: {0}", cmd.Substring(2)), DefaultFont, Hues.Load(0x3b2));
+                                                        ChatMessage(string.Format("Note to self: {0}", ptCmd.Substring(2)), 3, 10, false);
                                                     }
                                                     else
                                                     {
@@ -152,8 +160,8 @@ namespace UltimaXNA.Ultima.World
                                                         {
                                                             str4 = "You";
                                                         }
-                                                        //AddTextMessage(string.Format("<{0}> {1}", str4, cmd.Substring(2)), DefaultFont, Hues.Load(World.CharData.WhisperHue));
-                                                        m_Network.Send(new PParty_PrivateMessage(Party.Members[index], ptCmd.Substring(2)));
+                                                        ChatMessage(string.Format("<{0}> {1}", str4, ptCmd.Substring(2)), 3, 60, false);
+                                                        m_Network.Send(new PParty_PrivateMessage(Party.Members[index], text.Substring(2)));
                                                     }
                                                     break;
                                                 }
@@ -166,7 +174,7 @@ namespace UltimaXNA.Ultima.World
                                     }
                                     else
                                     {
-                                        //AddTextMessage(string.Format("Note to self: {0}", cmd.Substring(1)), DefaultFont, Hues.Load(0x3b2));
+                                        ChatMessage(string.Format("Note to self: {0}", ptCmd.Substring(1)), 3, 10, false);
                                     }
                                     break;
                                 }

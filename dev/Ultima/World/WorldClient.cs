@@ -134,7 +134,7 @@ namespace UltimaXNA.Ultima.World
             Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(ReceiveSendCustomHouse));
             Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(ReceiveToolTipRevision));
             Register<CompressedGumpPacket>(0xDD, "Compressed Gump", -1, new TypedPacketReceiveHandler(ReceiveCompressedGump));
-            
+
             Register<CompressedGumpPacket>(240, "Custom Ack Party Location", -1, new TypedPacketReceiveHandler(Custom_AckPartyLocs));//Party member location refresh
 
 
@@ -180,7 +180,7 @@ namespace UltimaXNA.Ultima.World
             m_RegisteredHandlers.Add(new Tuple<int, TypedPacketReceiveHandler>(id, onReceive));
             m_Network.Register<T>(id, name, length, onReceive);
         }
-        
+
         public void SendWorldLoginPackets()
         {
             GetMySkills();
@@ -846,7 +846,7 @@ namespace UltimaXNA.Ultima.World
                     m_World.Interaction.ChatMessage("[UILD] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Party:
-                    m_World.Interaction.ChatMessage("[Party] " + text, font, hue, asUnicode);
+                    m_World.Interaction.ChatMessage(string.Format("[{0}]: {1}", speakerName, text), font, hue, asUnicode);
                     break;
                 case MessageTypes.Command:
                     m_World.Interaction.ChatMessage("[COMMAND] " + text, font, hue, asUnicode);
@@ -1129,7 +1129,10 @@ namespace UltimaXNA.Ultima.World
                     }
                     break;
                 case 0x06: // party system
-                    //announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                    if (p.partyMessage.Length > 0)
+                    {
+                        ReceiveTextMessage(MessageTypes.Party, p.partyMessage, 3, p.partyMessageHue, (Serial)0xFFFFFFF, p.partyMessager, true);
+                    }
                     break;
                 case 0x08: // set map
                     m_World.MapIndex = p.MapID;

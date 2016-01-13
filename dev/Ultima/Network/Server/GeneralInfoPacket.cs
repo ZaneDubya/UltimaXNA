@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.Network.Server
     public class GeneralInfoPacket : RecvPacket
     {
         public readonly short Subcommand;
-
+        #region others
         /// <summary>
         /// Subcommand 0x04: Close a generic gump.
         /// </summary>
@@ -92,7 +92,13 @@ namespace UltimaXNA.Ultima.Network.Server
             get;
             private set;
         }
+        #endregion
 
+        #region partySystem
+        public ushort partyMessageHue = 68;
+        public string partyMessage = string.Empty;
+        public string partyMessager = string.Empty;
+        #endregion
         public GeneralInfoPacket(PacketReader reader)
             : base(0xBF, "General Information")
         {
@@ -184,7 +190,7 @@ namespace UltimaXNA.Ultima.Network.Server
                         Mobile[] mobileArray2 = new Mobile[num6];
                         for (int k = 0; k < num6; k++)
                         {
-                            mobileArray2[k] = WorldModel.Entities.GetObject<Mobile>((Serial)r.ReadInt32(), false); 
+                            mobileArray2[k] = WorldModel.Entities.GetObject<Mobile>((Serial)r.ReadInt32(), false);
                             mobileArray2[k].QueryStats();
                         }
                         Party.State = PartyState.Joined;
@@ -206,7 +212,7 @@ namespace UltimaXNA.Ultima.Network.Server
                         }
                         if (str == "I'm stunned !!")
                         {
-                            //hue = Hues.Load(0x22);
+                            partyMessageHue = 34;//i need from option menu
                             if (mobile != null)
                             {
                                 //Engine.Sounds.PlaySound(0x157, mobile.X, mobile.Y, mobile.Z);
@@ -214,7 +220,7 @@ namespace UltimaXNA.Ultima.Network.Server
                         }
                         else if (str.StartsWith("I stunned ") && str.EndsWith(" !!"))
                         {
-                            //hue = Hues.Load(0x22);
+                            partyMessageHue = 34;//i need from option menu
                             if (mobile != null)
                             {
                                 //Engine.Sounds.PlaySound(0x1e1, mobile.X, mobile.Y, mobile.Z);
@@ -222,16 +228,18 @@ namespace UltimaXNA.Ultima.Network.Server
                         }
                         else if (str.StartsWith("Changing last target to "))
                         {
-                            //hue = Hues.Load(0x35);
+                            partyMessageHue = 53;//i need from option menu
                         }
-                        else if (num == 3)
+                        else if (num == 3)//public party message
                         {
-                            //hue = Hues.Load(World.CharData.WhisperHue);
+                            partyMessageHue = 58;//i need from option menu
                         }
                         else
                         {
-                            //hue = Hues.Load(World.CharData.TextHue);
+                            partyMessageHue = 68;//i need from option menu
                         }
+                        partyMessage = str;
+                        partyMessager = str2;
                         //Engine.AddTextMessage(string.Format("<{0}{1}> {2}", (num == 3) ? "Whisper: " : "", str2, str), Engine.DefaultFont, hue);
                         return;
                     }
@@ -244,6 +252,7 @@ namespace UltimaXNA.Ultima.Network.Server
                         return;
                     }
             }
+            partyMessage = "Unknown Party Message";
             //pvSrc.ReturnName = "Unknown Party Message";
             //pvSrc.Trace();
         }
