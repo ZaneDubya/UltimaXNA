@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.Data
         Spell = 0x0A,
 
         Guild = 0x0D,
-        Alliance = 0x0E,
+        Party = 0x0E, // party ?
         Command = 0x0F,
 
         EncodedTriggers = 0xC0

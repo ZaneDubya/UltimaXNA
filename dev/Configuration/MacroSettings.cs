@@ -270,7 +270,8 @@ namespace UltimaXNA.Core.Configuration
                         case 22://LAST TARGET CALLING
                             break;
 
-                        case 23://TARGET SELF CALLING
+                        case 23://TARGET SELF 
+                            
                             Mobile _self = WorldModel.Entities.GetPlayerEntity();
                             m_Network.Send(new TargetObjectPacket(_self, 486));
                             break;
