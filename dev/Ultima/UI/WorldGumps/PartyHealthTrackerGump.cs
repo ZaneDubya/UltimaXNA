@@ -41,6 +41,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 UserInterface.GetControl<MobileHealthTrackerGump>(_serial).Dispose();
             }
             IsMoveable = false;
+            IsUncloseableWithRMB = true;
             Mobile = WorldModel.Entities.GetObject<Mobile>(_serial, false);
             if (Mobile == null)
             {
@@ -48,27 +49,26 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 PartySettings.RemoveMember(_serial);
                 return;
             }
-            AddControl(m_Background = new ResizePic(this, 0, 0, 3000, 131, 48));//I couldn't find correct visual
-            int color = 1;//normal party member
-            if (PartySettings.getMember(Mobile.Serial).isLeader)
-                color = 20;
-            AddControl(new TextLabelAscii(this, 1, 3, 9, color, Mobile.Name));
+            //AddControl(m_Background = new ResizePic(this, 0, 0, 3000, 131, 48));//I need opacity %1 background
+
+            
+            AddControl(new TextLabel(this, 1,0, 1, Mobile.Name));
             //m_Background.MouseDoubleClickEvent += Background_MouseDoubleClickEvent; //maybe private message calling?
             m_BarBGs = new GumpPic[3];
-            int sameX = 10;
-            int sameY = 0;
-            AddControl(m_BarBGs[0] = new GumpPic(this, sameX, 15 + sameY, 2053, 0));
-            AddControl(m_BarBGs[1] = new GumpPic(this, sameX, 25 + sameY, 2053, 0));
-            AddControl(m_BarBGs[2] = new GumpPic(this, sameX, 35 + sameY, 2053, 0));
+            int sameX = 15;
+            int sameY = 3;
+            AddControl(new Button(this, 0, 23, 11401, 11402, ButtonTypes.Default, 1, 0));//private party message / use bandage ??
+            AddControl(m_BarBGs[0] = new GumpPic(this, sameX, 15 + sameY, 9750, 0));
+            AddControl(m_BarBGs[1] = new GumpPic(this, sameX, 24 + sameY, 9750, 0));
+            AddControl(m_BarBGs[2] = new GumpPic(this, sameX, 33 + sameY, 9750, 0));
             m_Bars = new GumpPicWithWidth[3];
-            AddControl(m_Bars[0] = new GumpPicWithWidth(this, sameX, 15 + sameY, 2057, 0, 1f));//I couldn't find correct visual
-            AddControl(m_Bars[1] = new GumpPicWithWidth(this, sameX, 25 + sameY, 2054, 0, 1f));//I couldn't find correct visual
-            AddControl(m_Bars[2] = new GumpPicWithWidth(this, sameX, 35 + sameY, 2056, 0, 1f));//I couldn't find correct visual
+            AddControl(m_Bars[0] = new GumpPicWithWidth(this, sameX, 15 + sameY, 40, 0, 1f));//I couldn't find correct visual
+            AddControl(m_Bars[1] = new GumpPicWithWidth(this, sameX, 24 + sameY, 9751, 0, 1f));//I couldn't find correct visual
+            AddControl(m_Bars[2] = new GumpPicWithWidth(this, sameX, 33 + sameY, 41, 0, 1f));//I couldn't find correct visual
 
             // bars should not handle mouse input, pass it to the background gump.
             for (int i = 0; i < m_BarBGs.Length; i++)
             {
-                //m_BarBGs[i].HandlesMouseInput = false;
                 m_Bars[i].HandlesMouseInput = false;
             }
         }

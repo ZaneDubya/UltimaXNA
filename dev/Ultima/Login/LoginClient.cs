@@ -423,7 +423,7 @@ namespace UltimaXNA.Ultima.Login
                         if (player == null)
                             Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
                         player.Move_Instant(packet.X, packet.Y, packet.Z, packet.Direction);
-                        PartySettings.AbadonParty();//fixing party bug
+                        PartySettings.LeaveParty();//fixing party bug
                         // iPlayer.SetFacing(p.Direction);
                     }
                     else

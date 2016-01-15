@@ -202,7 +202,7 @@ namespace UltimaXNA.Ultima.Network.Server
                     break;
                 default:
                     partyMessage = "ERROR";//TRACE.WARN??
-                    PartySettings.AbadonParty();//
+                    PartySettings.LeaveParty();//
                     break;
             }
         }

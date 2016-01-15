@@ -136,7 +136,7 @@ namespace UltimaXNA.Configuration
             {
                 //is he leader ?? and is he has a party ?
                 if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Player == WorldModel.Entities.GetPlayerEntity()) == null)
-                    AbadonParty();
+                    LeaveParty();
                 else if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Player == WorldModel.Entities.GetPlayerEntity()).isLeader)
                     return PartyState.Leader;//he has full access
 
@@ -177,7 +177,7 @@ namespace UltimaXNA.Configuration
                 case PartyState.Joining:
                     if (PCmd.PrimaryCmd == PCommandType.Add)//add member
                     {
-                        AbadonParty();
+                        LeaveParty();
                         Status = PartyState.Joining;
                         AddMember(WorldModel.Entities.GetPlayerEntity().Serial, true);
                         m_Network.Send(new PartyAddMember());
@@ -190,7 +190,7 @@ namespace UltimaXNA.Configuration
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.Quit)
                     {
-                        AbadonParty();
+                        LeaveParty();
                         return;
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.Decline && Leader != WorldModel.Entities.GetPlayerEntity())//decline decline party
@@ -201,7 +201,7 @@ namespace UltimaXNA.Configuration
                     else if (PCmd.PrimaryCmd == PCommandType.HelpMenu)
                         showPartyHelp();
                     else
-                        AbadonParty();
+                        LeaveParty();
                     m_world.Interaction.ChatMessage("Wrong command. You can use '/accept' or '/decline'.", 3, 10, false);
                     break;
                 case PartyState.Leader:
@@ -234,7 +234,7 @@ namespace UltimaXNA.Configuration
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.Quit)
                     {
-                        AbadonParty();
+                        LeaveParty();
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.Loot)
                     {
@@ -281,7 +281,7 @@ namespace UltimaXNA.Configuration
                 m_UserInterface.AddControl(new PartyGump(), 150, 40);
             }
         }
-        public static void AbadonParty()
+        public static void LeaveParty()
         {
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_Network.Send(new PartyQuit());

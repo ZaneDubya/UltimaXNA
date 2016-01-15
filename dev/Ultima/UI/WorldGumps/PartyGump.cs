@@ -57,28 +57,35 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             ///
             AddControl(txtLoot = new TextLabelAscii(this, 100, 75 + lineC, 2, 1, @"Party CANNOT loot me"));
-            int gumID1 = 4017, gumpID2 = 4017;
+            int gumID1 = 4002, gumpID2 = 4002;
             if (PartySettings.Status != PartySettings.PartyState.None && PartySettings.Status != PartySettings.PartyState.Joining)
             {
                 if (PartySettings.Self.isLootable)
                 {
-                    gumID1 = 4005;
-                    gumpID2 = 4005;
+                    gumID1 = 4008;
+                    gumpID2 = 4008;
                     txtLoot.Text = txtLoot.Text.Replace("CANNOT", "CAN");
                 }
             }
-            AddControl(btnLoot = new Button(this, 65, 75 + lineC, gumID1, gumpID2, ButtonTypes.Activate, 0, 0));// loot BUTTON
-            lineC += 30;
+            if (PartySettings.Status != PartySettings.PartyState.None)
+                AddControl(btnLoot = new Button(this, 65, 75 + lineC, gumID1, gumpID2, ButtonTypes.Activate, 0, 0));// loot BUTTON
+            lineC += 25;
             string text = "Leave the party";
             if (PartySettings.Status == PartySettings.PartyState.Leader)
-                text = "Disband the party";
+                text = "Disband the party";//SPECİAL MESSAGE FOR LEADER ??
 
             AddControl(new TextLabelAscii(this, 100, 75 + lineC, 2, 1, text));
-            AddControl(new Button(this, 65, 75 + lineC, 4017, 4018, ButtonTypes.Activate, 0, 1));// leave BUTTON
-            lineC += 30;
+            if (PartySettings.Status != PartySettings.PartyState.None)
+                AddControl(new Button(this, 65, 75 + lineC, 4017, 4018, ButtonTypes.Activate, 0, 1));// leave BUTTON
+            lineC += 25;
             AddControl(new TextLabelAscii(this, 100, 75 + lineC, 2, 1, @"Add new member"));
             if (PartySettings.Status != PartySettings.PartyState.Joined)
                 AddControl(new Button(this, 65, 75 + lineC, 4005, 4006, ButtonTypes.Activate, 0, 2));// add BUTTON
+            lineC += 25;
+
+            AddControl(new TextLabelAscii(this, 100, 75 + lineC, 2, 1, @"Mark an enemy"));//this is special command for leader
+            if (PartySettings.Status == PartySettings.PartyState.Leader)
+                AddControl(new Button(this, 65, 75 + lineC, 4005, 4006, ButtonTypes.Activate, 0, 3));// set a target BUTTON
 
             if (PartySettings.Status == PartySettings.PartyState.Joined || PartySettings.Status == PartySettings.PartyState.Leader)
                 PartySettings.RefreshPartyStatusBar();
@@ -98,29 +105,34 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 int _serial = kickBtn[buttonID - 100].ButtonParameter;//deleting player serial
                 m_Network.Send(new PartyRemoveMember(_serial));
+                PartySettings.RemoveMember(_serial);
+                if (PartySettings.List.Count == 1)//fixing party bug
+                {
+                    PartySettings.LeaveParty();
+                }
             }
             else if (buttonID == 0 && PartySettings.Status != PartySettings.PartyState.None && PartySettings.Status != PartySettings.PartyState.Joining)
             {
                 if (PartySettings.Self.isLootable)
                 {
                     m_Network.Send(new PartyCanLoot(false));
-                    btnLoot.GumpUpID = 4017;
-                    btnLoot.GumpDownID = 4017;
+                    btnLoot.GumpUpID = 4002;
+                    btnLoot.GumpDownID = 4002;
                     PartySettings.Self.isLootable = false;
                     txtLoot.Text = txtLoot.Text.Replace("CAN", "CANNOT");
                 }
                 else
                 {
                     m_Network.Send(new PartyCanLoot(true));
-                    btnLoot.GumpUpID = 4005;
-                    btnLoot.GumpDownID = 4005;
+                    btnLoot.GumpUpID = 4008;
+                    btnLoot.GumpDownID = 4008;
                     PartySettings.Self.isLootable = true;
                     txtLoot.Text = txtLoot.Text.Replace("CANNOT", "CAN");
                 }
             }
             else if (buttonID == 1)
             {
-                PartySettings.AbadonParty();//leaving party
+                PartySettings.LeaveParty();//leaving party
             }
             else if (buttonID == 2)
             {
