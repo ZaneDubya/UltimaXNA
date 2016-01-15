@@ -40,7 +40,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     AddControl(kickBtn[i] = new Button(this, 35, 70 + lineC, 4017, 4018, ButtonTypes.Activate, PartySettings.List[i].Serial, 100 + i));// KICK BUTTON
 
                 AddControl(new TextLabelAscii(this, 65, 70 + lineC, 2, 1, string.Format("[ {0} ]", i)));
-                AddControl(tellBtn[i] = new Button(this, 100, 70 + lineC, 4029, 4030, ButtonTypes.Activate, PartySettings.List[i].Serial, 200 + i));// tell BUTTON
+                if (WorldModel.Entities.GetPlayerEntity().Serial != PartySettings.List[i].Serial) //you can't send a message to self
+                    AddControl(tellBtn[i] = new Button(this, 100, 70 + lineC, 4029, 4030, ButtonTypes.Activate, PartySettings.List[i].Serial, 200 + i));// tell BUTTON
                 AddControl(new ResizePic(this, 130, 70 + lineC, 3000, 195, 25));
                 AddControl(new TextLabelAscii(this, 135, 72 + lineC, 2, 98, PartySettings.List[i].Name));//member name
                 lineC += 30;

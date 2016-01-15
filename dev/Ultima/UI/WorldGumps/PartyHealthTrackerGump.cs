@@ -58,7 +58,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_BarBGs = new GumpPic[3];
             int sameX = 15;
             int sameY = 3;
-            AddControl(btnPrivateMsg = new Button(this, 0, 20, 11401, 11402, ButtonTypes.Activate, _serial, 0));//private party message / use bandage ??
+            if (WorldModel.Entities.GetPlayerEntity().Serial != _serial)//you can't send a message to self
+                AddControl(btnPrivateMsg = new Button(this, 0, 20, 11401, 11402, ButtonTypes.Activate, _serial, 0));//private party message / use bandage ??
             AddControl(m_BarBGs[0] = new GumpPic(this, sameX, 15 + sameY, 9750, 0));
             AddControl(m_BarBGs[1] = new GumpPic(this, sameX, 24 + sameY, 9750, 0));
             AddControl(m_BarBGs[2] = new GumpPic(this, sameX, 33 + sameY, 9750, 0));
@@ -96,7 +97,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Bars[0].PercentWidthDrawn = ((float)Mobile.Health.Current / Mobile.Health.Max);
 
             ///I couldn't find correct visual
-           
+
             //if (Mobile.Flags.IsBlessed)
             //    m_Bars[0].GumpID = 0x0809;
             //else if (Mobile.Flags.IsPoisoned)
