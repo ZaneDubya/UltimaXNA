@@ -20,6 +20,7 @@ namespace UltimaXNA.Configuration
         {
             public Mobile Player { get; set; }
             public bool isLeader { get; set; }
+            public bool isLootable { get; set; } //only client Entity
             public PartyMember(Serial _serial, bool _isleader)
             {
                 isLeader = _isleader;
@@ -264,7 +265,7 @@ namespace UltimaXNA.Configuration
             m_world.Interaction.ChatMessage("/list                      - party member list", 3, 51, true);
             m_world.Interaction.ChatMessage("/loot {on/off}             - party members can loot to you", 3, 51, true);
             m_world.Interaction.ChatMessage("/{message}                 - public party message", 3, 51, true);
-            //m_world.Interaction.ChatMessage("/trg                       - targeting a enemy (leader command)", 3, 51, true);
+            //m_world.Interaction.ChatMessage("/trg                       - targeting a enemy (leader command)", 3, 51, true);//new command
         }
 
         public static void RefreshPartyStatusBar()

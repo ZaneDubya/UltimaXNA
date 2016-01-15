@@ -15,6 +15,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     {
         Button[] kickBtn = new Button[10];
         Button[] tellBtn = new Button[10];
+        Button btnLoot;
+        TextLabelAscii txtLoot;
+
         public PartyGump()
             : base(0, 0)
         {
@@ -53,8 +56,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 lineC += 30;
             }
             ///
-            AddControl(new TextLabelAscii(this, 100, 75 + lineC, 2, 1, @"Party CANNOT loot me"));
-            AddControl(new Button(this, 65, 75 + lineC, 4017, 4005, ButtonTypes.Activate, 0, 0));// loot BUTTON
+            AddControl(txtLoot = new TextLabelAscii(this, 100, 75 + lineC, 2, 1, @"Party CANNOT loot me"));
+            int gumID1 = 4017, gumpID2 = 4017;
+            if (PartySettings.Status != PartySettings.PartyState.None && PartySettings.Status != PartySettings.PartyState.Joining)
+            {
+                if (PartySettings.Self.isLootable)
+                {
+                    gumID1 = 4005;
+                    gumpID2 = 4005;
+                    txtLoot.Text = txtLoot.Text.Replace("CANNOT", "CAN");
+                }
+            }
+            AddControl(btnLoot = new Button(this, 65, 75 + lineC, gumID1, gumpID2, ButtonTypes.Activate, 0, 0));// loot BUTTON
             lineC += 30;
             string text = "Leave the party";
             if (PartySettings.Status == PartySettings.PartyState.Leader)
@@ -68,9 +81,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 AddControl(new Button(this, 65, 75 + lineC, 4005, 4006, ButtonTypes.Activate, 0, 2));// add BUTTON
 
             if (PartySettings.Status == PartySettings.PartyState.Joined || PartySettings.Status == PartySettings.PartyState.Leader)
-            {
                 PartySettings.RefreshPartyStatusBar();
-            }
         }
 
         public override void OnButtonClick(int buttonID)
@@ -88,9 +99,24 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 int _serial = kickBtn[buttonID - 100].ButtonParameter;//deleting player serial
                 m_Network.Send(new PartyRemoveMember(_serial));
             }
-            else if (buttonID == 0)
+            else if (buttonID == 0 && PartySettings.Status != PartySettings.PartyState.None && PartySettings.Status != PartySettings.PartyState.Joining)
             {
-                m_Network.Send(new PartyCanLoot(false));//testing only 'off' sending
+                if (PartySettings.Self.isLootable)
+                {
+                    m_Network.Send(new PartyCanLoot(false));
+                    btnLoot.GumpUpID = 4017;
+                    btnLoot.GumpDownID = 4017;
+                    PartySettings.Self.isLootable = false;
+                    txtLoot.Text = txtLoot.Text.Replace("CAN", "CANNOT");
+                }
+                else
+                {
+                    m_Network.Send(new PartyCanLoot(true));
+                    btnLoot.GumpUpID = 4005;
+                    btnLoot.GumpDownID = 4005;
+                    PartySettings.Self.isLootable = true;
+                    txtLoot.Text = txtLoot.Text.Replace("CANNOT", "CAN");
+                }
             }
             else if (buttonID == 1)
             {
