@@ -137,6 +137,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 // AddControl(new GumpPic(this, 158, 200, 0x2B34, 0));
                 // LastControl.MouseDoubleClickEvent += SpecialMoves_MouseDoubleClickEvent;
 
+                // PARTY MANIFEST CALLER
+                AddControl(new GumpPic(this, 44, 195, 2002, 0));
+                LastControl.MouseDoubleClickEvent += PartyManifest_MouseDoubleClickEvent;
+
                 // equipment slots for hat/earrings/neck/ring/bracelet
                 AddControl(new EquipmentSlot(this, 2, 76, Mobile, EquipLayer.Helm));
                 AddControl(new EquipmentSlot(this, 2, 76 + 22 * 1, Mobile, EquipLayer.Earrings));
@@ -156,7 +160,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             // name and title
-            AddControl(new HtmlGumpling(this, 34, 259, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", Tittle)));
+            //AddControl(new HtmlGumpling(this, 34, 259, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", Tittle)));
             AddControl(new HtmlGumpling(this, 35, 260, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", Tittle)));
         }
 
@@ -166,7 +170,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 m_VirtueMenuButton.MouseDoubleClickEvent -= VirtueMenu_MouseDoubleClickEvent;
             base.Dispose();
         }
-
+        private void PartyManifest_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)
+        {
+            if (button == MouseButton.Left)
+            {
+                if (UserInterface.GetControl<PartyGump>() == null)
+                    UserInterface.AddControl(new PartyGump(), 200, 40);
+                else
+                    UserInterface.RemoveControl<PartyGump>();
+            }
+        }
         private void SpecialMoves_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)
         {
             if (button == MouseButton.Left)
@@ -220,12 +233,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Help:
-
-                    if (UserInterface.GetControl<PartyGump>() == null)
-                        UserInterface.AddControl(new PartyGump(), 150, 40);
-                    else
-                        UserInterface.RemoveControl<PartyGump>();
-                    //m_Client.Send(new RequestHelpPacket());
+                    m_Client.Send(new RequestHelpPacket());
                     break;
 
                 case Buttons.Options:

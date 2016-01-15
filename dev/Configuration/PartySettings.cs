@@ -265,7 +265,7 @@ namespace UltimaXNA.Configuration
             m_world.Interaction.ChatMessage("/list                      - party member list", 3, 51, true);
             m_world.Interaction.ChatMessage("/loot {on/off}             - party members can loot to you", 3, 51, true);
             m_world.Interaction.ChatMessage("/{message}                 - public party message", 3, 51, true);
-            //m_world.Interaction.ChatMessage("/trg                       - targeting a enemy (leader command)", 3, 51, true);//new command
+            //m_world.Interaction.ChatMessage("/trg                       - mark an enemy (leader command)", 3, 51, true);//new
         }
 
         public static void RefreshPartyStatusBar()
@@ -278,7 +278,7 @@ namespace UltimaXNA.Configuration
             if (m_UserInterface.GetControl<PartyGump>() != null)
             {
                 m_UserInterface.RemoveControl<PartyGump>();
-                m_UserInterface.AddControl(new PartyGump(), 150, 40);
+                m_UserInterface.AddControl(new PartyGump(), 200, 40);
             }
         }
         public static void LeaveParty()

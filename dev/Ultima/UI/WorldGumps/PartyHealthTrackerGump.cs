@@ -29,9 +29,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             private set;
         }
 
-        private ResizePic m_Background;
+        //private ResizePic m_Background;
         private GumpPicWithWidth[] m_Bars;
         private GumpPic[] m_BarBGs;
+        Button btnPrivateMsg;
 
         public PartyHealthTrackerGump(Serial _serial)
             : base(_serial, 0)
@@ -51,13 +52,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             //AddControl(m_Background = new ResizePic(this, 0, 0, 3000, 131, 48));//I need opacity %1 background
 
-            
-            AddControl(new TextLabel(this, 1,0, 1, Mobile.Name));
+
+            AddControl(new TextLabel(this, 1, 0, 1, Mobile.Name));
             //m_Background.MouseDoubleClickEvent += Background_MouseDoubleClickEvent; //maybe private message calling?
             m_BarBGs = new GumpPic[3];
             int sameX = 15;
             int sameY = 3;
-            AddControl(new Button(this, 0, 23, 11401, 11402, ButtonTypes.Default, 1, 0));//private party message / use bandage ??
+            AddControl(btnPrivateMsg = new Button(this, 0, 20, 11401, 11402, ButtonTypes.Activate, _serial, 0));//private party message / use bandage ??
             AddControl(m_BarBGs[0] = new GumpPic(this, sameX, 15 + sameY, 9750, 0));
             AddControl(m_BarBGs[1] = new GumpPic(this, sameX, 24 + sameY, 9750, 0));
             AddControl(m_BarBGs[2] = new GumpPic(this, sameX, 33 + sameY, 9750, 0));
@@ -67,7 +68,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(m_Bars[2] = new GumpPicWithWidth(this, sameX, 33 + sameY, 41, 0, 1f));//I couldn't find correct visual
 
             // bars should not handle mouse input, pass it to the background gump.
-            for (int i = 0; i < m_BarBGs.Length; i++)
+            for (int i = 0; i < m_BarBGs.Length; i++)//???
             {
                 m_Bars[i].HandlesMouseInput = false;
             }
@@ -78,7 +79,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             //m_Background.MouseDoubleClickEvent -= Background_MouseDoubleClickEvent;
             base.Dispose();
         }
-
+        public override void OnButtonClick(int buttonID)
+        {
+            if (buttonID == 0)//private message
+            {
+                INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
+                m_Network.Send(new PartyPrivateMessage((Serial)btnPrivateMsg.ButtonParameter, "make a dynamic message type"));
+            }
+        }
         public override void Update(double totalMS, double frameMS)
         {
             if (Mobile == null)
@@ -86,7 +94,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 return;
             }
             m_Bars[0].PercentWidthDrawn = ((float)Mobile.Health.Current / Mobile.Health.Max);
-            //I couldn't find correct visual
+
+            ///I couldn't find correct visual
+           
             //if (Mobile.Flags.IsBlessed)
             //    m_Bars[0].GumpID = 0x0809;
             //else if (Mobile.Flags.IsPoisoned)
@@ -98,7 +108,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             base.Update(totalMS, frameMS);
         }
-        private void Background_MouseDoubleClickEvent(AControl caller, int x, int y, MouseButton button)
+
+        private void Background_MouseDoubleClickEvent(AControl caller, int x, int y, MouseButton button)//need opacity %1 BG for this
         {
             //CALL PRIVATE MESSAGE METHOD ???
         }

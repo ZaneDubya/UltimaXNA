@@ -99,7 +99,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (buttonID >= 200)
             {
                 int _serial = tellBtn[buttonID - 200].ButtonParameter;//private message: player serial
-                                                                      //m_Network.Send()//need private message packet 
+                m_Network.Send(new PartyPrivateMessage((Serial)_serial, "make a dynamic message type"));
             }
             else if (buttonID >= 100)
             {
@@ -150,6 +150,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 {
                     //not access
                 }
+            }
+            else if (buttonID == 3)
+            {
+                m_Network.Send(new PartyPublicMessage("All member attack to ---PLAYERNAME---"));
             }
         }
     }
