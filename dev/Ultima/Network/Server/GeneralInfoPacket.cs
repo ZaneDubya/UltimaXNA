@@ -13,8 +13,10 @@ using UltimaXNA.Configuration;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
@@ -153,6 +155,7 @@ namespace UltimaXNA.Ultima.Network.Server
                         PartySettings.AddMember((Serial)r.ReadInt32(), false);
 
                     PartySettings.Status = PartySettings.PartyState.Joined;
+                    PartySettings.RefreshPartyStatusBar();
                     break;
                 case 2:
                     //remove party member and refresh list
@@ -164,6 +167,7 @@ namespace UltimaXNA.Ultima.Network.Server
                         PartySettings.AddMember((Serial)r.ReadInt32(), false);
 
                     PartySettings.Status = PartySettings.PartyState.Joined;
+                    PartySettings.RefreshPartyStatusBar();
                     break;
                 case 3://private message?
                 case 4://public message?

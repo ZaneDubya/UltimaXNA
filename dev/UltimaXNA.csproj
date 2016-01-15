@@ -321,6 +321,7 @@
     <Compile Include="Ultima\UI\WorldGumps\MobileHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\PartyGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\PartyHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorBuyGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorSellGump.cs" />

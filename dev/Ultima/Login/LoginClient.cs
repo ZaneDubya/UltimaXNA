@@ -241,7 +241,6 @@ namespace UltimaXNA.Ultima.Login
                     m_Engine.QueuedModel = new WorldModel();
                     m_Network.Send(new LoginCharacterPacket(Characters.List[index].Name, index, Utility.IPAddress));
                     Settings.Macro.UserMacros = new XKey(Characters.List[index].Name);
-                    PartySettings.Status = PartySettings.PartyState.None;
                 }
             }
         }
@@ -424,6 +423,7 @@ namespace UltimaXNA.Ultima.Login
                         if (player == null)
                             Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
                         player.Move_Instant(packet.X, packet.Y, packet.Z, packet.Direction);
+                        PartySettings.AbadonParty();//fixing party bug
                         // iPlayer.SetFacing(p.Direction);
                     }
                     else

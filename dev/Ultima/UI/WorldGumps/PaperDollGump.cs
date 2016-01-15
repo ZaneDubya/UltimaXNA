@@ -220,9 +220,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Help:
-                    
+
                     if (UserInterface.GetControl<PartyGump>() == null)
-                        UserInterface.AddControl(new PartyGump(), 80, 80);
+                        UserInterface.AddControl(new PartyGump(), 150, 40);
                     else
                         UserInterface.RemoveControl<PartyGump>();
                     //m_Client.Send(new RequestHelpPacket());

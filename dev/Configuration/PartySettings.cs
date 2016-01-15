@@ -5,8 +5,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 
@@ -16,9 +18,6 @@ namespace UltimaXNA.Configuration
     {
         public class PartyMember
         {
-            public int Health { get; set; }
-            public int Mana { get; set; }
-            public int Stamina { get; set; }
             public Mobile Player { get; set; }
             public bool isLeader { get; set; }
             public PartyMember(Serial _serial, bool _isleader)
@@ -27,12 +26,6 @@ namespace UltimaXNA.Configuration
                 Player = WorldModel.Entities.GetObject<Mobile>(_serial, false);
                 INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
                 m_Network.Send(new PartyQueryStats(_serial));//I THINK CHECK FOR STATUS
-            }
-            public void UpdateStat(int HP, int MP, int STM)
-            {
-                Health = HP;
-                Mana = MP;
-                Stamina = STM;
             }
         }
 
@@ -134,7 +127,10 @@ namespace UltimaXNA.Configuration
         private static Serial leaderSerial;
         public static PartyState Status
         {
-            set { m_State = value; }
+            set
+            {
+                m_State = value;
+            }
             get
             {
                 //is he leader ?? and is he has a party ?
@@ -150,8 +146,10 @@ namespace UltimaXNA.Configuration
         public static int SelfIndex //get my party index
         { get { return m_PartyMembers.FindIndex(p => p.Player == WorldModel.Entities.GetPlayerEntity()); } }
 
-        public static Mobile Leader
-        { get { return m_PartyMembers.Find(p => p.isLeader == true).Player; } }
+        public static PartyMember Self //get me
+        { get { return m_PartyMembers[SelfIndex]; } }
+
+        public static Mobile Leader { get { return m_PartyMembers.Find(p => p.isLeader == true).Player; } }
 
         public static List<Mobile> List
         { get { return m_PartyMembers.Select(p => p.Player).ToList(); } }
@@ -269,6 +267,19 @@ namespace UltimaXNA.Configuration
             //m_world.Interaction.ChatMessage("/trg                       - targeting a enemy (leader command)", 3, 51, true);
         }
 
+        public static void RefreshPartyStatusBar()
+        {
+            UserInterfaceService m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_UserInterface.RemoveControl<PartyHealthTrackerGump>();
+            for (int i = 0; i < List.Count; i++)
+                m_UserInterface.AddControl(new PartyHealthTrackerGump(List[i].Serial), 5, 40 + (48 * i));
+
+            if (m_UserInterface.GetControl<PartyGump>() != null)
+            {
+                m_UserInterface.RemoveControl<PartyGump>();
+                m_UserInterface.AddControl(new PartyGump(), 150, 40);
+            }
+        }
         public static void AbadonParty()
         {
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
@@ -313,13 +324,5 @@ namespace UltimaXNA.Configuration
             }
         }
 
-        public static void StatusBarUpdate(Serial _serial, int hp, int mp, int stam)
-        {
-            int Playerindex = m_PartyMembers.FindIndex(p => p.Player.Serial == _serial);
-            if (Playerindex >= 0)//player alive or in the party
-            {
-                m_PartyMembers[Playerindex].UpdateStat(hp, mp, stam);
-            }
-        }
     }
 }
