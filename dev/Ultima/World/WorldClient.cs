@@ -1111,7 +1111,7 @@ namespace UltimaXNA.Ultima.World
         }
         private void Custom_AckPartyLocs(IRecvPacket packet)
         {
-            AckPartyLocation p = (AckPartyLocation)packet;//for party system
+            //AckPartyLocation p = (AckPartyLocation)packet;//for party system
         }
         private void ReceiveGeneralInfo(IRecvPacket packet)
         {

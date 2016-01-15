@@ -24,6 +24,7 @@ using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.UI;
+using UltimaXNA.Configuration;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -78,111 +79,8 @@ namespace UltimaXNA.Ultima.World
                 case ChatMode.Party:
                     speechType = MessageTypes.Party;
                     hue = Settings.UserInterface.PartyMsgColor;
-                    string ptCmd = text.ToLower();
-                    switch (Party.State)
-                    {
-                        case PartyState.Alone:
-                            if (!ptCmd.StartsWith("add"))
-                            {
-                                //AddTextMessage(string.Format("Note to self: {0}", cmd.Substring(1)), DefaultFont, Hues.Load(0x3b2));
-                                break;
-                            }
-                            m_Network.Send(new PParty_AddMember());
-                            break;
-
-                        case PartyState.Joining:
-                            {
-                                if (!ptCmd.StartsWith("accept"))
-                                {
-                                    if (ptCmd.StartsWith("decline"))
-                                    {
-                                        m_Network.Send(new PParty_Decline(Party.Leader));
-                                    }
-                                    else
-                                    {
-                                        ChatMessage("Use '/accept' or '/decline'.", 3, 10, false);
-                                    }
-                                    break;
-                                }
-                                m_Network.Send(new PParty_Accept(Party.Leader));
-                                break;
-                            }
-                        case PartyState.Joined:
-                            {
-                                if (!Party.IsLeader || !ptCmd.StartsWith("add"))
-                                {
-                                    if (Party.IsLeader && ptCmd.StartsWith("rem"))
-                                    {
-                                        m_Network.Send(new PParty_RemoveMember());
-                                    }
-                                    else if (ptCmd.StartsWith("accept"))
-                                    {
-                                        ChatMessage("You already in a party, so You cannot accept any party", 3, 10, false);
-                                    }
-                                    else if (ptCmd.StartsWith("decline"))
-                                    {
-                                        ChatMessage("If you need quit the party. please use /quit", 3, 10, false);
-                                    }
-                                    else if (ptCmd.StartsWith("quit"))
-                                    {
-                                        m_Network.Send(new PParty_Quit());
-                                    }
-                                    else if (ptCmd.StartsWith("loot on"))
-                                    {
-                                        m_Network.Send(new PParty_SetCanLoot(true));
-                                    }
-                                    else if (ptCmd.StartsWith("loot off"))
-                                    {
-                                        m_Network.Send(new PParty_SetCanLoot(false));
-                                    }
-                                    else if (ptCmd.StartsWith("loot"))
-                                    {
-                                        ChatMessage("Use '/loot on' or '/loot off'.", 3, 10, false);
-                                    }
-                                    else if (Party.Members.Length > 1)
-                                    {
-                                        if ((ptCmd.Length >=1) && char.IsDigit(ptCmd, 0))
-                                        {
-                                            try
-                                            {
-                                                int index = Convert.ToInt32(ptCmd.Substring(0, 1)) - 1;
-                                                if ((index >= 0) && (index < Party.Members.Length))
-                                                {
-                                                    if (index == Party.Index)
-                                                    {
-                                                        ChatMessage(string.Format("Note to self: {0}", text.Substring(2)), 3, 10, false);
-                                                    }
-                                                    else
-                                                    {
-                                                        string str4;
-                                                        Mobile mobile = WorldModel.Entities.GetPlayerEntity();
-                                                        if (((mobile == null) || ((str4 = mobile.Name) == null)) || ((str4 = str4.Trim()).Length <= 0))
-                                                        {
-                                                            str4 = "You";
-                                                        }
-                                                        ChatMessage(string.Format("<{0}> {1}", str4, ptCmd.Substring(2)), 3, 60, false);
-                                                        m_Network.Send(new PParty_PrivateMessage(Party.Members[index], text.Substring(2)));
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                            catch
-                                            {
-                                            }
-                                        }
-                                        m_Network.Send(new PParty_PublicMessage(ptCmd));
-                                    }
-                                    else
-                                    {
-                                        ChatMessage(string.Format("Note to self: {0}", ptCmd.Substring(1)), 3, 10, false);
-                                    }
-                                    break;
-                                }
-                                m_Network.Send(new PParty_AddMember());
-                                break;
-                            }
-                    }
-                    break;
+                    PartySettings.PartyStateControl(text, hue);//party controlling
+                    return;
                 case ChatMode.Guild:
                     speechType = MessageTypes.Guild;
                     hue = Settings.UserInterface.GuildMsgColor;

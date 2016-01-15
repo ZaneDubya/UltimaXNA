@@ -6,11 +6,12 @@ using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    public class PQueryStats : SendPacket
+    public class PartyQueryStats : SendPacket
     {
-        public PQueryStats(int Serial) : base(0x34, "Query Stats", 10)
+        public PartyQueryStats(int Serial) : base(0x34, "Query Stats", 10)
         {
-            Stream.Write(-303174163);
+            Stream.Write(0xFFFFFFFF);
+            Stream.Write(0xDEDEDEDE);
             Stream.Write((byte)4);
             Stream.Write(Serial);
         }

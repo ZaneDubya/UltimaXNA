@@ -6,13 +6,14 @@ using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    public class PParty_RemoveMember : SendPacket
+    class PartyAddMember : SendPacket
     {
-        public PParty_RemoveMember() : base(0xbf, "Remove Party Member")
+        public PartyAddMember() : base(0xbf, "Add Party Member")
         {
             Stream.Write((short)6);
-            Stream.Write((byte)2);
+            Stream.Write((byte)1);
             Stream.Write(0);
         }
+
     }
 }

@@ -6,9 +6,9 @@ using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    public class PParty_PublicMessage : SendPacket
+    public class PartyPublicMessage : SendPacket
     {
-        public PParty_PublicMessage(string text) : base(0xbf, "Public Party Message")
+        public PartyPublicMessage(string text) : base(0xbf, "Public Party Message")
         {
             Stream.Write((short)6);
             Stream.Write((byte)4);

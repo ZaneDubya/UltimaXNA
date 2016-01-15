@@ -6,13 +6,13 @@ using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    public class PParty_SetCanLoot : SendPacket
+    public class PartyCanLoot : SendPacket
     {
-        public PParty_SetCanLoot(bool val) : base(0xbf, "Party Set Can Loot")
+        public PartyCanLoot(bool isLootable) : base(0xbf, "Party Can Loot")
         {
            Stream.Write((short)6);
             Stream.Write((byte)6);
-            Stream.Write(val);
+            Stream.Write(isLootable);
         }
     }
 }

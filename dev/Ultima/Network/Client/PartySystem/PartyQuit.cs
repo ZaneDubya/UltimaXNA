@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.World;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    public class PParty_Accept : SendPacket
+    public class PartyQuit : SendPacket
     {
-        public PParty_Accept(Mobile req) : base(0xbf, "Party Join Accept")
+        public PartyQuit() : base(0xbf, "Quit Party")
         {
             Stream.Write((short)6);
-            Stream.Write((byte)8);
-            Stream.Write(req.Serial);
+            Stream.Write((byte)2);
+            Stream.Write(WorldModel.Entities.GetPlayerEntity().Serial);
         }
     }
 }

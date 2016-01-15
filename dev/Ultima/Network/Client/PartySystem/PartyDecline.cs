@@ -7,13 +7,13 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    public class PParty_Decline : SendPacket
+    public class PartyDecline : SendPacket
     {
-        public PParty_Decline(Mobile req) : base(0xbf, "Party Join Decline")
+        public PartyDecline(Mobile Leader) : base(0xbf, "Party Join Decline")
         {
             Stream.Write((short)6);
             Stream.Write((byte)9);
-            Stream.Write(req.Serial);
+            Stream.Write(Leader.Serial);
         }
     }
 }
