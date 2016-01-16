@@ -20,13 +20,13 @@ namespace UltimaXNA.Configuration
         {
             public Mobile Player { get; set; }
             public bool isLeader { get; set; }
-            public bool isLootable { get; set; } //only client Entity
+            public bool isLootable { get; set; } //only working on client Entity
             public PartyMember(Serial _serial, bool _isleader)
             {
                 isLeader = _isleader;
                 Player = WorldModel.Entities.GetObject<Mobile>(_serial, false);
                 INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
-                m_Network.Send(new PartyQueryStats(_serial));//I THINK CHECK FOR STATUS
+                m_Network.Send(new PartyQueryStats(_serial));//I THINK CHECK FOR STATUS ??
             }
         }
 
@@ -288,6 +288,8 @@ namespace UltimaXNA.Configuration
             Status = PartyState.None;
             m_PartyMembers.Clear();
             leaderSerial = 0;
+            UserInterfaceService m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_UserInterface.RemoveControl<PartyHealthTrackerGump>();
         }
         public static PartyMember getMember(int index)
         {

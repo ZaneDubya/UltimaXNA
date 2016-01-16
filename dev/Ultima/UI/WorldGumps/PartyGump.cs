@@ -21,6 +21,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public PartyGump()
             : base(0, 0)
         {
+            if (PartySettings.List.Count == 1)//party bug fixing
+                PartySettings.LeaveParty();
+
             IsMoveable = true;
             AddControl(new ResizePic(this, 0, 0, 2600, 350, 500));
             AddControl(new TextLabelAscii(this, 105, 15, 2, 1, @"Party Manifest"));

@@ -94,6 +94,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 return;
             }
+            if (PartySettings.List.Count <= 1)//party bug fixing
+            {
+                PartySettings.LeaveParty();
+                Dispose();
+                return;
+            }
             m_Bars[0].PercentWidthDrawn = ((float)Mobile.Health.Current / Mobile.Health.Max);
 
             ///I couldn't find correct visual
