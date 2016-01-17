@@ -41,7 +41,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         public override void Dispose()
         {
             m_sourceEntity.OnEntityUpdated -= OnEntityUpdated;
-            m_Backpack.MouseDoubleClickEvent -= On_Dblclick_Backpack;
+            if(m_Backpack != null)//Backpack can be null
+                m_Backpack.MouseDoubleClickEvent -= On_Dblclick_Backpack;
             base.Dispose();
         }
 
