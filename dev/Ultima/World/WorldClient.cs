@@ -135,7 +135,6 @@ namespace UltimaXNA.Ultima.World
             Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(ReceiveToolTipRevision));
             Register<CompressedGumpPacket>(0xDD, "Compressed Gump", -1, new TypedPacketReceiveHandler(ReceiveCompressedGump));
 
-            Register<CompressedGumpPacket>(240, "Custom Ack Party Location", -1, new TypedPacketReceiveHandler(Custom_AckPartyLocs));//Party member location refresh
 
 
             /* Deprecated (not used by RunUO) and/or not implmented
@@ -1108,10 +1107,6 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveExtended0x78(IRecvPacket packet)
         {
             announce_UnhandledPacket(packet);
-        }
-        private void Custom_AckPartyLocs(IRecvPacket packet)
-        {
-            //AckPartyLocation p = (AckPartyLocation)packet;//for party system
         }
         private void ReceiveGeneralInfo(IRecvPacket packet)
         {
