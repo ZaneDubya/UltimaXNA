@@ -4,6 +4,7 @@ using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Core.Graphics;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -137,9 +138,17 @@ namespace UltimaXNA.Ultima.UI.Controls
                     m_label.Text = m_items[Index];
                 }
             }
+            if (!IsInitialized || IsDisposed || !IsVisible)
+                return;
             base.Update(totalMS, frameMS);
         }
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        {
+            if (!IsInitialized)
+                return;
 
+            base.Draw(spriteBatch, position);
+        }
         private void closeOpenList()
         {
             m_listOpen = false;
