@@ -18,6 +18,8 @@ namespace UltimaXNA.Ultima.Data
         {
             get
             {
+                return new Version(6, 0, 6, 2);
+                //my client.exe don't have version's information
                 if (m_Version == null)
                 {
                     string clientExe = FileManager.GetPath("client.exe");
