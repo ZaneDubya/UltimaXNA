@@ -459,7 +459,6 @@ namespace UltimaXNA.Ultima.World
             mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
             mobile.Flags = p.Flags;
             mobile.Notoriety = p.Notoriety;
-            mobile.Notoriety = p.Notoriety;
 
             for (int i = 0; i < p.Equipment.Length; i++)
             {
@@ -1043,26 +1042,32 @@ namespace UltimaXNA.Ultima.World
             if (mobile == null)
                 return;
 
+            //Respect the packet order for clarity
             mobile.Name = p.PlayerName;
+            mobile.Health.Update(p.CurrentHealth, p.MaxHealth);
+            mobile.PlayerCanChangeName = p.NameChangeFlag;
+            //mobile.SupportedFeatures = p.StatusTypeFlag;
+            //mobile.Gender = p.Sex;
             mobile.Strength = p.Strength;
             mobile.Dexterity = p.Dexterity;
             mobile.Intelligence = p.Intelligence;
-            mobile.Health.Update(p.CurrentHealth, p.MaxHealth);
             mobile.Stamina.Update(p.CurrentStamina, p.MaxStamina);
             mobile.Mana.Update(p.CurrentMana, p.MaxMana);
-            mobile.Followers.Update(p.Followers, p.MaxFollowers);
-            mobile.Weight.Update(p.Weight, p.MaxWeight);
-            mobile.StatCap = p.StatCap;
-            mobile.Luck = p.Luck;
             mobile.Gold = p.GoldInInventory;
             mobile.ArmorRating = p.ArmorRating;
+            mobile.Weight.Update(p.Weight, p.MaxWeight);
+            //mobile.Race = p.Race;
+            mobile.StatCap = p.StatCap;
+            mobile.Followers.Update(p.Followers, p.MaxFollowers);
             mobile.ResistFire = p.ResistFire;
             mobile.ResistCold = p.ResistCold;
             mobile.ResistPoison = p.ResistPoison;
             mobile.ResistEnergy = p.ResistEnergy;
+            mobile.Luck = p.Luck;
             mobile.DamageMin = p.DmgMin;
             mobile.DamageMax = p.DmgMax;
-            mobile.PlayerCanChangeName = p.NameChangeFlag;
+            //mobile.TithingPoints = p.TithingPoints;
+
         }
 
         private void ReceiveTime(IRecvPacket packet)

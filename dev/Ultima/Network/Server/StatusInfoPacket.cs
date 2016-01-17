@@ -48,7 +48,7 @@ namespace UltimaXNA.Ultima.Network.Server
         public readonly short Luck;
         public readonly short DmgMin;
         public readonly short DmgMax;
-        public readonly short TithingPoints;
+        public readonly int TithingPoints;
 
         public StatusInfoPacket(PacketReader reader)
             : base(0x11, "StatusInfo")
@@ -95,7 +95,35 @@ namespace UltimaXNA.Ultima.Network.Server
                     Luck = reader.ReadInt16();
                     DmgMin = reader.ReadInt16();
                     DmgMax = reader.ReadInt16();
-                    TithingPoints = reader.ReadInt16();
+                    TithingPoints = reader.ReadInt32();
+                }
+
+                if(StatusTypeFlag >= 6)
+                {
+                    //TODO
+                    reader.ReadInt16();//wordHit Chance Increase(KR attribute)
+                    reader.ReadInt16();//wordSwing Speed Increase(KR attribute)
+                    reader.ReadInt16();//wordDamage Chance Increase(KR attribute)
+                    reader.ReadInt16();//wordLower Reagent Cost(KR attribute)
+                    reader.ReadInt16();//wordHit Points Regeneration(KR attribute)
+                    reader.ReadInt16();//wordStamina Regeneration (KR attribute)
+                    reader.ReadInt16();//wordMana Regeneration (KR attribute)
+                    reader.ReadInt16();//wordReflect Physical Damage(KR attribute)
+                    reader.ReadInt16();//wordEnhance Potions (KR attribute)
+                    reader.ReadInt16();//wordDefense Chance Increase(KR attribute)
+                    reader.ReadInt16();//wordSpell Damage Increase(KR attribute)
+                    reader.ReadInt16();//wordFaster Cast Recovery(KR attribute)
+                    reader.ReadInt16();//wordFaster Casting (KR attribute)
+                    reader.ReadInt16();//wordLower Mana Cost(KR attribute)
+                    reader.ReadInt16();//wordStrength Increase (KR attribute)
+                    reader.ReadInt16();//wordDexterity Increase (KR attribute)
+                    reader.ReadInt16();//wordIntelligence Increase (KR attribute)
+                    reader.ReadInt16();//wordHit Points Increase(KR attribute)
+                    reader.ReadInt16();//wordStamina Increase (KR attribute)
+                    reader.ReadInt16();//wordMana Increase (KR attribute)
+                    reader.ReadInt16();//wordMaximum Hit Points Increase (KR attribute)
+                    reader.ReadInt16();//wordMaximum Stamina Increase(KR attribute)
+                    reader.ReadInt16();//wordMaximum Mana Increase(KR attribute)
                 }
             }
         }

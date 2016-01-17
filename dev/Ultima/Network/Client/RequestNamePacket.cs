@@ -19,7 +19,6 @@ namespace UltimaXNA.Ultima.Network.Client
         public RequestNamePacket(Serial serial)
             : base(0x98, "Request Name", 7)
         {
-            Stream.Write((short)7);
             Stream.Write((int)serial);
         }
     }
