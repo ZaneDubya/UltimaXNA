@@ -429,7 +429,7 @@ namespace UltimaXNA.Core.UI
 
         public virtual void Update(double totalMS, double frameMS)
         {
-            if (!IsInitialized || IsDisposed || !IsVisible)
+            if (!IsInitialized || IsDisposed)
                 return;
 
             InitializeControls();
@@ -439,9 +439,6 @@ namespace UltimaXNA.Core.UI
 
         virtual public void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            if (!IsInitialized)
-                return;
-
             foreach (AControl c in Children)
             {
                 if ((c.Page == 0) || (c.Page == ActivePage))
