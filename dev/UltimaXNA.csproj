@@ -283,16 +283,16 @@
     <Compile Include="Ultima\Data\SpellbookData.cs" />
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
     <Compile Include="Ultima\Data\ClientVersion.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyAccept.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyAddMember.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyCanLootable.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyDecline.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyPrivateMessage.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyPublicMessage.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyQueryLocation.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyQueryStats.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyQuit.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyRemoveMember.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyAccept.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyAddMember.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyCanLootable.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyDecline.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyPrivateMessage.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyPublicMessage.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyQueryLocation.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyQueryStats.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyQuit.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyRemoveMember.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
     <Compile Include="Ultima\Resources\BodyDef.cs" />
@@ -731,7 +731,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ultima\IO\Fonts\" />
-    <Folder Include="Ultima\Network\PartySystem\" />
     <Folder Include="Ultima\Network\TradeSystem\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
