@@ -37,10 +37,11 @@ namespace UltimaXNA.Ultima.Data
                     }
                 }
 
-                if (m_VersionUnlocked)
-                    return m_Version;
-                else
-                    return m_UnknownClientVersion;
+                return m_Version;
+                //if (m_VersionUnlocked)
+                //    return m_Version;
+                //else
+                //    return m_UnknownClientVersion;
             }
         }
 
