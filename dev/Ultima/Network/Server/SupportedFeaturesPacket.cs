@@ -48,12 +48,12 @@ namespace UltimaXNA.Ultima.Network.Server
             : base(0xB9, "Enable Features")
         {
             if (reader.Buffer.Length == 3)
-                Flags = (FeatureFlags)reader.ReadInt16();
+                Flags = (FeatureFlags)reader.ReadUInt16();
             else if (reader.Buffer.Length == 5)
-                Flags = (FeatureFlags)reader.ReadInt32();
+                Flags = (FeatureFlags)reader.ReadUInt32();
             else
             {
-                Flags = (FeatureFlags)reader.ReadInt16();
+                Flags = (FeatureFlags)reader.ReadUInt16();
                 Tracer.Error("Bad feature flag size in SupportedFeaturesPacket; expected 16 or 32 bit features, received {0} bits.", (reader.Buffer.Length - 1) * 8);
             }
         }
