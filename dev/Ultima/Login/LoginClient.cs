@@ -86,7 +86,11 @@ namespace UltimaXNA.Ultima.Login
             Register<ServerRelayPacket>(0x8C, "ServerRelay", 11, ReceiveServerRelay);
             Register<ServerListPacket>(0xA8, "Game Server List", -1, ReceiveServerList);
             Register<CharacterCityListPacket>(0xA9, "Characters / Starting Locations", -1, ReceiveCharacterList);
-            Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, ReceiveEnableFeatures);
+            if((Settings.UltimaOnline.ClientVersion[0] > 6) || (Settings.UltimaOnline.ClientVersion[1] > 0) ||
+                (Settings.UltimaOnline.ClientVersion[2] > 6) || (Settings.UltimaOnline.ClientVersion[3] > 2))
+                Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 5, ReceiveEnableFeatures);
+            else
+                Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, ReceiveEnableFeatures);
 
             Register<VersionRequestPacket>(0xBD, "Version Request", -1, ReceiveVersionRequest);
         }
@@ -283,7 +287,8 @@ namespace UltimaXNA.Ultima.Login
                     Tracer.Info("Client version is greater than 6.0.14.2, enabling extended 0xB9 packet.");
                     Unregister(0xB9);
                     Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
-                    
+                    //Ok so, if we extend the B9 packet we MUST send a version which goes accordingly.
+                    Settings.UltimaOnline.ClientVersion = new byte[] { 6, 0, 14, 2 };
                 }
                 m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.ClientVersion));
             }

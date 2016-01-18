@@ -46,8 +46,10 @@ namespace UltimaXNA.Configuration
                 if (value == null || value.Length != 4)
                     return;
                 // Do not remove this check. See above.
-                if (value[0] != 6 || value[1] != 0 || value[2] != 6 || value[3] != 2)
-                    return;
+                // K - I am removing this check because using a mul folder with client newer than 6.0.6.2
+                // will cause server to send 3byte B9 packet while the client is expecting 5byte = bad!
+                //if (value[0] != 6 || value[1] != 0 || value[2] != 6 || value[3] != 2)
+                //    return;
                 SetProperty(ref m_ClientVersion, value);
             }
         }
