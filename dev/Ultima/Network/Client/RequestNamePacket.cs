@@ -19,6 +19,7 @@ namespace UltimaXNA.Ultima.Network.Client
         public RequestNamePacket(Serial serial)
             : base(0x98, "Request Name", 7)
         {
+            Stream.Write((ushort)7);//This is not a fixed size packet! This is why there is the double size write.
             Stream.Write((int)serial);
         }
     }
