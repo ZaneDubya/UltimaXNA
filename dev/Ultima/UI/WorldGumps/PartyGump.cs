@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Configuration;
+﻿using UltimaXNA.Configuration;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
@@ -13,10 +8,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     public class PartyGump : Gump
     {
-        Button[] kickBtn = new Button[10];
-        Button[] tellBtn = new Button[10];
-        Button btnLoot;
-        TextLabelAscii txtLoot;
+        private Button btnLoot;
+        private Button[] kickBtn = new Button[10];
+        private Button[] tellBtn = new Button[10];
+        private TextLabelAscii txtLoot;
 
         public PartyGump()
             : base(0, 0)
@@ -52,9 +47,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             for (int i = (0 + memberCount); i < 10; i++)
             {
-                AddControl(kickBtn[i] = new Button(this, 35, 70 + lineC, 4017, 4018, ButtonTypes.Activate, 1, -1));// KICK 
+                AddControl(kickBtn[i] = new Button(this, 35, 70 + lineC, 4017, 4018, ButtonTypes.Activate, 1, -1));// KICK
                 AddControl(new TextLabelAscii(this, 65, 70 + lineC, 2, 1, string.Format("[ {0} ]", i)));
-                AddControl(tellBtn[i] = new Button(this, 100, 70 + lineC, 4029, 4030, ButtonTypes.Activate, 1, -1));// tell 
+                AddControl(tellBtn[i] = new Button(this, 100, 70 + lineC, 4029, 4030, ButtonTypes.Activate, 1, -1));// tell
                 AddControl(new ResizePic(this, 130, 70 + lineC, 3000, 195, 25));
                 AddControl(new TextLabelAscii(this, 205, 72 + lineC, 2, 1, @"NONE"));//member name
                 lineC += 30;
@@ -152,7 +147,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 }
                 else
                 {
-                    //not access
+                    //no access
                 }
             }
             else if (buttonID == 3)

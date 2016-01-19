@@ -1,38 +1,37 @@
 ﻿/***************************************************************************
  *   MobileHealthTrackerGump.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
- *   
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
-using UltimaXNA.Core.Input;
-using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Core.Network;
-using UltimaXNA.Ultima.Network.Client;
+
 using UltimaXNA.Configuration;
+using UltimaXNA.Core.Input;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
-#endregion
+using UltimaXNA.Ultima.World.Entities.Mobiles;
+
+#endregion usings
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    class PartyHealthTrackerGump : Gump
+    internal class PartyHealthTrackerGump : Gump
     {
-        public Mobile Mobile
-        {
-            get;
-            private set;
-        }
+        private Button btnPrivateMsg;
+
+        private GumpPic[] m_BarBGs;
 
         //private ResizePic m_Background;
         private GumpPicWithWidth[] m_Bars;
-        private GumpPic[] m_BarBGs;
-        Button btnPrivateMsg;
 
         public PartyHealthTrackerGump(Serial _serial)
             : base(_serial, 0)
@@ -51,7 +50,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 return;
             }
             //AddControl(m_Background = new ResizePic(this, 0, 0, 3000, 131, 48));//I need opacity %1 background
-
 
             AddControl(new TextLabel(this, 1, 0, 1, Mobile.Name));
             //m_Background.MouseDoubleClickEvent += Background_MouseDoubleClickEvent; //maybe private message calling?
@@ -75,11 +73,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
         }
 
+        public Mobile Mobile
+        {
+            get;
+            private set;
+        }
+
         public override void Dispose()
         {
             //m_Background.MouseDoubleClickEvent -= Background_MouseDoubleClickEvent;
             base.Dispose();
         }
+
         public override void OnButtonClick(int buttonID)
         {
             if (buttonID == 0)//private message
@@ -88,6 +93,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 m_Network.Send(new PartyPrivateMessage((Serial)btnPrivateMsg.ButtonParameter, "make a dynamic message type"));
             }
         }
+
         public override void Update(double totalMS, double frameMS)
         {
             if (Mobile == null)

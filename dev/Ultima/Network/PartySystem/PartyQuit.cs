@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Core.Network.Packets;
+﻿using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Ultima.World;
 
 namespace UltimaXNA.Ultima.Network.Client

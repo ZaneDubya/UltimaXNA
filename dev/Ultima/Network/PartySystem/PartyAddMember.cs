@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Core.Network.Packets;
+﻿using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    class PartyAddMember : SendPacket
+    internal class PartyAddMember : SendPacket
     {
         public PartyAddMember() : base(0xbf, "Add Party Member")
         {
@@ -14,6 +10,5 @@ namespace UltimaXNA.Ultima.Network.Client
             Stream.Write((byte)1);
             Stream.Write(0);
         }
-
     }
 }
