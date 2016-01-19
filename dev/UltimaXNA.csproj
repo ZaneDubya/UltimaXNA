@@ -297,6 +297,17 @@
     <Compile Include="Ultima\Network\Client\SellItemsPacket.cs" />
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\Resources\GumpDefTranslator.cs" />
+    <Compile Include="Ultima\Resources\UOPs\DDSImage.cs" />
+    <Compile Include="Ultima\Resources\UOPs\KRTextures.cs" />
+    <Compile Include="Ultima\Resources\UOPs\KRTileart.cs" />
+    <Compile Include="Ultima\Resources\UOPs\Tileart\AnimationAppearanceItem.cs" />
+    <Compile Include="Ultima\Resources\UOPs\Tileart\EffectItem.cs" />
+    <Compile Include="Ultima\Resources\UOPs\Tileart\enums.cs" />
+    <Compile Include="Ultima\Resources\UOPs\Tileart\RadarColItem.cs" />
+    <Compile Include="Ultima\Resources\UOPs\Tileart\SittingAnimationItem.cs" />
+    <Compile Include="Ultima\Resources\UOPs\Tileart\StackAlias.cs" />
+    <Compile Include="Ultima\Resources\UOPs\Tileart\TextureInfo.cs" />
+    <Compile Include="Ultima\Resources\UOPs\Tileart\TileartPropItem.cs" />
     <Compile Include="Ultima\UI\Controls\AGumpPic.cs" />
     <Compile Include="Ultima\UI\Controls\ColorPickerBox.cs" />
     <Compile Include="Ultima\UI\Controls\EquipmentSlot.cs" />

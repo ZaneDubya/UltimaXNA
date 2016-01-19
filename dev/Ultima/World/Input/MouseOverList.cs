@@ -235,14 +235,28 @@ namespace UltimaXNA.Ultima.World.Input
                         if (y == Texture.Height - 1)
                             y--;
 
-                        ushort[] pixelData = new ushort[9];
-                        Texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
-                        if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
-                            (pixelData[4] > 0) || (pixelData[5] > 0) ||
-                            (pixelData[7] > 0))
+                        if (Texture.Format == SurfaceFormat.Bgra5551)
                         {
-                            InTexturePosition = new Vector2(x, y);
-                            return true;
+                            ushort[] pixelData = new ushort[9];
+                            Texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
+                            if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
+                                (pixelData[4] > 0) || (pixelData[5] > 0) ||
+                                (pixelData[7] > 0))
+                            {
+                                InTexturePosition = new Vector2(x, y);
+                                return true;
+                            }
+                        }else if(Texture.Format == SurfaceFormat.Color)
+                        {
+                            uint[] pixelData = new uint[9];
+                            Texture.GetData<uint>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
+                            if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
+                                (pixelData[4] > 0) || (pixelData[5] > 0) ||
+                                (pixelData[7] > 0))
+                            {
+                                InTexturePosition = new Vector2(x, y);
+                                return true;
+                            }
                         }
                     }
                     else

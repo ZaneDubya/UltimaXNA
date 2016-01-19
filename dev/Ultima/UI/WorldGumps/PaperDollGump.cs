@@ -152,7 +152,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Dispose()
         {
-            m_VirtueMenuButton.MouseDoubleClickEvent -= VirtueMenu_MouseDoubleClickEvent;
+            if(m_VirtueMenuButton != null)//NPCs do not have VirtueMenu
+                m_VirtueMenuButton.MouseDoubleClickEvent -= VirtueMenu_MouseDoubleClickEvent;
             base.Dispose();
         }
 

@@ -174,6 +174,9 @@ namespace UltimaXNA.Ultima.World
         {
             m_ChatQueue.Add(new QueuedMessage(text, font, hue, asUnicode));
 
+            if (!ServiceRegistry.ServiceExists<ChatControl>())
+                return;//RunUO will send a unicode text too early.. we enqueue it but avoid crashing!
+
             ChatControl chat = ServiceRegistry.GetService<ChatControl>();
             if (chat != null)
             {

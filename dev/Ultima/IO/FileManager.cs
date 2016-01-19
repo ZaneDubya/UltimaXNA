@@ -132,15 +132,15 @@ namespace UltimaXNA.Ultima.IO
 
         private static bool IsClientIsCompatible(string path)
         {
-            IEnumerable<string> files = Directory.EnumerateFiles(path);
-            foreach (string filepath in files)
-            {
-                string extension = Path.GetExtension(filepath).ToLower();
-                if (extension == ".uop")
-                {
-                    return false;
-                }
-            }
+            //IEnumerable<string> files = Directory.EnumerateFiles(path);
+            //foreach (string filepath in files)
+            //{
+            //    string extension = Path.GetExtension(filepath).ToLower();
+            //    if (extension == ".uop")
+            //    {
+            //        return false;
+            //    }
+            //}
             return true;
         }
 

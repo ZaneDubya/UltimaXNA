@@ -326,7 +326,7 @@ namespace UltimaXNA.Core.Network
             }
             catch (Exception e)
             {
-                Tracer.Debug(e.ToString());
+                Tracer.Warn("NetworkClient: Send - " + e.ToString());
                 success = false;
             }
 
