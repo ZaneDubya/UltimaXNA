@@ -31,6 +31,7 @@ namespace UltimaXNA.Ultima
         private GumpMulResource m_Gumps;
         private TexmapResource m_Texmaps;
         private Dictionary<Type, object> m_Resources = new Dictionary<Type, object>();
+        private KRTextures m_KRArt;
 
         public ResourceProvider(Game game)
         {
@@ -41,6 +42,7 @@ namespace UltimaXNA.Ultima
             m_Fonts = new FontsResource(game.GraphicsDevice);
             m_Gumps = new GumpMulResource(game.GraphicsDevice);
             m_Texmaps = new TexmapResource(game.GraphicsDevice);
+            m_KRArt = new KRTextures(game.GraphicsDevice);
         }
 
         public IAnimationFrame[] GetAnimation(int body, ref int hue, int action, int direction)
@@ -55,7 +57,8 @@ namespace UltimaXNA.Ultima
 
         public Texture2D GetItemTexture(int itemIndex)
         {
-            return m_Art.GetStaticTexture(itemIndex);
+            return m_KRArt.GetStaticTexture(itemIndex);
+            //return m_Art.GetStaticTexture(itemIndex);
         }
 
         public Texture2D GetLandTexture(int landIndex)
@@ -65,7 +68,8 @@ namespace UltimaXNA.Ultima
 
         public void GetItemDimensions(int itemIndex, out int width, out int height)
         {
-            m_Art.GetStaticDimensions(itemIndex, out width, out height);
+            m_KRArt.GetStaticDimensions(itemIndex, out width, out height);
+            //m_Art.GetStaticDimensions(itemIndex, out width, out height);
         }
 
         public Texture2D GetTexmapTexture(int textureIndex)

@@ -14,7 +14,7 @@ using System;
 namespace UltimaXNA.Ultima.Data
 {
     [Flags]
-    public enum TileFlag
+    public enum TileFlag : ulong
     {
         None = 0x00000000,
         Background = 0x00000001,
@@ -48,6 +48,6 @@ namespace UltimaXNA.Ultima.Data
         Roof = 0x10000000,
         Door = 0x20000000,
         StairBack = 0x40000000,
-        StairRight = unchecked((int)0x80000000)
+        StairRight = 0x80000000
     }
 }
