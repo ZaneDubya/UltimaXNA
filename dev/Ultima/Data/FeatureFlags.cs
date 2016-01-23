@@ -32,9 +32,9 @@ namespace UltimaXNA.Ultima.Data
         TenthAgeFaces = 0x2000,
         TrialAccount = 0x4000,
         EleventhAge = 0x8000,
-        StygianAbys = 0x10000,
-        HighSeas = 0x20000,         // HS features;
-        GothicHousing = 0x40000,    // Gothic housing tiles;
-        RusticHousing = 0x80000     // Rustic housing tiles
+        StygianAbyss = 0x10000,
+        HighSeas = 0x20000,         
+        GothicHousing = 0x40000,
+        RusticHousing = 0x80000
     }
 }
