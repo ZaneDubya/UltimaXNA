@@ -290,7 +290,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             for (int i = 0; i < action.Macros.Count; i++)
             {
                 m_ActionTypeList[i].Index = (int)action.Macros[i].Type;
-                if (action.Macros[i].valueID != -1)
+                // !!!!
+                /*if (action.Macros[i].valueID != -1)
                 {
                     if (!m_ActionDropDown[i].IsFirstvisible)
                     {
@@ -316,7 +317,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 else
                 {
                     //NONE VALUE
-                }
+                }*/
             }
         }
 
@@ -389,20 +390,20 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             //deleting selected macros
             for (int i = 0; i < m_DeletedMacros.Count; i++)
             {
-                Macros.Player.All.removeMacro(m_DeletedMacros[i]);
+                Macros.Player.RemoveMacroAction(m_DeletedMacros[i]);
             }
             m_DeletedMacros.Clear();
 
             //adding new macros
             for (int i = 0; i < m_AddedMacros.Count; i++)
             {
-                Macros.Player.All.addKey(m_AddedMacros[i]);
+                Macros.Player.AddNewMacroAction(m_DeletedMacros[i]);
             }
             m_AddedMacros.Clear();
 
             //CURRENT MACRO ADDING MAYBE NOT SET
             AddingCurrentMacro();
-            Macros.Player.All.saveMacros();//saved macros
+            Macros.Player.Save();//saved macros
             SwitchTopMenuGump();
         }
 
@@ -428,7 +429,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (m_MacroKeyPress.Text != "Any Press")
             {
-                XMacro xmcr = new XMacro();
+                MacroAction xmcr = new MacroAction();
 
                 #region baddd
 
@@ -459,16 +460,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     {
                         break;
                     }
-                    XAction action = new XAction();
-                    action.actionID = m_ActionTypeList[i2].Index;
+                    Macro action = new Macro((MacroType)m_ActionTypeList[i2].Index);
                     if (m_ActionDropDown[i2].Index != -1)
-                        action.valueID = m_ActionDropDown[i2].Index;
+                        action.ValueInteger = m_ActionDropDown[i2].Index;
                     else
-                        action.valueText = m_ActionText[i2].Text;
+                        action.ValueString = m_ActionText[i2].Text;
 
-                    xmcr.actionList.Add(action);
+                    xmcr.Macros.Add(action);
                 }
-                if (xmcr.actionList.Count > 0)
+                if (xmcr.Macros.Count > 0)
                 {
                     int inx = m_AddedMacros.FindIndex(p => p == xmcr);
                     if (inx != -1)
@@ -517,7 +517,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.MAdd:
                     for (int i = 0; i < m_AddedMacros.Count; i++)
                     {
-                        Macros.Player.All.addKey(m_AddedMacros[i]);
+                        Macros.Player.AddNewMacroAction(m_AddedMacros[i]);
                     }
                     AddingCurrentMacro();
                     setDefaultDropdownList(true);
@@ -527,8 +527,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     if (Macros.Player.All.Count == 0)
                         return;
 
-                    m_DeletedMacros.Add(Macros.Player.All.getMacro(m_MacroBeingDisplayed));
-                    Macros.Player.All.removeMacro(m_MacroBeingDisplayed);
+                    MacroAction deletedMacro = Macros.Player.All[m_MacroBeingDisplayed];
+                    m_DeletedMacros.Add(deletedMacro);
+                    Macros.Player.RemoveMacroAction(deletedMacro);
                     m_MacroBeingDisplayed--;
                     if (m_MacroBeingDisplayed < 0)
                         m_MacroBeingDisplayed = 0;
@@ -545,8 +546,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
                 case Buttons.MNext:
                     m_MacroBeingDisplayed++;
-                    if (m_MacroBeingDisplayed >= Macros.Player.All.getMacros().Count)
-                        m_MacroBeingDisplayed = Macros.Player.All.getMacros().Count - 1;
+                    if (m_MacroBeingDisplayed >= Macros.Player.All.Count)
+                        m_MacroBeingDisplayed = Macros.Player.All.Count - 1;
 
                     ChangeCurrentMacro(m_MacroBeingDisplayed);
                     break;
@@ -576,17 +577,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         protected override void CloseWithRightMouseButton()
         {
+            // reset changes to macro list
             for (int i = 0; i < m_AddedMacros.Count; i++)
             {
-                Macros.Player.All.removeMacro(m_AddedMacros[i]);
+                Macros.Player.RemoveMacroAction(m_AddedMacros[i]);
             }
             m_AddedMacros.Clear();
             for (int i = 0; i < m_DeletedMacros.Count; i++)
             {
-                Macros.Player.All.addKey(m_DeletedMacros[i]);
+                Macros.Player.AddNewMacroAction(m_DeletedMacros[i]);
             }
             m_DeletedMacros.Clear();
-            Macros.Player.All.saveMacros();
+            Macros.Player.Save();
             base.CloseWithRightMouseButton();
         }
     }

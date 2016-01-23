@@ -95,7 +95,7 @@ namespace UltimaXNA.Ultima.Input
             if (File.Exists(s_Path))
             {
                 fileExists = true;
-                File.Copy(s_Path, s_Path + ".bak");
+                File.Copy(s_Path, s_Path + ".bak", true);
             }
 
             try

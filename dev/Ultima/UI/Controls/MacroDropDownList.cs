@@ -207,38 +207,22 @@ namespace UltimaXNA.Ultima.UI.Controls
             Items.Clear();
             Index = -1;
 
-            MacroType mType = Settings.Macro.actionTypes[actionID].Type;
+            MacroType mType = (MacroType)actionID;
             switch (mType)
             {
                 case MacroType.UseSkill:
-                    Items.AddRange(Settings.fromList(Settings.Macro.useSkills, true));
-                    break;
-
                 case MacroType.CastSpell:
-                    Items.AddRange(Settings.fromList(Settings.Macro.castSpell, true));
+                case MacroType.Move:
+                case MacroType.ArmDisarm:
+                    foreach (MacroDefinition def in Macros.Definitions)
+                        if (def.Type == mType)
+                            Items.Add(def.Name);
                     break;
 
                 case MacroType.OpenGump:
-                    Items.AddRange(Settings.fromList(Settings.Macro.Displays, true));
-                    break;
-
-                case MacroType.Text:
-                    //its not for this method DELETEEEEEEEE
-                    break;
-
-                case MacroType.Move:
-                    Items.AddRange(Settings.fromList(Settings.Macro.Moves, true));
-                    break;
-
-                case MacroType.ArmDisarm:
-                    Items.AddRange(Settings.fromList(Settings.Macro.armDisarm, true));
-                    break;
-
-                case MacroType.None:
-                    //its not for this method DELETEEEEEEEE
-                    break;
 
                 default:
+                    // no sub-ids for these types
                     break;
             }
             Index = valueID;
@@ -257,7 +241,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                     break;
                 }
             }
-            //////
 
             int indexOver = getOpenListIndexFromPoint(x, y);
             if (indexOver != -1)
@@ -270,49 +253,64 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (indexOver == -1)
                     return;
 
-                MacroType mType = Settings.Macro.actionTypes.Find(p => p.Name == m_openLabels[indexOver].Text).Type;
-                //here is controlling the background's image visual
+                MacroType mType = Macros.Definitions[indexOver + 1].Type; 
+                
+                // background image:
                 if (!(Parent.Children[controlValueIndex] as MacroDropDownList).IsFirstvisible)
                     (Parent.Children[controlValueIndex] as MacroDropDownList).CreateVisual();
 
+                // !!!!
                 (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Clear();//cleaning dropdownlist
                 (Parent.Children[controlValueIndex + 1] as TextEntry).Text = "";//cleaning text
 
                 (Parent.Children[controlValueIndex] as MacroDropDownList).ScrollButton.IsVisible = true;//easy way for visible dropdown list
                 (Parent.Children[controlValueIndex] as MacroDropDownList).IsVisible = true;//easy way for visible dropdown list
-
-                ///MAYBE THIS (SWITCH) WİLL CHANGİNG TO  "public void setIndex(int actionID, int valueID)" NOT NOW
+                
                 switch (mType)
                 {
-                    case MacroType.Skill:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).Items.AddRange(Settings.fromList(Settings.Macro.useSkills, true));//adding to dropdownlist
+                    case MacroType.UseSkill:
+                        foreach (MacroDefinition def in Macros.Definitions)
+                            if (def.Type == mType)
+                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
                         break;
 
-                    case MacroType.Spell:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).Items.AddRange(Settings.fromList(Settings.Macro.castSpell, true));//adding to dropdownlist
+                    case MacroType.CastSpell:
+                        foreach (MacroDefinition def in Macros.Definitions)
+                            if (def.Type == mType)
+                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
                         break;
 
-                    case MacroType.Display:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).Items.AddRange(Settings.fromList(Settings.Macro.Displays, true));//adding to dropdownlist
+                    case MacroType.OpenGump:
+                        /*foreach (MacroDefinition def in Macros.Definitions)
+                            if (def.Type == mType)
+                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
+                        */
                         break;
 
-                    case MacroType.Text:
+                    case MacroType.Move:
+                        foreach (MacroDefinition def in Macros.Definitions)
+                            if (def.Type == mType)
+                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                        break;
+
+                    case MacroType.ArmDisarm:
+                        foreach (MacroDefinition def in Macros.Definitions)
+                            if (def.Type == mType)
+                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                        break;
+
+                    case MacroType.Say:
+                    case MacroType.Emote:
+                    case MacroType.Whisper:
+                    case MacroType.Yell:
                         //(Parent.Children[controlValueIndex] as MacroDropDownList).m_scrollButton.IsVisible = false; //as you wish
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = true;//textentry activated
                         break;
 
-                    case MacroType.Move:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).Items.AddRange(Settings.fromList(Settings.Macro.Moves, true));//adding to dropdownlist
-                        (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
-                        break;
-
-                    case MacroType.ArmDisarm:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).Items.AddRange(Settings.fromList(Settings.Macro.armDisarm, true));//adding to dropdownlist
-                        (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
-                        break;
+                    
 
                     case MacroType.None:
                         (Parent.Children[controlValueIndex] as MacroDropDownList).ScrollButton.IsVisible = false;//i dont need any control :)
@@ -325,7 +323,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                         break;
                 }
             }
-            /////
         }
 
         private void onMouseOverOpenList(AControl control, int x, int y)
