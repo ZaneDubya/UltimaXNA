@@ -10,7 +10,6 @@
  ***************************************************************************/
 
 #region usings
-
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Configuration.Properties;
@@ -20,14 +19,14 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.Windows;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Input;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-
-#endregion usings
+#endregion
 
 namespace UltimaXNA.Ultima.World.Input
 {
@@ -468,20 +467,10 @@ namespace UltimaXNA.Ultima.World.Input
             InternalCheckQueuedClick(frameMS);
         }
 
-        private delegate void myMacroDelegate(XMacro xmcr);
-
         private void InternalParseKeyboard(double frameMS)
         {
-            using (XMacro XMCR = m_Input.HandleKeyboardEventForMacros())//checking keypress macro event
-            {
-                if (XMCR != null)//if macro found
-                {
-                    //ASYC METHOD FOR MULTIPLE MACRO COMBO
-                    myMacroDelegate worker = new myMacroDelegate(Settings.Macro.UseMacro);//ASYNC METHOD CALLING
-                    worker.BeginInvoke(XMCR, null, null);
-                }
-            }
-            //////////////
+            Macros.Player.ReceiveKeyboardInput(m_Input.GetKeyboardEvents());
+
             // all names mode
             WorldView.AllLabels = (m_Input.IsShiftDown && m_Input.IsCtrlDown);
 
@@ -563,6 +552,6 @@ namespace UltimaXNA.Ultima.World.Input
             m_QueuedEvent = e;
         }
 
-        #endregion QueuedClicks
+        #endregion
     }
 }

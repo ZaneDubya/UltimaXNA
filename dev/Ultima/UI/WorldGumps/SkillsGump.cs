@@ -25,6 +25,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private ExpandableScroll m_Background;
         private HtmlGumpling m_SkillsHtml;
         private bool m_MustUpdateSkills = true;
+
         // Services
         private WorldModel m_World;
 
