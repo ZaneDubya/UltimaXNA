@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-
 using System;
 using UltimaXNA.Core.Patterns.MVC;
 #endregion

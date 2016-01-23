@@ -38,8 +38,6 @@ namespace UltimaXNA.Ultima.UI.Controls
             set;
         }
 
-        //public bool isVisible { get { return base.IsVisible; } set { base.IsVisible = value; } }
-
         public AGumpPic(AControl parent)
             : base(parent)
         {

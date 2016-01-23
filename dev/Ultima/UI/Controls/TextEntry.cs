@@ -9,7 +9,6 @@
  ***************************************************************************/
 
 #region usings
-
 using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.Core.Graphics;
@@ -17,13 +16,14 @@ using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.UI.HTML;
 using UltimaXNA.Core.Windows;
-
-#endregion usings
+#endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
     internal class TextEntry : AControl
     {
+        private string m_Text = string.Empty;
+
         public int Hue = 0;
         public int EntryID = 0;
         public int LimitSize = 0;
@@ -33,9 +33,16 @@ namespace UltimaXNA.Ultima.UI.Controls
         public string LeadingHtmlTag = string.Empty;
         public string LeadingText = string.Empty;
 
-        private string _text = "";
-
-        public string Text { get { return _text; } set { _text = value; } }
+        public string Text
+        {
+            get
+            {
+                if (m_Text != null)
+                    return m_Text;
+                return string.Empty;
+            }
+            set { m_Text = value; }
+        }
 
         public bool LegacyCarat { get; set; }
 
@@ -148,9 +155,6 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_RenderedText.Text = LeadingHtmlTag + LeadingText + (IsPasswordField ? new string('*', Text.Length) : Text);
             m_Carat.Text = LeadingHtmlTag + (LegacyCarat ? "_" : "|");
 
-            if (!IsInitialized || IsDisposed || !IsVisible)
-                return; return;
-
             base.Update(totalMS, frameMS);
         }
 
@@ -180,8 +184,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             if (m_CaratBlinkOn)
                 m_Carat.Draw(spriteBatch, caratPosition, Utility.GetHueVector(Hue));
-            if (!IsInitialized)
-                return;
             base.Draw(spriteBatch, position);
         }
 

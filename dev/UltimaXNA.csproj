@@ -130,8 +130,15 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
-    <Compile Include="Configuration\MacroSettings.cs" />
-    <Compile Include="Configuration\Properties\MacroProperty.cs" />
+    <Compile Include="Ultima\Input\Macro.cs" />
+    <Compile Include="Ultima\Input\MacroArmDisarm.cs" />
+    <Compile Include="Ultima\Input\MacroDefinition.cs" />
+    <Compile Include="Ultima\Input\MacroDisplay.cs" />
+    <Compile Include="Ultima\Input\Action.cs" />
+    <Compile Include="Ultima\Input\MacroEngine.cs" />
+    <Compile Include="Ultima\Input\PlayerMacros.cs" />
+    <Compile Include="Ultima\Input\Macros.cs" />
+    <Compile Include="Ultima\Input\MacroType.cs" />
     <Compile Include="Configuration\Properties\MouseProperty.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\Properties\SavedGumpProperty.cs" />
@@ -273,7 +280,7 @@
     <Compile Include="Ultima\Data\ContextMenuItem.cs" />
     <Compile Include="Ultima\Data\HouseRevisionState.cs" />
     <Compile Include="Ultima\Data\Hues.cs" />
-    <Compile Include="Ultima\Data\Magery.cs" />
+    <Compile Include="Ultima\Data\SpellsMagery.cs" />
     <Compile Include="Core\Data\Pair.cs" />
     <Compile Include="Ultima\Data\Races.cs" />
     <Compile Include="Ultima\Data\Reagents.cs" />
