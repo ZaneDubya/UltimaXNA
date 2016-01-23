@@ -138,7 +138,6 @@
     <Compile Include="Ultima\Input\PlayerMacros.cs" />
     <Compile Include="Ultima\Input\Macros.cs" />
     <Compile Include="Ultima\Input\MacroType.cs" />
-    <Compile Include="Configuration\Properties\MacroFile.cs" />
     <Compile Include="Configuration\Properties\MouseProperty.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\Properties\SavedGumpProperty.cs" />

@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using UltimaXNA.Configuration.Macros;
-using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Input;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -211,15 +210,15 @@ namespace UltimaXNA.Ultima.UI.Controls
             MacroType mType = Settings.Macro.actionTypes[actionID].Type;
             switch (mType)
             {
-                case MacroType.Skill:
+                case MacroType.UseSkill:
                     Items.AddRange(Settings.fromList(Settings.Macro.useSkills, true));
                     break;
 
-                case MacroType.Spell:
+                case MacroType.CastSpell:
                     Items.AddRange(Settings.fromList(Settings.Macro.castSpell, true));
                     break;
 
-                case MacroType.Display:
+                case MacroType.OpenGump:
                     Items.AddRange(Settings.fromList(Settings.Macro.Displays, true));
                     break;
 

@@ -6,7 +6,6 @@
     public class Macro
     {
         public readonly MacroType Type;
-        public readonly int Index;
 
         private bool m_IsInteger = true;
         private int m_ValueInteger = -1;
@@ -20,21 +19,20 @@
             }
         }
 
-        public Macro(MacroDefinition def)
+        public Macro(MacroType type)
         {
-            Type = def.Type;
-            Index = def.Index;
+            Type = type;
         }
 
-        public Macro(MacroDefinition def, int value)
-            : this(def)
+        public Macro(MacroType type, int value)
+            : this(type)
         {
             m_ValueInteger = value;
             m_IsInteger = true;
         }
 
-        public Macro(MacroDefinition def, string value)
-            : this(def)
+        public Macro(MacroType type, string value)
+            : this(type)
         {
             m_ValueString = value;
             m_IsInteger = false;
@@ -49,7 +47,10 @@
             }
             get
             {
-                return m_ValueInteger;
+                if (m_IsInteger)
+                    return m_ValueInteger;
+                else
+                    return 0;
             }
         }
 

@@ -5,6 +5,8 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.IO;
 using UltimaXNA.Core.Windows;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.World;
 
 namespace UltimaXNA.Ultima.Input
 {
@@ -31,13 +33,14 @@ namespace UltimaXNA.Ultima.Input
             }
         }
 
-        public MacroAction AddNewMacroAction()
+        public void AddNewMacroAction(MacroAction action)
         {
-            MacroAction ma = new MacroAction();
-            if (m_Macros == null)
-                m_Macros = new List<MacroAction>();
-            m_Macros.Add(ma);
-            return ma;
+            m_Macros.Add(action);
+        }
+
+        public void RemoveMacroAction(MacroAction action)
+        {
+            m_Macros.Remove(action);
         }
 
         public void ReceiveKeyboardInput(List<InputEventKeyboard> events)
@@ -121,7 +124,8 @@ namespace UltimaXNA.Ultima.Input
 
             if (!File.Exists(s_Path))
             {
-                Tracer.Debug("No macros to load.");
+                Tracer.Debug("No macros to load. Creating deafult macro set");
+                CreateDefaultMacroSet();
                 return;
             }
 
@@ -163,7 +167,6 @@ namespace UltimaXNA.Ultima.Input
                 for (int j = 0; j < All[i].Macros.Count; j++)
                 {
                     writer.Write((int)All[i].Macros[j].Type);
-                    writer.Write((int)All[i].Macros[j].Index);
                     writer.Write((bool)All[i].Macros[j].IsInteger);
                     if (All[i].Macros[j].IsInteger)
                     {
@@ -204,12 +207,11 @@ namespace UltimaXNA.Ultima.Input
                 {
                     int type = reader.ReadInt();
                     int index = reader.ReadInt();
-                    MacroDefinition def = Macros.GetDefinition((MacroType)type, index);
                     bool isInteger = reader.ReadBool();
                     if (isInteger)
-                        action.Macros.Add(new Macro(def, reader.ReadInt()));
+                        action.Macros.Add(new Macro((MacroType)type, reader.ReadInt()));
                     else
-                        action.Macros.Add(new Macro(def, reader.ReadString()));
+                        action.Macros.Add(new Macro((MacroType)type, reader.ReadString()));
                 }
 
                 m_Macros.Add(action);
@@ -217,6 +219,167 @@ namespace UltimaXNA.Ultima.Input
             }
 
             return true;
+        }
+
+        // ==============================================================================================================
+        // Default macro set
+        // ==============================================================================================================
+
+        public void CreateDefaultMacroSet()
+        {
+            if (m_Macros == null)
+                m_Macros = new List<MacroAction>();
+            m_Macros.Clear();
+
+            MacroAction action;
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.S;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.Status));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.T;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.Chat));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.B;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.MageSpellbook));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.C;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.ToggleWarPeace));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.P;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.Paperdoll));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.K;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.Skills));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.J;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.Journal));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.Q;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.QuestLog));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.W;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.SpellWeavingSpellbook));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.I;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.Backpack));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.R;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.Overview));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.O;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.OpenGump, (int)MacroDisplay.Configuration));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.X;
+            action.Alt = true;
+            action.Macros.Add(new Macro(MacroType.TargetSelf));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.S;
+            action.Shift = true;
+            action.Macros.Add(new Macro(MacroType.LastTarget));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.NumPad8;
+            action.Macros.Add(new Macro(MacroType.Say, "Forward"));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.NumPad5;
+            action.Macros.Add(new Macro(MacroType.Say, "Stop"));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.NumPad4;
+            action.Macros.Add(new Macro(MacroType.Say, "Turn Left"));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.NumPad6;
+            action.Macros.Add(new Macro(MacroType.Say, "Turn Right"));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.NumPad7;
+            action.Macros.Add(new Macro(MacroType.Say, "Left"));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.NumPad9;
+            action.Macros.Add(new Macro(MacroType.Say, "Right"));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.NumPad2;
+            action.Macros.Add(new Macro(MacroType.Say, "Backwards"));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.NumPad1;
+            action.Macros.Add(new Macro(MacroType.Say, "Raise Anchor"));
+            AddNewMacroAction(action);
+            
+            action = new MacroAction();
+            action.Keystroke = WinKeys.NumPad3;
+            action.Macros.Add(new Macro(MacroType.Say, "Drop Anchor"));
+            AddNewMacroAction(action);
+
+            // NİGHTSİGHT
+            action = new MacroAction();
+            action.Keystroke = WinKeys.F1;
+            action.Macros.Add(new Macro(MacroType.CastSpell, 5)); 
+            action.Macros.Add(new Macro(MacroType.LastTarget));
+            AddNewMacroAction(action);
+            
+            // TEST
+            action = new MacroAction();
+            action.Keystroke = WinKeys.F2;
+            action.Macros.Add(new Macro(MacroType.Say, "Delaying 1 second."));
+            action.Macros.Add(new Macro(MacroType.Delay, 1000));
+            action.Macros.Add(new Macro(MacroType.Say, "Delay 2 seconds."));
+            action.Macros.Add(new Macro(MacroType.Delay, 2000));
+            action.Macros.Add(new Macro(MacroType.Say, "Delay complete!"));
+            AddNewMacroAction(action);
+            
+            Save();
         }
     }
 }

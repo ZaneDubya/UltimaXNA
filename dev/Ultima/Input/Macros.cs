@@ -135,7 +135,7 @@ namespace UltimaXNA.Ultima.Input
             // --------------------------------------------------------------------------------------------------------------
             foreach (SpellDefinition spell in SpellsMagery.Spells)
             {
-                Definitions.Add(new MacroDefinition(spell.Name, MacroType.CastSpell, spell.ID);
+                Definitions.Add(new MacroDefinition(spell.Name, MacroType.CastSpell, spell.ID));
             }
 
             // --------------------------------------------------------------------------------------------------------------
@@ -149,13 +149,13 @@ namespace UltimaXNA.Ultima.Input
         {
             foreach (MacroDefinition def in Definitions)
             {
-                if (macro.Type == def.Type && macro.Index == def.Index)
+                if (macro.Type == def.Type && macro.ValueInteger == def.Index)
                     return def.Name;
             }
             return "UnknownMacro";
         }
 
-        public static MacroDefinition GetDefinition(MacroType type, int index)
+        /*public static MacroDefinition GetDefinition(MacroType type, int index)
         {
             foreach (MacroDefinition def in Definitions)
             {
@@ -165,9 +165,19 @@ namespace UltimaXNA.Ultima.Input
             return NullMacro;
         }
 
+        public static MacroDefinition GetDefinition(MacroType type)
+        {
+            foreach (MacroDefinition def in Definitions)
+            {
+                if (type == def.Type)
+                    return def;
+            }
+            return NullMacro;
+        }*/
+
         public static void RunMacroAction(MacroAction action)
         {
-            WorldModel world = ServiceRegistry.GetService<WorldModel>();
+            /*WorldModel world = ServiceRegistry.GetService<WorldModel>();
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
             for (int i = 0; i < macro.actionList.Count; i++)
             {
@@ -266,7 +276,7 @@ namespace UltimaXNA.Ultima.Input
                     //YELL FUNCTION
                 }
                 //dont use any code here all done........
-            }
+            }*/
         }
     }
 }
