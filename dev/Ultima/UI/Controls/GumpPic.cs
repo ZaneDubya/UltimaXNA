@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
  *   GumpPic.cs
- *   
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -8,16 +8,14 @@
  *
  ***************************************************************************/
 
-using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    class GumpPic : AGumpPic
+    internal class GumpPic : AGumpPic
     {
         public GumpPic(AControl parent, string[] arguements)
             : base(parent)
@@ -47,7 +45,5 @@ namespace UltimaXNA.Ultima.UI.Controls
             spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), hueVector);
             base.Draw(spriteBatch, position);
         }
-
-        
     }
 }

@@ -1,21 +1,25 @@
 ﻿/***************************************************************************
  *   InputManager.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
- *   
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Windows;
-#endregion
+
+#endregion usings
 
 namespace UltimaXNA.Core.Input
 {
@@ -23,16 +27,19 @@ namespace UltimaXNA.Core.Input
     {
         // Base WndProc
         private WndProc m_WndProc;
+
         private bool m_IsInitialized;
 
         // event data
         private readonly List<InputEvent> m_EventsAccumulating = new List<InputEvent>();
+
         private readonly List<InputEvent> m_EventsAccumulatingAlternate = new List<InputEvent>();
         private readonly List<InputEvent> m_EventsThisFrame = new List<InputEvent>();
         private bool m_EventsAccumulatingUseAlternate;
 
         // Mouse dragging support
         private const int MouseDragBeginDistance = 2;
+
         private const int MouseClickMaxDelta = 2;
         private InputEventMouse m_LastMouseClick;
         private float m_LastMouseClickTime;
@@ -114,7 +121,7 @@ namespace UltimaXNA.Core.Input
         {
             get
             {
-                if((m_MouseStateLastFrame.X == m_MouseStateThisFrame.X) &&
+                if ((m_MouseStateLastFrame.X == m_MouseStateThisFrame.X) &&
                    (m_MouseStateLastFrame.Y == m_MouseStateThisFrame.Y))
                 {
                     return true;
@@ -128,10 +135,10 @@ namespace UltimaXNA.Core.Input
             get
             {
                 List<InputEvent> list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
-                for(int i = list.Count; i > 0; i--)
+                for (int i = list.Count; i > 0; i--)
                 {
                     InputEvent e = list[i - 1];
-                    if((e is InputEventKeyboard) && (((InputEventKeyboard)e).EventType == KeyboardEvent.Press))
+                    if ((e is InputEventKeyboard) && (((InputEventKeyboard)e).EventType == KeyboardEvent.Press))
                     {
                         return (InputEventKeyboard)e;
                     }
@@ -154,7 +161,7 @@ namespace UltimaXNA.Core.Input
             List<InputEventKeyboard> list = new List<InputEventKeyboard>();
             foreach (InputEvent e in m_EventsThisFrame)
             {
-                if(!e.Handled && e is InputEventKeyboard)
+                if (!e.Handled && e is InputEventKeyboard)
                 {
                     list.Add((InputEventKeyboard)e);
                 }
@@ -167,7 +174,7 @@ namespace UltimaXNA.Core.Input
             List<InputEventMouse> list = new List<InputEventMouse>();
             foreach (InputEvent e in m_EventsThisFrame)
             {
-                if(!e.Handled && e is InputEventMouse)
+                if (!e.Handled && e is InputEventMouse)
                 {
                     list.Add((InputEventMouse)e);
                 }
@@ -179,7 +186,7 @@ namespace UltimaXNA.Core.Input
         {
             m_TheTime = (float)totalTime;
 
-            if(!m_IsInitialized)
+            if (!m_IsInitialized)
             {
                 m_MouseStateLastFrame = m_MouseStateThisFrame = m_WndProc.MouseState;
                 m_IsInitialized = true;
@@ -189,7 +196,7 @@ namespace UltimaXNA.Core.Input
             m_MouseStateThisFrame = CreateMouseState(m_WndProc.MouseState);
 
             // update mouse stationary business
-            if(hasMouseBeenStationarySinceLastUpdate)
+            if (hasMouseBeenStationarySinceLastUpdate)
             {
                 m_mouseStationaryMS += (float)frameTime;
             }
@@ -209,14 +216,32 @@ namespace UltimaXNA.Core.Input
             return newstate;
         }
 
-        public bool HandleKeyboardEvent(KeyboardEvent type, WinKeys key, bool shift, bool alt, bool ctrl)
+        public XMacro HandleKeyboardEventForMacros()
         {
-            foreach(InputEvent e in m_EventsThisFrame)
+            foreach (InputEvent e in m_EventsThisFrame)
             {
-                if(!e.Handled && e is InputEventKeyboard)
+                if (!e.Handled && e is InputEventKeyboard)
                 {
                     InputEventKeyboard ek = (InputEventKeyboard)e;
-                    if(ek.EventType == type &&
+
+                    if (ek.EventType == KeyboardEvent.Down)//(key down) or (key press) I DONT KNOW
+                    {
+                        e.Handled = true;
+                        return Settings.Macro.UserMacros.isEqual(ek.KeyCode, ek.Shift, ek.Alt, ek.Control); ;//searching in allmacros
+                    }
+                }
+            }
+            return null;
+        }
+
+        public bool HandleKeyboardEvent(KeyboardEvent type, WinKeys key, bool shift, bool alt, bool ctrl)
+        {
+            foreach (InputEvent e in m_EventsThisFrame)
+            {
+                if (!e.Handled && e is InputEventKeyboard)
+                {
+                    InputEventKeyboard ek = (InputEventKeyboard)e;
+                    if (ek.EventType == type &&
                        ek.KeyCode == key &&
                        ek.Shift == shift &&
                        ek.Alt == alt &&
@@ -232,12 +257,12 @@ namespace UltimaXNA.Core.Input
 
         public bool HandleMouseEvent(MouseEvent type, MouseButton mb)
         {
-            foreach(InputEvent e in m_EventsThisFrame)
+            foreach (InputEvent e in m_EventsThisFrame)
             {
-                if(!e.Handled && e is InputEventMouse)
+                if (!e.Handled && e is InputEventMouse)
                 {
                     InputEventMouse em = (InputEventMouse)e;
-                    if(em.EventType == type && em.Button == mb)
+                    if (em.EventType == type && em.Button == mb)
                     {
                         e.Handled = true;
                         return true;
@@ -261,18 +286,18 @@ namespace UltimaXNA.Core.Input
 
         private void onMouseUp(InputEventMouse e)
         {
-            if(m_MouseIsDragging)
+            if (m_MouseIsDragging)
             {
                 addEvent(new InputEventMouse(MouseEvent.DragEnd, e));
                 m_MouseIsDragging = false;
             }
-            else if (m_LastMouseDown != null)
+            else
             {
-                if(!DistanceBetweenPoints(m_LastMouseDown.Position, e.Position, MouseClickMaxDelta))
+                if (!DistanceBetweenPoints(m_LastMouseDown.Position, e.Position, MouseClickMaxDelta))
                 {
                     addEvent(new InputEventMouse(MouseEvent.Click, e));
 
-                    if((m_TheTime - m_LastMouseClickTime <= Settings.UserInterface.Mouse.DoubleClickMS) &&
+                    if ((m_TheTime - m_LastMouseClickTime <= Settings.UserInterface.Mouse.DoubleClickMS) &&
                        !DistanceBetweenPoints(m_LastMouseClick.Position, e.Position, MouseClickMaxDelta))
                     {
                         m_LastMouseClickTime = 0f;
@@ -292,9 +317,9 @@ namespace UltimaXNA.Core.Input
         private void onMouseMove(InputEventMouse e)
         {
             addEvent(new InputEventMouse(MouseEvent.Move, e));
-            if(!m_MouseIsDragging && m_LastMouseDown != null)
+            if (!m_MouseIsDragging && m_LastMouseDown != null)
             {
-                if(DistanceBetweenPoints(m_LastMouseDown.Position, e.Position, MouseDragBeginDistance))
+                if (DistanceBetweenPoints(m_LastMouseDown.Position, e.Position, MouseDragBeginDistance))
                 {
                     addEvent(new InputEventMouse(MouseEvent.DragBegin, e));
                     m_MouseIsDragging = true;
@@ -305,12 +330,12 @@ namespace UltimaXNA.Core.Input
         private void onKeyDown(InputEventKeyboard e)
         {
             // handle the initial key down
-            if(e.Data_PreviousState == 0)
+            if (e.Data_PreviousState == 0)
             {
                 addEvent(new InputEventKeyboard(KeyboardEvent.Down, e));
             }
             // handle the key presses. Possibly multiple per keydown message.
-            for(int i = 0; i < e.Data_RepeatCount; i++)
+            for (int i = 0; i < e.Data_RepeatCount; i++)
             {
                 addEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
             }
@@ -324,13 +349,13 @@ namespace UltimaXNA.Core.Input
         private void onKeyChar(InputEventKeyboard e)
         {
             // Control key sends a strange wm_char message ...
-            if(e.Control && !e.Alt)
+            if (e.Control && !e.Alt)
             {
                 return;
             }
 
             InputEventKeyboard pressEvent = LastKeyPressEvent;
-            if(pressEvent == null)
+            if (pressEvent == null)
             {
                 Tracer.Critical("No corresponding KeyPress event for this WM_CHAR message.");
             }
@@ -372,7 +397,7 @@ namespace UltimaXNA.Core.Input
 
         private bool DistanceBetweenPoints(Point initial, Point final, int distance)
         {
-            if(Math.Abs(final.X - initial.X) + Math.Abs(final.Y - initial.Y) > distance)
+            if (Math.Abs(final.X - initial.X) + Math.Abs(final.Y - initial.Y) > distance)
             {
                 return true;
             }

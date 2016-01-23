@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
  *   Button.cs
- *   
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -8,14 +8,13 @@
  *
  ***************************************************************************/
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -23,14 +22,15 @@ namespace UltimaXNA.Ultima.UI.Controls
     {
         Default = 0,
         SwitchPage = 0,
+        SwitchMacro = 2, //i think it is easy way ??
         Activate = 1
     }
 
     public class Button : AControl
     {
         private const int kGump_Up = 0, kGump_Down = 1, kGump_Over = 2;
-        Texture2D[] m_gumpTextures = new Texture2D[3] { null, null, null };
-        int[] m_gumpID = new int[3] { 0, 0, 0 }; // 0 == up, 1 == down, 2 == additional over state, not sent by the server but can be added for clientside gumps.
+        private Texture2D[] m_gumpTextures = new Texture2D[3] { null, null, null };
+        private int[] m_gumpID = new int[3] { 0, 0, 0 }; // 0 == up, 1 == down, 2 == additional over state, not sent by the server but can be added for clientside gumps.
 
         public int GumpUpID
         {
@@ -66,7 +66,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         internal bool MouseDownOnThis { get { return (m_clicked); } }
 
-        RenderedText m_Texture;
+        private RenderedText m_Texture;
 
         public Button(AControl parent)
             : base(parent)
@@ -85,7 +85,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             buttonType = Int32.Parse(arguements[5]);
             param = Int32.Parse(arguements[6]);
             buttonID = 0;
-            if( arguements.Length > 7 )
+            if (arguements.Length > 7)
                 buttonID = Int32.Parse(arguements[7]);
             buildGumpling(x, y, gumpID1, gumpID2, (ButtonTypes)buttonType, param, buttonID);
         }
@@ -96,7 +96,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, gumpID1, gumpID2, buttonType, param, buttonID);
         }
 
-        void buildGumpling(int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
+        private void buildGumpling(int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
         {
             Position = new Point(x, y);
             GumpUpID = gumpID1;
@@ -164,7 +164,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return false;
         }
 
-        bool m_clicked = false;
+        private bool m_clicked = false;
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
         {
@@ -188,8 +188,13 @@ namespace UltimaXNA.Ultima.UI.Controls
                         // switch page
                         ChangePage(ButtonParameter);
                         break;
+
                     case ButtonTypes.Activate:
                         // send response
+                        OnButtonClick(ButtonID);
+                        break;
+
+                    case ButtonTypes.SwitchMacro:
                         OnButtonClick(ButtonID);
                         break;
                 }

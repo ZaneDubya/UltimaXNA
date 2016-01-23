@@ -130,6 +130,8 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
+    <Compile Include="Configuration\MacroSettings.cs" />
+    <Compile Include="Configuration\Properties\MacroProperty.cs" />
     <Compile Include="Configuration\Properties\MouseProperty.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\Properties\SavedGumpProperty.cs" />
@@ -301,6 +303,8 @@
     <Compile Include="Ultima\UI\Controls\ColorPickerBox.cs" />
     <Compile Include="Ultima\UI\Controls\EquipmentSlot.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicWithWidth.cs" />
+    <Compile Include="Ultima\UI\Controls\KeyPressControl.cs" />
+    <Compile Include="Ultima\UI\Controls\MacroDropDownList.cs" />
     <Compile Include="Ultima\UI\LoginGumps\CreditsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ContextMenuGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\LogoutGump.cs" />

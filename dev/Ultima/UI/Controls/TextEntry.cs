@@ -1,13 +1,15 @@
 ﻿/***************************************************************************
  *   TextEntry.cs
- *   
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
+
 using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.Core.Graphics;
@@ -15,15 +17,13 @@ using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.UI.HTML;
 using UltimaXNA.Core.Windows;
-#endregion
+
+#endregion usings
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    class TextEntry : AControl
+    internal class TextEntry : AControl
     {
-        private string m_Text;
-        private bool m_IsEditable = true;
-
         public int Hue = 0;
         public int EntryID = 0;
         public int LimitSize = 0;
@@ -33,31 +33,11 @@ namespace UltimaXNA.Ultima.UI.Controls
         public string LeadingHtmlTag = string.Empty;
         public string LeadingText = string.Empty;
 
-        public bool IsEditable
-        {
-            get { return m_IsEditable; }
-            set
-            {
-                if (value != m_IsEditable)
-                {
-                    m_IsEditable = value;
-                    if (m_IsEditable)
-                        UserInterface.KeyboardFocusControl = this;
-                }
-            }
-        }
+        private string _text = "";
 
-        public string Text
-        {
-            get { return m_Text == null ? string.Empty : m_Text; }
-            set { m_Text = value; }
-        }
+        public string Text { get { return _text; } set { _text = value; } }
 
-        public bool LegacyCarat
-        {
-            get;
-            set;
-        }
+        public bool LegacyCarat { get; set; }
 
         public override bool HandlesMouseInput
         {
@@ -101,7 +81,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             width = Int32.Parse(arguements[3]);
             height = Int32.Parse(arguements[4]);
             hue = ServerRecievedHueTransform(Int32.Parse(arguements[5]));
-            
+
             entryID = Int32.Parse(arguements[6]);
             textIndex = Int32.Parse(arguements[7]);
             if (arguements[0] == "textentrylimited")
@@ -117,7 +97,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, width, height, hue, entryID, limitSize, text);
         }
 
-        void buildGumpling(int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
+        private void buildGumpling(int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);
@@ -168,6 +148,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_RenderedText.Text = LeadingHtmlTag + LeadingText + (IsPasswordField ? new string('*', Text.Length) : Text);
             m_Carat.Text = LeadingHtmlTag + (LegacyCarat ? "_" : "|");
 
+            if (!IsInitialized || IsDisposed || !IsVisible)
+                return; return;
+
             base.Update(totalMS, frameMS);
         }
 
@@ -195,9 +178,10 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0, Utility.GetHueVector(Hue));
             }
 
-
             if (m_CaratBlinkOn)
                 m_Carat.Draw(spriteBatch, caratPosition, Utility.GetHueVector(Hue));
+            if (!IsInitialized)
+                return;
             base.Draw(spriteBatch, position);
         }
 
@@ -208,9 +192,11 @@ namespace UltimaXNA.Ultima.UI.Controls
                 case WinKeys.Tab:
                     Parent.KeyboardTabToNextFocus(this);
                     break;
+
                 case WinKeys.Enter:
                     Parent.OnKeyboardReturn(EntryID, Text);
                     break;
+
                 case WinKeys.Back:
                     if (ReplaceDefaultTextOnFirstKeypress)
                     {
@@ -230,9 +216,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                         }
                     }
                     break;
+
                 default:
                     // place a char, so long as it's within the widths limit.
-
                     if (LimitSize != 0 && Text.Length >= LimitSize)
                         return;
 

@@ -45,6 +45,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public VendorBuyGump(AEntity vendorBackpack, VendorBuyListPacket packet)
             : base(0, 0)
         {
+
             // sanity checking: don't show buy gumps for empty containers.
             if (!(vendorBackpack is Container) || ((vendorBackpack as Container).Contents.Count <= 0) || (packet.Items.Count <= 0))
             {
@@ -67,11 +68,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(m_OKButton = new Button(this, 220, 333, 0x907, 0x908, ButtonTypes.Activate, 0, 0));
             m_OKButton.GumpOverID = 0x909;
             m_OKButton.MouseClickEvent += okButton_MouseClickEvent;
+
         }
 
         public override void Dispose()
         {
-            m_OKButton.MouseClickEvent -= okButton_MouseClickEvent;
+            if (m_OKButton != null)
+                m_OKButton.MouseClickEvent -= okButton_MouseClickEvent;
             base.Dispose();
         }
 
@@ -172,7 +175,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_ScrollBar.Value = 0;
         }
 
-        private const string c_Format = 
+        private const string c_Format =
             "<right><a href='add={4}'><gumpimg src='0x9CF'/></a><div width='4'/><a href='remove={4}'><gumpimg src='0x9CE'/></a></right>" +
             "<left><itemimg src='{2}'  width='52' height='44'/></left><left><span color='#400'>{0}<br/>{1}gp, {3} available.</span></left>";
 
