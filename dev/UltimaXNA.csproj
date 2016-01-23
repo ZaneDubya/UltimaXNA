@@ -130,12 +130,15 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
-    <Compile Include="Configuration\MacroSettings.cs" />
-    <Compile Include="Configuration\Macros\MacroArmDisarm.cs" />
-    <Compile Include="Configuration\Macros\MacroDefinition.cs" />
-    <Compile Include="Configuration\Macros\MacroDisplay.cs" />
-    <Compile Include="Configuration\Macros\MacroType.cs" />
-    <Compile Include="Configuration\Properties\MacroProperty.cs" />
+    <Compile Include="Ultima\Input\Macro.cs" />
+    <Compile Include="Ultima\Input\MacroArmDisarm.cs" />
+    <Compile Include="Ultima\Input\MacroDefinition.cs" />
+    <Compile Include="Ultima\Input\MacroDisplay.cs" />
+    <Compile Include="Ultima\Input\MacroAction.cs" />
+    <Compile Include="Ultima\Input\PlayerMacros.cs" />
+    <Compile Include="Ultima\Input\Macros.cs" />
+    <Compile Include="Ultima\Input\MacroType.cs" />
+    <Compile Include="Configuration\Properties\MacroFile.cs" />
     <Compile Include="Configuration\Properties\MouseProperty.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\Properties\SavedGumpProperty.cs" />
@@ -721,7 +724,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Ultima\Input\" />
     <Folder Include="Ultima\IO\Fonts\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

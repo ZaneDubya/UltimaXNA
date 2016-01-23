@@ -6,17 +6,16 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using UltimaXNA.Configuration.Macros;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Windows;
 
 namespace UltimaXNA.Configuration.Properties
 {
-    public class XKey
+    public class MacroFile
     {
         public int Count { get { return xnaMacros.Count; } }
 
-        public XKey(string userName)
+        public MacroFile(string userName)
         {
             path = Path.Combine(Application.StartupPath, string.Format("{0}_macros2d.txt", userName.Replace(" ", "-")));
             loadKeysFromFile();
@@ -315,91 +314,6 @@ namespace UltimaXNA.Configuration.Properties
         public void removeMacro(XMacro item)
         {
             xnaMacros.Remove(item);
-        }
-    }
-
-    public class XMacro : IDisposable //I NEED DISPOSIBLE CLASS
-    {
-        public WinKeys Keystroke = WinKeys.None;
-        public bool Shift = false;
-        public bool Alt = false;
-        public bool Ctrl = false;
-        public List<XAction> actionList = new List<XAction>();
-
-        public override string ToString()
-        {
-            return string.Format("{0}\a{1}\a{2}\a{3}", (int)Keystroke, Convert.ToInt32(Shift), Convert.ToInt32(Alt), Convert.ToInt32(Ctrl));
-        }
-
-        // Flag: Has Dispose already been called?
-        private bool disposed = false;
-
-        // Instantiate a SafeHandle instance.
-        private SafeHandle handle = new SafeFileHandle(IntPtr.Zero, true);
-
-        // Public implementation of Dispose pattern callable by consumers.
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        // Protected implementation of Dispose pattern.
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-                return;
-
-            if (disposing)
-            {
-                handle.Dispose();
-                // Free any other managed objects here.
-                //
-            }
-
-            // Free any unmanaged objects here.
-            //
-            disposed = true;
-        }
-    }
-
-    public class XAction
-    {
-        public MacroDefinition Macro;
-
-        private bool m_IsInteger = true;
-        private int m_ValueInteger = -1;
-        private string m_ValueString = null;
-
-        public int ValueInteger
-        {
-            set
-            {
-                m_IsInteger = true;
-                m_ValueInteger = value;
-            }
-            get
-            {
-                return m_ValueInteger;
-            }
-        }
-
-        public string ValueString
-        {
-            set
-            {
-                m_IsInteger = false;
-                m_ValueString = value;
-            }
-            get
-            {
-                return m_ValueString;
-            }
-        }
-
-        public override string ToString()
-        {
-            return string.Format("\0{0}\a{1}", Macro.Name, (m_IsInteger ? m_ValueInteger.ToString() : m_ValueString));
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace UltimaXNA.Configuration.Macros
+﻿namespace UltimaXNA.Ultima.Input
 {
-    public enum MacroType
+    public enum MacroType : int
     {
         None,
         UseSkill,

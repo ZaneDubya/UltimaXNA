@@ -31,7 +31,6 @@ namespace UltimaXNA
         private LoginSettings m_Login;
         private UltimaOnlineSettings m_UltimaOnline;
         private AudioSettings m_Audio;
-        private MacroSettings m_Macro;
 
         static Settings()
         {
@@ -45,7 +44,6 @@ namespace UltimaXNA
             s_Instance.m_UI = CreateOrOpenSection<UserInterfaceSettings>(UserInterfaceSettings.SectionName);
             s_Instance.m_Gumps = CreateOrOpenSection<GumpSettings>(GumpSettings.SectionName);
             s_Instance.m_Audio = CreateOrOpenSection<AudioSettings>(AudioSettings.SectionName);
-            s_Instance.m_Macro = CreateOrOpenSection<MacroSettings>(MacroSettings.SectionName);
             s_File.Load();
         }
 
@@ -87,11 +85,6 @@ namespace UltimaXNA
         public static AudioSettings Audio
         {
             get { return s_Instance.m_Audio; }
-        }
-
-        public static MacroSettings Macro
-        {
-            get { return s_Instance.m_Macro; }
         }
 
         internal static void Save()

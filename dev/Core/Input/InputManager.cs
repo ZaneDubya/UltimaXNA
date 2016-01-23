@@ -211,24 +211,6 @@ namespace UltimaXNA.Core.Input
             return newstate;
         }
 
-        public XMacro HandleKeyboardEventForMacros()
-        {
-            foreach (InputEvent e in m_EventsThisFrame)
-            {
-                if (!e.Handled && e is InputEventKeyboard)
-                {
-                    InputEventKeyboard ek = (InputEventKeyboard)e;
-
-                    if (ek.EventType == KeyboardEvent.Down)//(key down) or (key press) I DONT KNOW
-                    {
-                        e.Handled = true;
-                        return Settings.Macro.UserMacros.isEqual(ek.KeyCode, ek.Shift, ek.Alt, ek.Control); ;//searching in allmacros
-                    }
-                }
-            }
-            return null;
-        }
-
         public bool HandleKeyboardEvent(KeyboardEvent type, WinKeys key, bool shift, bool alt, bool ctrl)
         {
             foreach (InputEvent e in m_EventsThisFrame)

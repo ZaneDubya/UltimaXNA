@@ -1,20 +1,10 @@
-﻿namespace UltimaXNA.Configuration.Macros
+﻿namespace UltimaXNA.Ultima.Input
 {
     public class MacroDefinition
     {
         public string Name;
         public MacroType Type;
         public int Index;
-
-        /// <summary>
-        /// This should be replaced by the typed ctor.
-        /// </summary>
-        public MacroDefinition()
-        {
-            Name = string.Empty;
-            Type = MacroType.None;
-            Index = 0;
-        }
 
         public MacroDefinition(string name, MacroType type)
         {

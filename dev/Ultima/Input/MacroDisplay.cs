@@ -1,4 +1,4 @@
-﻿namespace UltimaXNA.Configuration.Macros
+﻿namespace UltimaXNA.Ultima.Input
 {
     public enum MacroDisplay : int
     {

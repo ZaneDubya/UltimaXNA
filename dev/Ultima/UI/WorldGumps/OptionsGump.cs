@@ -14,7 +14,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UltimaXNA.Configuration.Macros;
 using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core;
 using UltimaXNA.Core.UI;
