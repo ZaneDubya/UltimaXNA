@@ -33,7 +33,16 @@ namespace UltimaXNA.Ultima.UI.Controls
         public string LeadingHtmlTag = string.Empty;
         public string LeadingText = string.Empty;
 
-        public string Text { get { return m_Text; } set { m_Text = value; } }
+        public string Text
+        {
+            get
+            {
+                if (m_Text != null)
+                    return m_Text;
+                return string.Empty;
+            }
+            set { m_Text = value; }
+        }
 
         public bool LegacyCarat { get; set; }
 
