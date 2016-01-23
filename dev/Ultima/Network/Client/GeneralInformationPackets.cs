@@ -9,10 +9,8 @@
  ***************************************************************************/
 
 #region usings
-
 using UltimaXNA.Core.Network.Packets;
-
-#endregion usings
+#endregion
 
 namespace UltimaXNA.Ultima.Network.Client
 {

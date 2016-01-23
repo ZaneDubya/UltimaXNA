@@ -137,7 +137,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 m_CircleHeaders[i] = (HtmlGumpling)AddControl(
                     new HtmlGumpling(this, 64 + (i % 2) * 148, 10, 130, 200, 0, 0,
-                        string.Format("<span color='#004' style='font-family=uni0;'><center>{0}</center></span>", Magery.CircleNames[i])),
+                        string.Format("<span color='#004' style='font-family=uni0;'><center>{0}</center></span>", SpellsMagery.CircleNames[i])),
                         1 + (i / 2));
             }
             m_Indexes = new HtmlGumpling[8];
@@ -175,7 +175,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             // header: "NTH CIRCLE"
             AddControl(new HtmlGumpling(this, 64 + (rightPage ? 148 : 0), 10, 130, 200, 0, 0,
-                string.Format("<span color='#004' style='font-family=uni0;'><center>{0}</center></span>", Magery.CircleNames[circle])),
+                string.Format("<span color='#004' style='font-family=uni0;'><center>{0}</center></span>", SpellsMagery.CircleNames[circle])),
                 page);
             // icon and spell name
             AddControl(new HtmlGumpling(this, 56 + (rightPage ? 156 : 0), 38, 130, 44, 0, 0,
@@ -240,7 +240,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     int spellIndex;
                     if (!int.TryParse(hrefs[1], out spellIndex))
                         return;
-                    SpellDefinition spell = Magery.GetSpell(spellIndex);
+                    SpellDefinition spell = SpellsMagery.GetSpell(spellIndex);
                     if (spell.ID == spellIndex)
                     {
                         InputManager input = ServiceRegistry.GetService<InputManager>();
@@ -314,7 +314,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                         {
                             int currentSpellInfoPage = m_SpellList.IndexOf(spell) / 2;
                             m_Indexes[currentSpellCircle].Text += string.Format("<a href='page={1}' color='#532' hovercolor='#800' activecolor='#611' style='font-family=uni0; text-decoration=none;'>{0}</a><br/>",
-                                Magery.GetSpell(currentSpellCircle * 8 + spell.Value).Name,
+                                SpellsMagery.GetSpell(currentSpellCircle * 8 + spell.Value).Name,
                                 5 + currentSpellInfoPage);
                         }
                     }
@@ -325,7 +325,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     // Create Spell Info Page
                     if (currentSpellInfoIndex < m_SpellList.Count)
                     {
-                        CreateSpellPage(page, isRightPage, m_SpellList[currentSpellInfoIndex].Key, Magery.GetSpell(m_SpellList[currentSpellInfoIndex].Key * 8 + m_SpellList[currentSpellInfoIndex].Value));
+                        CreateSpellPage(page, isRightPage, m_SpellList[currentSpellInfoIndex].Key, SpellsMagery.GetSpell(m_SpellList[currentSpellInfoIndex].Key * 8 + m_SpellList[currentSpellInfoIndex].Value));
                     }
                 }
             }

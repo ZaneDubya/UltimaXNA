@@ -8,7 +8,6 @@
  *
  ***************************************************************************/
 #region usings
-
 #endregion
 
 namespace UltimaXNA.Core.Network

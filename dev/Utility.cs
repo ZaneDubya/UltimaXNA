@@ -498,5 +498,16 @@ namespace UltimaXNA
             }
             return sb.ToString();
         }
+
+
+        public static string[] CreateStringLinesFromList<T>(List<T> list)
+        {
+            string[] arrayList = new string[list.Count];
+            for (int i = 0; i < arrayList.Length; i++)
+            {
+                arrayList[i] = list[i].ToString();
+            }
+            return arrayList;
+        }
     }
 }

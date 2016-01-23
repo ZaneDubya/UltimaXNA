@@ -10,7 +10,6 @@
  ***************************************************************************/
 
 #region usings
-
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Configuration.Properties;
@@ -20,14 +19,14 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.Windows;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Input;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-
-#endregion usings
+#endregion
 
 namespace UltimaXNA.Ultima.World.Input
 {
@@ -59,15 +58,21 @@ namespace UltimaXNA.Ultima.World.Input
             private set;
         }
 
+        private MacroEngine m_Macros;
+
         public WorldInput(WorldModel world)
         {
+            // parent reference
             World = world;
 
+            // service references
             m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_Input = ServiceRegistry.GetService<InputManager>();
 
+            // local instances
             MousePick = new MousePicking();
+            m_Macros = new MacroEngine();
         }
 
         public MousePicking MousePick
@@ -178,6 +183,8 @@ namespace UltimaXNA.Ultima.World.Input
                 // the world is not receiving input this frame. get rid of any mouse picking data.
                 MousePick.PickOnly = PickType.PickNothing;
             }
+
+            m_Macros.Update(frameMS);
         }
 
         private void doMouseMovement(double frameMS)
@@ -468,20 +475,11 @@ namespace UltimaXNA.Ultima.World.Input
             InternalCheckQueuedClick(frameMS);
         }
 
-        private delegate void myMacroDelegate(XMacro xmcr);
-
         private void InternalParseKeyboard(double frameMS)
         {
-            using (XMacro XMCR = m_Input.HandleKeyboardEventForMacros())//checking keypress macro event
-            {
-                if (XMCR != null)//if macro found
-                {
-                    //ASYC METHOD FOR MULTIPLE MACRO COMBO
-                    myMacroDelegate worker = new myMacroDelegate(Settings.Macro.UseMacro);//ASYNC METHOD CALLING
-                    worker.BeginInvoke(XMCR, null, null);
-                }
-            }
-            //////////////
+            // macros
+            doMacroInput(m_Input.GetKeyboardEvents());
+
             // all names mode
             WorldView.AllLabels = (m_Input.IsShiftDown && m_Input.IsCtrlDown);
 
@@ -519,6 +517,25 @@ namespace UltimaXNA.Ultima.World.Input
             if (m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.M, false, true, false))
             {
                 Settings.UserInterface.Mouse.IsEnabled = !Settings.UserInterface.Mouse.IsEnabled;
+            }
+        }
+
+        private void doMacroInput(List<InputEventKeyboard> events)
+        {
+            foreach (InputEventKeyboard e in events)
+            {
+                foreach (Action action in Macros.Player.All)
+                {
+                    if (e.EventType == KeyboardEvent.Press &&
+                        action.Keystroke == e.KeyCode &&
+                        action.Alt == e.Alt &&
+                        action.Ctrl == e.Control &&
+                        action.Shift == e.Shift)
+                    {
+                        m_Macros.Run(action);
+                        e.Handled = true;
+                    }
+                }
             }
         }
 
@@ -563,6 +580,6 @@ namespace UltimaXNA.Ultima.World.Input
             m_QueuedEvent = e;
         }
 
-        #endregion QueuedClicks
+        #endregion
     }
 }

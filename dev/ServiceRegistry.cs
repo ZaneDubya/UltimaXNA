@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;

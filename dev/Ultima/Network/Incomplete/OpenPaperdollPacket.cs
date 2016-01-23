@@ -10,11 +10,9 @@
  ***************************************************************************/
 
 #region usings
-
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-
-#endregion usings
+#endregion
 
 namespace UltimaXNA.Ultima.Network.Server
 {
@@ -26,7 +24,7 @@ namespace UltimaXNA.Ultima.Network.Server
             set;
         }
 
-        public string MobileTittle
+        public string MobileTitle
         {
             get;
             set;
@@ -36,7 +34,7 @@ namespace UltimaXNA.Ultima.Network.Server
             : base(0x88, "Open Paperdoll")
         {
             Serial = reader.ReadInt32();
-            MobileTittle = reader.ReadStringSafe(60);
+            MobileTitle = reader.ReadStringSafe(60);
             //+flags
         }
     }
