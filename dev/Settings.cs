@@ -115,20 +115,5 @@ namespace UltimaXNA
         {
             s_File.InvalidateDirty();
         }
-
-        public static string[] fromList<T>(List<T> list)
-        {
-            string[] arrayList = new string[list.Count];
-            for (int i = 0; i < arrayList.Length; i++)
-            {
-                arrayList[i] = list[i].ToString();
-            }
-            return arrayList;
-        }
-
-        public static List<string> fromList<T>(List<T> list, bool stringList = true)
-        {
-            return fromList(list).ToList();
-        }
     }
 }
