@@ -25,6 +25,7 @@ namespace UltimaXNA.Core
     {
         public static readonly List<ResolutionProperty> FullScreenResolutionsList;
         public static readonly List<ResolutionProperty> PlayWindowResolutionsList;
+        public const int MAX_BUFFER_SIZE = 2056;
 
         public static void SetWindowSize(GameWindow window)
         {
@@ -46,15 +47,19 @@ namespace UltimaXNA.Core
                 if (mode.Format != SurfaceFormat.Color)
                     continue;
                 ResolutionProperty res = new ResolutionProperty(mode.Width, mode.Height);
-                if (!FullScreenResolutionsList.Contains(res))
+                if (res.Width <= MAX_BUFFER_SIZE && res.Height <= MAX_BUFFER_SIZE)
                 {
-                    FullScreenResolutionsList.Add(res);
+                    if (!FullScreenResolutionsList.Contains(res))
+                    {
+                        FullScreenResolutionsList.Add(res);
+                    }
                 }
             }
 
             foreach (ResolutionProperty res in FullScreenResolutionsList)
             {
-                if (!PlayWindowResolutionsList.Contains(res) && res.Width <= screen.Width && res.Height <= screen.Height)
+                if (!PlayWindowResolutionsList.Contains(res) 
+                    && res.Width <= screen.Width && res.Height <= screen.Height)
                 {
                     PlayWindowResolutionsList.Add(res);
                 }
