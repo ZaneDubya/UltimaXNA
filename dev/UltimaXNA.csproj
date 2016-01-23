@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
+    <Compile Include="Configuration\PartySettings.cs" />
     <Compile Include="Ultima\Input\Macro.cs" />
     <Compile Include="Ultima\Input\MacroArmDisarm.cs" />
     <Compile Include="Ultima\Input\MacroDefinition.cs" />
@@ -289,6 +290,16 @@
     <Compile Include="Ultima\Data\SpellbookData.cs" />
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
     <Compile Include="Ultima\Data\ClientVersion.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyAccept.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyAddMember.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyCanLootable.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyDecline.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyPrivateMessage.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyPublicMessage.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyQueryLocation.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyQueryStats.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyQuit.cs" />
+    <Compile Include="Ultima\Network\PartySystem\PartyRemoveMember.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
     <Compile Include="Ultima\Resources\BodyDef.cs" />
@@ -317,6 +328,8 @@
     <Compile Include="Ultima\UI\WorldGumps\LogoutGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\MobileHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\PartyGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\PartyHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorBuyGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorSellGump.cs" />

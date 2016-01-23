@@ -844,7 +844,7 @@ namespace UltimaXNA.Ultima.World
                 case MessageTypes.Guild:
                     m_World.Interaction.ChatMessage("[UILD] " + text, font, hue, asUnicode);
                     break;
-                case MessageTypes.Party:
+                case MessageTypes.Alliance:
                     m_World.Interaction.ChatMessage(string.Format("[{0}]: {1}", speakerName, text), font, hue, asUnicode);
                     break;
                 case MessageTypes.Command:
@@ -1126,7 +1126,7 @@ namespace UltimaXNA.Ultima.World
                 case 0x06: // party system
                     if (p.partyMessage.Length > 0)
                     {
-                        ReceiveTextMessage(MessageTypes.Party, p.partyMessage, 3, p.partyMessageHue, (Serial)0xFFFFFFF, p.partyMessager, true);
+                        ReceiveTextMessage(MessageTypes.Alliance, p.partyMessage, 3, p.partyMessageHue, (Serial)0xFFFFFFF, p.partyMessager, true);
                     }
                     break;
                 case 0x08: // set map
