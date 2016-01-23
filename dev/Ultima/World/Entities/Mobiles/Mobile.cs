@@ -10,11 +10,7 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
-using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles.Animations;
@@ -57,6 +53,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             if (OnEntityUpdated != null)
                 OnEntityUpdated();
         }
+
         protected override void OnTileChanged(int x, int y)
         {
             base.OnTileChanged(x, y);
@@ -222,10 +219,10 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         // ============================================================
 
         public MobileEquipment Equipment;
-
-        public bool IsMounted
-        {
-            get { return (Equipment[(int)EquipLayer.Mount] != null && Equipment[(int)EquipLayer.Mount].ItemID != 0); }
+        
+        public bool IsMounted 
+        { 
+            get { return (Equipment[(int)EquipLayer.Mount] != null && Equipment[(int)EquipLayer.Mount].ItemID != 0); } 
         }
 
         public int HairBodyID
@@ -307,7 +304,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         // Appearance and Hues
         // ============================================================
 
-        private static int[] s_HumanoidBodyIDs = new int[] {
+        private static int[] s_HumanoidBodyIDs = new int[] { 
             183, 184, 185, 186, // savages
             400, 401, 402, 403, // humans
             694, 695,
@@ -339,8 +336,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         private int m_hue;
         public override int Hue
         {
-            get
-            {
+            get {
                 if (Flags.IsHidden)
                     return 0x3E7;
                 else if (Flags.IsPoisoned)

@@ -99,7 +99,7 @@ namespace UltimaXNA.Ultima.Data
 
         public static bool EnableSA
         {
-            get { return m_Flags.HasFlag(FeatureFlags.StygianAbys); }
+            get { return m_Flags.HasFlag(FeatureFlags.StygianAbyss); }
         }
         
         public static void SetFlags(FeatureFlags flags)

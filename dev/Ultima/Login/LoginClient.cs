@@ -24,7 +24,6 @@ using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.Login.Servers;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
-using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
@@ -58,8 +57,8 @@ namespace UltimaXNA.Ultima.Login
 
         public LoginClientStatus Status { get; protected set; }
 
-        public event Action OnWaitingForRelay;
-        public event Action OnHasCharacterList;
+        public event System.Action OnWaitingForRelay;
+        public event System.Action OnHasCharacterList;
 
         public LoginClient()
         {

@@ -59,15 +59,21 @@ namespace UltimaXNA.Ultima.World.Input
             private set;
         }
 
+        private MacroEngine m_Macros;
+
         public WorldInput(WorldModel world)
         {
+            // parent reference
             World = world;
 
+            // service references
             m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_Input = ServiceRegistry.GetService<InputManager>();
 
+            // local instances
             MousePick = new MousePicking();
+            m_Macros = new MacroEngine();
         }
 
         public MousePicking MousePick
@@ -178,6 +184,8 @@ namespace UltimaXNA.Ultima.World.Input
                 // the world is not receiving input this frame. get rid of any mouse picking data.
                 MousePick.PickOnly = PickType.PickNothing;
             }
+
+            m_Macros.Update(frameMS);
         }
 
         private void doMouseMovement(double frameMS)
@@ -473,7 +481,8 @@ namespace UltimaXNA.Ultima.World.Input
 
         private void InternalParseKeyboard(double frameMS)
         {
-            Macros.Player.ReceiveKeyboardInput(m_Input.GetKeyboardEvents());
+            // macros
+            doMacroInput(m_Input.GetKeyboardEvents());
 
             // all names mode
             WorldView.AllLabels = (m_Input.IsShiftDown && m_Input.IsCtrlDown);
@@ -512,6 +521,25 @@ namespace UltimaXNA.Ultima.World.Input
             if (m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.M, false, true, false))
             {
                 Settings.UserInterface.Mouse.IsEnabled = !Settings.UserInterface.Mouse.IsEnabled;
+            }
+        }
+
+        private void doMacroInput(List<InputEventKeyboard> events)
+        {
+            foreach (InputEventKeyboard e in events)
+            {
+                foreach (Action action in Macros.Player.All)
+                {
+                    if (e.EventType == KeyboardEvent.Press &&
+                        action.Keystroke == e.KeyCode &&
+                        action.Alt == e.Alt &&
+                        action.Ctrl == e.Control &&
+                        action.Shift == e.Shift)
+                    {
+                        m_Macros.Run(action);
+                        e.Handled = true;
+                    }
+                }
             }
         }
 

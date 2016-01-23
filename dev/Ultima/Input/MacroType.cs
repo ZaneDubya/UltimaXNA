@@ -3,19 +3,19 @@
     public enum MacroType : int
     {
         None,
+        // text:
+        Say,
+        Emote,
+        Whisper,
+        Yell,
+
         // these types have sub values:
         UseSkill, 
         CastSpell, 
         OpenGump, 
         CloseGump,
         Move, 
-        ArmDisarm, 
-
-        // text:
-        Say,
-        Emote,
-        Whisper,
-        Yell,
+        ArmDisarm,
 
         // actions, no sub values:
         ToggleWarPeace,
@@ -30,8 +30,8 @@
         TargetSelf,
         WaitForTarget,
         NextTarget,
-        Delay,
         CloseAllGumps,
-        SetAlwaysRun
+        SetAlwaysRun,
+        Delay,
     }
 }

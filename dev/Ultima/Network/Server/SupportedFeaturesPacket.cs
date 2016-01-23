@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.Network.Server
         /// 0x40: enable SE features
         /// 0x80: enable ML features: elven race, spells, skills
         /// 0x100: enable 8th age splash screen
-        /// 0x200: enable 9th age splash screen
+        /// 0x200: enable 9th age splash screen, crystal/shadow housing tiles
         /// 0x400: enable 10th age
         /// 0x800: enable increased housing and bank storage
         /// 0x1000: 7th character slot
@@ -37,6 +37,9 @@ namespace UltimaXNA.Ultima.Network.Server
         /// 0x4000: enable trial account
         /// 0x8000: enable 11th age
         /// 0x10000: enable SA features: gargoyle race, spells, skills
+        /// 0x20000: HS features
+        /// 0x40000: Gothic housing tiles
+        /// 0x80000: Rustic housing tiles
         /// </summary>
         public FeatureFlags Flags
         {
@@ -48,12 +51,12 @@ namespace UltimaXNA.Ultima.Network.Server
             : base(0xB9, "Enable Features")
         {
             if (reader.Buffer.Length == 3)
-                Flags = (FeatureFlags)reader.ReadInt16();
+                Flags = (FeatureFlags)reader.ReadUInt16();
             else if (reader.Buffer.Length == 5)
-                Flags = (FeatureFlags)reader.ReadInt32();
+                Flags = (FeatureFlags)reader.ReadUInt16();
             else
             {
-                Flags = (FeatureFlags)reader.ReadInt16();
+                Flags = (FeatureFlags)reader.ReadUInt16();
                 Tracer.Error("Bad feature flag size in SupportedFeaturesPacket; expected 16 or 32 bit features, received {0} bits.", (reader.Buffer.Length - 1) * 8);
             }
         }

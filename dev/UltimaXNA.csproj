@@ -134,7 +134,8 @@
     <Compile Include="Ultima\Input\MacroArmDisarm.cs" />
     <Compile Include="Ultima\Input\MacroDefinition.cs" />
     <Compile Include="Ultima\Input\MacroDisplay.cs" />
-    <Compile Include="Ultima\Input\MacroAction.cs" />
+    <Compile Include="Ultima\Input\Action.cs" />
+    <Compile Include="Ultima\Input\MacroEngine.cs" />
     <Compile Include="Ultima\Input\PlayerMacros.cs" />
     <Compile Include="Ultima\Input\Macros.cs" />
     <Compile Include="Ultima\Input\MacroType.cs" />

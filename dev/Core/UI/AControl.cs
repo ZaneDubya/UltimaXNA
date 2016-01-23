@@ -149,15 +149,6 @@ namespace UltimaXNA.Core.UI
         }
 
         /// <summary>
-        /// If true, the gump will draw. Not visible gumps still update and receive mouse input (but not keyboard input).
-        /// </summary>
-        public int IDs
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// A list of all the child controls that this control owns.
         /// </summary>
         public List<AControl> Children
@@ -387,7 +378,6 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         public AControl(AControl parent)
         {
-            IDs = -1;
             Parent = parent;
             Page = 0;
             UserInterface = ServiceRegistry.GetService<UserInterfaceService>();

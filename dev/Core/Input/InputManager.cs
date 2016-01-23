@@ -270,20 +270,23 @@ namespace UltimaXNA.Core.Input
             }
             else
             {
-                if (!DistanceBetweenPoints(m_LastMouseDown.Position, e.Position, MouseClickMaxDelta))
+                if (m_LastMouseDown != null)
                 {
-                    addEvent(new InputEventMouse(MouseEvent.Click, e));
+                    if (!DistanceBetweenPoints(m_LastMouseDown.Position, e.Position, MouseClickMaxDelta))
+                    {
+                        addEvent(new InputEventMouse(MouseEvent.Click, e));
 
-                    if ((m_TheTime - m_LastMouseClickTime <= Settings.UserInterface.Mouse.DoubleClickMS) &&
-                       !DistanceBetweenPoints(m_LastMouseClick.Position, e.Position, MouseClickMaxDelta))
-                    {
-                        m_LastMouseClickTime = 0f;
-                        addEvent(new InputEventMouse(MouseEvent.DoubleClick, e));
-                    }
-                    else
-                    {
-                        m_LastMouseClickTime = m_TheTime;
-                        m_LastMouseClick = e;
+                        if ((m_TheTime - m_LastMouseClickTime <= Settings.UserInterface.Mouse.DoubleClickMS) &&
+                           !DistanceBetweenPoints(m_LastMouseClick.Position, e.Position, MouseClickMaxDelta))
+                        {
+                            m_LastMouseClickTime = 0f;
+                            addEvent(new InputEventMouse(MouseEvent.DoubleClick, e));
+                        }
+                        else
+                        {
+                            m_LastMouseClickTime = m_TheTime;
+                            m_LastMouseClick = e;
+                        }
                     }
                 }
             }
