@@ -19,6 +19,7 @@ using UltimaXNA.Core;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.Windows;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Input;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 #endregion
@@ -51,29 +52,21 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private DropDownList m_DropDownFullScreenResolutions;
         private DropDownList m_DropDownPlayWindowResolutions;
 
-        #region about macro options
-
+        // MACROS
+        private const int MACRO_CAPACITY = 10;
         private KeyPressControl m_MacroKeyPress;
-
-        //three variable have to same capacity (example: 10)
-        private MacroDropDownList[] m_ActionTypeList = new MacroDropDownList[10];
-
-        //three variable have to same capacity (example: 10)
-        private TextEntry[] m_Action1Text = new TextEntry[10];
-
-        //three variable have to same capacity (example: 10)
-        private MacroDropDownList[] m_Action1List = new MacroDropDownList[10];
-
         private CheckBox m_chkShift;
         private CheckBox m_chkAlt;
         private CheckBox m_chkCtrl;
-        private int currentMacro = 0;
-        private List<XMacro> deletedMacros = new List<XMacro>();
-        private List<XMacro> addedMacros = new List<XMacro>();
+        private MacroDropDownList[] m_ActionTypeList = new MacroDropDownList[MACRO_CAPACITY];
+        private TextEntry[] m_ActionText = new TextEntry[MACRO_CAPACITY];
+        private MacroDropDownList[] m_ActionDropDown = new MacroDropDownList[MACRO_CAPACITY];
+        private int m_MacroBeingDisplayed = 0;
+        private List<MacroAction> m_DeletedMacros = new List<MacroAction>();
+        private List<MacroAction> m_AddedMacros = new List<MacroAction>();
 
-        #endregion
-
-        private double m_RefreshTime = 0d;
+        private double m_NextRefreshAt = 0d;
+        private const double REFRESH_INTERVAL = 0.4d;
         private TextLabelAscii[] m_Labels = new TextLabelAscii[2];
 
         private enum Labels
@@ -149,7 +142,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 302, 60, 2466, 2467, ButtonTypes.Activate, 4, (int)Buttons.MPrevious), 4); // previous
             AddControl(new Button(this, 386, 60, 2469, 2470, ButtonTypes.Activate, 4, (int)Buttons.MNext), 4); // next
             AddControl(new TextLabelAscii(this, 125, 85, 9, 1, @"Keystroke"), 4);
-            //here is controlling key press event
+            
+            // key press event
             KeyPressControl myKeyPress = new KeyPressControl(this, 130, 100, 57, 14, 4000);
             AddControl(new ResizePic(this, myKeyPress), 4);
             m_MacroKeyPress = AddControl<KeyPressControl>(myKeyPress, 4);
@@ -165,25 +159,32 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             AddControl(new TextLabelAscii(this, 180, 135, 9, 1, @"ACTION"), 4);
             AddControl(new TextLabelAscii(this, 420, 135, 9, 1, @"VALUE"), 4);
-            //here is controlling the macro's action type and controlling another dropdown list for visual
+            
+            // macro's action type and controlling another dropdown list for visual
             int y = 0;
             for (int i = 0; i < m_ActionTypeList.Count(); i++)
             {
                 //number of action
                 AddControl(new TextLabelAscii(this, 84, 155 + y, 9, 1, (i + 1).ToString()), 4);
-                //here is action dropdown list (i need ID variable for find in controls)
-                m_ActionTypeList[i] = AddControl<MacroDropDownList>(new MacroDropDownList(this, 100, 150 + y, 215, Settings.fromList<MacroDefinition>(Settings.Macro.actionTypes), 10, 0, false, (i + 1000), true), 4);
-                //here is value dropdown list (i need ID variable for find in controls)
-                m_Action1List[i] = AddControl<MacroDropDownList>(new MacroDropDownList(this, 330, 150 + y, 190, new string[] { }, 10, 0, false, (i + 2000), false), 4);
+                
+                // action dropdown list (i need ID variable for find in controls)
+                m_ActionTypeList[i] = AddControl<MacroDropDownList>(new MacroDropDownList(
+                    this, 100, 150 + y, 215, Utility.CreateStringLinesFromList(Macros.Definitions), 10, 0, false, (i + 1000), true), 4);
+                
+                // value dropdown list (i need ID variable for find in controls)
+                m_ActionDropDown[i] = AddControl<MacroDropDownList>(new MacroDropDownList(
+                    this, 330, 150 + y, 190, new string[] { }, 10, 0, false, (i + 2000), false), 4);
+                
                 //visual control about resizable picture
-                m_Action1List[i].IsVisible = false;
+                m_ActionDropDown[i].IsVisible = false;
+                
                 //here is textentry for example: Say,Emote,Yell (i need ID variable for find in controls)
-                m_Action1Text[i] = AddControl<TextEntry>(new TextEntry(this, 340, 150 + y, 160, 20, 1, (3000 + i), 80, string.Empty), 4);
+                m_ActionText[i] = AddControl<TextEntry>(new TextEntry(this, 340, 150 + y, 160, 20, 1, (3000 + i), 80, string.Empty), 4);
+                
                 //visual control about can write
-                m_Action1Text[i].IsEditable = false;
+                m_ActionText[i].IsEditable = false;
                 y += 25;
             }
-            //
 
             // page 5 Interface
             AddControl(new Button(this, 576, 40, 225, 225, ButtonTypes.SwitchPage, 5, (int)Buttons.Interface), 5);
@@ -211,10 +212,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new CheckBox(this, 60, 120, 210, 211, Settings.UserInterface.IsMaximized, 61), 6);
 
             AddControl(new TextLabelAscii(this, 60, 150, 9, 1, @"Full Screen Resolution:"), 6);
-            m_DropDownFullScreenResolutions = AddControl<DropDownList>(new DropDownList(this, 60, 165, 122, Settings.fromList<ResolutionProperty>(Resolutions.FullScreenResolutionsList), 10, GetCurrentFullScreenIndex(), false), 6);
+            m_DropDownFullScreenResolutions = AddControl<DropDownList>(new DropDownList(this, 60, 165, 122, Utility.CreateStringLinesFromList(Resolutions.FullScreenResolutionsList), 10, GetCurrentFullScreenIndex(), false), 6);
 
             AddControl(new TextLabelAscii(this, 60, 190, 9, 1, @"Play Window Resolution:"), 6);
-            m_DropDownPlayWindowResolutions = AddControl<DropDownList>(new DropDownList(this, 60, 205, 122, Settings.fromList<ResolutionProperty>(Resolutions.FullScreenResolutionsList), 10, GetCurrentPlayWindowIndex(), false), 6);
+            m_DropDownPlayWindowResolutions = AddControl<DropDownList>(new DropDownList(this, 60, 205, 122, Utility.CreateStringLinesFromList(Resolutions.FullScreenResolutionsList), 10, GetCurrentPlayWindowIndex(), false), 6);
 
             AddControl(new TextLabelAscii(this, 85, 235, 9, 1, @"Speech color"), 6);
             m_SpeechColor = AddControl<ColorPickerBox>(new ColorPickerBox(this, new Rectangle(60, 235, 15, 15), new Rectangle(60, 235, 450, 150), 30, 10, Hues.TextTones, Settings.UserInterface.SpeechColor), 6);
@@ -266,48 +267,52 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             setDefaultDropdownList(false);
 
-            if (Settings.Macro.UserMacros.Count == 0)
+            if (index < 0 || index >= Macros.Player.Count)
                 return;
 
-            XMacro MCR = Settings.Macro.UserMacros.getMacro(index);
-            currentMacro = index;
-            int IntValeTest = 0;
-            if (MCR.Keystroke.ToString()[0] == 'D' && int.TryParse(MCR.Keystroke.ToString()[1].ToString(), out IntValeTest) && MCR.Keystroke.ToString().Length == 2)
+            MacroAction action = Macros.Player.All[index];
+
+            m_MacroBeingDisplayed = index;
+            if (action.Keystroke >= WinKeys.D1 && action.Keystroke <= WinKeys.D0)
             {
-                m_MacroKeyPress.Text = IntValeTest.ToString();
+                int keyInt = 0;
+                int.TryParse(action.Keystroke.ToString()[1].ToString(), out keyInt);
+                m_MacroKeyPress.Text = keyInt.ToString();
             }
             else
             {
-                m_MacroKeyPress.Text = MCR.Keystroke.ToString();
+                m_MacroKeyPress.Text = action.Keystroke.ToString();
             }
-            m_chkShift.IsChecked = MCR.Shift;
-            m_chkAlt.IsChecked = MCR.Alt;
-            m_chkCtrl.IsChecked = MCR.Ctrl;
-            for (int i = 0; i < MCR.actionList.Count; i++)
+
+            m_chkShift.IsChecked = action.Shift;
+            m_chkAlt.IsChecked = action.Alt;
+            m_chkCtrl.IsChecked = action.Ctrl;
+
+            for (int i = 0; i < action.Macros.Count; i++)
             {
-                m_ActionTypeList[i].Index = MCR.actionList[i].actionID;//SELECTED ACTION
-                if (MCR.actionList[i].valueID != -1)
+                m_ActionTypeList[i].Index = action.actionList[i].actionID;//SELECTED ACTION
+                if (action.actionList[i].valueID != -1)
                 {
-                    if (!m_Action1List[i].IsFirstvisible)
+                    if (!m_ActionDropDown[i].IsFirstvisible)
                     {
-                        m_Action1List[i].CreateVisual();//ACTIVATED VISUAL
+                        m_ActionDropDown[i].CreateVisual();//ACTIVATED VISUAL
                     }
-                    m_Action1List[i].setIndex(MCR.actionList[i].actionID, MCR.actionList[i].valueID);//visual changing
-                    m_Action1Text[i].IsEditable = false;
+                    m_ActionDropDown[i].setIndex(action.actionList[i].actionID, action.actionList[i].valueID);//visual changing
+                    m_ActionText[i].IsEditable = false;
                 }
-                else if (MCR.actionList[i].valueText != "N")
+                else if (action.actionList[i].valueText != "N")
                 {
-                    if (!m_Action1List[i].IsFirstvisible)
+                    if (!m_ActionDropDown[i].IsFirstvisible)
                     {
-                        m_Action1List[i].CreateVisual();//ACTIVATED VISUAL
+                        m_ActionDropDown[i].CreateVisual();//ACTIVATED VISUAL
                     }
                     //m_Action1List[i].m_scrollButton.IsVisible = false;//SCROLL İCON İT'S REALLY PROBLEM FOR ME :( İ CAN'T TO MYSELF SO I USED SELF METHOD
-                    m_Action1List[i].ScrollButton.IsVisible = true;
-                    m_Action1List[i].Items.Clear();
-                    m_Action1List[i].IsVisible = true;
-                    m_Action1Text[i].IsEditable = true;
-                    m_Action1Text[i].IsVisible = true;
-                    m_Action1Text[i].Text = MCR.actionList[i].valueText;
+                    m_ActionDropDown[i].ScrollButton.IsVisible = true;
+                    m_ActionDropDown[i].Items.Clear();
+                    m_ActionDropDown[i].IsVisible = true;
+                    m_ActionText[i].IsEditable = true;
+                    m_ActionText[i].IsVisible = true;
+                    m_ActionText[i].Text = action.actionList[i].valueText;
                 }
                 else
                 {
@@ -324,9 +329,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_RefreshTime + 0.5d < totalMS) //need to update
+            if (m_NextRefreshAt + REFRESH_INTERVAL < totalMS) //need to update
             {
-                m_RefreshTime = totalMS;
+                m_NextRefreshAt = totalMS + REFRESH_INTERVAL;
                 m_Labels[(int)Labels.MusicVolume].Text = m_MusicVolume.Value.ToString();
                 m_Labels[(int)Labels.SoundVolume].Text = m_SoundVolume.Value.ToString();
             }
@@ -383,18 +388,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Settings.UserInterface.IgnoreAllianceMsg = m_IgnoreAllianceMsg.IsChecked;
 
             //deleting selected macros
-            for (int i = 0; i < deletedMacros.Count; i++)
+            for (int i = 0; i < m_DeletedMacros.Count; i++)
             {
-                Settings.Macro.UserMacros.removeMacro(deletedMacros[i]);
+                Settings.Macro.UserMacros.removeMacro(m_DeletedMacros[i]);
             }
-            deletedMacros.Clear();
+            m_DeletedMacros.Clear();
             ////
             //adding new macros
-            for (int i = 0; i < addedMacros.Count; i++)
+            for (int i = 0; i < m_AddedMacros.Count; i++)
             {
-                Settings.Macro.UserMacros.addKey(addedMacros[i]);
+                Settings.Macro.UserMacros.addKey(m_AddedMacros[i]);
             }
-            addedMacros.Clear();
+            m_AddedMacros.Clear();
             //CURRENT MACRO ADDING MAYBE NOT SET
             AddingCurrentMacro();
             ///
@@ -412,12 +417,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             for (int i = 0; i < m_ActionTypeList.Count(); i++)
             {
                 m_ActionTypeList[i].Index = 0;
-                m_Action1List[i].IsVisible = false;
-                if (m_Action1List[i].IsFirstvisible)
-                    m_Action1List[i].ScrollButton.IsVisible = false;
+                m_ActionDropDown[i].IsVisible = false;
+                if (m_ActionDropDown[i].IsFirstvisible)
+                    m_ActionDropDown[i].ScrollButton.IsVisible = false;
 
-                m_Action1Text[i].Text = "";
-                m_Action1Text[i].IsVisible = isEditable;
+                m_ActionText[i].Text = "";
+                m_ActionText[i].IsVisible = isEditable;
             }
         }
 
@@ -458,19 +463,19 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     }
                     XAction action = new XAction();
                     action.actionID = m_ActionTypeList[i2].Index;
-                    if (m_Action1List[i2].Index != -1)
-                        action.valueID = m_Action1List[i2].Index;
+                    if (m_ActionDropDown[i2].Index != -1)
+                        action.valueID = m_ActionDropDown[i2].Index;
                     else
-                        action.valueText = m_Action1Text[i2].Text;
+                        action.valueText = m_ActionText[i2].Text;
 
                     xmcr.actionList.Add(action);
                 }
                 if (xmcr.actionList.Count > 0)
                 {
-                    int inx = addedMacros.FindIndex(p => p == xmcr);
+                    int inx = m_AddedMacros.FindIndex(p => p == xmcr);
                     if (inx != -1)
-                        addedMacros.RemoveAt(inx);
-                    addedMacros.Add(xmcr);
+                        m_AddedMacros.RemoveAt(inx);
+                    m_AddedMacros.Add(xmcr);
                 }
             }
         }
@@ -512,9 +517,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                         break;
                     }
                 case Buttons.MAdd:
-                    for (int i = 0; i < addedMacros.Count; i++)
+                    for (int i = 0; i < m_AddedMacros.Count; i++)
                     {
-                        Settings.Macro.UserMacros.addKey(addedMacros[i]);
+                        Settings.Macro.UserMacros.addKey(m_AddedMacros[i]);
                     }
                     AddingCurrentMacro();
                     setDefaultDropdownList(true);
@@ -524,28 +529,28 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     if (Settings.Macro.UserMacros.Count == 0)
                         return;
 
-                    deletedMacros.Add(Settings.Macro.UserMacros.getMacro(currentMacro));
-                    Settings.Macro.UserMacros.removeMacro(currentMacro);
-                    currentMacro--;
-                    if (currentMacro < 0)
-                        currentMacro = 0;
-                    ChangeCurrentMacro(currentMacro);
+                    m_DeletedMacros.Add(Settings.Macro.UserMacros.getMacro(m_MacroBeingDisplayed));
+                    Settings.Macro.UserMacros.removeMacro(m_MacroBeingDisplayed);
+                    m_MacroBeingDisplayed--;
+                    if (m_MacroBeingDisplayed < 0)
+                        m_MacroBeingDisplayed = 0;
+                    ChangeCurrentMacro(m_MacroBeingDisplayed);
                     break;
 
                 case Buttons.MPrevious:
-                    currentMacro--;
-                    if (currentMacro < 0)
-                        currentMacro = 0;
+                    m_MacroBeingDisplayed--;
+                    if (m_MacroBeingDisplayed < 0)
+                        m_MacroBeingDisplayed = 0;
 
-                    ChangeCurrentMacro(currentMacro);
+                    ChangeCurrentMacro(m_MacroBeingDisplayed);
                     break;
 
                 case Buttons.MNext:
-                    currentMacro++;
-                    if (currentMacro >= Settings.Macro.UserMacros.getMacros().Count)
-                        currentMacro = Settings.Macro.UserMacros.getMacros().Count - 1;
+                    m_MacroBeingDisplayed++;
+                    if (m_MacroBeingDisplayed >= Settings.Macro.UserMacros.getMacros().Count)
+                        m_MacroBeingDisplayed = Settings.Macro.UserMacros.getMacros().Count - 1;
 
-                    ChangeCurrentMacro(currentMacro);
+                    ChangeCurrentMacro(m_MacroBeingDisplayed);
                     break;
             }
         }
@@ -573,16 +578,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         protected override void CloseWithRightMouseButton()
         {
-            for (int i = 0; i < addedMacros.Count; i++)
+            for (int i = 0; i < m_AddedMacros.Count; i++)
             {
-                Settings.Macro.UserMacros.removeMacro(addedMacros[i]);
+                Settings.Macro.UserMacros.removeMacro(m_AddedMacros[i]);
             }
-            addedMacros.Clear();
-            for (int i = 0; i < deletedMacros.Count; i++)
+            m_AddedMacros.Clear();
+            for (int i = 0; i < m_DeletedMacros.Count; i++)
             {
-                Settings.Macro.UserMacros.addKey(deletedMacros[i]);
+                Settings.Macro.UserMacros.addKey(m_DeletedMacros[i]);
             }
-            deletedMacros.Clear();
+            m_DeletedMacros.Clear();
             Settings.Macro.UserMacros.saveMacros();
             base.CloseWithRightMouseButton();
         }
