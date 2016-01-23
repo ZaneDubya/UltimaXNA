@@ -11,8 +11,6 @@
 
 #region usings
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core;
@@ -178,9 +176,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 
                 //here is textentry for example: Say,Emote,Yell (i need ID variable for find in controls)
                 m_ActionText[i] = AddControl<TextEntry>(new TextEntry(this, 340, 150 + y, 160, 20, 1, (3000 + i), 80, string.Empty), 4);
-                
-                //visual control about can write
                 m_ActionText[i].IsEditable = false;
+                m_ActionText[i].IsVisible = false;
                 y += 25;
             }
 
@@ -279,8 +276,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             for (int i = 0; i < action.Macros.Count; i++)
             {
                 m_ActionTypeList[i].Index = (int)action.Macros[i].Type;
-                // !!!!
-                if (action.Macros[i].IsInteger)
+
+                if (action.Macros[i].ValueType == Macro.ValueTypes.None)
+                {
+
+                }
+                else if (action.Macros[i].ValueType == Macro.ValueTypes.Integer)
                 {
                     if (!m_ActionDropDown[i].IsFirstvisible)
                     {
@@ -413,11 +414,27 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             for (int i = 0; i < m_ActionTypeList.Length; i++)
             {
                 Macro macro = new Macro((MacroType)m_ActionTypeList[i].Index);
-                if (m_ActionDropDown[i].Index != -1)
-                    macro.ValueInteger = m_ActionDropDown[i].Index;
-                else
-                    macro.ValueString = m_ActionText[i].Text;
-
+                switch (macro.Type)
+                {
+                    case MacroType.Say:
+                    case MacroType.Whisper:
+                    case MacroType.Yell:
+                    case MacroType.Emote:
+                    case MacroType.Delay:
+                        macro.ValueString = m_ActionText[i].Text;
+                        break;
+                    case MacroType.UseSkill:
+                    case MacroType.CastSpell:
+                    case MacroType.OpenGump:
+                    case MacroType.CloseGump:
+                    case MacroType.Move:
+                    case MacroType.ArmDisarm:
+                        macro.ValueInteger = macro.ValueInteger = m_ActionDropDown[i].Index;
+                        break;
+                    default:
+                        // no value by default
+                        break;
+                }
                 action.Macros.Add(macro);
             }
         }

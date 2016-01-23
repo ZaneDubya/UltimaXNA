@@ -43,28 +43,12 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         private IFont m_Font;
 
-        public MacroDropDownList(AControl parent)
+        public MacroDropDownList(AControl parent, int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull, int ID, bool firstVisible)
                 : base(parent)
         {
-            HandlesMouseInput = true;
-
             m_Font = ServiceRegistry.GetService<IResourceProvider>().GetAsciiFont(1);
-        }
 
-        public MacroDropDownList(AControl parent, int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull, bool firstVisible)
-                : this(parent)
-        {
-            buildGumpling(x, y, width, items, itemsVisible, index, canBeNull, firstVisible);
-        }
-
-        public MacroDropDownList(AControl parent, int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull, int ID, bool firstVisible)
-                : this(parent, x, y, width, items, itemsVisible, index, canBeNull, firstVisible)
-        {
-            base.IDs = ID;
-        }
-
-        private void buildGumpling(int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull, bool firstVisible)
-        {
+            GumpLocalID = ID;
             Position = new Point(x, y);
             Items = new List<string>(items);
             m_Width = width;
@@ -75,6 +59,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             if (IsFirstvisible)//for fill action dropdownlist
                 CreateVisual();
+
+            HandlesMouseInput = true;
+            
         }
 
         public void CreateVisual()
@@ -83,13 +70,13 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return;
 
             m_ResizePic = (ResizePic)AddControl(new ResizePic(this, 0, 0, 3000, m_Width, m_Font.Height + 8), 0);
-            m_ResizePic.IDs = IDs;
+            m_ResizePic.GumpLocalID = GumpLocalID;
             m_ResizePic.MouseClickEvent += onClickClosedList;
             m_ResizePic.MouseOverEvent += onMouseOverClosedList;
             m_ResizePic.MouseOutEvent += onMouseOutClosedList;
             m_ResizePic.IsEnabled = false;
             m_label = (TextLabelAscii)AddControl(new TextLabelAscii(this, 4, 5, 1, hue_Text, string.Empty), 0);
-            m_label.IDs = IDs;
+            m_label.GumpLocalID = GumpLocalID;
             ScrollButton = (GumpPic)AddControl(new GumpPic(this, m_Width - 22, 5, 2086, 0), 0);
 
             IsFirstvisible = true;//for invisible create control
@@ -175,7 +162,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 m_IsListOpen = true;
                 m_openResizePic = new ResizePic(Parent, X, Y, 3000, m_Width, m_Font.Height * m_visibleItems + 8);
-                m_openResizePic.IDs = IDs;
+                m_openResizePic.GumpLocalID = GumpLocalID;
                 m_openResizePic.MouseClickEvent += onClickOpenList;
                 m_openResizePic.MouseOverEvent += onMouseOverOpenList;
                 m_openResizePic.MouseOutEvent += onMouseOutOpenList;
@@ -265,11 +252,11 @@ namespace UltimaXNA.Ultima.UI.Controls
         private void onClickOpenList(AControl control, int x, int y, MouseButton button)
         {
             //for macro options
-            int id = control.IDs;
+            int id = control.GumpLocalID;
             int controlValueIndex = -1;
             for (int i = 0; i < Parent.Children.Count; i++)
             {
-                if (Parent.Children[i].IDs == (id + 1000))
+                if (Parent.Children[i].GumpLocalID == (id + 1000))
                 {
                     controlValueIndex = i;
                     break;

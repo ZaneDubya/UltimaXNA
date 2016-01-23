@@ -187,12 +187,12 @@ namespace UltimaXNA.Ultima.Input
                 for (int j = 0; j < All[i].Macros.Count; j++)
                 {
                     writer.Write((int)All[i].Macros[j].Type);
-                    writer.Write((bool)All[i].Macros[j].IsInteger);
-                    if (All[i].Macros[j].IsInteger)
+                    writer.Write((byte)All[i].Macros[j].ValueType);
+                    if (All[i].Macros[j].ValueType == Macro.ValueTypes.Integer)
                     {
                         writer.Write((int)All[i].Macros[j].ValueInteger);
                     }
-                    else
+                    else if (All[i].Macros[j].ValueType == Macro.ValueTypes.String)
                     {
                         writer.Write((string)All[i].Macros[j].ValueString);
                     }
@@ -226,11 +226,13 @@ namespace UltimaXNA.Ultima.Input
                 for (int j = 0; j < macroCount; j++)
                 {
                     int type = reader.ReadInt();
-                    bool isInteger = reader.ReadBool();
-                    if (isInteger)
+                    Macro.ValueTypes valueType = (Macro.ValueTypes)reader.ReadByte();
+                    if (valueType == Macro.ValueTypes.Integer)
                         action.Macros.Add(new Macro((MacroType)type, reader.ReadInt()));
-                    else
+                    else if (valueType == Macro.ValueTypes.String)
                         action.Macros.Add(new Macro((MacroType)type, reader.ReadString()));
+                    else
+                        action.Macros.Add(new Macro((MacroType)type));
                 }
 
                 m_Macros.Add(action);

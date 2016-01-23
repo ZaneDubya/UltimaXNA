@@ -7,7 +7,7 @@
     {
         public readonly MacroType Type;
 
-        private bool m_IsInteger = true;
+        private ValueTypes m_ValueType =  ValueTypes.None;
         private int m_ValueInteger = -1;
         private string m_ValueString = null;
 
@@ -20,26 +20,26 @@
             : this(type)
         {
             m_ValueInteger = value;
-            m_IsInteger = true;
+            m_ValueType = ValueTypes.Integer;
         }
 
         public Macro(MacroType type, string value)
             : this(type)
         {
             m_ValueString = value;
-            m_IsInteger = false;
+            m_ValueType = ValueTypes.String;
         }
 
         public int ValueInteger
         {
             set
             {
-                m_IsInteger = true;
+                m_ValueType =  ValueTypes.Integer;
                 m_ValueInteger = value;
             }
             get
             {
-                if (m_IsInteger)
+                if (m_ValueType == ValueTypes.Integer)
                     return m_ValueInteger;
                 else
                     return 0;
@@ -50,26 +50,36 @@
         {
             set
             {
-                m_IsInteger = false;
+                m_ValueType = ValueTypes.String;
                 m_ValueString = value;
             }
             get
             {
-                return m_ValueString;
+                if (m_ValueType == ValueTypes.String)
+                    return m_ValueString;
+                return null;
             }
         }
 
-        public bool IsInteger
+        public ValueTypes ValueType
         {
             get
             {
-                return m_IsInteger;
+                return m_ValueType;
             }
         }
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Type.ToString(), (m_IsInteger ? m_ValueInteger.ToString() : m_ValueString));
+            string value = (m_ValueType == ValueTypes.None ? string.Empty : (m_ValueType == ValueTypes.Integer ? m_ValueInteger.ToString() : m_ValueString));
+            return string.Format("{0} ({1})", Type.ToString(), value);
+        }
+
+        public enum ValueTypes
+        {
+            None,
+            Integer,
+            String
         }
     }
 }
