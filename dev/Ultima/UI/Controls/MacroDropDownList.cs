@@ -1,4 +1,15 @@
-﻿using Microsoft.Xna.Framework;
+﻿/***************************************************************************
+ *   MacroDropDownList.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
@@ -200,29 +211,52 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_label.Hue = hue_Text;
         }
 
-        public void setIndex(int actionID, int valueID)
+        public void setIndex(int macroType, int valueID)
         {
             ScrollButton.IsVisible = true;
             IsVisible = true;
             Items.Clear();
             Index = -1;
 
-            MacroType mType = (MacroType)actionID;
-            switch (mType)
+            switch ((MacroType)macroType)
             {
                 case MacroType.UseSkill:
+                    foreach (MacroDefinition def in Macros.Skills)
+                        Items.Add(def.Name);
+                    break;
+
                 case MacroType.CastSpell:
-                case MacroType.Move:
-                case MacroType.ArmDisarm:
-                    foreach (MacroDefinition def in Macros.Definitions)
-                        if (def.Type == mType)
-                            Items.Add(def.Name);
+                    foreach (MacroDefinition def in Macros.Spells)
+                        Items.Add(def.Name);
                     break;
 
                 case MacroType.OpenGump:
+                case MacroType.CloseGump:
+                    foreach (MacroDefinition def in Macros.Gumps)
+                        Items.Add(def.Name);
+                    break;
+
+                case MacroType.Move:
+                    foreach (MacroDefinition def in Macros.Moves)
+                        Items.Add(def.Name);
+                    break;
+
+                case MacroType.ArmDisarm:
+                    foreach (MacroDefinition def in Macros.ArmDisarms)
+                        Items.Add(def.Name);
+                    break;
+
+                case MacroType.Say:
+                case MacroType.Emote:
+                case MacroType.Whisper:
+                case MacroType.Yell:
+                    ScrollButton.IsVisible = false;
+                    break;
 
                 default:
                     // no sub-ids for these types
+                    ScrollButton.IsVisible = false;
+                    IsVisible = false;
                     break;
             }
             Index = valueID;
@@ -253,53 +287,50 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (indexOver == -1)
                     return;
 
-                MacroType mType = Macros.Definitions[indexOver + 1].Type; 
+                MacroType mType = Macros.Types[Index].Type; 
                 
                 // background image:
                 if (!(Parent.Children[controlValueIndex] as MacroDropDownList).IsFirstvisible)
                     (Parent.Children[controlValueIndex] as MacroDropDownList).CreateVisual();
 
-                // !!!!
-                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Clear();//cleaning dropdownlist
-                (Parent.Children[controlValueIndex + 1] as TextEntry).Text = "";//cleaning text
-
+                // clear and show dropdown/text entry:
+                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Clear();
                 (Parent.Children[controlValueIndex] as MacroDropDownList).ScrollButton.IsVisible = true;//easy way for visible dropdown list
                 (Parent.Children[controlValueIndex] as MacroDropDownList).IsVisible = true;//easy way for visible dropdown list
+                (Parent.Children[controlValueIndex + 1] as TextEntry).Text = string.Empty;
+                
                 
                 switch (mType)
                 {
                     case MacroType.UseSkill:
-                        foreach (MacroDefinition def in Macros.Definitions)
-                            if (def.Type == mType)
-                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                        foreach (MacroDefinition def in Macros.Skills)
+                            (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
                         break;
 
                     case MacroType.CastSpell:
-                        foreach (MacroDefinition def in Macros.Definitions)
-                            if (def.Type == mType)
-                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                        foreach (MacroDefinition def in Macros.Spells)
+                            (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
                         break;
 
                     case MacroType.OpenGump:
-                        /*foreach (MacroDefinition def in Macros.Definitions)
-                            if (def.Type == mType)
-                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                    case MacroType.CloseGump:
+                        foreach (MacroDefinition def in Macros.Gumps)
+                            (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
-                        */
                         break;
 
                     case MacroType.Move:
-                        foreach (MacroDefinition def in Macros.Definitions)
-                            if (def.Type == mType)
-                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                        foreach (MacroDefinition def in Macros.Moves)
+                            (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                        (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
                         break;
 
                     case MacroType.ArmDisarm:
-                        foreach (MacroDefinition def in Macros.Definitions)
-                            if (def.Type == mType)
-                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                        foreach (MacroDefinition def in Macros.ArmDisarms)
+                            (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                        (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
                         break;
 
                     case MacroType.Say:

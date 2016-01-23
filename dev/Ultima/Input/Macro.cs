@@ -11,14 +11,6 @@
         private int m_ValueInteger = -1;
         private string m_ValueString = null;
 
-        public string Name
-        {
-            get
-            {
-                return Macros.GetMacroName(this);
-            }
-        }
-
         public Macro(MacroType type)
         {
             Type = type;
@@ -77,7 +69,7 @@
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Name, (m_IsInteger ? m_ValueInteger.ToString() : m_ValueString));
+            return string.Format("{0} ({1})", Type.ToString(), (m_IsInteger ? m_ValueInteger.ToString() : m_ValueString));
         }
     }
 }

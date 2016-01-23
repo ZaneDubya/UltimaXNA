@@ -38,6 +38,18 @@ namespace UltimaXNA.Ultima.Input
             m_Macros.Add(action);
         }
 
+        public void AddNewMacroAction(MacroAction action, int index)
+        {
+            if (index < 0 || index >= m_Macros.Count)
+            {
+                AddNewMacroAction(action);
+            }
+            else
+            {
+                m_Macros.Insert(index, action);
+            }
+        }
+
         public void RemoveMacroAction(MacroAction action)
         {
             m_Macros.Remove(action);
@@ -118,9 +130,10 @@ namespace UltimaXNA.Ultima.Input
             }
         }
 
-        public void Load(string username)
+        public void Load()
         {
-            s_Path = string.Format("{0}{1}", username, c_PathAppend);
+            if (s_Path == null || s_Path == string.Empty)
+                return;
 
             if (!File.Exists(s_Path))
             {
@@ -147,6 +160,13 @@ namespace UltimaXNA.Ultima.Input
             {
                 Tracer.Warn(string.Format("Error loading macros: {0}", e.Message));
             }
+        }
+
+        public void Load(string username)
+        {
+            s_Path = string.Format("{0}{1}", username, c_PathAppend);
+
+            Load();
         }
 
         private void Serialize(BinaryFileWriter writer)
@@ -206,7 +226,6 @@ namespace UltimaXNA.Ultima.Input
                 for (int j = 0; j < macroCount; j++)
                 {
                     int type = reader.ReadInt();
-                    int index = reader.ReadInt();
                     bool isInteger = reader.ReadBool();
                     if (isInteger)
                         action.Macros.Add(new Macro((MacroType)type, reader.ReadInt()));
@@ -373,9 +392,9 @@ namespace UltimaXNA.Ultima.Input
             action = new MacroAction();
             action.Keystroke = WinKeys.F2;
             action.Macros.Add(new Macro(MacroType.Say, "Delaying 1 second."));
-            action.Macros.Add(new Macro(MacroType.Delay, 1000));
+            action.Macros.Add(new Macro(MacroType.Delay, "10"));
             action.Macros.Add(new Macro(MacroType.Say, "Delay 2 seconds."));
-            action.Macros.Add(new Macro(MacroType.Delay, 2000));
+            action.Macros.Add(new Macro(MacroType.Delay, "20"));
             action.Macros.Add(new Macro(MacroType.Say, "Delay complete!"));
             AddNewMacroAction(action);
             
