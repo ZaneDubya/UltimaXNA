@@ -264,7 +264,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (index < 0 || index >= Macros.Player.Count)
                 return;
 
-            MacroAction action = Macros.Player.All[index];
+            Action action = Macros.Player.All[index];
 
             m_CurrentMacro = index;
             m_MacroKeyPress.Key = action.Keystroke;
@@ -400,7 +400,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public void SaveCurrentMacro()
         {
-            MacroAction action = Macros.Player.All[m_CurrentMacro];
+            Action action = Macros.Player.All[m_CurrentMacro];
             if (action == null)
                 return;
 
@@ -477,7 +477,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     }
                 case Buttons.MAdd:
                     SaveCurrentMacro();
-                    Macros.Player.AddNewMacroAction(new MacroAction(), m_CurrentMacro + 1);
+                    Macros.Player.AddNewMacroAction(new Action(), m_CurrentMacro + 1);
                     setDefaultDropdownList(true);
                     break;
 

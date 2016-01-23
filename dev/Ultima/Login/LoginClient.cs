@@ -56,8 +56,8 @@ namespace UltimaXNA.Ultima.Login
 
         public LoginClientStatus Status { get; protected set; }
 
-        public event Action OnWaitingForRelay;
-        public event Action OnHasCharacterList;
+        public event System.Action OnWaitingForRelay;
+        public event System.Action OnHasCharacterList;
 
         public LoginClient()
         {

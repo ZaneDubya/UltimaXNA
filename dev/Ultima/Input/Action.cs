@@ -9,7 +9,7 @@ namespace UltimaXNA.Ultima.Input
     /// <summary>
     /// A list of one or more macros that is executed on a given keystroke.
     /// </summary>
-    public class MacroAction
+    public class Action
     {
         public WinKeys Keystroke = WinKeys.None;
         public bool Shift = false;
@@ -18,7 +18,7 @@ namespace UltimaXNA.Ultima.Input
 
         public List<Macro> Macros = new List<Macro>();
 
-        public MacroAction()
+        public Action()
         {
 
         }

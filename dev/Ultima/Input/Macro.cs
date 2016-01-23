@@ -1,7 +1,7 @@
 ﻿namespace UltimaXNA.Ultima.Input
 {
     /// <summary>
-    /// A single macro action.
+    /// A single macro that performs one thing.
     /// </summary>
     public class Macro
     {
