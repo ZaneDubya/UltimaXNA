@@ -411,7 +411,7 @@ namespace UltimaXNA.Core.UI
 
         public virtual void Update(double totalMS, double frameMS)
         {
-            if (!IsInitialized || IsDisposed || !IsVisible)
+            if (!IsInitialized || IsDisposed)
                 return;
 
             InitializeControls();
