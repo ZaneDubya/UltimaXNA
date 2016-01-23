@@ -15,6 +15,7 @@ using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Input;
+using UltimaXNA.Core.Graphics;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -138,7 +139,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             base.Update(totalMS, frameMS);
         }
-
+        
         private void closeOpenList()
         {
             m_IsListOpen = false;
