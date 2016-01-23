@@ -408,72 +408,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             action.Alt = m_chkAlt.IsChecked;
             action.Ctrl = m_chkCtrl.IsChecked;
 
+            action.Macros.Clear();
+
             for (int i = 0; i < m_ActionTypeList.Length; i++)
             {
-                if (m_ActionTypeList[i].Index == 0)
-                {
-                    break;
-                }
                 Macro macro = new Macro((MacroType)m_ActionTypeList[i].Index);
                 if (m_ActionDropDown[i].Index != -1)
                     macro.ValueInteger = m_ActionDropDown[i].Index;
                 else
                     macro.ValueString = m_ActionText[i].Text;
 
-                macro.Macros.Add(macro);
-            }
-            if (action.Macros.Count > 0)
-            {
-                int inx = m_AddedMacros.FindIndex(p => p == action);
-                if (inx != -1)
-                    m_AddedMacros.RemoveAt(inx);
-                m_AddedMacros.Add(action);
-            }
-            */
-
-            if (m_MacroKeyPress.Key != WinKeys.None)
-            {
-                /*
-                bool isNumber = false;
-                if (m_MacroKeyPress.Text.Length == 1)
-                {
-                    int IntValeTest = 0;
-                    isNumber = int.TryParse(m_MacroKeyPress.Text, out IntValeTest);
-                }
-                if (isNumber)
-                {
-                    action.Keystroke = (WinKeys)Enum.Parse(typeof(WinKeys), "D" + m_MacroKeyPress.Text, true);
-                }
-                else
-                {
-                    action.Keystroke = (WinKeys)Enum.Parse(typeof(WinKeys), m_MacroKeyPress.Text, true);
-                }
-
-                //xmcr.Keystroke = (WinKeys)Enum.Parse(typeof(WinKeys), m_MacroKeyPress.Text, true);
-                action.Shift = m_chkShift.IsChecked;
-                action.Alt = m_chkAlt.IsChecked;
-                action.Ctrl = m_chkCtrl.IsChecked;
-                for (int i2 = 0; i2 < m_ActionTypeList.Length; i2++)
-                {
-                    if (m_ActionTypeList[i2].Index == 0)
-                    {
-                        break;
-                    }
-                    Macro action = new Macro((MacroType)m_ActionTypeList[i2].Index);
-                    if (m_ActionDropDown[i2].Index != -1)
-                        action.ValueInteger = m_ActionDropDown[i2].Index;
-                    else
-                        action.ValueString = m_ActionText[i2].Text;
-
-                    action.Macros.Add(action);
-                }
-                if (action.Macros.Count > 0)
-                {
-                    int inx = m_AddedMacros.FindIndex(p => p == action);
-                    if (inx != -1)
-                        m_AddedMacros.RemoveAt(inx);
-                    m_AddedMacros.Add(action);
-                }*/
+                action.Macros.Add(macro);
             }
         }
 
