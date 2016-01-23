@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.Input;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -12,17 +11,18 @@ namespace UltimaXNA.Ultima.UI.Controls
     {
         public int Index;
 
-        private int m_width;
-        public List<string> m_items;
-        private int m_visibleItems;
-        private bool m_canBeNull;
-        public bool m_firstvisible = true;
-        public ResizePic m_resize;
+        public GumpPic ScrollButton;
+        public ResizePic m_ResizePic;
+
+        public bool IsFirstvisible = true;
+        public List<string> Items;
+
+        private int m_Width;
+        private bool m_CanBeNull;
+        private bool m_IsListOpen = false;
+        private int m_visibleItems = -1;
+
         private TextLabelAscii m_label;
-        public GumpPic m_scrollButton;
-
-        private bool m_listOpen = false;
-
         private ResizePic m_openResizePic;
         private ScrollBar m_openScrollBar;
         private TextLabelAscii[] m_openLabels;
@@ -55,58 +55,58 @@ namespace UltimaXNA.Ultima.UI.Controls
         private void buildGumpling(int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull, bool firstVisible)
         {
             Position = new Point(x, y);
-            m_items = new List<string>(items);
-            m_width = width;
+            Items = new List<string>(items);
+            m_Width = width;
             Index = index;
             m_visibleItems = itemsVisible;
-            m_canBeNull = canBeNull;
-            m_firstvisible = firstVisible;//hide creating control
+            m_CanBeNull = canBeNull;
+            IsFirstvisible = firstVisible;//hide creating control
 
-            if (m_firstvisible)//for fill action dropdownlist
+            if (IsFirstvisible)//for fill action dropdownlist
                 CreateVisual();
         }
 
         public void CreateVisual()
         {
-            if (m_resize != null || m_label != null || m_scrollButton != null)
+            if (m_ResizePic != null || m_label != null || ScrollButton != null)
                 return;
 
-            m_resize = (ResizePic)AddControl(new ResizePic(this, 0, 0, 3000, m_width, m_Font.Height + 8), 0);
-            m_resize.IDs = this.IDs;
-            m_resize.MouseClickEvent += onClickClosedList;
-            m_resize.MouseOverEvent += onMouseOverClosedList;
-            m_resize.MouseOutEvent += onMouseOutClosedList;
-            m_resize.IsEnabled = false;
+            m_ResizePic = (ResizePic)AddControl(new ResizePic(this, 0, 0, 3000, m_Width, m_Font.Height + 8), 0);
+            m_ResizePic.IDs = IDs;
+            m_ResizePic.MouseClickEvent += onClickClosedList;
+            m_ResizePic.MouseOverEvent += onMouseOverClosedList;
+            m_ResizePic.MouseOutEvent += onMouseOutClosedList;
+            m_ResizePic.IsEnabled = false;
             m_label = (TextLabelAscii)AddControl(new TextLabelAscii(this, 4, 5, 1, hue_Text, string.Empty), 0);
-            m_label.IDs = this.IDs;
-            m_scrollButton = (GumpPic)AddControl(new GumpPic(this, m_width - 22, 5, 2086, 0), 0);
+            m_label.IDs = IDs;
+            ScrollButton = (GumpPic)AddControl(new GumpPic(this, m_Width - 22, 5, 2086, 0), 0);
 
-            m_firstvisible = true;//for invisible create control
+            IsFirstvisible = true;//for invisible create control
         }
 
         public override void Dispose()
         {
-            if (m_resize != null)
+            if (m_ResizePic != null)
             {
-                m_resize.MouseClickEvent -= onClickClosedList;
-                m_resize.MouseOverEvent -= onMouseOverClosedList;
-                m_resize.MouseOutEvent -= onMouseOutClosedList;
+                m_ResizePic.MouseClickEvent -= onClickClosedList;
+                m_ResizePic.MouseOverEvent -= onMouseOverClosedList;
+                m_ResizePic.MouseOutEvent -= onMouseOutClosedList;
             }
             base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (Index < 0 || Index >= m_items.Count)
+            if (Index < 0 || Index >= Items.Count)
                 Index = -1;
 
-            if (m_listOpen)
+            if (m_IsListOpen)
             {
                 // if we have moused off the open list, close it. We check to see if the mouse is over:
                 // the resizepic for the closed list (because it takes one update cycle to open the list)
                 // the resizepic for the open list, and the scroll bar if it is loaded.
                 if (UserInterface.MouseOverControl != m_openResizePic &&
-                    UserInterface.MouseOverControl != m_resize &&
+                    UserInterface.MouseOverControl != m_ResizePic &&
                     (m_openScrollBar == null ? false : UserInterface.MouseOverControl != m_openScrollBar))
                 {
                     closeOpenList();
@@ -115,43 +115,35 @@ namespace UltimaXNA.Ultima.UI.Controls
                 {
                     // update the visible items
                     int itemOffset = (m_openScrollBar == null ? 0 : m_openScrollBar.Value);
-                    if (m_items.Count != 0)
+                    if (Items.Count != 0)
                     {
                         for (int i = 0; i < m_visibleItems; i++)
                         {
-                            m_openLabels[i].Text = (i + itemOffset < 0) ? string.Empty : m_items[i + itemOffset];
+                            m_openLabels[i].Text = (i + itemOffset < 0) ? string.Empty : Items[i + itemOffset];
                         }
                     }
                 }
             }
-            else if (m_firstvisible)//for create hide control
+            else if (IsFirstvisible)//for create hide control
             {
                 if (Index == -1)
                 {
-                    if (m_items.Count > 0)
-                        m_label.Text = m_items[0];
+                    if (Items.Count > 0)
+                        m_label.Text = Items[0];
                     else
                         m_label.Text = "";
                 }
                 else
                 {
-                    m_label.Text = m_items[Index];
+                    m_label.Text = Items[Index];
                 }
             }
-            if (!IsInitialized || IsDisposed || !IsVisible)
-                return;
             base.Update(totalMS, frameMS);
         }
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
-        {
-            if (!IsInitialized)
-                return;
 
-            base.Draw(spriteBatch, position);
-        }
         private void closeOpenList()
         {
-            m_listOpen = false;
+            m_IsListOpen = false;
             if (m_openResizePic != null)
             {
                 m_openResizePic.MouseClickEvent -= onClickOpenList;
@@ -168,32 +160,32 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         private void onClickClosedList(AControl control, int x, int y, MouseButton button)
         {
-            if (m_items.Count > 0)
+            if (Items.Count > 0)
             {
-                m_listOpen = true;
-                m_openResizePic = new ResizePic(Parent, X, Y, 3000, m_width, m_Font.Height * m_visibleItems + 8);
+                m_IsListOpen = true;
+                m_openResizePic = new ResizePic(Parent, X, Y, 3000, m_Width, m_Font.Height * m_visibleItems + 8);
                 m_openResizePic.IDs = IDs;
                 m_openResizePic.MouseClickEvent += onClickOpenList;
                 m_openResizePic.MouseOverEvent += onMouseOverOpenList;
                 m_openResizePic.MouseOutEvent += onMouseOutOpenList;
-                ((Gump)Parent).AddControl(m_openResizePic, this.Page);
+                ((Gump)Parent).AddControl(m_openResizePic, Page);
 
-                if (m_visibleItems > m_items.Count)
+                if (m_visibleItems > Items.Count)
                 {
-                    m_visibleItems = m_items.Count;
+                    m_visibleItems = Items.Count;
                 }
 
                 // only show the scrollbar if we need to scroll
-                if (m_visibleItems < m_items.Count)
+                if (m_visibleItems < Items.Count)
                 {
-                    m_openScrollBar = new ScrollBar(Parent, X + m_width - 20, Y + 4, m_Font.Height * m_visibleItems, (m_canBeNull ? -1 : 0), m_items.Count - m_visibleItems, Index);
-                    ((Gump)Parent).AddControl(m_openScrollBar, this.Page);
+                    m_openScrollBar = new ScrollBar(Parent, X + m_Width - 20, Y + 4, m_Font.Height * m_visibleItems, (m_CanBeNull ? -1 : 0), Items.Count - m_visibleItems, Index);
+                    ((Gump)Parent).AddControl(m_openScrollBar, Page);
                 }
                 m_openLabels = new TextLabelAscii[m_visibleItems];
                 for (int i = 0; i < m_visibleItems; i++)
                 {
                     m_openLabels[i] = new TextLabelAscii(Parent, X + 4, Y + 5 + m_Font.Height * i, 1, 1106, string.Empty);
-                    ((Gump)Parent).AddControl(m_openLabels[i], this.Page);
+                    ((Gump)Parent).AddControl(m_openLabels[i], Page);
                 }
             }
         }
@@ -210,45 +202,30 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public void setIndex(int actionID, int valueID)
         {
-            this.m_scrollButton.IsVisible = true;
-            this.IsVisible = true;
-            this.m_items.Clear();
-            this.Index = -1;
-            MacroType mType = Settings.Macro.actionTypes[actionID].Type;
+            ScrollButton.IsVisible = true;
+            IsVisible = true;
+            Items.Clear();
+            Index = -1;
+
+            MacroType mType = (MacroType)actionID;
             switch (mType)
             {
-                case MacroType.Skill:
-                    this.m_items.AddRange(Settings.fromList(Settings.Macro.useSkills, true));
-                    break;
-
-                case MacroType.Spell:
-                    this.m_items.AddRange(Settings.fromList(Settings.Macro.castSpell, true));
-                    break;
-
-                case MacroType.Display:
-                    this.m_items.AddRange(Settings.fromList(Settings.Macro.Displays, true));
-                    break;
-
-                case MacroType.Text:
-                    //its not for this method DELETEEEEEEEE
-                    break;
-
+                case MacroType.UseSkill:
+                case MacroType.CastSpell:
                 case MacroType.Move:
-                    this.m_items.AddRange(Settings.fromList(Settings.Macro.Moves, true));
-                    break;
-
                 case MacroType.ArmDisarm:
-                    this.m_items.AddRange(Settings.fromList(Settings.Macro.armDisarm, true));
+                    foreach (MacroDefinition def in Macros.Definitions)
+                        if (def.Type == mType)
+                            Items.Add(def.Name);
                     break;
 
-                case MacroType.None:
-                    //its not for this method DELETEEEEEEEE
-                    break;
+                case MacroType.OpenGump:
 
                 default:
+                    // no sub-ids for these types
                     break;
             }
-            this.Index = valueID;
+            Index = valueID;
         }
 
         private void onClickOpenList(AControl control, int x, int y, MouseButton button)
@@ -264,7 +241,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                     break;
                 }
             }
-            //////
 
             int indexOver = getOpenListIndexFromPoint(x, y);
             if (indexOver != -1)
@@ -277,52 +253,67 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (indexOver == -1)
                     return;
 
-                MacroType mType = Settings.Macro.actionTypes.Find(p => p.Name == m_openLabels[indexOver].Text).Type;
-                //here is controlling the background's image visual
-                if (!(Parent.Children[controlValueIndex] as MacroDropDownList).m_firstvisible)
+                MacroType mType = Macros.Definitions[indexOver + 1].Type; 
+                
+                // background image:
+                if (!(Parent.Children[controlValueIndex] as MacroDropDownList).IsFirstvisible)
                     (Parent.Children[controlValueIndex] as MacroDropDownList).CreateVisual();
 
-                (Parent.Children[controlValueIndex] as MacroDropDownList).m_items.Clear();//cleaning dropdownlist
+                // !!!!
+                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Clear();//cleaning dropdownlist
                 (Parent.Children[controlValueIndex + 1] as TextEntry).Text = "";//cleaning text
 
-                (Parent.Children[controlValueIndex] as MacroDropDownList).m_scrollButton.IsVisible = true;//easy way for visible dropdown list
+                (Parent.Children[controlValueIndex] as MacroDropDownList).ScrollButton.IsVisible = true;//easy way for visible dropdown list
                 (Parent.Children[controlValueIndex] as MacroDropDownList).IsVisible = true;//easy way for visible dropdown list
-
-                ///MAYBE THIS (SWITCH) WİLL CHANGİNG TO  "public void setIndex(int actionID, int valueID)" NOT NOW
+                
                 switch (mType)
                 {
-                    case MacroType.Skill:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).m_items.AddRange(Settings.fromList(Settings.Macro.useSkills, true));//adding to dropdownlist
+                    case MacroType.UseSkill:
+                        foreach (MacroDefinition def in Macros.Definitions)
+                            if (def.Type == mType)
+                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
                         break;
 
-                    case MacroType.Spell:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).m_items.AddRange(Settings.fromList(Settings.Macro.castSpell, true));//adding to dropdownlist
+                    case MacroType.CastSpell:
+                        foreach (MacroDefinition def in Macros.Definitions)
+                            if (def.Type == mType)
+                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
                         break;
 
-                    case MacroType.Display:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).m_items.AddRange(Settings.fromList(Settings.Macro.Displays, true));//adding to dropdownlist
+                    case MacroType.OpenGump:
+                        /*foreach (MacroDefinition def in Macros.Definitions)
+                            if (def.Type == mType)
+                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
+                        */
                         break;
 
-                    case MacroType.Text:
+                    case MacroType.Move:
+                        foreach (MacroDefinition def in Macros.Definitions)
+                            if (def.Type == mType)
+                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                        break;
+
+                    case MacroType.ArmDisarm:
+                        foreach (MacroDefinition def in Macros.Definitions)
+                            if (def.Type == mType)
+                                (Parent.Children[controlValueIndex] as MacroDropDownList).Items.Add(def.Name);
+                        break;
+
+                    case MacroType.Say:
+                    case MacroType.Emote:
+                    case MacroType.Whisper:
+                    case MacroType.Yell:
                         //(Parent.Children[controlValueIndex] as MacroDropDownList).m_scrollButton.IsVisible = false; //as you wish
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = true;//textentry activated
                         break;
 
-                    case MacroType.Move:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).m_items.AddRange(Settings.fromList(Settings.Macro.Moves, true));//adding to dropdownlist
-                        (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
-                        break;
-
-                    case MacroType.ArmDisarm:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).m_items.AddRange(Settings.fromList(Settings.Macro.armDisarm, true));//adding to dropdownlist
-                        (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//textentry disabled because i need dropdownlist
-                        break;
+                    
 
                     case MacroType.None:
-                        (Parent.Children[controlValueIndex] as MacroDropDownList).m_scrollButton.IsVisible = false;//i dont need any control :)
+                        (Parent.Children[controlValueIndex] as MacroDropDownList).ScrollButton.IsVisible = false;//i dont need any control :)
                         (Parent.Children[controlValueIndex + 1] as TextEntry).IsEditable = false;//i dont need any control :)
                         (Parent.Children[controlValueIndex] as MacroDropDownList).IsVisible = false;//i dont need any control :)
                         break;
@@ -332,7 +323,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                         break;
                 }
             }
-            /////
         }
 
         private void onMouseOverOpenList(AControl control, int x, int y)
@@ -355,7 +345,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         private int getOpenListIndexFromPoint(int x, int y)
         {
-            Rectangle r = new Rectangle(4, 5, m_width - 20, m_Font.Height);
+            Rectangle r = new Rectangle(4, 5, m_Width - 20, m_Font.Height);
             for (int i = 0; i < m_openLabels.Length; i++)
             {
                 if (r.Contains(new Point(x, y)))

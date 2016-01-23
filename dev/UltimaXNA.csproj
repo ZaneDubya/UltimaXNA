@@ -130,9 +130,14 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
-    <Compile Include="Configuration\MacroSettings.cs" />
-    <Compile Include="Configuration\PartySettings.cs" />
-    <Compile Include="Configuration\Properties\MacroProperty.cs" />
+    <Compile Include="Ultima\Input\Macro.cs" />
+    <Compile Include="Ultima\Input\MacroArmDisarm.cs" />
+    <Compile Include="Ultima\Input\MacroDefinition.cs" />
+    <Compile Include="Ultima\Input\MacroDisplay.cs" />
+    <Compile Include="Ultima\Input\MacroAction.cs" />
+    <Compile Include="Ultima\Input\PlayerMacros.cs" />
+    <Compile Include="Ultima\Input\Macros.cs" />
+    <Compile Include="Ultima\Input\MacroType.cs" />
     <Compile Include="Configuration\Properties\MouseProperty.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\Properties\SavedGumpProperty.cs" />
@@ -274,7 +279,7 @@
     <Compile Include="Ultima\Data\ContextMenuItem.cs" />
     <Compile Include="Ultima\Data\HouseRevisionState.cs" />
     <Compile Include="Ultima\Data\Hues.cs" />
-    <Compile Include="Ultima\Data\Magery.cs" />
+    <Compile Include="Ultima\Data\SpellsMagery.cs" />
     <Compile Include="Core\Data\Pair.cs" />
     <Compile Include="Ultima\Data\Races.cs" />
     <Compile Include="Ultima\Data\Reagents.cs" />
@@ -283,16 +288,6 @@
     <Compile Include="Ultima\Data\SpellbookData.cs" />
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
     <Compile Include="Ultima\Data\ClientVersion.cs" />
-    <Compile Include="Ultima\Network\PartySystem\PartyAccept.cs" />
-    <Compile Include="Ultima\Network\PartySystem\PartyAddMember.cs" />
-    <Compile Include="Ultima\Network\PartySystem\PartyCanLootable.cs" />
-    <Compile Include="Ultima\Network\PartySystem\PartyDecline.cs" />
-    <Compile Include="Ultima\Network\PartySystem\PartyPrivateMessage.cs" />
-    <Compile Include="Ultima\Network\PartySystem\PartyPublicMessage.cs" />
-    <Compile Include="Ultima\Network\PartySystem\PartyQueryLocation.cs" />
-    <Compile Include="Ultima\Network\PartySystem\PartyQueryStats.cs" />
-    <Compile Include="Ultima\Network\PartySystem\PartyQuit.cs" />
-    <Compile Include="Ultima\Network\PartySystem\PartyRemoveMember.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
     <Compile Include="Ultima\Resources\BodyDef.cs" />
@@ -321,8 +316,6 @@
     <Compile Include="Ultima\UI\WorldGumps\LogoutGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\MobileHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
-    <Compile Include="Ultima\UI\WorldGumps\PartyGump.cs" />
-    <Compile Include="Ultima\UI\WorldGumps\PartyHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorBuyGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorSellGump.cs" />
@@ -731,7 +724,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ultima\IO\Fonts\" />
-    <Folder Include="Ultima\Network\TradeSystem\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

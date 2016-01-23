@@ -22,8 +22,7 @@ namespace UltimaXNA.Ultima.UI.Controls
     {
         Default = 0,
         SwitchPage = 0,
-        SwitchMacro = 2, //i think it is easy way ??
-        Activate = 1
+        Activate = 1,
     }
 
     public class Button : AControl
@@ -191,10 +190,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 
                     case ButtonTypes.Activate:
                         // send response
-                        OnButtonClick(ButtonID);
-                        break;
-
-                    case ButtonTypes.SwitchMacro:
                         OnButtonClick(ButtonID);
                         break;
                 }

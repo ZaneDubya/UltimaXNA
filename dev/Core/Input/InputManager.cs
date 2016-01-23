@@ -10,7 +10,6 @@
  ***************************************************************************/
 
 #region usings
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -18,8 +17,7 @@ using System.Collections.Generic;
 using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Windows;
-
-#endregion usings
+#endregion
 
 namespace UltimaXNA.Core.Input
 {
@@ -27,19 +25,16 @@ namespace UltimaXNA.Core.Input
     {
         // Base WndProc
         private WndProc m_WndProc;
-
         private bool m_IsInitialized;
 
         // event data
         private readonly List<InputEvent> m_EventsAccumulating = new List<InputEvent>();
-
         private readonly List<InputEvent> m_EventsAccumulatingAlternate = new List<InputEvent>();
         private readonly List<InputEvent> m_EventsThisFrame = new List<InputEvent>();
         private bool m_EventsAccumulatingUseAlternate;
 
         // Mouse dragging support
         private const int MouseDragBeginDistance = 2;
-
         private const int MouseClickMaxDelta = 2;
         private InputEventMouse m_LastMouseClick;
         private float m_LastMouseClickTime;
@@ -214,24 +209,6 @@ namespace UltimaXNA.Core.Input
             MouseState newstate = new MouseState((int)(state.X / dpi.X), (int)(state.Y / dpi.Y),
                 state.ScrollWheelValue, state.LeftButton, state.MiddleButton, state.RightButton, state.XButton1, state.XButton2);
             return newstate;
-        }
-
-        public XMacro HandleKeyboardEventForMacros()
-        {
-            foreach (InputEvent e in m_EventsThisFrame)
-            {
-                if (!e.Handled && e is InputEventKeyboard)
-                {
-                    InputEventKeyboard ek = (InputEventKeyboard)e;
-
-                    if (ek.EventType == KeyboardEvent.Down)//(key down) or (key press) I DONT KNOW
-                    {
-                        e.Handled = true;
-                        return Settings.Macro.UserMacros.isEqual(ek.KeyCode, ek.Shift, ek.Alt, ek.Control); ;//searching in allmacros
-                    }
-                }
-            }
-            return null;
         }
 
         public bool HandleKeyboardEvent(KeyboardEvent type, WinKeys key, bool shift, bool alt, bool ctrl)
