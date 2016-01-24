@@ -98,17 +98,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (buttonID >= 200)
             {
                 int _serial = tellBtn[buttonID - 200].ButtonParameter;//private message: player serial
-                m_Network.Send(new PartyPrivateMessage((Serial)_serial, "make a dynamic message type"));
+                m_Network.Send(new PartyPrivateMessage((Serial)_serial, "make a dynamic message type"));//need improve
             }
             else if (buttonID >= 100)
             {
                 int _serial = kickBtn[buttonID - 100].ButtonParameter;//deleting player serial
                 m_Network.Send(new PartyRemoveMember(_serial));
                 PartySettings.RemoveMember(_serial);
+
                 if (PartySettings.List.Count == 1)//fixing party bug
-                {
                     PartySettings.LeaveParty();
-                }
             }
             else if (buttonID == 0 && PartySettings.Status != PartySettings.PartyState.None && PartySettings.Status != PartySettings.PartyState.Joining)
             {
@@ -152,7 +151,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             else if (buttonID == 3)
             {
-                m_Network.Send(new PartyPublicMessage("All member attack to ---PLAYERNAME---"));
+                m_Network.Send(new PartyPublicMessage("All member attack to ---PLAYERNAME---"));//need improve
             }
         }
     }
