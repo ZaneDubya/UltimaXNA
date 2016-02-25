@@ -289,6 +289,11 @@
     <Compile Include="Ultima\Data\SpellbookData.cs" />
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
     <Compile Include="Ultima\Data\ClientVersion.cs" />
+    <Compile Include="Ultima\Network\Client\BookHeaderNewChangePacket.cs" />
+    <Compile Include="Ultima\Network\Client\BookPageChangePacket.cs" />
+    <Compile Include="Ultima\Network\Server\BookHeaderNewPacket.cs" />
+    <Compile Include="Ultima\Network\Server\BookHeaderOldPacket.cs" />
+    <Compile Include="Ultima\Network\Server\BookPagesPacket.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
     <Compile Include="Ultima\Resources\BodyDef.cs" />
@@ -313,6 +318,7 @@
     <Compile Include="Ultima\UI\Controls\KeyPressControl.cs" />
     <Compile Include="Ultima\UI\Controls\MacroDropDownList.cs" />
     <Compile Include="Ultima\UI\LoginGumps\CreditsGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\BookGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ContextMenuGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\LogoutGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\MobileHealthTrackerGump.cs" />
@@ -320,6 +326,7 @@
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorBuyGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorSellGump.cs" />
+    <Compile Include="Ultima\World\Entities\Items\BaseBook.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />
     <Compile Include="Ultima\Data\SpellBookTypes.cs" />
     <Compile Include="Ultima\Data\StatLocks.cs" />

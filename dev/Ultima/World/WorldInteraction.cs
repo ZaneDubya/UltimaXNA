@@ -134,6 +134,22 @@ namespace UltimaXNA.Ultima.World
             skill.LockType = nextLockState;
         }
 
+        public void BookHeaderNewChange(Serial serial, string title, string author)
+        {
+            m_Network.Send(new BookHeaderNewChangePacket(serial, title, author));
+        }
+
+        public void BookHeaderOldChange(Serial serial, string title, string author)
+        {
+            // Not yet implemented
+            // m_Network.Send(new BookHeaderOldChangePacket(serial, title, author));
+        }
+
+        public void BookPageChange(Serial serial, int page, string[] lines)
+        {
+            m_Network.Send(new BookPageChangePacket(serial, page, lines));
+        }
+
         public Gump OpenContainerGump(AEntity entity) // used by ultimaclient.
         {
             Gump gump;

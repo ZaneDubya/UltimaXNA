@@ -94,6 +94,7 @@ namespace UltimaXNA.Ultima.World
             Register<PlaySoundEffectPacket>(0x54, "Play Sound Effect", 12, new TypedPacketReceiveHandler(ReceivePlaySoundEffect));
             Register<TimePacket>(0x5B, "Time", 4, new TypedPacketReceiveHandler(ReceiveTime));
             Register<WeatherPacket>(0x65, "Set Weather", 4, new TypedPacketReceiveHandler(ReceiveSetWeather));
+            Register<BookPagesPacket>(0x66, "Book Pages", -1, new TypedPacketReceiveHandler(ReceiveBookPages));
             Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(ReceiveTargetCursor));
             Register<PlayMusicPacket>(0x6D, "Play Music", 3, new TypedPacketReceiveHandler(ReceivePlayMusic));
             Register<MobileAnimationPacket>(0x6E, "Character Animation", 14, new TypedPacketReceiveHandler(ReceiveMobileAnimation));
@@ -106,6 +107,7 @@ namespace UltimaXNA.Ultima.World
             Register<DisplayMenuPacket>(0x7C, "Display Menu", -1, new TypedPacketReceiveHandler(ReceiveDisplayMenu));
             Register<OpenPaperdollPacket>(0x88, "Open Paperdoll", 66, new TypedPacketReceiveHandler(ReceiveOpenPaperdoll));
             Register<CorpseClothingPacket>(0x89, "Corpse Clothing", -1, new TypedPacketReceiveHandler(ReceiveCorpseClothing));
+            Register<BookHeaderOldPacket>(0x93, "Book Header (Old)", 99, new TypedPacketReceiveHandler(ReceiveBookHeaderOld));
             Register<PlayerMovePacket>(0x97, "Player Move", 2, new TypedPacketReceiveHandler(ReceivePlayerMove));
             Register<RequestNameResponsePacket>(0x98, "Request Name Response", -1, new TypedPacketReceiveHandler(ReceiveRequestNameResponse));
             Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(ReceiveTargetCursorMulti));
@@ -130,6 +132,7 @@ namespace UltimaXNA.Ultima.World
             Register<GlobalQueuePacket>(0xCB, "Global Queue Count", 7, new TypedPacketReceiveHandler(ReceiveGlobalQueueCount));
             Register<MessageLocalizedAffixPacket>(0xCC, "Message Localized Affix ", -1, new TypedPacketReceiveHandler(ReceiveMessageLocalizedAffix));
             Register<Extended0x78Packet>(0xD3, "Extended 0x78", -1, new TypedPacketReceiveHandler(ReceiveExtended0x78));
+            Register<BookHeaderNewPacket>(0xD4, "Book Header (New)", -1, new TypedPacketReceiveHandler(ReceiveBookHeaderNew));
             Register<ObjectPropertyListPacket>(0xD6, "Mega Cliloc", -1, new TypedPacketReceiveHandler(ReceiveObjectPropertyList));
             Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(ReceiveSendCustomHouse));
             Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(ReceiveToolTipRevision));
@@ -371,7 +374,15 @@ namespace UltimaXNA.Ultima.World
                     }
                 }
                 else
-                    item = WorldModel.Entities.GetObject<Item>(serial, true);
+                {
+                    // special case for books
+                    if (BaseBook.IsBookItem((ushort)itemID))
+                    {
+                        item = WorldModel.Entities.GetObject<BaseBook>(serial, true);
+                    }
+                    else
+                        item = WorldModel.Entities.GetObject<Item>(serial, true);
+                }
             }
             if (item == null)
                 return null;
@@ -1272,6 +1283,31 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveSetWeather(IRecvPacket packet)
         {
             announce_UnhandledPacket(packet);
+        }
+
+        private void ReceiveBookPages(IRecvPacket packet)
+        {
+            BookPagesPacket p = (BookPagesPacket)packet;
+            BaseBook book = WorldModel.Entities.GetObject<BaseBook>(p.Serial, false);
+
+            book.Pages = p.Pages;
+
+            m_UserInterface.AddControl(new BookGump(book, book.Serial), 200, 200);
+        }
+
+        private void ReceiveBookHeaderNew(IRecvPacket packet)
+        {
+            BookHeaderNewPacket p = (BookHeaderNewPacket)packet;
+            BaseBook book = WorldModel.Entities.GetObject<BaseBook>(p.Serial, true);
+
+            book.Writable = (p.flag1 == 1 && p.flag2 == 1);
+            book.Title = p.title;
+            book.Author = p.author;
+        }
+
+        private void ReceiveBookHeaderOld(IRecvPacket packet)
+        {
+            // Not yet implemented...
         }
     }
 }

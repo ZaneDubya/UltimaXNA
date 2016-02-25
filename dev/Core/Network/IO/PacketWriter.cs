@@ -327,6 +327,49 @@ namespace UltimaXNA.Core.Network
         }
 
         /// <summary>
+        /// Writes a dynamic-length UTF8 string value to the underlying stream, followed by a 1-byte null character.
+        /// </summary>
+        public void WriteUTF8Null(string value)
+        {
+            if (value == null)
+            {
+                value = String.Empty;
+            }
+
+            int length = value.Length;
+
+            m_stream.SetLength(m_stream.Length + ((length + 1) * 2));
+
+            m_stream.Position += Encoding.UTF8.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
+            m_stream.Position += 1;
+        }
+
+        /// <summary>
+        /// Writes a fixed-length UTF8 string value to the underlying stream. To fit (size), the string content is either truncated or padded with null characters.
+        /// </summary>
+        public void WriteUTF8Fixed(string value, int size)
+        {
+            if (value == null)
+            {
+                value = String.Empty;
+            }
+
+            size *= 2;
+
+            int length = value.Length;
+
+            m_stream.SetLength(m_stream.Length + size);
+
+            if ((length * 2) >= size)
+                m_stream.Position += Encoding.UTF8.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
+            else
+            {
+                Encoding.UTF8.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
+                m_stream.Position += size;
+            }
+        }
+
+        /// <summary>
         /// Fills the stream from the current position up to (capacity) with 0x00's
         /// </summary>
         public void Fill()
