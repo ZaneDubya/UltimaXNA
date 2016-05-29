@@ -49,6 +49,8 @@ namespace UltimaXNA.Ultima.World
         private WorldModel m_World;
 
         private List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
+        private System.Collections.Generic.Dictionary<int, DateTime> m_played_sounds = new System.Collections.Generic.Dictionary<int, DateTime>();
+        private TimeSpan m_max_delay = TimeSpan.FromSeconds(5);
 
         public WorldClient(WorldModel world)
         {
@@ -1234,12 +1236,29 @@ namespace UltimaXNA.Ultima.World
             AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlayMusic(p.MusicID);
         }
+        List<int> itemsToRemove = new List<int>();
 
         private void ReceivePlaySoundEffect(IRecvPacket packet)
         {
             PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
             AudioService service = ServiceRegistry.GetService<AudioService>();
-            service.PlaySound(p.SoundModel);
+           
+            itemsToRemove.Clear();
+            foreach (var pair in m_played_sounds)
+            {
+                if ((DateTime.Now - pair.Value).Seconds > m_max_delay.Seconds)
+                    itemsToRemove.Add(pair.Key);
+            }
+            foreach (int item in itemsToRemove)
+            {
+                m_played_sounds.Remove(item);
+            }
+
+            if (!m_played_sounds.ContainsKey(p.SoundModel))
+            {
+                service.PlaySound(p.SoundModel);
+                m_played_sounds.Add(p.SoundModel, DateTime.Now);
+            }
         }
 
         private void ReceiveQuestArrow(IRecvPacket packet)
