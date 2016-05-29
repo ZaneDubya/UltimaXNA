@@ -34,6 +34,7 @@ using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Entities.Multis;
 using UltimaXNA.Ultima.World.Input;
+using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -49,7 +50,8 @@ namespace UltimaXNA.Ultima.World
         private WorldModel m_World;
 
         private List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
-
+        private Dictionary<int, DateTime> m_delays = new Dictionary<int, DateTime>();
+        private TimeSpan m_max_delay = TimeSpan.FromSeconds(5);
         public WorldClient(WorldModel world)
         {
             m_World = world;
@@ -1239,7 +1241,23 @@ namespace UltimaXNA.Ultima.World
         {
             PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
             AudioService service = ServiceRegistry.GetService<AudioService>();
-            service.PlaySound(p.SoundModel);
+
+            List<int> itemsToRemove = new List<int>();
+
+            foreach (var pair in m_delays)
+            {
+                if ((DateTime.Now - pair.Value) > m_max_delay)
+                    itemsToRemove.Add(pair.Key);
+            }
+
+            foreach (int item in itemsToRemove)
+            {
+                m_delays.Remove(item);
+            }
+            if (!m_delays.ContainsKey(p.SoundModel)) { 
+                 service.PlaySound(p.SoundModel);
+                 m_delays.Add(p.SoundModel, DateTime.Now);
+            }
         }
 
         private void ReceiveQuestArrow(IRecvPacket packet)

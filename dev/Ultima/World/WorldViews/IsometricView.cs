@@ -148,7 +148,17 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 }
             }
         }
-
+        Point firstTile, renderDimensions;
+        int overDrawTilesOnSides = 3;
+        int overDrawTilesAtTopAndBottom = 6;
+        int overDrawAdditionalTilesOnBottom = 10;
+        MouseOverList overList;
+        List<AEntity> deferredToRemove = new List<AEntity>();
+        int x, y;
+        MapTile tile;
+        Point firstTileInRow = new Point();
+        Vector3 drawPosition = new Vector3();
+        List<AEntity> entities;
         private void DrawEntities(Map map, Position3D center, MousePicking mousePicking, out Vector2 renderOffset)
         {
             if (center == null)
@@ -165,35 +175,30 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
             // get variables that describe the tiles drawn in the viewport: the first tile to draw,
             // the offset to that tile, and the number of tiles drawn in the x and y dimensions.
-            Point firstTile, renderDimensions;
-            int overDrawTilesOnSides = 3;
-            int overDrawTilesAtTopAndBottom = 6;
-            int overDrawAdditionalTilesOnBottom = 10;
+
             CalculateViewport(center, overDrawTilesOnSides, overDrawTilesAtTopAndBottom, out firstTile, out renderOffset, out renderDimensions);
             
             CountEntitiesRendered = 0; // Count of objects rendered for statistics and debug
 
-            MouseOverList overList = new MouseOverList(mousePicking); // List of entities mouse is over.
-            List<AEntity> deferredToRemove = new List<AEntity>();
+            overList = new MouseOverList(mousePicking); // List of entities mouse is over.
 
-            for (int y = 0; y < renderDimensions.Y * 2 + 1 + overDrawAdditionalTilesOnBottom; y++)
+            for (y = 0; y < renderDimensions.Y * 2 + 1 + overDrawAdditionalTilesOnBottom; ++y)
             {
-                Vector3 drawPosition = new Vector3();
                 drawPosition.X = (firstTile.X - firstTile.Y + (y % 2)) * TILE_SIZE_FLOAT_HALF + renderOffset.X;
                 drawPosition.Y = (firstTile.X + firstTile.Y + y) * TILE_SIZE_FLOAT_HALF + renderOffset.Y;
 
-                Point firstTileInRow = new Point(firstTile.X + ((y + 1) / 2), firstTile.Y + (y / 2));
-
-                for (int x = 0; x < renderDimensions.X + 1; x++)
+                firstTileInRow.X = firstTile.X + ((y + 1) / 2);
+                firstTileInRow.Y = firstTile.Y + (y / 2);
+                for (x = 0; x < renderDimensions.X + 1; ++x)
                 {
-                    MapTile tile = map.GetMapTile(firstTileInRow.X - x, firstTileInRow.Y + x);
+                    tile = map.GetMapTile(firstTileInRow.X - x, firstTileInRow.Y + x);
                     if (tile == null)
                     {
                         drawPosition.X -= TILE_SIZE_FLOAT;
                         continue;
                     }
 
-                    List<AEntity> entities = tile.Entities;
+                    entities = tile.Entities;
                     bool draw = true;
                     for (int i = 0; i < entities.Count; i++)
                     {
