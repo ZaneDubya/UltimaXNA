@@ -29,8 +29,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public static bool NewDiagonalMovement = false;
 
-        const int minToRun = 5;
-
         public bool RequiresUpdate
         {
             get;
@@ -163,21 +161,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 {
                     while ((moveEvent = m_MoveEvents.GetNextMoveEvent(out sequence)) != null)
                     {
-                        Mobile entMob = (Mobile)m_entity;
-                        Facing = (Direction)moveEvent.Facing;
-
                         if (moveEvent.CreatedByPlayerInput)
-                        {
-                            //Stamina checking
-                            //Direction face = (Direction)moveEvent.Facing;
-                            if ((entMob.Stamina.Current <= minToRun) && (entMob.Stamina.Current != 0) && (Facing & Direction.Running) == Direction.Running)
-                            {
-                                //face ^= Direction.Running;
-                                Facing ^= Direction.Running;
-                                //Console.WriteLine("Cur stamina: " + entMob.Stamina.Current);
-                            }
-                            SendMoveRequestPacket(new MoveRequestPacket((byte)Facing, (byte)sequence, moveEvent.Fastwalk));
-                        }
+                            SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
+                        Facing = (Direction)moveEvent.Facing;
                         Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
                         if (p != CurrentPosition)
                         {
