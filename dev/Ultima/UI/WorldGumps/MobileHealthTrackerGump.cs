@@ -12,6 +12,7 @@
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Network.Client;
@@ -31,6 +32,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private GumpPicWithWidth[] m_Bars;
         private GumpPic[] m_BarBGs;
         private TextEntry m_NameEntry;
+        private readonly WorldModel m_World;
+        private INetworkClient m_Network;
 
         public MobileHealthTrackerGump(Mobile mobile)
             : base(mobile.Serial, 0)
@@ -43,6 +46,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             IsMoveable = true;
 
             Mobile = mobile;
+            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_Network = ServiceRegistry.GetService<INetworkClient>();
 
             if (Mobile.IsClientEntity)
             {
@@ -120,7 +125,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             else
             {
-                if (UserInterface.GetControl<PaperDollGump>(Mobile.Serial) == null)
+                m_World.Interaction.DoubleClick(Mobile);
+                m_World.Interaction.LastTarget = Mobile.Serial;
+
+                if (WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode)
+                {
+                    m_Network.Send(new AttackRequestPacket(Mobile.Serial));
+                }
+
+                else if (UserInterface.GetControl<PaperDollGump>(Mobile.Serial) == null)
                 {
                     UserInterface.AddControl(new PaperDollGump(Mobile.Serial, Mobile.Name), 400, 100);
                 }
