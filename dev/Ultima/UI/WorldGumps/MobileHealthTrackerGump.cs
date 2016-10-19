@@ -125,19 +125,38 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             else
             {
-                m_World.Interaction.DoubleClick(Mobile);
                 m_World.Interaction.LastTarget = Mobile.Serial;
 
                 if (WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode)
                 {
-                    m_Network.Send(new AttackRequestPacket(Mobile.Serial));
+                    // Attack Reds and Greys
+                    if (Mobile.Notoriety == 0x3 || Mobile.Notoriety == 0x4 || Mobile.Notoriety == 0x5 || Mobile.Notoriety == 0x6)
+                    {
+                        m_Network.Send(new AttackRequestPacket(Mobile.Serial));
+                    }
+                    // CrimeQuery is enabled, ask before attacking others
+                    else if (Settings.UserInterface.CrimeQuery)
+                    {
+                        MsgBoxGump g = MsgBoxGump.Show("This may flag you criminal!", MsgBoxTypes.OkCancel);
+                        g.OnClose = OnCloseCrimeQueryMsgBox;
+                    }
+                    // CrimeQuery is disabled, so attack without asking
+                    else
+                    {
+                        m_Network.Send(new AttackRequestPacket(Mobile.Serial));
+                    }
                 }
-
-                else if (UserInterface.GetControl<PaperDollGump>(Mobile.Serial) == null)
+                //Open
+                else
                 {
-                    UserInterface.AddControl(new PaperDollGump(Mobile.Serial, Mobile.Name), 400, 100);
+                    m_World.Interaction.DoubleClick(Mobile);
                 }
             }
+        }
+
+        void OnCloseCrimeQueryMsgBox()
+        {
+            m_Network.Send(new AttackRequestPacket(Mobile.Serial));
         }
 
         private void SetupMobileNameEntry()
