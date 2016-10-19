@@ -37,6 +37,7 @@ namespace UltimaXNA.Configuration
         private bool m_IgnoreGuildMsg;
         private int m_AllianceMsgColor;
         private bool m_IgnoreAllianceMsg;
+        private bool m_CrimeQuery;
 
         public UserInterfaceSettings()
         {
@@ -48,6 +49,7 @@ namespace UltimaXNA.Configuration
             Mouse = new MouseProperty();
             AlwaysRun = false;
             MenuBarDisabled = false;
+            CrimeQuery = true;
         }
 
         public bool IsMaximized
@@ -148,6 +150,12 @@ namespace UltimaXNA.Configuration
         {
             get { return m_IgnoreAllianceMsg; }
             set { SetProperty(ref m_IgnoreAllianceMsg, value); }
+        }
+
+        public bool CrimeQuery
+        {
+            get { return m_CrimeQuery; }
+            set { SetProperty(ref m_CrimeQuery, value); }
         }
     }
 }

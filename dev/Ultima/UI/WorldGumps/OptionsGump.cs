@@ -46,6 +46,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private CheckBox m_IgnoreGuildMsg;
         private ColorPickerBox m_AllianceMsgColor;
         private CheckBox m_IgnoreAllianceMsg;
+        private CheckBox m_CrimeQuery;
 
         private DropDownList m_DropDownFullScreenResolutions;
         private DropDownList m_DropDownPlayWindowResolutions;
@@ -100,7 +101,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // page 1 Sound and Music
             AddControl(new Button(this, 0, 40, 217, 217, ButtonTypes.SwitchPage, 1, (int)Buttons.Sound), 1);
             AddControl(new TextLabelAscii(this, 250, 20, 2, 1, @"Sound and Music"), 1);
-            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settting affect the sound and music you will hear while playing Ultima Online."), 1);
+            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settings affect the sound and music you will hear while playing Ultima Online."), 1);
 
             AddControl(new TextLabelAscii(this, 85, 85, 9, 1, @"Sound on/off"), 1);
             m_SoundOn = AddControl<CheckBox>(new CheckBox(this, 60, 80, 210, 211, Settings.Audio.SoundOn, 61), 1);
@@ -122,12 +123,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // page 2 Pop-up Help
             AddControl(new Button(this, 0, 110, 219, 219, ButtonTypes.SwitchPage, 2, (int)Buttons.Help), 2);
             AddControl(new TextLabelAscii(this, 250, 20, 2, 1, @"Pop-up Help"), 2);
-            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settting configure the behavior of the pop-up help."), 2);
+            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settings configure the behavior of the pop-up help."), 2);
 
             // page 3 Chat
             AddControl(new Button(this, 0, 250, 223, 223, ButtonTypes.SwitchPage, 3, (int)Buttons.Chat), 3);
             AddControl(new TextLabelAscii(this, 250, 20, 2, 1, @"Chat"), 3);
-            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settting affect the interface display for chat system."), 3);
+            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settings affect the interface display for chat system."), 3);
 
             // page 4 Macro Options
             AddControl(new Button(this, 0, 320, 236, 236, ButtonTypes.SwitchPage, 4, (int)Buttons.Macros), 4);
@@ -184,7 +185,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // page 5 Interface
             AddControl(new Button(this, 576, 40, 225, 225, ButtonTypes.SwitchPage, 5, (int)Buttons.Interface), 5);
             AddControl(new TextLabelAscii(this, 250, 20, 2, 1, @"Interface"), 5);
-            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settting affect your interface."), 5);
+            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These options affect your interface."), 5);
 
             AddControl(new TextLabelAscii(this, 85, 85, 9, 1, @"Your character will always run if this is checked"), 5);
             m_AlwaysRun = AddControl<CheckBox>(new CheckBox(this, 60, 80, 210, 211, Settings.UserInterface.AlwaysRun, 61), 5);
@@ -195,7 +196,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // page 6 Display
             AddControl(new Button(this, 576, 110, 227, 227, ButtonTypes.SwitchPage, 6, (int)Buttons.Display), 6);
             AddControl(new TextLabelAscii(this, 250, 20, 2, 1, @"Display"), 6);
-            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settting affect your display, and adjusting some of them may improve your graphics performance.", 430), 6);
+            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These options affect your display, and adjusting some of them may improve your graphics performance.", 430), 6);
 
             AddControl(new TextLabelAscii(this, 85, 80, 9, 1, @"Enable vertical synchronization"), 6);
             m_IsVSyncEnabled = AddControl<CheckBox>(new CheckBox(this, 60, 80, 210, 211, Settings.Engine.IsVSyncEnabled, 61), 6);
@@ -236,7 +237,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // page 7 Reputation system
             AddControl(new Button(this, 576, 180, 229, 229, ButtonTypes.SwitchPage, 7, (int)Buttons.Reputation), 7);
             AddControl(new TextLabelAscii(this, 250, 20, 2, 1, @"Reputation system"), 7);
-            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settting affect the reputation system, which is Ultima Online's system for controlling antisocial behavior."), 7);
+            AddControl(new TextLabelAscii(this, 60, 45, 9, 1, @"These settings affect the reputation system, which is Ultima Online's system for controlling antisocial behavior."), 7);
+
+            AddControl(new TextLabelAscii(this, 85, 100, 9, 1, @"Query before performing criminal actions"), 7);
+            m_CrimeQuery = AddControl<CheckBox>(new CheckBox(this, 60, 100, 210, 211, Settings.UserInterface.CrimeQuery, 61), 7);
 
             // page 8 Miscellaneous
             AddControl(new Button(this, 576, 250, 231, 231, ButtonTypes.SwitchPage, 8, (int)Buttons.Miscellaneous), 8);
@@ -376,7 +380,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Settings.UserInterface.IgnoreGuildMsg = m_IgnoreGuildMsg.IsChecked;
             Settings.UserInterface.AllianceMsgColor = m_AllianceMsgColor.Index;
             Settings.UserInterface.IgnoreAllianceMsg = m_IgnoreAllianceMsg.IsChecked;
-            
+
+            Settings.UserInterface.CrimeQuery = m_CrimeQuery.IsChecked;
+
             SwitchTopMenuGump();
         }
 
