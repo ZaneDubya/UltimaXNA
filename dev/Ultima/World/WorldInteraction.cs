@@ -110,8 +110,11 @@ namespace UltimaXNA.Ultima.World
         
         public void AttackRequest(Mobile mobile)
         {
-            // Attack Reds and Greys
-            if (mobile.Notoriety == 0x3 || mobile.Notoriety == 0x4 || mobile.Notoriety == 0x5 || mobile.Notoriety == 0x6)
+            // Do nothing on Invulnerable
+            if (mobile.Notoriety == 0x7){
+            }
+            // Attack Innocents, Reds and Greys
+            else if (mobile.Notoriety == 0x1 || mobile.Notoriety == 0x3 || mobile.Notoriety == 0x4 || mobile.Notoriety == 0x5 || mobile.Notoriety == 0x6)
             {
                 m_Network.Send(new AttackRequestPacket(mobile.Serial));
             }
