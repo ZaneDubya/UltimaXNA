@@ -16,6 +16,7 @@ using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.World.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -33,7 +34,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private GumpPic[] m_BarBGs;
         private TextEntry m_NameEntry;
         private readonly WorldModel m_World;
-        private INetworkClient m_Network;
 
         public MobileHealthTrackerGump(Mobile mobile)
             : base(mobile.Serial, 0)
@@ -47,7 +47,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             Mobile = mobile;
             m_World = ServiceRegistry.GetService<WorldModel>();
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
 
             if (Mobile.IsClientEntity)
             {
@@ -127,36 +126,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 m_World.Interaction.LastTarget = Mobile.Serial;
 
+                // Attack
                 if (WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode)
                 {
-                    // Attack Reds and Greys
-                    if (Mobile.Notoriety == 0x3 || Mobile.Notoriety == 0x4 || Mobile.Notoriety == 0x5 || Mobile.Notoriety == 0x6)
-                    {
-                        m_Network.Send(new AttackRequestPacket(Mobile.Serial));
-                    }
-                    // CrimeQuery is enabled, ask before attacking others
-                    else if (Settings.UserInterface.CrimeQuery)
-                    {
-                        MsgBoxGump g = MsgBoxGump.Show("This may flag you criminal!", MsgBoxTypes.OkCancel);
-                        g.OnClose = OnCloseCrimeQueryMsgBox;
-                    }
-                    // CrimeQuery is disabled, so attack without asking
-                    else
-                    {
-                        m_Network.Send(new AttackRequestPacket(Mobile.Serial));
-                    }
+                    m_World.Interaction.AttackRequest(Mobile);
                 }
-                //Open
+                // Open Paperdoll
                 else
                 {
                     m_World.Interaction.DoubleClick(Mobile);
                 }
             }
-        }
-
-        void OnCloseCrimeQueryMsgBox()
-        {
-            m_Network.Send(new AttackRequestPacket(Mobile.Serial));
         }
 
         private void SetupMobileNameEntry()

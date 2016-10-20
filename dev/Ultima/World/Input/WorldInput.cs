@@ -410,12 +410,16 @@ namespace UltimaXNA.Ultima.World.Input
                     // Send double click packet.
                     // Set LastTarget == targeted Mobile.
                     // If in WarMode, set Attacking == true.
-                    World.Interaction.DoubleClick(overEntity);
+                    Mobile mobile = overEntity as Mobile;
                     World.Interaction.LastTarget = overEntity.Serial;
 
                     if (WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode)
                     {
-                        m_Network.Send(new AttackRequestPacket(overEntity.Serial));
+                        World.Interaction.AttackRequest(mobile);
+                    }
+                    else
+                    {
+                        World.Interaction.DoubleClick(overEntity);
                     }
                 }
             }

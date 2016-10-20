@@ -36,6 +36,7 @@ namespace UltimaXNA.Ultima.World
         private WorldModel m_World;
         private INetworkClient m_Network;
         private UserInterfaceService m_UserInterface;
+        public Mobile Mobile;
 
         public WorldInteraction(WorldModel world)
         {
@@ -106,7 +107,33 @@ namespace UltimaXNA.Ultima.World
         {
             if (item!=null)
                 m_Network.Send(new DoubleClickPacket(item.Serial));
-        } 
+        }
+        
+        public void AttackRequest(Mobile mobile)
+        {
+            Mobile = mobile;
+            // Attack Reds and Greys
+            if (Mobile.Notoriety == 0x3 || Mobile.Notoriety == 0x4 || Mobile.Notoriety == 0x5 || Mobile.Notoriety == 0x6)
+            {
+                m_Network.Send(new AttackRequestPacket(Mobile.Serial));
+            }
+            // CrimeQuery is enabled, ask before attacking others
+            else if (Settings.UserInterface.CrimeQuery)
+            {
+                MsgBoxGump g = MsgBoxGump.Show("This may flag you criminal!", MsgBoxTypes.OkCancel);
+                g.OnClose = OnCloseCrimeQueryMsgBox;
+            }
+            // CrimeQuery is disabled, so attack without asking
+            else
+            {
+                m_Network.Send(new AttackRequestPacket(Mobile.Serial));
+            }
+        }
+
+        void OnCloseCrimeQueryMsgBox()
+        {
+            m_Network.Send(new AttackRequestPacket(Mobile.Serial));
+        }
 
         public void ToggleWarMode() // used by paperdollgump.
         {
