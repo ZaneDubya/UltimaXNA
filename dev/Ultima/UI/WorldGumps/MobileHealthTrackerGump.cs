@@ -16,7 +16,6 @@ using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.World.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
