@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Core.Audio;
+using System;
 #endregion
 
 namespace UltimaXNA.Ultima.Audio
@@ -21,7 +22,6 @@ namespace UltimaXNA.Ultima.Audio
     {
         private readonly Dictionary<int, ASound> m_Sounds = new Dictionary<int, ASound>();
         private readonly Dictionary<int, ASound> m_Music = new Dictionary<int, ASound>();
-
         private UOMusic m_MusicCurrentlyPlaying = null;
 
         public void Update()
@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.Audio
                 m_MusicCurrentlyPlaying.Update();
         }
 
-        public void PlaySound(int soundIndex, AudioEffects effect = AudioEffects.None, float volume = 1.0f)
+        public void PlaySound(int soundIndex, AudioEffects effect = AudioEffects.None, float volume = 1.0f, bool spamCheck = false)
         {
             if (volume < 0.01f)
                 return;
@@ -39,7 +39,7 @@ namespace UltimaXNA.Ultima.Audio
                 ASound sound;
                 if (m_Sounds.TryGetValue(soundIndex, out sound))
                 {
-                    sound.Play(true, effect, volume);
+                    sound.Play(true, effect, volume, spamCheck);
                 }
                 else
                 {
@@ -49,7 +49,7 @@ namespace UltimaXNA.Ultima.Audio
                     {
                         sound = new UOSound(name, data);
                         m_Sounds.Add(soundIndex, sound);
-                        sound.Play(true, effect, volume);
+                        sound.Play(true, effect, volume, spamCheck);
                     }
                 }
             }
