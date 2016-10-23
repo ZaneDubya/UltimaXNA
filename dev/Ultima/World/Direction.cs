@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Ultima.World
 {
+    [Flags]
     public enum Direction : byte
     {
         North = 0x0,
