@@ -56,7 +56,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         Direction m_playerMobile_NextMove = Direction.Nothing;
         Direction m_Facing = Direction.Up;
-        const int m_MinimumStaminaToRun = 5;
+        const int m_MinimumStaminaToRun = 2;
 
         public Direction Facing
         {
@@ -165,6 +165,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                     {
                         Facing = (Direction)moveEvent.Facing;
                         Mobile pl = (Mobile)m_entity;
+                        if (pl.Stamina.Current == 0)
+                            break;
                         if ((pl.Stamina.Current < m_MinimumStaminaToRun) && (pl.Stamina.Current > 0) && ((Facing & Direction.Running) == Direction.Running))
                             Facing &= Direction.FacingMask;
                 
