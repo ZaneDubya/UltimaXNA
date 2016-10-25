@@ -61,8 +61,6 @@ namespace UltimaXNA.Ultima.Login
 
         public LoginClient()
         {
-            ClientVersion.ClearVersion(); // only unlocked after server sends 0xbd version request packet.
-
             m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_Engine = ServiceRegistry.GetService<UltimaGame>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
@@ -280,13 +278,11 @@ namespace UltimaXNA.Ultima.Login
             }
             else
             {
-                ClientVersion.UnlockVersion();
-                if (!Settings.UltimaOnline.IsClientVersionLocked && ClientVersion.HasExtendedClientFeatures)
+                if (ClientVersion.HasExtendedFeatures(Settings.UltimaOnline.ClientVersion))
                 {
                     Tracer.Info("Client version is greater than 6.0.14.2, enabling extended 0xB9 packet.");
                     Unregister(0xB9);
                     Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
-                    
                 }
                 m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.ClientVersion));
             }

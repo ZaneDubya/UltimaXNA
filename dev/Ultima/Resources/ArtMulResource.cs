@@ -31,7 +31,7 @@ namespace UltimaXNA.Ultima.Resources
         public ArtMulResource(GraphicsDevice graphics)
         {
             m_Graphics = graphics;
-            m_FileIndex = ClientVersion.IsUopFormat ? FileManager.CreateFileIndex("artLegacyMUL.uop", 0x10000, false, ".tga") : FileManager.CreateFileIndex("artidx.mul", "art.mul", 0x10000, -1); // !!! must find patch file reference for artdata.
+            m_FileIndex = ClientVersion.InstallationIsUopFormat ? FileManager.CreateFileIndex("artLegacyMUL.uop", 0x10000, false, ".tga") : FileManager.CreateFileIndex("artidx.mul", "art.mul", 0x10000, -1); // !!! must find patch file reference for artdata.
 
             m_LandTileTextureCache = new Texture2D[0x10000];
             m_StaticTileTextureCache = new Texture2D[0x10000];
