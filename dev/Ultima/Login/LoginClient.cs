@@ -281,7 +281,7 @@ namespace UltimaXNA.Ultima.Login
             else
             {
                 ClientVersion.UnlockVersion();
-                if (ClientVersion.HasExtendedClientFeatures)
+                if (!Settings.UltimaOnline.IsClientVersionLocked && ClientVersion.HasExtendedClientFeatures)
                 {
                     Tracer.Info("Client version is greater than 6.0.14.2, enabling extended 0xB9 packet.");
                     Unregister(0xB9);
