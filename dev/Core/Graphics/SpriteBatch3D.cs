@@ -221,7 +221,7 @@ namespace UltimaXNA.Core.Graphics
                     List<VertexPositionNormalTextureHue> vertexList = vertexEnumerator.Current.Value;
                     GraphicsDevice.Textures[0] = texture;
 
-                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, CopyVerticesToArray(vertexList), 0, vertexList.Count, m_IndexBuffer, 0, vertexList.Count / 2);
+                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, CopyVerticesToArray(vertexList), 0,  Math.Min(vertexList.Count,MAX_VERTICES_PER_DRAW), m_IndexBuffer, 0, vertexList.Count / 2);
                     vertexList.Clear();
                     m_VertexListQueue.Enqueue(vertexList);
                 }
