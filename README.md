@@ -11,6 +11,6 @@ UltimaXNA is an isometric massively multiplayer online role playing client that 
 
 You should use [Visual Studio 2013](https://www.visualstudio.com/en-us/products/visual-studio-express-vs.aspx) to develop and compile UltimaXNA. You will also need to install [XNA for Visual Studio 2013](https://msxna.codeplex.com/releases/view/117230).
 
-UltimaXNA does not include the Ultima Online resource files, and will not work on a computer that does not have Ultima Online installed. UltimaXNA is compatible with any Ultima Online client prior to the introduction of the UOP resource format, including Mondain's Legacy. [Download the client files for Mondain's Legacy here](http://games.mirrors.tds.net/pub/ea-games/uo/uoml_setup.exe).
+UltimaXNA does not include the Ultima Online resource files, and will not work on a computer that does not have Ultima Online installed. UltimaXNA is compatible with any Ultima Online client prior to the introduction of the UOP resource format, including Mondain's Legacy. [Download the client files for Mondain's Legacy here](http://download.cnet.com/Ultima-Online-Mondain-s-Legacy-client/3000-7540_4-10432237.html).
 
-UltimaXNA is designed to work with all server software. The recommended installation is RunUO 2.3, [which you can download here](https://code.google.com/p/runuo/downloads/list).
+UltimaXNA is designed to work with all server software, but we test exclusively on RunUO 2.6, [which you can download here](https://github.com/runuo/runuo/releases). Note that you will [need to change three lines of the RunUO server scripts](https://github.com/ZaneDubya/UltimaXNA/wiki) to allow it to work with Mondain's Legacy resource files.

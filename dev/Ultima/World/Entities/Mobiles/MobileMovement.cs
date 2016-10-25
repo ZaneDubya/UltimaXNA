@@ -56,6 +56,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         Direction m_playerMobile_NextMove = Direction.Nothing;
         Direction m_Facing = Direction.Up;
+        const int m_MinimumStaminaToRun = 2;
+
         public Direction Facing
         {
             get { return m_Facing; }
@@ -161,9 +163,15 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 {
                     while ((moveEvent = m_MoveEvents.GetNextMoveEvent(out sequence)) != null)
                     {
-                        if (moveEvent.CreatedByPlayerInput)
-                            SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
                         Facing = (Direction)moveEvent.Facing;
+                        Mobile pl = (Mobile)m_entity;
+                        if (pl.Stamina.Current == 0)
+                            break;
+                        if ((pl.Stamina.Current < m_MinimumStaminaToRun) && (pl.Stamina.Current > 0) && ((Facing & Direction.Running) == Direction.Running))
+                            Facing &= Direction.FacingMask;
+                
+                        if (moveEvent.CreatedByPlayerInput)
+                            SendMoveRequestPacket(new MoveRequestPacket((byte)Facing, (byte)sequence, moveEvent.Fastwalk));
                         Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
                         if (p != CurrentPosition)
                         {
