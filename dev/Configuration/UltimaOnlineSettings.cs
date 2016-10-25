@@ -22,7 +22,6 @@ namespace UltimaXNA.Configuration
 
         private string m_DataDirectory;
         private byte[] m_ClientVersion;
-        private bool m_IsClientVersionLocked;
 
         public UltimaOnlineSettings()
         {
@@ -31,7 +30,6 @@ namespace UltimaXNA.Configuration
             // Once we have this version working, we will attempt to support additional versions.
             // We will not support any issues you experience after changing this value.
             ClientVersion = new byte[] {6, 0, 6, 2};
-            IsClientVersionLocked = true;
         }
 
         /// <summary>
@@ -53,32 +51,7 @@ namespace UltimaXNA.Configuration
                 SetProperty(ref m_ClientVersion, value);
             }
         }
-
-        /// <summary>
-        /// This flag is True then only UltimaOnlineSettings.ClientVersion will be used
-        /// to determine the client version.It protects from ExtendedClientFeatures
-        /// enable (Look at LoginClient.SendClientVersion method) on later clients.
-        /// Otherwise, if this flag is false we send to server 6.0.6.2 version
-        /// and server do not enable ExtendedClientFeatures, but our code will enable it
-        /// so we get wrong packet length on SupportedFeaturesPacket 
-        /// and catch an ChatControl not registered issue. See Issue #401.
-        /// Of course this is temporary decision while we are focusing on 6.0.6.2 version
-        /// and it's just protect you from crash on not supported client 
-        /// but you use it on your own risk.
-        /// </summary>
-        public bool IsClientVersionLocked
-        {
-            get { return m_IsClientVersionLocked; }
-            set
-            {
-                // Do not remove this check. See above.
-                if (!value)
-                    return;
-
-                SetProperty(ref m_IsClientVersionLocked, value);
-            }
-        }
-
+        
         /// <summary>
         /// The directory where the Ultima Online resource files and executable are located.
         /// </summary>

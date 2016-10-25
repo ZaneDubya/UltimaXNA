@@ -42,7 +42,6 @@ namespace UltimaXNA.Ultima.World
         private Timer m_KeepAliveTimer;
         private INetworkClient m_Network;
         private UserInterfaceService m_UserInterface;
-        private readonly Version m_OldAddItemToContainerVersion = new Version("6.0.1.7");
         private WorldModel m_World;
         private List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
         
@@ -68,7 +67,7 @@ namespace UltimaXNA.Ultima.World
             Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
             Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
 
-            if (ClientVersion.Version < m_OldAddItemToContainerVersion)
+            if (ClientVersion.HasExtendedAddItemPacket(Settings.UltimaOnline.ClientVersion))
             {
                 Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 20, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
             }
