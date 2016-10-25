@@ -577,7 +577,7 @@ namespace UltimaXNA.Core.UI.HTML
                 width += word[i].Width;
                 if (width >= lineWidth)
                 {
-                    elements.Insert(start + i + 1, lineend);
+                    elements.Insert(start + i, lineend); // start + i + 1
                     return;
                 }
             }

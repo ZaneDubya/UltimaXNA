@@ -21,7 +21,6 @@ using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Player;
@@ -43,13 +42,10 @@ namespace UltimaXNA.Ultima.World
         private Timer m_KeepAliveTimer;
         private INetworkClient m_Network;
         private UserInterfaceService m_UserInterface;
-
         private readonly Version m_OldAddItemToContainerVersion = new Version("6.0.1.7");
-
         private WorldModel m_World;
-
         private List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
-
+        
         public WorldClient(WorldModel world)
         {
             m_World = world;
@@ -1239,7 +1235,7 @@ namespace UltimaXNA.Ultima.World
         {
             PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
             AudioService service = ServiceRegistry.GetService<AudioService>();
-            service.PlaySound(p.SoundModel);
+            service.PlaySound(p.SoundModel, spamCheck: true);
         }
 
         private void ReceiveQuestArrow(IRecvPacket packet)
