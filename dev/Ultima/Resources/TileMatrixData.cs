@@ -325,10 +325,7 @@ namespace UltimaXNA.Ultima.Resources
                         if (length > m_StaticTileLoadingBuffer.Length)
                             m_StaticTileLoadingBuffer = new byte[length];
 
-                        fixed (byte* pStaticTiles = m_StaticTileLoadingBuffer)
-                        {
-                            NativeMethods.ReadBuffer(m_StaticDataStream.SafeFileHandle, pStaticTiles, length);
-                        }
+                        m_StaticDataStream.Read(m_StaticTileLoadingBuffer, 0, length);
                         return m_StaticTileLoadingBuffer;
                     }
                 }
@@ -369,10 +366,7 @@ namespace UltimaXNA.Ultima.Resources
                 }
 
                 m_MapDataStream.Seek(ptr, SeekOrigin.Begin);
-                fixed (byte* pData = m_bufferedLandChunks[index])
-                {
-                    NativeMethods.ReadBuffer(m_MapDataStream.SafeFileHandle, pData, m_SizeLandChunkData);
-                }
+                m_MapDataStream.Read(m_bufferedLandChunks[index], 0, m_SizeLandChunkData);
                 Metrics.ReportDataRead(m_SizeLandChunkData);
                 return m_bufferedLandChunks[index];
             }

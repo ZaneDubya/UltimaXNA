@@ -64,10 +64,7 @@ namespace UltimaXNA.Ultima.Resources
                 m_LandPatchStream.Seek(ptr, SeekOrigin.Begin);
 
                 landData = new byte[192];
-                fixed (byte* pTiles = landData)
-                {
-                    NativeMethods.ReadBuffer(m_LandPatchStream.SafeFileHandle, pTiles, 192);
-                }
+                m_LandPatchStream.Read(landData, 0, 192);
                 return true;
             }
 
@@ -143,10 +140,7 @@ namespace UltimaXNA.Ultima.Resources
                     if (length > staticData.Length)
                         staticData = new byte[length];
 
-                    fixed (byte* pStaticTiles = staticData)
-                    {
-                        NativeMethods.ReadBuffer(m_StaticPatchStream.SafeFileHandle, pStaticTiles, length);
-                    }
+                    m_StaticPatchStream.Read(staticData, 0, length);
 
                     return true;
                 }
