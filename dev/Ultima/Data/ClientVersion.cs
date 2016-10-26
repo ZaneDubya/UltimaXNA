@@ -31,11 +31,11 @@ namespace UltimaXNA.Ultima.Data
             }
         }
 
-        public static bool InstallationIsUopFormat => GreaterThanOrEqualTo(ClientExe, m_ConvertedToUOPVersion);
+        public static bool InstallationIsUopFormat { get { return GreaterThanOrEqualTo(ClientExe, m_ConvertedToUOPVersion); } }
 
-        public static bool HasExtendedFeatures(byte[] version) => GreaterThanOrEqualTo(version, m_ExtendedFeaturesVersion);
+        public static bool HasExtendedFeatures(byte[] version) { return GreaterThanOrEqualTo(version, m_ExtendedFeaturesVersion); }
 
-        public static bool HasExtendedAddItemPacket(byte[] version) => GreaterThanOrEqualTo(version, m_ExtendedAddItemToContainer);
+        public static bool HasExtendedAddItemPacket(byte[] version) { return GreaterThanOrEqualTo(version, m_ExtendedAddItemToContainer); }
 
         /// <summary> Compare two arrays of equal size. Returns true if first parameter array is greater than or equal to second. </summary>
         private static bool GreaterThanOrEqualTo(byte[] a, byte[] b) {
