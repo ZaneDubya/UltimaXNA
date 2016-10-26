@@ -79,13 +79,13 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 if (m_RenderTargetSprites != null)
                     m_RenderTargetSprites.Dispose();
                 m_RenderTargetSprites = new RenderTarget2D(
-                    m_SpriteBatch.GraphicsDevice, 
-                    Settings.UserInterface.PlayWindowGumpResolution.Width / pixelScale, 
-                    Settings.UserInterface.PlayWindowGumpResolution.Height / pixelScale, 
-                    false, 
-                    SurfaceFormat.Color, 
-                    DepthFormat.Depth24Stencil8, 
-                    0, 
+                    m_SpriteBatch.GraphicsDevice,
+                    Settings.UserInterface.PlayWindowGumpResolution.Width / pixelScale,
+                    Settings.UserInterface.PlayWindowGumpResolution.Height / pixelScale,
+                    false,
+                    SurfaceFormat.Color,
+                    DepthFormat.Depth24Stencil8,
+                    0,
                     RenderTargetUsage.DiscardContents);
             }
 
@@ -170,7 +170,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
             int overDrawTilesAtTopAndBottom = 6;
             int overDrawAdditionalTilesOnBottom = 10;
             CalculateViewport(center, overDrawTilesOnSides, overDrawTilesAtTopAndBottom, out firstTile, out renderOffset, out renderDimensions);
-            
+
             CountEntitiesRendered = 0; // Count of objects rendered for statistics and debug
 
             MouseOverList overList = new MouseOverList(mousePicking); // List of entities mouse is over.

@@ -107,7 +107,29 @@ namespace UltimaXNA.Ultima.World
         {
             if (item!=null)
                 m_Network.Send(new DoubleClickPacket(item.Serial));
-        } 
+        }
+        
+        public void AttackRequest(Mobile mobile)
+        {
+            // Do nothing on Invulnerable
+            if (mobile.Notoriety == 0x7){
+            }
+            // Attack Innocents, Reds and Greys
+            else if (mobile.Notoriety == 0x1 || mobile.Notoriety == 0x3 || mobile.Notoriety == 0x4 || mobile.Notoriety == 0x5 || mobile.Notoriety == 0x6)
+            {
+                m_Network.Send(new AttackRequestPacket(mobile.Serial));
+            }
+            // CrimeQuery is enabled, ask before attacking others
+            else if (Settings.UserInterface.CrimeQuery)
+            {
+                m_UserInterface.AddControl(new CrimeQueryGump(mobile), 0, 0);
+            }
+            // CrimeQuery is disabled, so attack without asking
+            else
+            {
+                m_Network.Send(new AttackRequestPacket(mobile.Serial));
+            }
+        }
 
         public void ToggleWarMode() // used by paperdollgump.
         {

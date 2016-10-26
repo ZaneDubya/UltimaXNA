@@ -18,14 +18,16 @@ namespace UltimaXNA.Core.Audio
     abstract class ASound : IDisposable
     {
         public string Name { get; private set; }
+        public DateTime LastPlayed = DateTime.MinValue;
+        public static TimeSpan MinimumDelay = TimeSpan.FromSeconds(1d);
 
         abstract protected byte[] GetBuffer();
         abstract protected void OnBufferNeeded(object sender, EventArgs e);
         virtual protected void AfterStop() { }
         virtual protected void BeforePlay() { }
 
-        private static List<Tuple<DynamicSoundEffectInstance, double>> m_EffectInstances;
-        private static List<Tuple<DynamicSoundEffectInstance, double>> m_MusicInstances;
+        static List<Tuple<DynamicSoundEffectInstance, double>> m_EffectInstances;
+        static List<Tuple<DynamicSoundEffectInstance, double>> m_MusicInstances;
         protected DynamicSoundEffectInstance m_ThisInstance;
 
         protected int Frequency = 22050;
@@ -61,27 +63,31 @@ namespace UltimaXNA.Core.Audio
         /// Plays the effect.
         /// </summary>
         /// <param name="asEffect">Set to false for music, true for sound effects.</param>
-        public void Play(bool asEffect, AudioEffects effect = AudioEffects.None, float volume = 1.0f)
+        public void Play(bool asEffect, AudioEffects effect = AudioEffects.None, float volume = 1.0f, bool spamCheck = false)
         {
             double now = UltimaGame.TotalMS;
             CullExpiredEffects(now);
 
+            if (spamCheck && (LastPlayed + MinimumDelay > DateTime.Now))
+                return;
+
             m_ThisInstance = GetNewInstance(asEffect);
             if (m_ThisInstance == null)
             {
-                this.Dispose();
+                Dispose();
                 return;
             }
 
             switch (effect)
             {
                 case AudioEffects.PitchVariation:
-                    float pitch = (float)Utility.RandomValue(-5, 5) * .025f;
+                    float pitch = Utility.RandomValue(-5, 5) * .025f;
                     m_ThisInstance.Pitch = pitch;
                     break;
             }
 
             BeforePlay();
+            LastPlayed = DateTime.Now;
 
             byte[] buffer = GetBuffer();
             if (buffer != null && buffer.Length > 0)

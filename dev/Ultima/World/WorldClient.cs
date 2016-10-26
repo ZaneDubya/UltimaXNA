@@ -21,7 +21,6 @@ using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Player;
@@ -43,13 +42,9 @@ namespace UltimaXNA.Ultima.World
         private Timer m_KeepAliveTimer;
         private INetworkClient m_Network;
         private UserInterfaceService m_UserInterface;
-
-        private readonly Version m_OldAddItemToContainerVersion = new Version("6.0.1.7");
-
         private WorldModel m_World;
-
         private List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
-
+        
         public WorldClient(WorldModel world)
         {
             m_World = world;
@@ -72,7 +67,7 @@ namespace UltimaXNA.Ultima.World
             Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
             Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
 
-            if (ClientVersion.Version < m_OldAddItemToContainerVersion)
+            if (ClientVersion.HasExtendedAddItemPacket(Settings.UltimaOnline.ClientVersion))
             {
                 Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 20, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
             }
@@ -1243,7 +1238,7 @@ namespace UltimaXNA.Ultima.World
         {
             PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
             AudioService service = ServiceRegistry.GetService<AudioService>();
-            service.PlaySound(p.SoundModel);
+            service.PlaySound(p.SoundModel, spamCheck: true);
         }
 
         private void ReceiveQuestArrow(IRecvPacket packet)

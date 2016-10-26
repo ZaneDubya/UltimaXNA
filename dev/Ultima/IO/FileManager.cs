@@ -70,7 +70,7 @@ namespace UltimaXNA.Ultima.IO
         /// </summary>
         public static int ItemIDMask
         {
-            get { return ClientVersion.IsUopFormat ? 0xffff : 0x3fff; }
+            get { return ClientVersion.InstallationIsUopFormat ? 0xffff : 0x3fff; }
         }
 
         static FileManager()

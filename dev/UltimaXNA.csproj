@@ -325,6 +325,7 @@
     <Compile Include="Ultima\UI\Controls\MacroDropDownList.cs" />
     <Compile Include="Ultima\UI\LoginGumps\CreditsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ContextMenuGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\CrimeQueryGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\LogoutGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\MobileHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
