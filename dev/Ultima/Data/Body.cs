@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.Data
 
         static Body()
         {
-            string path = @"data\bodytable.cfg";
+            string path = @"data" + Path.DirectorySeparatorChar + "bodytable.cfg";
 
             if (File.Exists(path))
             {
