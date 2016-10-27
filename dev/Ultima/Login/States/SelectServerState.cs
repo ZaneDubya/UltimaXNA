@@ -23,12 +23,6 @@ namespace UltimaXNA.Ultima.Login.States
 
         private SelectServerGump m_SelectServerGump;
 
-        public SelectServerState()
-            : base()
-        {
-            
-        }
-
         public override void Intitialize()
         {
             base.Intitialize();
@@ -41,9 +35,6 @@ namespace UltimaXNA.Ultima.Login.States
             m_SelectServerGump.OnSelectLastServer += OnSelectLastServer;
             m_SelectServerGump.OnSelectServer += OnSelectServer;
 
-            m_Login.Client.OnWaitingForRelay += DoRelay;
-            m_Login.Client.OnHasCharacterList += SwitchToSelectChar;
-
             SelectAServerIfOnlyOneServer();
         }
 
@@ -53,9 +44,6 @@ namespace UltimaXNA.Ultima.Login.States
             m_SelectServerGump.OnSelectLastServer -= OnSelectLastServer;
             m_SelectServerGump.OnSelectServer -= OnSelectServer;
             m_SelectServerGump.Dispose();
-
-            m_Login.Client.OnWaitingForRelay -= DoRelay;
-            m_Login.Client.OnHasCharacterList -= SwitchToSelectChar;
 
             base.Dispose();
         }
@@ -67,17 +55,6 @@ namespace UltimaXNA.Ultima.Login.States
                 // HINT: First server is not always 0 index, expecially on POL
                 OnSelectServer(ServerList.List[0].Index);
             }
-        }
-
-        private void DoRelay()
-        {
-            // we must now send the relay packet.
-            m_Login.Client.Relay();
-        }
-
-        private void SwitchToSelectChar()
-        {
-            Manager.CurrentState = new CharacterListState();
         }
 
         public override void Update(double totalTime, double frameTime)

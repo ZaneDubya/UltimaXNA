@@ -23,6 +23,8 @@ namespace UltimaXNA.Ultima.Login
         private StateManager m_SceneManager;
         private UserInterfaceService m_UserInterface;
 
+        public StateManager States { get { return m_SceneManager; } }
+
         public LoginClient Client
         {
             get;
