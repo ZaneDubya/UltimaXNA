@@ -67,7 +67,7 @@ namespace UltimaXNA.Ultima.World
             Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
             Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
 
-            if (ClientVersion.HasExtendedAddItemPacket(Settings.UltimaOnline.ClientVersion))
+            if (ClientVersion.HasExtendedAddItemPacket(Settings.UltimaOnline.PatchVersion))
             {
                 Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 20, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
             }
@@ -220,13 +220,13 @@ namespace UltimaXNA.Ultima.World
         /// </summary>
         public void SendClientVersion()
         {
-            if (Settings.UltimaOnline.ClientVersion.Length != 4)
+            if (Settings.UltimaOnline.PatchVersion.Length != 4)
             {
                 Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
             }
             else
             {
-                m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.ClientVersion));
+                m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.PatchVersion));
             }
         }
 

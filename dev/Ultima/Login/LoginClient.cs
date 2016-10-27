@@ -160,13 +160,10 @@ namespace UltimaXNA.Ultima.Login
             if (success)
             {
                 Status = LoginClientStatus.LoginServer_WaitingForLogin;
-
-                byte[] clientVersion = Settings.UltimaOnline.ClientVersion;
-
-                if (clientVersion.Length != 4)
+                if (Settings.UltimaOnline.PatchVersion.Length != 4)
                     Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
                 else
-                    m_Network.Send(new SeedPacket(1, clientVersion));
+                    m_Network.Send(new SeedPacket(1, Settings.UltimaOnline.PatchVersion));
             }
             else
             {
@@ -192,8 +189,6 @@ namespace UltimaXNA.Ultima.Login
         /// <summary>
         /// Attempts to login to the connected host.
         /// </summary>
-        /// <param name="account">The username of the account to be logged in.</param>
-        /// <param name="password">The password of the account to be logged in. This is encrypted in transit.</param>
         public void Login()
         {
             Status = LoginClientStatus.LoginServer_LoggingIn;
@@ -204,8 +199,6 @@ namespace UltimaXNA.Ultima.Login
         /// <summary>
         /// Connect to the indicated relay server.
         /// </summary>
-        /// <param name="account">The username of the account to be logged in.</param>
-        /// <param name="password">The password of the account to be logged in. This is encrypted in transit.</param>
         public void Relay()
         {
             Status = LoginClientStatus.LoginServer_Relaying;
@@ -272,19 +265,19 @@ namespace UltimaXNA.Ultima.Login
         /// </summary>
         public void SendClientVersion()
         {
-            if (Settings.UltimaOnline.ClientVersion.Length != 4)
+            if (Settings.UltimaOnline.PatchVersion.Length != 4)
             {
                 Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
             }
             else
             {
-                if (ClientVersion.HasExtendedFeatures(Settings.UltimaOnline.ClientVersion))
+                if (ClientVersion.HasExtendedFeatures(Settings.UltimaOnline.PatchVersion))
                 {
                     Tracer.Info("Client version is greater than 6.0.14.2, enabling extended 0xB9 packet.");
                     Unregister(0xB9);
                     Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
                 }
-                m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.ClientVersion));
+                m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.PatchVersion));
             }
         }
 
