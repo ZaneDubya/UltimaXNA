@@ -14,80 +14,37 @@ using UltimaXNA.Ultima.Login.Servers;
 using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
-namespace UltimaXNA.Ultima.Login.States
-{
-    public class SelectServerState : AState
-    {
+namespace UltimaXNA.Ultima.Login.States {
+    public class SelectServerState : AState {
         UserInterfaceService m_UserInterface;
         LoginModel m_Login;
+        SelectServerGump m_SelectServerGump;
 
-        private SelectServerGump m_SelectServerGump;
-
-        public SelectServerState()
-            : base()
-        {
-            
-        }
-
-        public override void Intitialize()
-        {
+        public override void Intitialize() {
             base.Intitialize();
-
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_Login = ServiceRegistry.GetService<LoginModel>();
-
-            m_SelectServerGump = (SelectServerGump)m_UserInterface.AddControl(new SelectServerGump(), 0, 0);
-            m_SelectServerGump.OnBackToLoginScreen += OnBackToLoginScreen;
-            m_SelectServerGump.OnSelectLastServer += OnSelectLastServer;
-            m_SelectServerGump.OnSelectServer += OnSelectServer;
-
-            m_Login.Client.OnWaitingForRelay += DoRelay;
-            m_Login.Client.OnHasCharacterList += SwitchToSelectChar;
-
+            m_SelectServerGump = (SelectServerGump)m_UserInterface.AddControl(
+                new SelectServerGump(OnBackToLoginScreen, OnSelectLastServer, OnSelectServer), 0, 0);
             SelectAServerIfOnlyOneServer();
         }
 
-        public override void Dispose()
-        {
-            m_SelectServerGump.OnBackToLoginScreen -= OnBackToLoginScreen;
-            m_SelectServerGump.OnSelectLastServer -= OnSelectLastServer;
-            m_SelectServerGump.OnSelectServer -= OnSelectServer;
+        public override void Dispose() {
             m_SelectServerGump.Dispose();
-
-            m_Login.Client.OnWaitingForRelay -= DoRelay;
-            m_Login.Client.OnHasCharacterList -= SwitchToSelectChar;
-
             base.Dispose();
         }
 
-        private void SelectAServerIfOnlyOneServer()
-        {
+        void SelectAServerIfOnlyOneServer() {
+            // First server is not always 0 index, expecially on POL
             if (ServerList.List.Length == 1)
-            {
-                // HINT: First server is not always 0 index, expecially on POL
                 OnSelectServer(ServerList.List[0].Index);
-            }
         }
 
-        private void DoRelay()
-        {
-            // we must now send the relay packet.
-            m_Login.Client.Relay();
-        }
-
-        private void SwitchToSelectChar()
-        {
-            Manager.CurrentState = new CharacterListState();
-        }
-
-        public override void Update(double totalTime, double frameTime)
-        {
+        public override void Update(double totalTime, double frameTime) {
             base.Update(totalTime, frameTime);
 
-            if(SceneState == SceneState.Active)
-            {
-                switch (m_Login.Client.Status)
-                {
+            if (TransitionState == TransitionState.Active) {
+                switch (m_Login.Client.Status) {
                     case LoginClientStatus.LoginServer_HasServerList:
                         // This is where we're supposed to be while waiting to select a server.
                         break;
@@ -112,20 +69,17 @@ namespace UltimaXNA.Ultima.Login.States
             }
         }
 
-        public void OnBackToLoginScreen()
-        {
+        public void OnBackToLoginScreen() {
             Manager.ResetToLoginScreen();
         }
 
-        public void OnSelectServer(int index)
-        {
-            m_SelectServerGump.ActivePage = 2;
-            m_Login.Client.SelectShard(index);
+        public void OnSelectLastServer() {
+            // select the last server.
         }
 
-        public void OnSelectLastServer()
-        {
-            // select the last server.
+        public void OnSelectServer(int index) {
+            m_SelectServerGump.ActivePage = 2;
+            m_Login.Client.SelectShard(index);
         }
     }
 }

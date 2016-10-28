@@ -12,16 +12,15 @@
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Resources;
+using System;
+using UltimaXNA.Ultima.Login.States;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.LoginGumps
-{
-    class CreateCharSkillsGump : Gump
-    {
+namespace UltimaXNA.Ultima.UI.LoginGumps {
+    class CreateCharSkillsGump : Gump {
         public delegate void EventNoParams();
 
-        enum Buttons
-        {
+        enum Buttons {
             BackButton,
             ForwardButton,
             QuitButton
@@ -44,8 +43,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public int SkillPoints2 { get { return sliderSkills[2].Value; } set { sliderSkills[2].Value = value; } }
 
         public CreateCharSkillsGump()
-            : base(0, 0)
-        {
+            : base(0, 0) {
             // get the resource provider
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
@@ -74,10 +72,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             lblAttributes[0] = new TextLabelAscii(this, 284, 170, 1, 2430, string.Empty);
             lblAttributes[1] = new TextLabelAscii(this, 284, 250, 1, 2430, string.Empty);
             lblAttributes[2] = new TextLabelAscii(this, 284, 330, 1, 2430, string.Empty);
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
                     if (i != j)
                         sliderAttributes[i].PairSlider(sliderAttributes[j]);
                 }
@@ -101,10 +97,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             listSkills[0] = new DropDownList(this, 344, 172, 182, skillList, 8, -1, true);
             listSkills[1] = new DropDownList(this, 344, 252, 182, skillList, 8, -1, true);
             listSkills[2] = new DropDownList(this, 344, 332, 182, skillList, 8, -1, true);
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
                     if (i != j)
                         sliderSkills[i].PairSlider(sliderSkills[j]);
                 }
@@ -129,20 +123,42 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             IsUncloseableWithRMB = true;
         }
 
-        public override void Update(double totalMS, double frameMS)
-        {
+        internal void SaveData(CreateCharacterData data) {
+            // save the values;
+            data.Attributes[0] = Strength;
+            data.Attributes[1] = Dexterity;
+            data.Attributes[2] = Intelligence;
+            data.SkillIndexes[0] = SkillIndex0;
+            data.SkillIndexes[1] = SkillIndex1;
+            data.SkillIndexes[2] = SkillIndex2;
+            data.SkillValues[0] = SkillPoints0;
+            data.SkillValues[1] = SkillPoints1;
+            data.SkillValues[2] = SkillPoints2;
+            data.HasSkillData = true;
+        }
+
+        internal void RestoreData(CreateCharacterData data) {
+            Strength = data.Attributes[0];
+            Dexterity = data.Attributes[1];
+            Intelligence = data.Attributes[2];
+            SkillIndex0 = data.SkillIndexes[0];
+            SkillIndex1 = data.SkillIndexes[1];
+            SkillIndex2 = data.SkillIndexes[2];
+            SkillPoints0 = data.SkillValues[0];
+            SkillPoints1 = data.SkillValues[1];
+            SkillPoints2 = data.SkillValues[2];
+        }
+
+        public override void Update(double totalMS, double frameMS) {
             base.Update(totalMS, frameMS);
-            for (int i = 0; i < 3; i++)
-            {
+            for (int i = 0; i < 3; i++) {
                 lblAttributes[i].Text = sliderAttributes[i].Value.ToString();
                 lblSkills[i].Text = sliderSkills[i].Value.ToString();
             }
         }
 
-        public override void OnButtonClick(int buttonID)
-        {
-            switch ((Buttons)buttonID)
-            {
+        public override void OnButtonClick(int buttonID) {
+            switch ((Buttons)buttonID) {
                 case Buttons.BackButton:
                     OnBackward();
                     break;

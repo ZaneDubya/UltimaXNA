@@ -14,53 +14,31 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
-namespace UltimaXNA.Ultima.Login.States
-{
-    public class LoggingInState : AState
-    {
+namespace UltimaXNA.Ultima.Login.States {
+    public class LoggingInState : AState {
         UserInterfaceService m_UserInterface;
         LoginModel m_Login;
+        LoginStatusGump m_Gump;
+        bool m_ErrorReceived;
 
-        private LoginStatusGump m_Gump;
-        
-        private bool m_ErrorReceived = false;
-
-        public LoggingInState()
-            : base()
-        {
-            // Todo: Send the accountname and password to the ultimaclient so this gump does not have to save them.
-        }
-
-        public override void Intitialize()
-        {
+        public override void Intitialize() {
             base.Intitialize();
-
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_Login = ServiceRegistry.GetService<LoginModel>();
-
-            m_Gump = (LoginStatusGump)m_UserInterface.AddControl(new LoginStatusGump(), 0, 0);
-            m_Gump.OnCancelLogin += OnCancelLogin;
-
+            m_Gump = (LoginStatusGump)m_UserInterface.AddControl(new LoginStatusGump(OnCancelLogin), 0, 0);
             m_Login.Client.Disconnect();
         }
 
-        public override void Dispose()
-        {
-            m_Gump.OnCancelLogin -= OnCancelLogin;
+        public override void Dispose() {
             m_Gump.Dispose();
             base.Dispose();
         }
 
-        public override void Update(double totalTime, double frameTime)
-        {
+        public override void Update(double totalTime, double frameTime) {
             base.Update(totalTime, frameTime);
-
-            if (SceneState == SceneState.Active)
-            {
-                if (!m_ErrorReceived)
-                {
-                    switch (m_Login.Client.Status)
-                    {
+            if (TransitionState == TransitionState.Active) {
+                if (!m_ErrorReceived) {
+                    switch (m_Login.Client.Status) {
                         case LoginClientStatus.Unconnected:
                             string serverAddress = Settings.Login.ServerAddress;
                             int serverPort = Settings.Login.ServerPort;
@@ -117,8 +95,7 @@ namespace UltimaXNA.Ultima.Login.States
             }
         }
 
-        public void OnCancelLogin()
-        {
+        void OnCancelLogin() {
             Manager.ResetToLoginScreen();
         }
     }

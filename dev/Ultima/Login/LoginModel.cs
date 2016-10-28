@@ -12,7 +12,6 @@
 using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Audio;
-using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.Login.States;
 using UltimaXNA.Ultima.UI;
 
@@ -20,57 +19,45 @@ namespace UltimaXNA.Ultima.Login
 {
     class LoginModel : AUltimaModel
     {
-        private StateManager m_SceneManager;
-        private UserInterfaceService m_UserInterface;
+        StateManager m_SceneManager;
+        UserInterfaceService m_UserInterface;
 
-        public LoginClient Client
-        {
+        public StateManager States { get { return m_SceneManager; } }
+
+        public LoginClient Client {
             get;
             private set;
         }
 
-        public LoginModel()
-        {
+        public LoginModel() {
             ServiceRegistry.Register<LoginModel>(this);
-
             Client = new LoginClient();
         }
 
-        protected override AView CreateView()
-        {
+        protected override AView CreateView() {
             return new LoginView(this);
         }
 
-        protected override void OnInitialize()
-        {
+        protected override void OnInitialize() {
             ServiceRegistry.GetService<UltimaGame>().SetupWindowForLogin();
-
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_UserInterface.Cursor = new UltimaCursor();
-
             m_SceneManager = new StateManager();
             m_SceneManager.ResetToLoginScreen();
-
             ServiceRegistry.GetService<AudioService>().PlayMusic(0);
-
         }
 
-        protected override void OnDispose()
-        {
+        protected override void OnDispose() {
             ServiceRegistry.GetService<AudioService>().StopMusic();
-
             ServiceRegistry.Unregister<LoginModel>();
-
             Client.Dispose();
             Client = null;
-
             m_UserInterface.Reset();
             m_SceneManager.CurrentState = null;
             m_SceneManager = null;
         }
 
-        public override void Update(double totalTime, double frameTime)
-        {
+        public override void Update(double totalTime, double frameTime) {
             m_SceneManager.Update(totalTime, frameTime);
         }
     }

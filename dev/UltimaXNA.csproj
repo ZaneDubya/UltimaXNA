@@ -300,6 +300,9 @@
     <Compile Include="Ultima\Network\PartySystem\PartyQueryStats.cs" />
     <Compile Include="Ultima\Network\PartySystem\PartyQuit.cs" />
     <Compile Include="Ultima\Network\PartySystem\PartyRemoveMember.cs" />
+    <Compile Include="Ultima\Login\States\CreateCharacterData.cs" />
+    <Compile Include="Ultima\Login\States\TransitionState.cs" />
+    <Compile Include="Ultima\Network\Client\ClientHardwarePacket.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
     <Compile Include="Ultima\Resources\BodyDef.cs" />
