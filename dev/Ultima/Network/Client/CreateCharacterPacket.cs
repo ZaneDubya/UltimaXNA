@@ -13,55 +13,52 @@ using System;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Login.States;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Client
 {
     public class CreateCharacterPacket : SendPacket
     {
-        public CreateCharacterPacket(string name, Genders sex, Races race,
-            byte str, byte dex, byte intel, byte skill1, byte skill1Value,
-            byte skill2, byte skill2Value, byte skill3, byte skill3Value, short skinColor,
-            short hairStyle, short hairColor, short facialHairStyle, short facialHairColor,
-            short locationIndex, short slotNumber, int clientIp, short shirtColor, short pantsColor)
+        internal CreateCharacterPacket(CreateCharacterData data, short locationIndex, short slotNumber, int clientIp)
             : base(0x00, "Create Character", 104)
         {
-            str = (byte)MathHelper.Clamp(str, 10, 60);
-            dex = (byte)MathHelper.Clamp(dex, 10, 60);
-            intel = (byte)MathHelper.Clamp(intel, 10, 60);
-
+            int str = (byte)MathHelper.Clamp(data.Attributes[0], 10, 60);
+            int dex = (byte)MathHelper.Clamp(data.Attributes[1], 10, 60);
+            int intel = (byte)MathHelper.Clamp(data.Attributes[2], 10, 60);
+                
             if (str + dex + intel != 80)
                 throw new Exception("Unable to create character with a combined stat total not equal to 80.");
 
             Stream.Write(0xedededed);
             Stream.Write(0xffffffff);
             Stream.Write((byte)0);
-            Stream.WriteAsciiFixed(name, 30);
-            Stream.WriteAsciiFixed("", 30);
-            Stream.Write((byte)((int)sex + (int)race));
+            Stream.WriteAsciiFixed(data.Name, 30);
+            Stream.WriteAsciiFixed(string.Empty, 30);
+            Stream.Write((byte)((int)(Genders)data.Gender + (int)(Races)0));
             Stream.Write((byte)str);
             Stream.Write((byte)dex);
             Stream.Write((byte)intel);
 
-            Stream.Write((byte)skill1);
-            Stream.Write((byte)skill1Value);
-            Stream.Write((byte)skill2);
-            Stream.Write((byte)skill2Value);
-            Stream.Write((byte)skill3);
-            Stream.Write((byte)skill3Value);
+            Stream.Write((byte)data.SkillIndexes[0]);
+            Stream.Write((byte)data.SkillValues[0]);
+            Stream.Write((byte)data.SkillIndexes[1]);
+            Stream.Write((byte)data.SkillValues[1]);
+            Stream.Write((byte)data.SkillIndexes[2]);
+            Stream.Write((byte)data.SkillValues[2]);
 
-            Stream.Write((short)skinColor);
-            Stream.Write((short)hairStyle);
-            Stream.Write((short)hairColor);
-            Stream.Write((short)facialHairStyle);
-            Stream.Write((short)facialHairColor);
+            Stream.Write((short)data.SkinHue);
+            Stream.Write((short)data.HairStyleID);
+            Stream.Write((short)data.HairHue);
+            Stream.Write((short)data.FacialHairStyleID);
+            Stream.Write((short)data.FacialHairHue);
             Stream.Write((short)locationIndex);
             Stream.Write((short)slotNumber);
             Stream.Write((short)0);
 
             Stream.Write(clientIp);
-            Stream.Write((short)shirtColor);
-            Stream.Write((short)pantsColor);
+            Stream.Write((short)data.ShirtColor);
+            Stream.Write((short)data.PantsColor);
         }
     }
 }

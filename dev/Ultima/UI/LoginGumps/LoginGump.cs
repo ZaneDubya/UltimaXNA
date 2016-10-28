@@ -11,35 +11,30 @@
 #region usings
 using System;
 using System.Security;
-using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.LoginGumps
-{
+namespace UltimaXNA.Ultima.UI.LoginGumps {
     public delegate void LoginEvent(string server, int port, string account, SecureString password);
 
-    enum LoginGumpButtons
-    {
+    enum LoginGumpButtons {
         QuitButton = 0,
         LoginButton = 1,
         CreditsButtons = 2
     }
-    enum LoginGumpTextFields
-    {
+    enum LoginGumpTextFields {
         AccountName = 0,
         Password = 1
     }
 
-    public class LoginGump : Gump
-    {
-        public event LoginEvent OnLogin;
+    public class LoginGump : Gump {
+        Action<string, int, string, SecureString> m_OnLogin;
 
-        public LoginGump()
-            : base(0, 0)
-        {
+        public LoginGump(Action<string, int, string, SecureString> onLogin)
+            : base(0, 0) {
+            m_OnLogin = onLogin;
+
             // get the resource provider
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
@@ -84,30 +79,25 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             IsUncloseableWithRMB = true;
         }
 
-        public override void OnButtonClick(int buttonID)
-        {
+        public override void OnButtonClick(int buttonID) {
             string accountName = GetTextEntry((int)LoginGumpTextFields.AccountName);
             string password = GetTextEntry((int)LoginGumpTextFields.Password);
 
-            switch ((LoginGumpButtons)buttonID)
-            {
+            switch ((LoginGumpButtons)buttonID) {
                 case LoginGumpButtons.QuitButton:
                     UltimaGame.IsRunning = false;
                     break;
-                case LoginGumpButtons.LoginButton:
-                {
-                    SecureString secureStr = new SecureString();
-                    if (password.Length > 0)
-                    {
-                        foreach (char c in password.ToCharArray())
-                        {
-                            secureStr.AppendChar(c);
+                case LoginGumpButtons.LoginButton: {
+                        SecureString secureStr = new SecureString();
+                        if (password.Length > 0) {
+                            foreach (char c in password) {
+                                secureStr.AppendChar(c);
+                            }
                         }
-                    }
 
-                    OnLogin(Settings.Login.ServerAddress, Settings.Login.ServerPort, accountName, secureStr);
-                    break;
-                }
+                        m_OnLogin(Settings.Login.ServerAddress, Settings.Login.ServerPort, accountName, secureStr);
+                        break;
+                    }
                 case LoginGumpButtons.CreditsButtons:
                     UserInterface.AddControl(new CreditsGump(), 0, 0);
                     break;
@@ -115,8 +105,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
 
             Settings.Login.UserName = accountName;
         }
-        public override void OnKeyboardReturn(int textID, string text)
-        {
+        public override void OnKeyboardReturn(int textID, string text) {
             OnButtonClick((int)LoginGumpButtons.LoginButton);
         }
     }
