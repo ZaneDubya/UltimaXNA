@@ -14,65 +14,40 @@ using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
-namespace UltimaXNA.Ultima.Login.States
-{
-    public class CharacterListState : AState
-    {
+namespace UltimaXNA.Ultima.Login.States {
+    public class CharacterListState : AState {
         UserInterfaceService m_UserInterface;
         LoginModel m_Login;
 
         CharacterListGump m_CharListGump;
 
-        public CharacterListState()
-            : base()
-        {
-            
-        }
-
-        public override void Intitialize()
-        {
+        public override void Intitialize() {
             base.Intitialize();
-
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_Login = ServiceRegistry.GetService<LoginModel>();
             m_Login.Client.StartKeepAlivePackets();
-
-            m_CharListGump = (CharacterListGump)m_UserInterface.AddControl(new CharacterListGump(), 0, 0);
-            m_CharListGump.OnBackToSelectServer += OnBackToSelectServer;
-            m_CharListGump.OnLoginWithCharacter += OnLoginWithCharacter;
-            m_CharListGump.OnDeleteCharacter += OnDeleteCharacter;
-            m_CharListGump.OnNewCharacter += OnNewCharacter;
+            m_CharListGump = (CharacterListGump)m_UserInterface.AddControl(
+                new CharacterListGump(OnBackToSelectServer, OnLoginWithCharacter, OnDeleteCharacter, OnNewCharacter), 0, 0);
         }
 
-        public override void Dispose()
-        {
-            m_CharListGump.OnBackToSelectServer -= OnBackToSelectServer;
-            m_CharListGump.OnLoginWithCharacter -= OnLoginWithCharacter;
-            m_CharListGump.OnDeleteCharacter -= OnDeleteCharacter;
-            m_CharListGump.OnNewCharacter -= OnNewCharacter;
+        public override void Dispose() {
             m_CharListGump.Dispose();
             base.Dispose();
         }
 
         private bool m_autoSelectedCharacter;
 
-        public override void Update(double totalTime, double frameTime)
-        {
+        public override void Update(double totalTime, double frameTime) {
             base.Update(totalTime, frameTime);
 
-            if (SceneState == SceneState.Active)
-            {
-                switch (m_Login.Client.Status)
-                {
+            if (TransitionState == TransitionState.Active) {
+                switch (m_Login.Client.Status) {
                     case LoginClientStatus.GameServer_CharList:
-                        if (!m_autoSelectedCharacter && Settings.Login.AutoSelectLastCharacter && !string.IsNullOrWhiteSpace(Settings.Login.LastCharacterName))
-                        {
+                        if (!m_autoSelectedCharacter && Settings.Login.AutoSelectLastCharacter && !string.IsNullOrWhiteSpace(Settings.Login.LastCharacterName)) {
                             m_autoSelectedCharacter = true;
 
-                            for(int i = 0; i < Characters.List.Length; i++)
-                            {
-                                if(Characters.List[i].Name == Settings.Login.LastCharacterName)
-                                {
+                            for (int i = 0; i < Characters.List.Length; i++) {
+                                if (Characters.List[i].Name == Settings.Login.LastCharacterName) {
                                     OnLoginWithCharacter(i);
                                 }
                             }
@@ -80,8 +55,8 @@ namespace UltimaXNA.Ultima.Login.States
                         // This is where we're supposed to be while waiting to select a character.
                         break;
                     case LoginClientStatus.WorldServer_LoginComplete:
-                        // Almost completed logging in, just waiting for our client object.
-                        // break;
+                    // Almost completed logging in, just waiting for our client object.
+                    // break;
                     case LoginClientStatus.WorldServer_InWorld:
                         // we've connected! Client takes us into the world and disposes of this Model.
                         break;
@@ -92,8 +67,7 @@ namespace UltimaXNA.Ultima.Login.States
             }
         }
 
-        public void OnBackToSelectServer()
-        {
+        public void OnBackToSelectServer() {
             // !!! This SHOULD take us back to the 'logging in' screen,
             // which automatically logs in again. But we can't do that,
             // since I have UltimaClient clear your account/password data
@@ -101,8 +75,7 @@ namespace UltimaXNA.Ultima.Login.States
             Manager.CurrentState = new LoginState();
         }
 
-        public void OnLoginWithCharacter(int index)
-        {
+        public void OnLoginWithCharacter(int index) {
             if (index < 0 || index >= Characters.List.Length)
                 return;
 
@@ -110,13 +83,11 @@ namespace UltimaXNA.Ultima.Login.States
             m_Login.Client.LoginWithCharacter(index);
         }
 
-        public void OnDeleteCharacter(int index)
-        {
+        public void OnDeleteCharacter(int index) {
             m_Login.Client.DeleteCharacter(index);
         }
 
-        public void OnNewCharacter()
-        {
+        public void OnNewCharacter() {
             Manager.CurrentState = new CreateCharacterState();
         }
     }

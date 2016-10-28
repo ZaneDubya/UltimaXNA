@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   UltimaClient.cs
+ *   LoginClient.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,10 +27,8 @@ using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
-namespace UltimaXNA.Ultima.Login
-{
-    public class LoginClient : IDisposable
-    {
+namespace UltimaXNA.Ultima.Login {
+    public class LoginClient : IDisposable {
         Timer m_KeepAliveTimer;
         readonly INetworkClient m_Network;
         readonly UltimaGame m_Engine;
@@ -219,17 +217,12 @@ namespace UltimaXNA.Ultima.Login
         /// Sends the server the client version. Version is specified in EngineVars.
         /// </summary>
         public void SendClientVersion() {
-            if (Settings.UltimaOnline.PatchVersion.Length != 4) {
-                Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
+            if (ClientVersion.HasExtendedFeatures(Settings.UltimaOnline.PatchVersion)) {
+                Tracer.Info("Client version is greater than 6.0.14.2, enabling extended 0xB9 packet.");
+                Unregister(0xB9);
+                Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
             }
-            else {
-                if (ClientVersion.HasExtendedFeatures(Settings.UltimaOnline.PatchVersion)) {
-                    Tracer.Info("Client version is greater than 6.0.14.2, enabling extended 0xB9 packet.");
-                    Unregister(0xB9);
-                    Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
-                }
-                m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.PatchVersion));
-            }
+            m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.PatchVersion));
         }
 
         void ReceiveDeleteCharacterResponse(IRecvPacket packet) {
@@ -281,10 +274,10 @@ namespace UltimaXNA.Ultima.Login
         }
 
         void ReceiveServerRelay(IRecvPacket packet) {
-            ServerRelayPacket p = (ServerRelayPacket)packet;
             // On OSI, upon receiving this packet, the client would disconnect and
             // log in to the specified server. Since emulated servers use the same
             // server for both shard selection and world, we don't need to disconnect.
+            ServerRelayPacket p = (ServerRelayPacket)packet;
             m_Network.IsDecompressionEnabled = true;
             Status = LoginClientStatus.LoginServer_WaitingForRelay;
             Relay(p.AccountId);
@@ -303,19 +296,18 @@ namespace UltimaXNA.Ultima.Login
 
         }
 
-
-
-        // ======================================================================
-        // New login handling routines
-        // ======================================================================
-
+        // ============================================================================================================
+        // Login handling routines - Nominally, the server should send LoginConfirmPacket, followed by GeneralInfo0x08,
+        // and finally LoginCompletePacket. However, the legacy client finds it valid to receive the packets in any
+        // order. The code below allows any of these possibilities.
+        // ============================================================================================================
         LoginConfirmPacket m_QueuedLoginConfirmPacket;
 
         void ReceiveLoginConfirmPacket(IRecvPacket packet) {
             m_QueuedLoginConfirmPacket = (LoginConfirmPacket)packet;
             // set the player serial and create the player entity. Don't need to do anything with it yet.
             WorldModel.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
-            Mobile player = WorldModel.Entities.GetObject<Mobile>(m_QueuedLoginConfirmPacket.Serial, true);
+            Mobile player = WorldModel.Entities.GetObject<Mobile>(WorldModel.PlayerSerial, true);
             if (player == null)
                 Tracer.Critical("Could not create player object.");
             CheckIfOkayToLogin();
@@ -331,27 +323,22 @@ namespace UltimaXNA.Ultima.Login
             // map the player will be loading on login. If we don't have either of these, we
             // delay loading until we do.
             if (Status != LoginClientStatus.WorldServer_InWorld) {
-                uint currentMapIndex = (m_Engine.QueuedModel as WorldModel).MapIndex; // will be 0xffffffff if no map
-                if (m_QueuedLoginConfirmPacket != null && (currentMapIndex != 0xffffffff)) {
+                if ((m_Engine.QueuedModel as WorldModel).MapIndex != 0xffffffff) { // will be 0xffffffff if no map
                     Status = LoginClientStatus.WorldServer_InWorld;
-
                     m_Engine.ActivateQueuedModel();
                     if (m_Engine.ActiveModel is WorldModel) {
-                        ((WorldModel)m_Engine.ActiveModel).LoginToWorld();
-                        LoginConfirmPacket packet = m_QueuedLoginConfirmPacket;
+                        (m_Engine.ActiveModel as WorldModel).LoginToWorld();
                         Mobile player = WorldModel.Entities.GetObject<Mobile>(m_QueuedLoginConfirmPacket.Serial, true);
                         if (player == null)
                             Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
-                        player.Move_Instant(packet.X, packet.Y, packet.Z, packet.Direction);
-                        // iPlayer.SetFacing(p.Direction);
+                        player.Move_Instant(
+                            m_QueuedLoginConfirmPacket.X, m_QueuedLoginConfirmPacket.Y,
+                            m_QueuedLoginConfirmPacket.Z, m_QueuedLoginConfirmPacket.Direction);
                     }
                     else {
                         Tracer.Critical("Not in world model at login.");
                     }
                 }
-            }
-            else {
-                // already logged in, nothing else to do!
             }
         }
     }

@@ -16,16 +16,13 @@ using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Resources;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.LoginGumps
-{
-    class CreateCharAppearanceGump : Gump
-    {
+namespace UltimaXNA.Ultima.UI.LoginGumps {
+    class CreateCharAppearanceGump : Gump {
         public delegate void EventNoParams();
         public EventNoParams OnForward;
         public EventNoParams OnBackward;
 
-        enum Buttons
-        {
+        enum Buttons {
             BackButton,
             ForwardButton,
             QuitButton
@@ -34,15 +31,11 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public string Name { get { return m_TxtName.Text; } set { m_TxtName.Text = value; } }
         public int Gender { get { return m_Gender.Index; } set { } }
         public int Race { get { return 1; } set { } } // hard coded to human
-        public int HairID
-        { 
+        public int HairID {
             get { return (Gender == 0) ? HairStyles.MaleIDs[m_HairMale.Index] : HairStyles.FemaleIDs[m_HairFemale.Index]; }
-            set
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    if (value == ((Gender == 0) ? HairStyles.MaleIDs[i] : HairStyles.FemaleIDs[i]))
-                    {
+            set {
+                for (int i = 0; i < 10; i++) {
+                    if (value == ((Gender == 0) ? HairStyles.MaleIDs[i] : HairStyles.FemaleIDs[i])) {
                         m_HairMale.Index = i;
                         m_HairFemale.Index = i;
                         break;
@@ -50,33 +43,26 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                 }
             }
         }
-        public int FacialHairID
-        {
+        public int FacialHairID {
             get { return (Gender == 0) ? HairStyles.FacialHairIDs[m_FacialHairMale.Index] : 0; }
-            set
-            {
-                for (int i = 0; i < 8; i++)
-                {
-                    if (value == HairStyles.FacialHairIDs[i])
-                    {
+            set {
+                for (int i = 0; i < 8; i++) {
+                    if (value == HairStyles.FacialHairIDs[i]) {
                         m_FacialHairMale.Index = i;
                         break;
                     }
                 }
             }
         }
-        public int SkinHue
-        {
+        public int SkinHue {
             get { return m_SkinHue.HueValue; }
             set { m_SkinHue.HueValue = value; }
         }
-        public int HairHue
-        {
+        public int HairHue {
             get { return m_HairHue.HueValue; }
             set { m_HairHue.HueValue = value; }
         }
-        public int FacialHairHue
-        {
+        public int FacialHairHue {
             get { return (Gender == 0) ? m_FacialHairHue.HueValue : 0; }
             set { m_FacialHairHue.HueValue = value; }
         }
@@ -92,8 +78,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         PaperdollLargeUninteractable m_paperdoll;
 
         public CreateCharAppearanceGump()
-            : base(0, 0)
-        {
+            : base(0, 0) {
             // get the resource provider
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
@@ -155,19 +140,16 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             IsUncloseableWithRMB = true;
         }
 
-        public override void Update(double totalMS, double frameMS)
-        {
+        public override void Update(double totalMS, double frameMS) {
             base.Update(totalMS, frameMS);
-            
+
             // show different controls based on what gender we're looking at.
             // Also copy over the hair id to facilitate easy switching between male and female appearances.
-            if (m_Gender.Index == 0)
-            {
+            if (m_Gender.Index == 0) {
                 ActivePage = 1;
                 m_HairFemale.Index = m_HairMale.Index;
             }
-            else
-            {
+            else {
                 ActivePage = 2;
                 m_HairMale.Index = m_HairFemale.Index;
             }
@@ -180,10 +162,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             m_paperdoll.SetSlotHue(PaperdollLargeUninteractable.EquipSlots.FacialHair, FacialHairHue);
         }
 
-        public override void OnButtonClick(int buttonID)
-        {
-            switch ((Buttons)buttonID)
-            {
+        public override void OnButtonClick(int buttonID) {
+            switch ((Buttons)buttonID) {
                 case Buttons.BackButton:
                     OnBackward();
                     break;

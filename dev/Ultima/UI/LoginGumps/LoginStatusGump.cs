@@ -9,29 +9,25 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Resources;
+using System;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.LoginGumps
-{
-    public delegate void CancelLoginEvent();
-
-    enum LoggingInGumpButtons
-    {
+namespace UltimaXNA.Ultima.UI.LoginGumps {
+    enum LoggingInGumpButtons {
         QuitButton,
         CancelLoginButton,
         OKNoLoginButton
     }
 
-    class LoginStatusGump : Gump
-    {
-        public event CancelLoginEvent OnCancelLogin;
+    class LoginStatusGump : Gump {
+        event Action m_OnCancelLogin;
 
-        public LoginStatusGump()
-            : base(0, 0)
-        {
+        public LoginStatusGump(Action onCancelLogin)
+            : base(0, 0) {
+            m_OnCancelLogin = onCancelLogin;
+
             // get the resource provider
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
@@ -93,18 +89,16 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             IsUncloseableWithRMB = true;
         }
 
-        public override void OnButtonClick(int buttonID)
-        {
-            switch ((LoggingInGumpButtons)buttonID)
-            {
+        public override void OnButtonClick(int buttonID) {
+            switch ((LoggingInGumpButtons)buttonID) {
                 case LoggingInGumpButtons.QuitButton:
                     UltimaGame.IsRunning = false;
                     break;
                 case LoggingInGumpButtons.CancelLoginButton:
-                    OnCancelLogin();
+                    m_OnCancelLogin();
                     break;
                 case LoggingInGumpButtons.OKNoLoginButton:
-                    OnCancelLogin();
+                    m_OnCancelLogin();
                     break;
             }
         }
