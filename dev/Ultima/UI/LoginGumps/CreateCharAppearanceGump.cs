@@ -14,6 +14,8 @@ using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Resources;
+using System;
+using UltimaXNA.Ultima.Login.States;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.LoginGumps {
@@ -65,6 +67,16 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         public int FacialHairHue {
             get { return (Gender == 0) ? m_FacialHairHue.HueValue : 0; }
             set { m_FacialHairHue.HueValue = value; }
+        }
+
+        internal void RestoreData(CreateCharacterData m_Data) {
+            Name = m_Data.Name;
+            Gender = m_Data.Gender;
+            HairID = m_Data.HairStyleID;
+            FacialHairID = m_Data.FacialHairStyleID;
+            SkinHue = m_Data.SkinHue;
+            HairHue = m_Data.HairHue;
+            FacialHairHue = m_Data.FacialHairHue;
         }
 
         TextEntry m_TxtName;
@@ -138,6 +150,17 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
             ((Button)LastControl).GumpOverID = 5514;
 
             IsUncloseableWithRMB = true;
+        }
+
+        internal void SaveData(CreateCharacterData data) {
+            data.HasAppearanceData = true;
+            data.Name = Name;
+            data.Gender = Gender;
+            data.HairStyleID = HairID;
+            data.FacialHairStyleID = FacialHairID;
+            data.SkinHue = SkinHue;
+            data.HairHue = HairHue;
+            data.FacialHairHue = FacialHairHue;
         }
 
         public override void Update(double totalMS, double frameMS) {

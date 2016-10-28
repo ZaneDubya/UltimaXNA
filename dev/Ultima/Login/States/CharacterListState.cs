@@ -72,13 +72,12 @@ namespace UltimaXNA.Ultima.Login.States {
             // which automatically logs in again. But we can't do that,
             // since I have UltimaClient clear your account/password data
             // once connected (is this really neccesary?) Have to fix ..
-            Manager.CurrentState = new LoginState();
+            Manager.ResetToLoginScreen();
         }
 
         public void OnLoginWithCharacter(int index) {
             if (index < 0 || index >= Characters.List.Length)
                 return;
-
             m_CharListGump.ActivePage = 2;
             m_Login.Client.LoginWithCharacter(index);
         }

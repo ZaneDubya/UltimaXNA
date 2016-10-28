@@ -36,7 +36,6 @@ namespace UltimaXNA.Ultima.Login.States {
 
         public override void Update(double totalTime, double frameTime) {
             base.Update(totalTime, frameTime);
-
             if (TransitionState == TransitionState.Active) {
                 if (!m_ErrorReceived) {
                     switch (m_Login.Client.Status) {

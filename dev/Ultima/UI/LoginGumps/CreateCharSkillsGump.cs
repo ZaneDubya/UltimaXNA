@@ -12,6 +12,8 @@
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Resources;
+using System;
+using UltimaXNA.Ultima.Login.States;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.LoginGumps {
@@ -119,6 +121,32 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
             ((Button)LastControl).GumpOverID = 5514;
 
             IsUncloseableWithRMB = true;
+        }
+
+        internal void SaveData(CreateCharacterData data) {
+            // save the values;
+            data.Attributes[0] = Strength;
+            data.Attributes[1] = Dexterity;
+            data.Attributes[2] = Intelligence;
+            data.SkillIndexes[0] = SkillIndex0;
+            data.SkillIndexes[1] = SkillIndex1;
+            data.SkillIndexes[2] = SkillIndex2;
+            data.SkillValues[0] = SkillPoints0;
+            data.SkillValues[1] = SkillPoints1;
+            data.SkillValues[2] = SkillPoints2;
+            data.HasSkillData = true;
+        }
+
+        internal void RestoreData(CreateCharacterData data) {
+            Strength = data.Attributes[0];
+            Dexterity = data.Attributes[1];
+            Intelligence = data.Attributes[2];
+            SkillIndex0 = data.SkillIndexes[0];
+            SkillIndex1 = data.SkillIndexes[1];
+            SkillIndex2 = data.SkillIndexes[2];
+            SkillPoints0 = data.SkillValues[0];
+            SkillPoints1 = data.SkillValues[1];
+            SkillPoints2 = data.SkillValues[2];
         }
 
         public override void Update(double totalMS, double frameMS) {
