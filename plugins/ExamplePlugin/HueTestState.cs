@@ -1,14 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.IO;
-using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
-using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Core.Resources;
-
-namespace UltimaXNA.Ultima.Login.States
+﻿/*namespace UltimaXNA.Ultima.Login.States
 {
     class HueTestState : AState
     {
@@ -152,4 +142,4 @@ namespace UltimaXNA.Ultima.Login.States
             }
         }
     }
-}
+}*/

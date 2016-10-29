@@ -13,7 +13,7 @@ using System;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Login.States;
+using UltimaXNA.Ultima.Login.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Client

@@ -18,9 +18,10 @@ using UltimaXNA.Ultima.UI.LoginGumps;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Ultima.Login.States;
 #endregion
 
-namespace UltimaXNA.Ultima.Login.States {
+namespace UltimaXNA.Ultima.Login.Data {
     enum CreateCharacterSceneStates {
         ChooseSkills,
         ChooseAppearance,

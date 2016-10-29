@@ -73,8 +73,8 @@ namespace UltimaXNA.Ultima.Login.States {
         public void ResetToLoginScreen() {
             m_Login.Client.Disconnect();
             m_UserInterface.Reset();
-            if (!(m_Current is LoginState))
-                CurrentState = new LoginState();
+            /*if (!(m_Current is LoginState))
+                CurrentState = new LoginState();*/
         }
     }
 }

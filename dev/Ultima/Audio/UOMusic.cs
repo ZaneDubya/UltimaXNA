@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Audio;
 using System;
 using UltimaXNA.Core.Audio;
 using UltimaXNA.Core.Audio.MP3Sharp;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.Audio
@@ -108,9 +109,10 @@ namespace UltimaXNA.Ultima.Audio
 
                 m_Playing = true;
             }
-            catch
+            catch (Exception e)
             {
-                // file in use
+                // file in use or access denied.
+                Tracer.Error(e);
                 m_Playing = false;
             }
         }

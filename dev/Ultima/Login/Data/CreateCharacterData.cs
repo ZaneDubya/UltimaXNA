@@ -1,4 +1,4 @@
-﻿namespace UltimaXNA.Ultima.Login.States {
+﻿namespace UltimaXNA.Ultima.Login.Data {
     class CreateCharacterData {
         public bool HasSkillData;
         public int[] Attributes = new int[3];
