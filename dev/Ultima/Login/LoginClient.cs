@@ -139,6 +139,8 @@ namespace UltimaXNA.Ultima.Login {
         }
 
         public void DeleteCharacter(int index) {
+            if (index == -1)
+                return;
             if (Characters.List[index].Name != string.Empty) {
                 m_Network.Send(new DeleteCharacterPacket(index, Utility.IPAddress));
             }
@@ -161,6 +163,7 @@ namespace UltimaXNA.Ultima.Login {
         void ReceiveCharacterListUpdate(IRecvPacket packet) {
             CharacterListUpdatePacket p = (CharacterListUpdatePacket)packet;
             Characters.SetCharacterList(p.Characters);
+            (m_Engine.ActiveModel as LoginModel).ShowCharacterList();
         }
 
         void ReceiveCharacterList(IRecvPacket packet) {
@@ -254,11 +257,9 @@ namespace UltimaXNA.Ultima.Login {
         // creation, and the server will disconnect after a given length of inactivity.
         // ============================================================================================================
         void StartKeepAlivePackets() {
-            m_KeepAliveTimer = new Timer(
-                e => SendKeepAlivePacket(),
-                null,
-                TimeSpan.Zero,
-                TimeSpan.FromSeconds(60));
+            if (m_KeepAliveTimer == null) {
+                m_KeepAliveTimer = new Timer(e => SendKeepAlivePacket(), null, TimeSpan.Zero, TimeSpan.FromSeconds(60));
+            }
         }
 
         void StopKeepAlivePackets() {
