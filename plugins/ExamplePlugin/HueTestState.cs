@@ -10,7 +10,7 @@ using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Ultima.Login.States
 {
-    class HueTestState : AState
+    /*class HueTestState : AState
     {
         Gump m_Gump;
         TextLabel m_Label;
@@ -151,5 +151,5 @@ namespace UltimaXNA.Ultima.Login.States
                 return false;
             }
         }
-    }
+    }*/
 }

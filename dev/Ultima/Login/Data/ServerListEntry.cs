@@ -12,43 +12,35 @@
 using UltimaXNA.Core.Network;
 #endregion
 
-namespace UltimaXNA.Ultima.Login.Servers
-{
-    public class ServerListEntry
-    {
+namespace UltimaXNA.Ultima.Login.Data {
+    public class ServerListEntry {
         readonly ushort index;
         readonly string name;
         readonly byte percentFull;
         readonly byte timezone;
         readonly uint address;
 
-        public ushort Index
-        {
+        public ushort Index {
             get { return index; }
         }
 
-        public string Name
-        {
+        public string Name {
             get { return name; }
         }
 
-        public byte PercentFull
-        {
+        public byte PercentFull {
             get { return percentFull; }
         }
 
-        public byte Timezone
-        {
+        public byte Timezone {
             get { return timezone; }
         }
 
-        public uint Address
-        {
+        public uint Address {
             get { return address; }
         }
 
-        public ServerListEntry(PacketReader reader)
-        {
+        public ServerListEntry(PacketReader reader) {
             index = (ushort)reader.ReadInt16();
             name = reader.ReadString(32);
             percentFull = reader.ReadByte();

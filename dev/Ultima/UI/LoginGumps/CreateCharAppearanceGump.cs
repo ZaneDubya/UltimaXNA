@@ -10,25 +10,23 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
-using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Resources;
-using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Core.Resources;
 using System;
-using UltimaXNA.Ultima.Login.States;
+using UltimaXNA.Core.Resources;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Login.Data;
+using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.LoginGumps {
     class CreateCharAppearanceGump : Gump {
-        public delegate void EventNoParams();
-        public EventNoParams OnForward;
-        public EventNoParams OnBackward;
-
         enum Buttons {
             BackButton,
             ForwardButton,
             QuitButton
         }
+
+        event Action m_OnForward;
+        event Action m_OnBackward;
 
         public string Name { get { return m_TxtName.Text; } set { m_TxtName.Text = value; } }
         public int Gender { get { return m_Gender.Index; } set { } }
@@ -89,8 +87,11 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         ColorPicker m_FacialHairHue;
         PaperdollLargeUninteractable m_paperdoll;
 
-        public CreateCharAppearanceGump()
+        public CreateCharAppearanceGump(Action onForward, Action onBackward)
             : base(0, 0) {
+            m_OnForward = onForward;
+            m_OnBackward = onBackward;
+
             // get the resource provider
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
@@ -188,10 +189,10 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         public override void OnButtonClick(int buttonID) {
             switch ((Buttons)buttonID) {
                 case Buttons.BackButton:
-                    OnBackward();
+                    m_OnBackward();
                     break;
                 case Buttons.ForwardButton:
-                    OnForward();
+                    m_OnForward();
                     break;
                 case Buttons.QuitButton:
                     UltimaGame.IsRunning = false;

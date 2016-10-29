@@ -289,8 +289,7 @@
     <Compile Include="Ultima\Data\SpellbookData.cs" />
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
     <Compile Include="Ultima\Data\ClientVersion.cs" />
-    <Compile Include="Ultima\Login\States\CreateCharacterData.cs" />
-    <Compile Include="Ultima\Login\States\TransitionState.cs" />
+    <Compile Include="Ultima\Login\Data\CreateCharacterData.cs" />
     <Compile Include="Ultima\Network\Client\ClientHardwarePacket.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
@@ -410,8 +409,7 @@
     <Compile Include="Ultima\Login\LoginView.cs" />
     <Compile Include="Ultima\Login\Accounts\CharacterListEntry.cs" />
     <Compile Include="Ultima\Login\Accounts\Characters.cs" />
-    <Compile Include="Ultima\Login\Servers\ServerListEntry.cs" />
-    <Compile Include="Ultima\Login\Servers\Servers.cs" />
+    <Compile Include="Ultima\Login\Data\ServerListEntry.cs" />
     <Compile Include="Ultima\Data\Features.cs" />
     <Compile Include="Ultima\Player\SkillData.cs" />
     <Compile Include="Ultima\Player\StatLockData.cs" />
@@ -569,10 +567,6 @@
     <Compile Include="Ultima\World\Entities\Multis\Multi.cs" />
     <Compile Include="Ultima\World\Entities\Overhead.cs" />
     <Compile Include="Ultima\World\Entities\PropertyList.cs" />
-    <Compile Include="Ultima\Login\States\CharacterListState.cs" />
-    <Compile Include="Ultima\Login\States\CreateCharacterState.cs" />
-    <Compile Include="Ultima\Login\States\LoggingInState.cs" />
-    <Compile Include="Ultima\Login\States\SelectServerState.cs" />
     <Compile Include="Ultima\World\Maps\MapChunk.cs" />
     <Compile Include="Ultima\World\Managers\StaticManager.cs" />
     <Compile Include="Ultima\World\WorldViews\IsometricLighting.cs" />
@@ -634,9 +628,6 @@
     <Compile Include="Core\Network\PacketHandler.cs" />
     <Compile Include="Core\Network\QueuedPacket.cs" />
     <Compile Include="Core\Network\SocketState.cs" />
-    <Compile Include="Ultima\Login\States\AState.cs" />
-    <Compile Include="Ultima\Login\States\StateManager.cs" />
-    <Compile Include="Ultima\Login\States\LoginState.cs" />
     <Compile Include="Ultima\Serial.cs" />
     <Compile Include="Ultima\World\WorldViews\MiniMapChunk.cs" />
     <Compile Include="Ultima\World\WorldViews\MiniMapTexture.cs" />
