@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 
-using System;
 using System.Security;
 using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.Resources;
@@ -22,10 +21,8 @@ using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
 
-namespace UltimaXNA.Ultima.Login
-{
-    class LoginModel : AUltimaModel
-    {
+namespace UltimaXNA.Ultima.Login {
+    class LoginModel : AUltimaModel {
         UserInterfaceService m_UserInterface;
 
         public LoginClient Client {
@@ -34,7 +31,7 @@ namespace UltimaXNA.Ultima.Login
         }
 
         public LoginModel() {
-            ServiceRegistry.Register<LoginModel>(this);
+            ServiceRegistry.Register(this);
             Client = new LoginClient();
         }
 
