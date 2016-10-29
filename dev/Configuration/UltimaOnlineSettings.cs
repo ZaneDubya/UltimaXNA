@@ -33,7 +33,11 @@ namespace UltimaXNA.Configuration
         /// </summary>
         public byte[] PatchVersion
         {
-            get { return m_ClientVersion; }
+            get {
+                if (m_ClientVersion == null || m_ClientVersion.Length != 4)
+                    return ClientVersion.DefaultVersion;
+                return m_ClientVersion;
+            }
             set
             {
                 if (value == null || value.Length != 4)

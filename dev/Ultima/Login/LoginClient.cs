@@ -18,8 +18,6 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Input;
 using UltimaXNA.Ultima.Login.Accounts;
-using UltimaXNA.Ultima.Login.Servers;
-using UltimaXNA.Ultima.Login.States;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.UI;
@@ -45,14 +43,11 @@ namespace UltimaXNA.Ultima.Login {
             set;
         }
 
-        public LoginClientStatus Status { get; protected set; }
-
         public LoginClient() {
             m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_Engine = ServiceRegistry.GetService<UltimaGame>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_RegisteredHandlers = new List<Tuple<int, TypedPacketReceiveHandler>>();
-            Status = LoginClientStatus.Unconnected;
             Initialize();
         }
 
@@ -75,9 +70,9 @@ namespace UltimaXNA.Ultima.Login {
 
         public void Dispose() {
             StopKeepAlivePackets();
-
-            for (int i = 0; i < m_RegisteredHandlers.Count; i++)
+            for (int i = 0; i < m_RegisteredHandlers.Count; i++) {
                 m_Network.Unregister(m_RegisteredHandlers[i].Item1, m_RegisteredHandlers[i].Item2);
+            }
             m_RegisteredHandlers.Clear();
             m_RegisteredHandlers = null;
         }
@@ -98,124 +93,55 @@ namespace UltimaXNA.Ultima.Login {
         }
 
         // ============================================================================================================
-        // Keep-alive packets
+        // Connection and Disconnect
         // ============================================================================================================
-        public void StartKeepAlivePackets() {
-            m_KeepAliveTimer = new Timer(
-                e => SendKeepAlivePacket(),
-                null,
-                TimeSpan.Zero,
-                TimeSpan.FromSeconds(60));
-        }
-
-        void StopKeepAlivePackets() {
-            if (m_KeepAliveTimer != null)
-                m_KeepAliveTimer.Dispose();
-        }
-
-        void SendKeepAlivePacket() {
-            if (!m_Network.IsConnected) {
-                StopKeepAlivePackets();
-                return;
-            }
-
-            m_Network.Send(new ClientPingPacket());
-        }
-
-        /// <summary>
-        /// Connect to a server!
-        /// </summary>
         public bool Connect(string host, int port) {
-            Status = LoginClientStatus.LoginServer_Connecting;
-            bool success = m_Network.Connect(host, port);
-
-            if (success) {
-                Status = LoginClientStatus.LoginServer_WaitingForLogin;
-                if (Settings.UltimaOnline.PatchVersion.Length != 4)
-                    Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
-                else
-                    m_Network.Send(new SeedPacket(1, Settings.UltimaOnline.PatchVersion));
+            Disconnect();
+            if (m_Network.Connect(host, port)) {
+                m_Network.Send(new SeedPacket(0x1337BEEF, Settings.UltimaOnline.PatchVersion));
+                Login();
+                return true;
             }
-            else {
-                Status = LoginClientStatus.Error_CannotConnectToServer;
-            }
-            return success;
+            return false;
         }
 
-        /// <summary>
-        /// Disconnects from the server.
-        /// </summary>
         public void Disconnect() {
+            StopKeepAlivePackets();
             if (m_Network.IsConnected) {
-                StopKeepAlivePackets();
                 m_Network.Disconnect();
             }
-
-            Status = LoginClientStatus.Unconnected;
         }
 
-        /// <summary>
-        /// Attempts to login to the connected host.
-        /// </summary>
+        // ============================================================================================================
+        // Login sequence routines
+        // ============================================================================================================
         public void Login() {
-            Status = LoginClientStatus.LoginServer_LoggingIn;
-
             m_Network.Send(new LoginPacket(Settings.Login.UserName, Password.ConvertToUnsecureString()));
         }
 
-        /// <summary>
-        /// Connect to the indicated relay server.
-        /// </summary>
-        public void Relay(int relayKey) {
-            Status = LoginClientStatus.LoginServer_Relaying;
-            m_Network.Send(new GameLoginPacket(relayKey, Settings.Login.UserName, Password.ConvertToUnsecureString()));
-        }
-
-        /// <summary>
-        /// Sends a message to the server to request a connection to the specified shard.
-        /// </summary>
         public void SelectShard(int index) {
-            if (Status == LoginClientStatus.LoginServer_HasServerList) {
-                Status = LoginClientStatus.GameServer_Connecting;
-                m_Network.Send(new SelectServerPacket(index));
-            }
+            m_Network.Send(new SelectServerPacket(index));
         }
 
-        /// <summary>
-        /// Sends a message to the server to request login with the specified player.
-        /// </summary>
         public void LoginWithCharacter(int index) {
-            if (Status == LoginClientStatus.GameServer_CharList) {
-                if (Characters.List[index].Name != string.Empty) {
-                    m_Engine.QueuedModel = new WorldModel();
-                    m_Network.Send(new LoginCharacterPacket(Characters.List[index].Name, index, Utility.IPAddress));
-                    Macros.Player.Load(Characters.List[index].Name);
-                }
+            if (Characters.List[index].Name != string.Empty) {
+                m_Engine.QueuedModel = new WorldModel();
+                m_Network.Send(new LoginCharacterPacket(Characters.List[index].Name, index, Utility.IPAddress));
+                Macros.Player.Load(Characters.List[index].Name);
             }
         }
 
-        /// <summary>
-        /// Sends a message to the server, requesting creation of a new character.
-        /// </summary>
         public void CreateCharacter(CreateCharacterPacket packet) {
             m_Engine.QueuedModel = new WorldModel();
             m_Network.Send(packet);
         }
 
-        /// <summary>
-        /// Sends a message to the server, requesting that an existing character be deleted.
-        /// </summary>
         public void DeleteCharacter(int index) {
-            if (Status == LoginClientStatus.GameServer_CharList) {
-                if (Characters.List[index].Name != string.Empty) {
-                    m_Network.Send(new DeleteCharacterPacket(index, Utility.IPAddress));
-                }
+            if (Characters.List[index].Name != string.Empty) {
+                m_Network.Send(new DeleteCharacterPacket(index, Utility.IPAddress));
             }
         }
 
-        /// <summary>
-        /// Sends the server the client version. Version is specified in EngineVars.
-        /// </summary>
         public void SendClientVersion() {
             if (ClientVersion.HasExtendedFeatures(Settings.UltimaOnline.PatchVersion)) {
                 Tracer.Info("Client version is greater than 6.0.14.2, enabling extended 0xB9 packet.");
@@ -239,38 +165,18 @@ namespace UltimaXNA.Ultima.Login {
             CharacterCityListPacket p = (CharacterCityListPacket)packet;
             Characters.SetCharacterList(p.Characters);
             Characters.SetStartingLocations(p.Locations);
-            Status = LoginClientStatus.GameServer_CharList;
-            (m_Engine.ActiveModel as LoginModel).States.CurrentState = new CharacterListState();
+            StartKeepAlivePackets();
+            (m_Engine.ActiveModel as LoginModel).ShowCharacterList();
         }
 
         void ReceiveServerList(IRecvPacket packet) {
-            ServerList.List = ((ServerListPacket)packet).Servers;
-            Status = LoginClientStatus.LoginServer_HasServerList;
+            (m_Engine.ActiveModel as LoginModel).ShowServerList(((ServerListPacket)packet).Servers);
         }
 
         void ReceiveLoginRejection(IRecvPacket packet) {
             Disconnect();
             LoginRejectionPacket p = (LoginRejectionPacket)packet;
-            switch (p.Reason) {
-                case LoginRejectionReasons.InvalidAccountPassword:
-                    Status = LoginClientStatus.Error_InvalidUsernamePassword;
-                    break;
-                case LoginRejectionReasons.AccountInUse:
-                    Status = LoginClientStatus.Error_InUse;
-                    break;
-                case LoginRejectionReasons.AccountBlocked:
-                    Status = LoginClientStatus.Error_Blocked;
-                    break;
-                case LoginRejectionReasons.BadPassword:
-                    Status = LoginClientStatus.Error_BadPassword;
-                    break;
-                case LoginRejectionReasons.IdleExceeded:
-                    Status = LoginClientStatus.Error_Idle;
-                    break;
-                case LoginRejectionReasons.BadCommuncation:
-                    Status = LoginClientStatus.Error_BadCommunication;
-                    break;
-            }
+            (m_Engine.ActiveModel as LoginModel).ShowLoginRejection(p.Reason);
         }
 
         void ReceiveServerRelay(IRecvPacket packet) {
@@ -279,8 +185,7 @@ namespace UltimaXNA.Ultima.Login {
             // server for both shard selection and world, we don't need to disconnect.
             ServerRelayPacket p = (ServerRelayPacket)packet;
             m_Network.IsDecompressionEnabled = true;
-            Status = LoginClientStatus.LoginServer_WaitingForRelay;
-            Relay(p.AccountId);
+            m_Network.Send(new GameLoginPacket(p.AccountId, Settings.Login.UserName, Password.ConvertToUnsecureString()));
         }
 
         void ReceiveEnableFeatures(IRecvPacket packet) {
@@ -297,8 +202,8 @@ namespace UltimaXNA.Ultima.Login {
         }
 
         // ============================================================================================================
-        // Login handling routines - Nominally, the server should send LoginConfirmPacket, followed by GeneralInfo0x08,
-        // and finally LoginCompletePacket. However, the legacy client finds it valid to receive the packets in any
+        // Login to World - Nominally, the server should send LoginConfirmPacket, followed by GeneralInfo0x08, and 
+        // finally LoginCompletePacket. However, the legacy client finds it valid to receive the packets in any
         // order. The code below allows any of these possibilities.
         // ============================================================================================================
         LoginConfirmPacket m_QueuedLoginConfirmPacket;
@@ -314,7 +219,6 @@ namespace UltimaXNA.Ultima.Login {
         }
 
         void ReceiveLoginComplete(IRecvPacket packet) {
-            // This packet is just one byte, the opcode.
             CheckIfOkayToLogin();
         }
 
@@ -322,23 +226,47 @@ namespace UltimaXNA.Ultima.Login {
             // Before the client logs in, we need to know the player entity's serial, and the
             // map the player will be loading on login. If we don't have either of these, we
             // delay loading until we do.
-            if (Status != LoginClientStatus.WorldServer_InWorld) {
-                if ((m_Engine.QueuedModel as WorldModel).MapIndex != 0xffffffff) { // will be 0xffffffff if no map
-                    Status = LoginClientStatus.WorldServer_InWorld;
-                    m_Engine.ActivateQueuedModel();
-                    if (m_Engine.ActiveModel is WorldModel) {
-                        (m_Engine.ActiveModel as WorldModel).LoginToWorld();
-                        Mobile player = WorldModel.Entities.GetObject<Mobile>(m_QueuedLoginConfirmPacket.Serial, true);
-                        if (player == null)
-                            Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
-                        player.Move_Instant(
-                            m_QueuedLoginConfirmPacket.X, m_QueuedLoginConfirmPacket.Y,
-                            m_QueuedLoginConfirmPacket.Z, m_QueuedLoginConfirmPacket.Direction);
-                    }
-                    else {
-                        Tracer.Critical("Not in world model at login.");
-                    }
+            if ((m_Engine.QueuedModel as WorldModel).MapIndex != 0xffffffff) { // will be 0xffffffff if no map
+                m_Engine.ActivateQueuedModel();
+                if (m_Engine.ActiveModel is WorldModel) {
+                    (m_Engine.ActiveModel as WorldModel).LoginToWorld();
+                    Mobile player = WorldModel.Entities.GetObject<Mobile>(m_QueuedLoginConfirmPacket.Serial, true);
+                    if (player == null)
+                        Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
+                    player.Move_Instant(
+                        m_QueuedLoginConfirmPacket.X, m_QueuedLoginConfirmPacket.Y,
+                        m_QueuedLoginConfirmPacket.Z, m_QueuedLoginConfirmPacket.Direction);
                 }
+                else {
+                    Tracer.Critical("Not in world model at login.");
+                }
+            }
+        }
+
+        // ============================================================================================================
+        // Keep-alive packets - These are necessary because the client does not otherwise send packets during character
+        // creation, and the server will disconnect after a given length of inactivity.
+        // ============================================================================================================
+        void StartKeepAlivePackets() {
+            m_KeepAliveTimer = new Timer(
+                e => SendKeepAlivePacket(),
+                null,
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(60));
+        }
+
+        void StopKeepAlivePackets() {
+            if (m_KeepAliveTimer != null) {
+                m_KeepAliveTimer.Dispose();
+            }
+        }
+
+        void SendKeepAlivePacket() {
+            if (m_Network.IsConnected) {
+                m_Network.Send(new ClientPingPacket());
+            }
+            else {
+                StopKeepAlivePackets();
             }
         }
     }
