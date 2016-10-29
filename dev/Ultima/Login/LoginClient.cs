@@ -207,6 +207,7 @@ namespace UltimaXNA.Ultima.Login {
         // order. The code below allows any of these possibilities.
         // ============================================================================================================
         LoginConfirmPacket m_QueuedLoginConfirmPacket;
+        bool m_LoggingInToWorld;
 
         void ReceiveLoginConfirmPacket(IRecvPacket packet) {
             m_QueuedLoginConfirmPacket = (LoginConfirmPacket)packet;
@@ -226,19 +227,22 @@ namespace UltimaXNA.Ultima.Login {
             // Before the client logs in, we need to know the player entity's serial, and the
             // map the player will be loading on login. If we don't have either of these, we
             // delay loading until we do.
-            if ((m_Engine.QueuedModel as WorldModel).MapIndex != 0xffffffff) { // will be 0xffffffff if no map
-                m_Engine.ActivateQueuedModel();
-                if (m_Engine.ActiveModel is WorldModel) {
-                    (m_Engine.ActiveModel as WorldModel).LoginToWorld();
-                    Mobile player = WorldModel.Entities.GetObject<Mobile>(m_QueuedLoginConfirmPacket.Serial, true);
-                    if (player == null)
-                        Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
-                    player.Move_Instant(
-                        m_QueuedLoginConfirmPacket.X, m_QueuedLoginConfirmPacket.Y,
-                        m_QueuedLoginConfirmPacket.Z, m_QueuedLoginConfirmPacket.Direction);
-                }
-                else {
-                    Tracer.Critical("Not in world model at login.");
+            if (!m_LoggingInToWorld) {
+                if ((m_Engine.QueuedModel as WorldModel).MapIndex != 0xffffffff) { // will be 0xffffffff if no map
+                    m_LoggingInToWorld = true; // stops double log in attempt caused by out of order packets.
+                    m_Engine.ActivateQueuedModel();
+                    if (m_Engine.ActiveModel is WorldModel) {
+                        (m_Engine.ActiveModel as WorldModel).LoginToWorld();
+                        Mobile player = WorldModel.Entities.GetObject<Mobile>(m_QueuedLoginConfirmPacket.Serial, true);
+                        if (player == null)
+                            Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
+                        player.Move_Instant(
+                            m_QueuedLoginConfirmPacket.X, m_QueuedLoginConfirmPacket.Y,
+                            m_QueuedLoginConfirmPacket.Z, m_QueuedLoginConfirmPacket.Direction);
+                    }
+                    else {
+                        Tracer.Critical("Not in world model at login.");
+                    }
                 }
             }
         }
