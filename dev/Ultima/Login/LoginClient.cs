@@ -29,21 +29,13 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.Login {
     public class LoginClient : IDisposable {
-        Timer m_KeepAliveTimer;
         readonly INetworkClient m_Network;
         readonly UltimaGame m_Engine;
         readonly UserInterfaceService m_UserInterface;
+        Timer m_KeepAliveTimer;
         List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
-
-        internal string UserName {
-            get;
-            set;
-        }
-
-        internal SecureString Password {
-            get;
-            set;
-        }
+        string m_UserName;
+        SecureString m_Password;
 
         public LoginClient() {
             m_Network = ServiceRegistry.GetService<INetworkClient>();
@@ -97,11 +89,13 @@ namespace UltimaXNA.Ultima.Login {
         // ============================================================================================================
         // Connection and Disconnect
         // ============================================================================================================
-        public bool Connect(string host, int port) {
+        public bool Connect(string host, int port, string account, SecureString password) {
             Disconnect();
             if (m_Network.Connect(host, port)) {
+                m_UserName = account;
+                m_Password = password;
                 m_Network.Send(new SeedPacket(0x1337BEEF, Settings.UltimaOnline.PatchVersion));
-                Login();
+                Login(m_UserName, m_Password);
                 return true;
             }
             return false;
@@ -117,8 +111,8 @@ namespace UltimaXNA.Ultima.Login {
         // ============================================================================================================
         // Login sequence routines
         // ============================================================================================================
-        public void Login() {
-            m_Network.Send(new LoginPacket(Settings.Login.UserName, Password.ConvertToUnsecureString()));
+        public void Login(string account, SecureString password) {
+            m_Network.Send(new LoginPacket(account, password.ConvertToUnsecureString()));
         }
 
         public void SelectShard(int index) {
@@ -139,8 +133,9 @@ namespace UltimaXNA.Ultima.Login {
         }
 
         public void DeleteCharacter(int index) {
-            if (index == -1)
+            if (index == -1) {
                 return;
+            }
             if (Characters.List[index].Name != string.Empty) {
                 m_Network.Send(new DeleteCharacterPacket(index, Utility.IPAddress));
             }
@@ -190,7 +185,7 @@ namespace UltimaXNA.Ultima.Login {
             // server for both shard selection and world, we don't need to disconnect.
             ServerRelayPacket p = (ServerRelayPacket)packet;
             m_Network.IsDecompressionEnabled = true;
-            m_Network.Send(new GameLoginPacket(p.AccountId, Settings.Login.UserName, Password.ConvertToUnsecureString()));
+            m_Network.Send(new GameLoginPacket(p.AccountId, m_UserName, m_Password.ConvertToUnsecureString()));
         }
 
         void ReceiveEnableFeatures(IRecvPacket packet) {
@@ -219,8 +214,9 @@ namespace UltimaXNA.Ultima.Login {
             // set the player serial and create the player entity. Don't need to do anything with it yet.
             WorldModel.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
             Mobile player = WorldModel.Entities.GetObject<Mobile>(WorldModel.PlayerSerial, true);
-            if (player == null)
+            if (player == null) {
                 Tracer.Critical("Could not create player object.");
+            }
             CheckIfOkayToLogin();
         }
 
@@ -239,8 +235,9 @@ namespace UltimaXNA.Ultima.Login {
                     if (m_Engine.ActiveModel is WorldModel) {
                         (m_Engine.ActiveModel as WorldModel).LoginToWorld();
                         Mobile player = WorldModel.Entities.GetObject<Mobile>(m_QueuedLoginConfirmPacket.Serial, true);
-                        if (player == null)
+                        if (player == null) {
                             Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
+                        }
                         player.Move_Instant(
                             m_QueuedLoginConfirmPacket.X, m_QueuedLoginConfirmPacket.Y,
                             m_QueuedLoginConfirmPacket.Z, m_QueuedLoginConfirmPacket.Direction);

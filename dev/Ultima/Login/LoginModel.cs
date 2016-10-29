@@ -76,11 +76,9 @@ namespace UltimaXNA.Ultima.Login
         }
 
         void OnLogin(string server, int port, string account, SecureString password) {
-            Client.UserName = account;
-            Client.Password = password;
             CurrentGump.Dispose();
             CurrentGump = m_UserInterface.AddControl(new LoginStatusGump(OnCancelLogin), 0, 0) as Gump;
-            if (Client.Connect(Settings.Login.ServerAddress, Settings.Login.ServerPort))
+            if (Client.Connect(Settings.Login.ServerAddress, Settings.Login.ServerPort, account, password))
                 (CurrentGump as LoginStatusGump).Page = LoginStatusGump.PageCouldntConnect;
             else
                 (CurrentGump as LoginStatusGump).Page = LoginStatusGump.PageVerifyingAccount;
