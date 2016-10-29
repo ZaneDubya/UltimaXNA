@@ -55,7 +55,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
         ///     Creates a new stream instance using the provided filename and chunk size.
         /// </summary>
         public MP3Stream(string fileName, int chunkSize)
-            : this(new FileStream(fileName, FileMode.Open), chunkSize)
+            : this(new FileStream(fileName, FileMode.Open, FileAccess.Read), chunkSize)
         {
         }
 

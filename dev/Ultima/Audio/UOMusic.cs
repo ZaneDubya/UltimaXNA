@@ -83,7 +83,6 @@ namespace UltimaXNA.Ultima.Audio
         {
             if (m_Playing)
             {
-                // DynamicSoundEffectInstance instance = sender as DynamicSoundEffectInstance;
                 while (m_ThisInstance.PendingBufferCount < 3)
                 {
                     byte[] buffer = GetBuffer();
