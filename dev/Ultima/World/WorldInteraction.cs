@@ -25,6 +25,7 @@ using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Configuration;
+using UltimaXNA.Ultima.World.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.World

@@ -23,6 +23,7 @@ using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.Network.Server.GeneralInfo;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI;
@@ -1104,29 +1105,26 @@ namespace UltimaXNA.Ultima.World
         {
             announce_UnhandledPacket(packet);
         }
-        private void ReceiveGeneralInfo(IRecvPacket packet)
-        {
+
+        void ReceiveGeneralInfo(IRecvPacket packet) {
             // Documented here: http://docs.polserver.com/packets/index.php?Packet=0xBF
             GeneralInfoPacket p = (GeneralInfoPacket)packet;
-            switch (p.Subcommand)
-            {
-                case 0x04: // Close generic gump
-                    {
-                        AControl control = m_UserInterface.GetControlByTypeID(p.CloseGumpTypeID);
-                        if (control is Gump)
-                        {
-                            (control as Gump).OnButtonClick(p.CloseGumpButtonID);
-                        }
+            switch (p.InfoType) {
+                case GeneralInfoPacket.CloseGump:
+                    CloseGumpInfo closeGumpInfo = p.Info as CloseGumpInfo;
+                    AControl control = m_UserInterface.GetControlByTypeID(closeGumpInfo.GumpTypeID);
+                    (control as Gump)?.OnButtonClick(closeGumpInfo.GumpButtonID);
+                    break;
+                case GeneralInfoPacket.Party:
+                    PartyInfo partyInfo = p.Info as PartyInfo;
+                    if (partyInfo.partyMessage.Length > 0) {
+                        ReceiveTextMessage(MessageTypes.Alliance, partyInfo.partyMessage, 3, 
+                            partyInfo.partyMessageHue, 0xFFFFFFF, partyInfo.partyMessager, true);
                     }
                     break;
-                case 0x06: // party system
-                    if (p.partyMessage.Length > 0)
-                    {
-                        ReceiveTextMessage(MessageTypes.Alliance, p.partyMessage, 3, p.partyMessageHue, (Serial)0xFFFFFFF, p.partyMessager, true);
-                    }
-                    break;
-                case 0x08: // set map
-                    m_World.MapIndex = p.MapID;
+                case GeneralInfoPacket.SetMap: // set map
+                    MapIndexInfo mapInfo = p.Info as MapIndexInfo;
+                    m_World.MapIndex = mapInfo.MapID;
                     break;
                 case 0x14: // return context menu
                     {
@@ -1141,8 +1139,7 @@ namespace UltimaXNA.Ultima.World
                 case 0x19: // Extended stats
                     if (p.ExtendedStatsSerial != WorldModel.PlayerSerial)
                         Tracer.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
-                    else
-                    {
+                    else {
                         PlayerState.StatLocks.StrengthLock = p.ExtendedStatsLocks.Strength;
                         PlayerState.StatLocks.DexterityLock = p.ExtendedStatsLocks.Dexterity;
                         PlayerState.StatLocks.IntelligenceLock = p.ExtendedStatsLocks.Intelligence;
@@ -1153,24 +1150,19 @@ namespace UltimaXNA.Ultima.World
                     WorldModel.Entities.GetObject<SpellBook>(spellbook.Serial, true).ReceiveSpellData(spellbook.BookType, spellbook.SpellsBitfield);
                     break;
                 case 0x1D: // House revision state
-                    if (CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
-                    {
+                    if (CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash)) {
                         Multi multi = WorldModel.Entities.GetObject<Multi>(p.HouseRevisionState.Serial, false);
-                        if (multi == null)
-                        {
+                        if (multi == null) {
                             // received a house revision for a multi that does not exist.
                         }
-                        else
-                        {
-                            if (multi.CustomHouseRevision != p.HouseRevisionState.Hash)
-                            {
+                        else {
+                            if (multi.CustomHouseRevision != p.HouseRevisionState.Hash) {
                                 CustomHouse house = CustomHousing.GetCustomHouseData(p.HouseRevisionState.Serial);
                                 multi.AddCustomHousingTiles(house);
                             }
                         }
                     }
-                    else
-                    {
+                    else {
                         m_Network.Send(new RequestCustomHousePacket(p.HouseRevisionState.Serial));
                     }
                     break;
@@ -1179,7 +1171,7 @@ namespace UltimaXNA.Ultima.World
                     // ???
                     break;
                 default:
-                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                    announce_UnhandledPacket(packet, "subcommand " + p.InfoType);
                     break;
             }
         }

@@ -8,9 +8,10 @@ using UltimaXNA.Ultima;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Data;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 
-namespace UltimaXNA.World.Data
+namespace UltimaXNA.Ultima.World.Data
 {
     public class PartySettings
     {

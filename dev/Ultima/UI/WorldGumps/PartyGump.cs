@@ -2,7 +2,7 @@
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
-using UltimaXNA.World.Data;
+using UltimaXNA.Ultima.World.Data;
 
 namespace UltimaXNA.Ultima.UI.WorldGumps {
     public class PartyGump : Gump {
