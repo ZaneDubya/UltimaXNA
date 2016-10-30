@@ -159,8 +159,8 @@ namespace UltimaXNA
             {
                 // Initialize and load data
                 IResourceProvider provider = new ResourceProvider(this);
-                provider.RegisterResource<EffectData>(new EffectDataResource());
-                ServiceRegistry.Register<IResourceProvider>(provider);
+                provider.RegisterResource(new EffectDataResource());
+                ServiceRegistry.Register(provider);
 
                 HueData.Initialize(GraphicsDevice);
                 SkillsData.Initialize();

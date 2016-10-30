@@ -1,11 +1,8 @@
 ﻿using UltimaXNA.Core.Diagnostics.Tracing;
 
-namespace UltimaXNA.Core.Patterns
-{
-    public interface IModule
-    {
-        string Name
-        {
+namespace UltimaXNA.Core.Patterns {
+    public interface IModule {
+        string Name {
             get;
         }
 
@@ -13,21 +10,17 @@ namespace UltimaXNA.Core.Patterns
         void Unload();
     }
 
-    public abstract class Module : IModule
-    {
-        public virtual string Name
-        {
+    public abstract class Module : IModule {
+        public virtual string Name {
             get { return GetType().Name; }
         }
 
-        public void Load()
-        {
+        public void Load() {
             Tracer.Info("Loading Module {0}.", Name);
             OnLoad();
         }
 
-        public void Unload()
-        {
+        public void Unload() {
             Tracer.Info("Unloading Module {0}.", Name);
             OnUnload();
         }
