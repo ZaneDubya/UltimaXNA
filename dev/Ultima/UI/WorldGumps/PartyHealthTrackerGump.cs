@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             if (Mobile == null)
             {
                 Dispose();
-                PartySettings.RemoveMember(_serial);
+                PlayerState.Partying.RemoveMember(_serial);
                 return;
             }
             //AddControl(m_Background = new ResizePic(this, 0, 0, 3000, 131, 48));//I need opacity %1 background
@@ -95,9 +95,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             {
                 return;
             }
-            if (PartySettings.List.Count <= 1)//party bug fixing
+            if (PlayerState.Partying.List.Count <= 1)//party bug fixing
             {
-                PartySettings.LeaveParty();
+                PlayerState.Partying.LeaveParty();
                 Dispose();
                 return;
             }

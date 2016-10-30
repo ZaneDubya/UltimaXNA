@@ -8,6 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
 using System;
 using System.Collections.Generic;
@@ -17,19 +18,15 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Configuration;
-using UltimaXNA.Ultima.World.Data;
 #endregion
 
-namespace UltimaXNA.Ultima.World
-{
+namespace UltimaXNA.Ultima.World {
     /// <summary>
     /// Hosts methods for interacting with the world.
     /// </summary>
@@ -80,7 +77,7 @@ namespace UltimaXNA.Ultima.World
                 case ChatMode.Party:
                     speechType = MessageTypes.Alliance;
                     hue = Settings.UserInterface.PartyMsgColor;
-                    PartySettings.PartyStateControl(text, hue);//party controlling
+                    PlayerState.Partying.PartyStateControl(text, hue);//party controlling
                     return;
                 case ChatMode.Guild:
                     speechType = MessageTypes.Guild;

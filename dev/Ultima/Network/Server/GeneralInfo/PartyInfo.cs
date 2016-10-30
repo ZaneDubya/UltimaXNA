@@ -1,5 +1,6 @@
 ﻿using UltimaXNA.Core.Network;
-using UltimaXNA.Ultima.World.Data;
+using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.Player.Partying;
 
 namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
     /// <summary>
@@ -17,29 +18,29 @@ namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
                     //party member list here
                     int memberCount = reader.ReadByte();
                     for (int i = 0; i < memberCount; i++)
-                        PartySettings.AddMember(reader.ReadInt32(), false);
+                        PlayerState.Partying.AddMember(reader.ReadInt32(), false);
 
-                    PartySettings.Status = PartySettings.PartyState.Joined;
-                    PartySettings.RefreshPartyStatusBar();
+                    PlayerState.Partying.Status = PartyState.Joined;
+                    PlayerState.Partying.RefreshPartyStatusBar();
                     break;
                 case 2:
                     //remove party member and refresh list
                     int newPartyCount = reader.ReadByte();
                     int _remoredMember = reader.ReadInt32();
-                    PartySettings.RemoveMember(_remoredMember);//removing
+                    PlayerState.Partying.RemoveMember(_remoredMember);//removing
 
                     for (int i = 0; i < newPartyCount; i++) {//new list coming
-                        PartySettings.AddMember(reader.ReadInt32(), false);
+                        PlayerState.Partying.AddMember(reader.ReadInt32(), false);
                     }
 
-                    PartySettings.Status = PartySettings.PartyState.Joined;
-                    PartySettings.RefreshPartyStatusBar();
+                    PlayerState.Partying.Status = PartyState.Joined;
+                    PlayerState.Partying.RefreshPartyStatusBar();
                     break;
                 case 3://private message?
                 case 4://public message?
                     int serial = reader.ReadInt32();
                     string writerMessage = reader.ReadUnicodeString();
-                    PartyMember member = PartySettings.getMember((Serial)serial);//getting from list
+                    PartyMember member = PlayerState.Partying.GetMember((Serial)serial);//getting from list
                     string writerUserName = member.Player.Name;
                     switch (writerMessage) {
                         case "Help me.. I'm stunned !!"://this is for party coordination. we need auto send from Partymember who is under attack
@@ -60,12 +61,12 @@ namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
                     break;
                 case 7://PARTY INVITE PROGRESS
                     int _leaderSerial = reader.ReadInt32();
-                    PartySettings.Status = PartySettings.PartyState.Joining;
-                    PartySettings.AddMember(_leaderSerial, true);
+                    PlayerState.Partying.Status = PartyState.Joining;
+                    PlayerState.Partying.AddMember(_leaderSerial, true);
                     break;
                 default:
                     partyMessage = "ERROR";//TRACE.WARN??
-                    PartySettings.LeaveParty();//
+                    PlayerState.Partying.LeaveParty();//
                     break;
             }
         }
