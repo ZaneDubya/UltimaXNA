@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
 
-using System;
+using Microsoft.Xna.Framework.Graphics;
 using System.Security;
 using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.Resources;
@@ -22,10 +22,8 @@ using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
 
-namespace UltimaXNA.Ultima.Login
-{
-    class LoginModel : AUltimaModel
-    {
+namespace UltimaXNA.Ultima.Login {
+    class LoginModel : AUltimaModel {
         UserInterfaceService m_UserInterface;
 
         public LoginClient Client {
@@ -34,7 +32,7 @@ namespace UltimaXNA.Ultima.Login
         }
 
         public LoginModel() {
-            ServiceRegistry.Register<LoginModel>(this);
+            ServiceRegistry.Register(this);
             Client = new LoginClient();
         }
 
@@ -60,6 +58,17 @@ namespace UltimaXNA.Ultima.Login
 
         public override void Update(double totalTime, double frameTime) {
             // nothing needs to be updated.
+            Core.Input.InputManager manager = ServiceRegistry.GetService<Core.Input.InputManager>();
+            if (manager.HandleKeyboardEvent(Core.Input.KeyboardEvent.Down, Core.Windows.WinKeys.G, true, false, true)) {
+                System.IO.Directory.CreateDirectory("Gumps");
+                IResourceProvider resources = ServiceRegistry.GetService<IResourceProvider>();
+                for (int i = 0; i < 0x10000; i++) {
+                    Texture2D texture = resources.GetUITexture(i);
+                    if (texture != null) {
+                        texture.SaveAsJpeg(new System.IO.FileStream($"Gumps/{i:D6}.jpg", System.IO.FileMode.Create), texture.Width, texture.Height);
+                    }
+                }
+            }
         }
 
         // ============================================================================================================

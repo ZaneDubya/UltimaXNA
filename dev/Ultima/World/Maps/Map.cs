@@ -205,6 +205,6 @@ namespace UltimaXNA.Ultima.World.Maps
             }
         }
 
-        public static Action<MapChunk, Seasons> SeasonalTranslator = null;
+        public static Action<MapChunk, Seasons> SeasonalTranslator;
     }
 }
