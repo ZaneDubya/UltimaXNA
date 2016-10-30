@@ -1,21 +1,18 @@
-﻿using UltimaXNA.Configuration;
-using UltimaXNA.Core.Network;
+﻿using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
+using UltimaXNA.World.Data;
 
-namespace UltimaXNA.Ultima.UI.WorldGumps
-{
-    public class PartyGump : Gump
-    {
+namespace UltimaXNA.Ultima.UI.WorldGumps {
+    public class PartyGump : Gump {
         private Button btnLoot;
         private Button[] kickBtn = new Button[10];
         private Button[] tellBtn = new Button[10];
         private TextLabelAscii txtLoot;
 
         public PartyGump()
-            : base(0, 0)
-        {
+            : base(0, 0) {
             if (PartySettings.List.Count == 1)//party bug fixing
                 PartySettings.LeaveParty();
 
@@ -29,8 +26,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             int lineC = 0;
             int memberCount = 0;
-            for (int i = 0; i < PartySettings.List.Count; i++)
-            {
+            for (int i = 0; i < PartySettings.List.Count; i++) {
                 if (PartySettings.Status == PartySettings.PartyState.None || PartySettings.Status == PartySettings.PartyState.Joining)
                     break;
 
@@ -45,8 +41,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 lineC += 30;
                 memberCount++;
             }
-            for (int i = (0 + memberCount); i < 10; i++)
-            {
+            for (int i = (0 + memberCount); i < 10; i++) {
                 AddControl(kickBtn[i] = new Button(this, 35, 70 + lineC, 4017, 4018, ButtonTypes.Activate, 1, -1));// KICK
                 AddControl(new TextLabelAscii(this, 65, 70 + lineC, 2, 1, string.Format("[ {0} ]", i)));
                 AddControl(tellBtn[i] = new Button(this, 100, 70 + lineC, 4029, 4030, ButtonTypes.Activate, 1, -1));// tell
@@ -57,10 +52,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             ///
             AddControl(txtLoot = new TextLabelAscii(this, 100, 75 + lineC, 2, 1, @"Party CANNOT loot me"));
             int gumID1 = 4002, gumpID2 = 4002;
-            if (PartySettings.Status != PartySettings.PartyState.None && PartySettings.Status != PartySettings.PartyState.Joining)
-            {
-                if (PartySettings.Self.isLootable)
-                {
+            if (PartySettings.Status != PartySettings.PartyState.None && PartySettings.Status != PartySettings.PartyState.Joining) {
+                if (PartySettings.Self.isLootable) {
                     gumID1 = 4008;
                     gumpID2 = 4008;
                     txtLoot.Text = txtLoot.Text.Replace("CANNOT", "CAN");
@@ -90,18 +83,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 PartySettings.RefreshPartyStatusBar();
         }
 
-        public override void OnButtonClick(int buttonID)
-        {
+        public override void OnButtonClick(int buttonID) {
             if (buttonID == -1)
                 return;
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
-            if (buttonID >= 200)
-            {
+            if (buttonID >= 200) {
                 int _serial = tellBtn[buttonID - 200].ButtonParameter;//private message: player serial
                 m_Network.Send(new PartyPrivateMessage((Serial)_serial, "make a dynamic message type"));//need improve
             }
-            else if (buttonID >= 100)
-            {
+            else if (buttonID >= 100) {
                 int _serial = kickBtn[buttonID - 100].ButtonParameter;//deleting player serial
                 m_Network.Send(new PartyRemoveMember(_serial));
                 PartySettings.RemoveMember(_serial);
@@ -109,18 +99,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 if (PartySettings.List.Count == 1)//fixing party bug
                     PartySettings.LeaveParty();
             }
-            else if (buttonID == 0 && PartySettings.Status != PartySettings.PartyState.None && PartySettings.Status != PartySettings.PartyState.Joining)
-            {
-                if (PartySettings.Self.isLootable)
-                {
+            else if (buttonID == 0 && PartySettings.Status != PartySettings.PartyState.None && PartySettings.Status != PartySettings.PartyState.Joining) {
+                if (PartySettings.Self.isLootable) {
                     m_Network.Send(new PartyCanLoot(false));
                     btnLoot.GumpUpID = 4002;
                     btnLoot.GumpDownID = 4002;
                     PartySettings.Self.isLootable = false;
                     txtLoot.Text = txtLoot.Text.Replace("CAN", "CANNOT");
                 }
-                else
-                {
+                else {
                     m_Network.Send(new PartyCanLoot(true));
                     btnLoot.GumpUpID = 4008;
                     btnLoot.GumpDownID = 4008;
@@ -128,29 +115,23 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     txtLoot.Text = txtLoot.Text.Replace("CANNOT", "CAN");
                 }
             }
-            else if (buttonID == 1)
-            {
+            else if (buttonID == 1) {
                 PartySettings.LeaveParty();//leaving party
             }
-            else if (buttonID == 2)
-            {
-                if (PartySettings.Status == PartySettings.PartyState.None)
-                {
+            else if (buttonID == 2) {
+                if (PartySettings.Status == PartySettings.PartyState.None) {
                     PartySettings.Status = PartySettings.PartyState.Joining;
                     PartySettings.AddMember(WorldModel.Entities.GetPlayerEntity().Serial, true);
                     m_Network.Send(new PartyAddMember());
                 }
-                else if (PartySettings.Status == PartySettings.PartyState.Leader)
-                {
+                else if (PartySettings.Status == PartySettings.PartyState.Leader) {
                     m_Network.Send(new PartyAddMember());
                 }
-                else
-                {
+                else {
                     //no access
                 }
             }
-            else if (buttonID == 3)
-            {
+            else if (buttonID == 3) {
                 m_Network.Send(new PartyPublicMessage("All member attack to ---PLAYERNAME---"));//need improve
             }
         }

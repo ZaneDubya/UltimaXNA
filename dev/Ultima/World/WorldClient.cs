@@ -27,6 +27,7 @@ using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World.Data;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;

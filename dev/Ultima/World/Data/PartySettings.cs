@@ -10,15 +10,15 @@ using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 
-namespace UltimaXNA.Configuration
+namespace UltimaXNA.World.Data
 {
     public class PartySettings
     {
-        private static Serial leaderSerial;
+        static Serial leaderSerial;
 
-        private static List<PartyMember> m_PartyMembers = new List<PartyMember>();
+        static List<PartyMember> m_PartyMembers = new List<PartyMember>();
 
-        private static PartyState m_State;
+        static PartyState m_State;
 
         public enum PartyState //controlling party state
         {
@@ -48,16 +48,13 @@ namespace UltimaXNA.Configuration
             Unknown,
         }
 
-        public static Mobile Leader { get { return m_PartyMembers.Find(p => p.isLeader == true).Player; } }
+        public static Mobile Leader => m_PartyMembers.Find(p => p.isLeader == true).Player;
 
-        public static List<Mobile> List
-        { get { return m_PartyMembers.Select(p => p.Player).ToList(); } }
+        public static List<Mobile> List => m_PartyMembers.Select(p => p.Player).ToList();
 
-        public static PartyMember Self //get me
-        { get { return m_PartyMembers[SelfIndex]; } }
+        public static PartyMember Self => m_PartyMembers[SelfIndex];
 
-        public static int SelfIndex //get my party index
-        { get { return m_PartyMembers.FindIndex(p => p.Player == WorldModel.Entities.GetPlayerEntity()); } }
+        public static int SelfIndex => m_PartyMembers.FindIndex(p => p.Player == WorldModel.Entities.GetPlayerEntity());
 
         public static PartyState Status
         {
@@ -96,8 +93,7 @@ namespace UltimaXNA.Configuration
         {
             if (index >= 0 && index < m_PartyMembers.Count)
                 return m_PartyMembers[index];
-            else
-                return null;
+            return null;
         }
 
         public static PartyMember getMember(Serial _serial)
@@ -258,10 +254,10 @@ namespace UltimaXNA.Configuration
 
         public class PartyCommand
         {
-            private PCommandType _CType;
-            private string _msg;
+            PCommandType _CType;
+            string _msg;
 
-            private string _secondarycmd;
+            string _secondarycmd;
 
             public PartyCommand(string _text)
             {
@@ -328,23 +324,6 @@ namespace UltimaXNA.Configuration
 
             //for example: UserName which is adding or deleting
             public string SecondaryCmd { get { return _secondarycmd; } set { _secondarycmd = value; } }
-        }
-
-        public class PartyMember
-        {
-            public PartyMember(Serial _serial, bool _isleader)
-            {
-                isLeader = _isleader;
-                Player = WorldModel.Entities.GetObject<Mobile>(_serial, false);
-                INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
-                m_Network.Send(new PartyQueryStats(_serial));//I THINK CHECK FOR STATUS ??
-            }
-
-            public bool isLeader { get; set; }
-
-            public bool isLootable { get; set; }   //only working on client Entity
-
-            public Mobile Player { get; set; }
         }
     }
 }

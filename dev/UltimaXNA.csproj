@@ -130,7 +130,8 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
-    <Compile Include="Configuration\PartySettings.cs" />
+    <Compile Include="Ultima\World\Data\PartyMember.cs" />
+    <Compile Include="Ultima\World\Data\PartySettings.cs" />
     <Compile Include="Ultima\Input\Macro.cs" />
     <Compile Include="Ultima\Input\MacroArmDisarm.cs" />
     <Compile Include="Ultima\Input\MacroDefinition.cs" />
@@ -337,6 +338,8 @@
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorBuyGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorSellGump.cs" />
+    <Compile Include="Ultima\World\Data\CustomHouse.cs" />
+    <Compile Include="Ultima\World\Data\CustomHousePlane.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />
     <Compile Include="Ultima\Data\SpellBookTypes.cs" />
     <Compile Include="Ultima\Data\StatLocks.cs" />
@@ -546,7 +549,7 @@
     <Compile Include="Ultima\Network\Server\WeatherPacket.cs" />
     <Compile Include="Ultima\Network\Server\WornItemPacket.cs" />
     <Compile Include="Ultima\Resources\ContainerData.cs" />
-    <Compile Include="Ultima\World\CustomHousing.cs" />
+    <Compile Include="Ultima\World\Data\CustomHousing.cs" />
     <Compile Include="Ultima\Data\HairStyles.cs" />
     <Compile Include="Ultima\Resources\ParticleData.cs" />
     <Compile Include="Ultima\Resources\SkillsData.cs" />
