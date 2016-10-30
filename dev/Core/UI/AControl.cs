@@ -137,16 +137,7 @@ namespace UltimaXNA.Core.UI
         /// </summary>
         public bool IsVisible { get; set; }
 
-        private bool _isedit = true;
-
-        public bool IsEditable
-        {
-            get { return _isedit; }
-            set
-            {
-                _isedit = value;
-            }
-        }
+        public bool IsEditable { get; set; }
 
         /// <summary>
         /// A list of all the child controls that this control owns.
