@@ -5,13 +5,13 @@ using System.Linq;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima;
-using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.Network.Client.PartySystem;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Data;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 
-namespace UltimaXNA.Ultima.World.Data
+namespace UltimaXNA.Ultima.Player
 {
     public class PartySettings
     {
@@ -49,7 +49,7 @@ namespace UltimaXNA.Ultima.World.Data
             Unknown,
         }
 
-        public static Mobile Leader => m_PartyMembers.Find(p => p.isLeader == true).Player;
+        public static Mobile Leader => m_PartyMembers.Find(p => p.IsLeader == true).Player;
 
         public static List<Mobile> List => m_PartyMembers.Select(p => p.Player).ToList();
 
@@ -68,7 +68,7 @@ namespace UltimaXNA.Ultima.World.Data
                 //is he leader ?? and is he has a party ?
                 if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Player == WorldModel.Entities.GetPlayerEntity()) == null)
                     LeaveParty();
-                else if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Player == WorldModel.Entities.GetPlayerEntity()).isLeader)
+                else if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Player == WorldModel.Entities.GetPlayerEntity()).IsLeader)
                     return PartyState.Leader;//he has full access
 
                 return m_State;
@@ -105,7 +105,7 @@ namespace UltimaXNA.Ultima.World.Data
         public static void LeaveParty()
         {
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_Network.Send(new PartyQuit());
+            m_Network.Send(new PartyQuitPacket());
             Status = PartyState.None;
             m_PartyMembers.Clear();
             leaderSerial = 0;
@@ -125,7 +125,7 @@ namespace UltimaXNA.Ultima.World.Data
                     {
                         PartySettings.Status = PartySettings.PartyState.Joining;
                         PartySettings.AddMember(WorldModel.Entities.GetPlayerEntity().Serial, true);
-                        m_Network.Send(new PartyAddMember());
+                        m_Network.Send(new PartyAddMemberPacket());
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.HelpMenu)
                         showPartyHelp();
@@ -139,12 +139,12 @@ namespace UltimaXNA.Ultima.World.Data
                         LeaveParty();
                         Status = PartyState.Joining;
                         AddMember(WorldModel.Entities.GetPlayerEntity().Serial, true);
-                        m_Network.Send(new PartyAddMember());
+                        m_Network.Send(new PartyAddMemberPacket());
                         return;
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.Accept && Leader != WorldModel.Entities.GetPlayerEntity())//accept party
                     {
-                        m_Network.Send(new PartyAccept(Leader));
+                        m_Network.Send(new PartyAcceptPacket(Leader));
                         return;
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.Quit)
@@ -154,7 +154,7 @@ namespace UltimaXNA.Ultima.World.Data
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.Decline && Leader != WorldModel.Entities.GetPlayerEntity())//decline decline party
                     {
-                        m_Network.Send(new PartyDecline(Leader));
+                        m_Network.Send(new PartyDeclinePacket(Leader));
                         return;
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.HelpMenu)
@@ -168,13 +168,13 @@ namespace UltimaXNA.Ultima.World.Data
                 case PartyState.Joined:
                     if (PCmd.PrimaryCmd == PCommandType.Add && Leader == WorldModel.Entities.GetPlayerEntity()) //he is party leader
                     {
-                        m_Network.Send(new PartyAddMember());
+                        m_Network.Send(new PartyAddMemberPacket());
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.Remove && PCmd.SecondaryCmd != "unknowncmd")
                     {
                         int index1 = int.Parse(PCmd.SecondaryCmd);
                         if (getMember(index1) != null)
-                            m_Network.Send(new PartyRemoveMember(index1));//wrong packet how can send a serial ?
+                            m_Network.Send(new PartyRemoveMemberPacket(index1));//wrong packet how can send a serial ?
                         else
                             m_world.Interaction.ChatMessage("Wrong party index. please first use '/hlp'.", 3, 10, false);
                     }
@@ -186,7 +186,7 @@ namespace UltimaXNA.Ultima.World.Data
                     {
                         for (int i = 0; i < m_PartyMembers.Count; i++)
                         {
-                            if (m_PartyMembers[i].isLeader)
+                            if (m_PartyMembers[i].IsLeader)
                                 m_world.Interaction.ChatMessage(string.Format("[{0}: {1}][LEADER]", i.ToString(), m_PartyMembers[i].Player.Name), 3, 53, true);
                             else
                                 m_world.Interaction.ChatMessage(string.Format("[{0}: {1}]", i.ToString(), m_PartyMembers[i].Player.Name), 3, 55, true);
@@ -199,15 +199,15 @@ namespace UltimaXNA.Ultima.World.Data
                     else if (PCmd.PrimaryCmd == PCommandType.Loot)
                     {
                         if (PCmd.SecondaryCmd == "on")
-                            m_Network.Send(new PartyCanLoot(true));
+                            m_Network.Send(new PartyCanLootPacket(true));
                         else if (PCmd.SecondaryCmd == "off")
-                            m_Network.Send(new PartyCanLoot(false));
+                            m_Network.Send(new PartyCanLootPacket(false));
                         else
                             m_world.Interaction.ChatMessage("Wrong command. Please use '/loot on' or '/loot off'.", 3, 10, false);
                     }
                     else if (PCmd.PrimaryCmd == PCommandType.Public)
                     {
-                        m_Network.Send(new PartyPublicMessage(PCmd.PlayerMessage));
+                        m_Network.Send(new PartyPublicMessagePacket(PCmd.PlayerMessage));
                     }
                     break;
 

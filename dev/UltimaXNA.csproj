@@ -139,8 +139,8 @@
     <Compile Include="Ultima\Network\Server\GeneralInfo\MapIndexInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\PartyInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\SpellBookContentsInfo.cs" />
-    <Compile Include="Ultima\World\Data\PartyMember.cs" />
-    <Compile Include="Ultima\World\Data\PartySettings.cs" />
+    <Compile Include="Ultima\Player\PartyMember.cs" />
+    <Compile Include="Ultima\Player\PartySettings.cs" />
     <Compile Include="Ultima\Input\Macro.cs" />
     <Compile Include="Ultima\Input\MacroArmDisarm.cs" />
     <Compile Include="Ultima\Input\MacroDefinition.cs" />

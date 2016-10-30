@@ -1118,60 +1118,61 @@ namespace UltimaXNA.Ultima.World
                 case GeneralInfoPacket.Party:
                     PartyInfo partyInfo = p.Info as PartyInfo;
                     if (partyInfo.partyMessage.Length > 0) {
-                        ReceiveTextMessage(MessageTypes.Alliance, partyInfo.partyMessage, 3, 
+                        ReceiveTextMessage(MessageTypes.Alliance, partyInfo.partyMessage, 3,
                             partyInfo.partyMessageHue, 0xFFFFFFF, partyInfo.partyMessager, true);
                     }
                     break;
-                case GeneralInfoPacket.SetMap: // set map
+                case GeneralInfoPacket.SetMap:
                     MapIndexInfo mapInfo = p.Info as MapIndexInfo;
                     m_World.MapIndex = mapInfo.MapID;
                     break;
-                case 0x14: // return context menu
-                    {
-                        InputManager input = ServiceRegistry.GetService<InputManager>();
-                        m_UserInterface.AddControl(new ContextMenuGump(p.ContextMenu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
-                        break;
-                    }
-                case 0x18: // Enable map-diff (files) / number of maps
-                    // as of 6.0.0.0, this only tells us the number of maps.
-                    m_World.MapCount = p.MapDiffsCount;
+                case GeneralInfoPacket.ContextMenu:
+                    ContextMenuInfo menuInfo = p.Info as ContextMenuInfo;
+                    InputManager input = ServiceRegistry.GetService<InputManager>();
+                    m_UserInterface.AddControl(new ContextMenuGump(menuInfo.Menu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
                     break;
-                case 0x19: // Extended stats
-                    if (p.ExtendedStatsSerial != WorldModel.PlayerSerial)
+                case GeneralInfoPacket.MapDiff:
+                    MapDiffInfo mapDiffInfo = p.Info as MapDiffInfo;
+                    m_World.MapCount = mapDiffInfo.MapDiffsCount;
+                    break;
+                case GeneralInfoPacket.ExtendedStats: // Extended stats
+                    ExtendedStatsInfo extendedStats = p.Info as ExtendedStatsInfo;
+                    if (extendedStats.Serial != WorldModel.PlayerSerial)
                         Tracer.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
                     else {
-                        PlayerState.StatLocks.StrengthLock = p.ExtendedStatsLocks.Strength;
-                        PlayerState.StatLocks.DexterityLock = p.ExtendedStatsLocks.Dexterity;
-                        PlayerState.StatLocks.IntelligenceLock = p.ExtendedStatsLocks.Intelligence;
+                        PlayerState.StatLocks.StrengthLock = extendedStats.Locks.Strength;
+                        PlayerState.StatLocks.DexterityLock = extendedStats.Locks.Dexterity;
+                        PlayerState.StatLocks.IntelligenceLock = extendedStats.Locks.Intelligence;
                     }
                     break;
-                case 0x1B: // spellbook data
-                    SpellbookData spellbook = p.Spellbook;
+                case GeneralInfoPacket.SpellBookContents: // spellbook data
+                    SpellbookData spellbook = (p.Info as SpellBookContentsInfo).Spellbook;
                     WorldModel.Entities.GetObject<SpellBook>(spellbook.Serial, true).ReceiveSpellData(spellbook.BookType, spellbook.SpellsBitfield);
                     break;
-                case 0x1D: // House revision state
-                    if (CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash)) {
-                        Multi multi = WorldModel.Entities.GetObject<Multi>(p.HouseRevisionState.Serial, false);
+                case GeneralInfoPacket.HouseRevision: // House revision state
+                    HouseRevisionInfo houseInfo = p.Info as HouseRevisionInfo;
+                    if (CustomHousing.IsHashCurrent(houseInfo.Revision.Serial, houseInfo.Revision.Hash)) {
+                        Multi multi = WorldModel.Entities.GetObject<Multi>(houseInfo.Revision.Serial, false);
                         if (multi == null) {
                             // received a house revision for a multi that does not exist.
                         }
                         else {
-                            if (multi.CustomHouseRevision != p.HouseRevisionState.Hash) {
-                                CustomHouse house = CustomHousing.GetCustomHouseData(p.HouseRevisionState.Serial);
+                            if (multi.CustomHouseRevision != houseInfo.Revision.Hash) {
+                                CustomHouse house = CustomHousing.GetCustomHouseData(houseInfo.Revision.Serial);
                                 multi.AddCustomHousingTiles(house);
                             }
                         }
                     }
                     else {
-                        m_Network.Send(new RequestCustomHousePacket(p.HouseRevisionState.Serial));
+                        m_Network.Send(new RequestCustomHousePacket(houseInfo.Revision.Serial));
                     }
                     break;
-                case 0x21: // (AOS) Ability icon confirm.
+                case GeneralInfoPacket.AOSAbilityIconConfirm: // (AOS) Ability icon confirm.
                     // no data, just (bf 00 05 21)
-                    // ???
+                    // What do we do with this???
                     break;
                 default:
-                    announce_UnhandledPacket(packet, "subcommand " + p.InfoType);
+                    announce_UnhandledPacket(packet, "Subcommand " + p.InfoType);
                     break;
             }
         }

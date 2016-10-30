@@ -3,6 +3,7 @@
 namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
     /// <summary>
     /// Subcommand 0x18: The count of map diffs that were received.
+    /// As of 6.0.0.0, this is only used to inform the client of the number of active maps.
     /// </summary>
     class MapDiffInfo : IGeneralInfo {
         public readonly int MapDiffsCount;

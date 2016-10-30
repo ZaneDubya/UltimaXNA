@@ -6,12 +6,12 @@ namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
     /// Subcommand 0x1D: The revision hash of a custom house.
     /// </summary>
     class HouseRevisionInfo : IGeneralInfo {
-        public readonly HouseRevisionState HouseRevisionState;
+        public readonly HouseRevisionState Revision;
 
         public HouseRevisionInfo(PacketReader reader) {
             Serial s = reader.ReadInt32();
             int hash = reader.ReadInt32();
-            HouseRevisionState = new HouseRevisionState(s, hash);
+            Revision = new HouseRevisionState(s, hash);
         }
     }
 }

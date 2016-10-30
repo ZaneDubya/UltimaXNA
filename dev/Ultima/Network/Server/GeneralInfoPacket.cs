@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.Network.Server {
         public const int Party = 0x06;
         public const int SetMap = 0x08;
         public const int ContextMenu = 0x14;
-        public const int MapCount = 0x18;
+        public const int MapDiff = 0x18;
         public const int ExtendedStats = 0x19;
         public const int SpellBookContents = 0x1B;
         public const int HouseRevision = 0x1D;
@@ -45,7 +45,7 @@ namespace UltimaXNA.Ultima.Network.Server {
                 case ContextMenu:
                     Info = new ContextMenuInfo(reader);
                     break;
-                case MapCount:
+                case MapDiff:
                     Info = new MapDiffInfo(reader);
                     break;
                 case ExtendedStats:

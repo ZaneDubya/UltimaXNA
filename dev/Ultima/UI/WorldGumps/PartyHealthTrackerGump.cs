@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   MobileHealthTrackerGump.cs
+ *   PartyHealthTrackerGump.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -9,30 +9,24 @@
  *
  ***************************************************************************/
 
-#region usings
-
-using UltimaXNA.Configuration;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.Network.Client.PartySystem;
+using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Data;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 
-#endregion usings
-
-namespace UltimaXNA.Ultima.UI.WorldGumps
-{
+namespace UltimaXNA.Ultima.UI.WorldGumps {
     internal class PartyHealthTrackerGump : Gump
     {
-        private Button btnPrivateMsg;
+        Button btnPrivateMsg;
 
-        private GumpPic[] m_BarBGs;
+        GumpPic[] m_BarBGs;
 
         //private ResizePic m_Background;
-        private GumpPicWithWidth[] m_Bars;
+        GumpPicWithWidth[] m_Bars;
 
         public PartyHealthTrackerGump(Serial _serial)
             : base(_serial, 0)
@@ -91,7 +85,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (buttonID == 0)//private message
             {
                 INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
-                m_Network.Send(new PartyPrivateMessage((Serial)btnPrivateMsg.ButtonParameter, "make a dynamic message type"));
+                m_Network.Send(new PartyPrivateMessagePacket((Serial)btnPrivateMsg.ButtonParameter, "make a dynamic message type"));
             }
         }
 
@@ -123,7 +117,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        private void Background_MouseDoubleClickEvent(AControl caller, int x, int y, MouseButton button)//need opacity %1 BG for this
+        void Background_MouseDoubleClickEvent(AControl caller, int x, int y, MouseButton button)//need opacity %1 BG for this
         {
             //CALL PRIVATE MESSAGE METHOD ???
         }
