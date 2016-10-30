@@ -402,6 +402,9 @@ namespace UltimaXNA.Core.UI
 
         virtual public void Draw(SpriteBatchUI spriteBatch, Point position)
         {
+            if (!IsInitialized)
+                return;
+
             foreach (AControl c in Children)
             {
                 if ((c.Page == 0) || (c.Page == ActivePage))
