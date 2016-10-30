@@ -1,18 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Patterns;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Patterns;
-using System;
 using UltimaXNA.Ultima.UI.LoginGumps;
 
 namespace UltimaXNA.Ultima.Login {
-    class HueTestGumpModule : IModule {
+    class DebugHuesGumpModule : IModule {
         public string Name => "DebugHueTest";
 
         public void Load() {
@@ -24,15 +23,15 @@ namespace UltimaXNA.Ultima.Login {
         }
 
         void OnClickDebugGump() {
-            ServiceRegistry.GetService<UserInterfaceService>().AddControl(new HueTestGump(), 0, 0);
+            ServiceRegistry.GetService<UserInterfaceService>().AddControl(new DebugHuesGump(), 0, 0);
         }
     }
 
-    class HueTestGump : Gump {
+    class DebugHuesGump : Gump {
         TextLabel m_Label;
         HuedControl m_HueDisplay;
 
-        public HueTestGump()
+        public DebugHuesGump()
             : base(0, 0) {
             OverHue = -1;
         }

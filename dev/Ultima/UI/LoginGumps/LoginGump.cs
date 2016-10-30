@@ -73,10 +73,10 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
             // flag graphic
             AddControl(new GumpPic(this, 0, 0, 0x15A0, 0));
             // buttons on the left side
-            int y = 450;
             AddControl(new ButtonResizable(this, 10, 450, 100, 23, "CREDITS", OnClickCredits));
+            int y = 420;
             foreach (Tuple<string, Action> button in m_Buttons) {
-                AddControl(new ButtonResizable(this, 10, 420, 100, 23, button.Item1, button.Item2));
+                AddControl(new ButtonResizable(this, 10, y, 100, 23, button.Item1, button.Item2));
                 y -= 30;
             }
             IsUncloseableWithRMB = true;
