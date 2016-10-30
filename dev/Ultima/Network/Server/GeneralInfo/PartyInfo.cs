@@ -17,9 +17,9 @@ namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
                 case 1:
                     //party member list here
                     int memberCount = reader.ReadByte();
-                    for (int i = 0; i < memberCount; i++)
+                    for (int i = 0; i < memberCount; i++) {
                         PlayerState.Partying.AddMember(reader.ReadInt32(), false);
-
+                    }
                     PlayerState.Partying.Status = PartyState.Joined;
                     PlayerState.Partying.RefreshPartyStatusBar();
                     break;
@@ -28,11 +28,9 @@ namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
                     int newPartyCount = reader.ReadByte();
                     int _remoredMember = reader.ReadInt32();
                     PlayerState.Partying.RemoveMember(_remoredMember);//removing
-
                     for (int i = 0; i < newPartyCount; i++) {//new list coming
                         PlayerState.Partying.AddMember(reader.ReadInt32(), false);
                     }
-
                     PlayerState.Partying.Status = PartyState.Joined;
                     PlayerState.Partying.RefreshPartyStatusBar();
                     break;
@@ -48,8 +46,6 @@ namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
                             break;
                         case "targeted to : "://we need new command (for party leader)
                             partyMessageHue = 50;
-                            break;
-                        default:
                             break;
                     }
                     if (num == 3)//PRIVATE party message
