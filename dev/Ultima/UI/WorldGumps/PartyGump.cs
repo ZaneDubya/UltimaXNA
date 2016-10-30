@@ -96,9 +96,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
                 m_Network.Send(new PartyPrivateMessagePacket((Serial)serial, "make a dynamic message type"));//need improve
             }
             else if (buttonID >= 100) {
-                int _serial = kickBtn[buttonID - 100].ButtonParameter;//deleting player serial
-                m_Network.Send(new PartyRemoveMemberPacket(_serial));
-                PlayerState.Partying.RemoveMember(_serial);
+                int serial = kickBtn[buttonID - 100].ButtonParameter;//deleting player serial
+                m_Network.Send(new PartyRemoveMemberPacket(serial));
+                PlayerState.Partying.RemoveMember(serial);
                 if (PlayerState.Partying.List.Count == 1) {
                     PlayerState.Partying.LeaveParty();
                 }

@@ -28,20 +28,20 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
         //private ResizePic m_Background;
         GumpPicWithWidth[] m_Bars;
 
-        public PartyHealthTrackerGump(Serial _serial)
-            : base(_serial, 0)
+        public PartyHealthTrackerGump(Serial serial)
+            : base(serial, 0)
         {
             while (UserInterface.GetControl<MobileHealthTrackerGump>() != null)
             {
-                UserInterface.GetControl<MobileHealthTrackerGump>(_serial).Dispose();
+                UserInterface.GetControl<MobileHealthTrackerGump>(serial).Dispose();
             }
             IsMoveable = false;
             IsUncloseableWithRMB = true;
-            Mobile = WorldModel.Entities.GetObject<Mobile>(_serial, false);
+            Mobile = WorldModel.Entities.GetObject<Mobile>(serial, false);
             if (Mobile == null)
             {
                 Dispose();
-                PlayerState.Partying.RemoveMember(_serial);
+                PlayerState.Partying.RemoveMember(serial);
                 return;
             }
             //AddControl(m_Background = new ResizePic(this, 0, 0, 3000, 131, 48));//I need opacity %1 background
@@ -51,8 +51,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             m_BarBGs = new GumpPic[3];
             int sameX = 15;
             int sameY = 3;
-            if (WorldModel.Entities.GetPlayerEntity().Serial != _serial)//you can't send a message to self
-                AddControl(btnPrivateMsg = new Button(this, 0, 20, 11401, 11402, ButtonTypes.Activate, _serial, 0));//private party message / use bandage ??
+            if (WorldModel.Entities.GetPlayerEntity().Serial != serial)//you can't send a message to self
+                AddControl(btnPrivateMsg = new Button(this, 0, 20, 11401, 11402, ButtonTypes.Activate, serial, 0));//private party message / use bandage ??
             AddControl(m_BarBGs[0] = new GumpPic(this, sameX, 15 + sameY, 9750, 0));
             AddControl(m_BarBGs[1] = new GumpPic(this, sameX, 24 + sameY, 9750, 0));
             AddControl(m_BarBGs[2] = new GumpPic(this, sameX, 33 + sameY, 9750, 0));
