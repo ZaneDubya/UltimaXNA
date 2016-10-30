@@ -320,6 +320,7 @@
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\Resources\GumpDefTranslator.cs" />
     <Compile Include="Ultima\UI\Controls\AGumpPic.cs" />
+    <Compile Include="Ultima\UI\Controls\ButtonResizable.cs" />
     <Compile Include="Ultima\UI\Controls\ColorPickerBox.cs" />
     <Compile Include="Ultima\UI\Controls\EquipmentSlot.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicWithWidth.cs" />
@@ -730,9 +731,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Ultima\IO\Fonts\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

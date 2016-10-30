@@ -49,7 +49,7 @@
     <Compile Include="CandleObjectDebugger.cs" />
     <Compile Include="ExamplePluginModule.cs" />
     <Compile Include="ExamplePluginWithSettings.cs" />
-    <Compile Include="HueTestState.cs" />
+    <Compile Include="HueTestGump.cs" />
     <Compile Include="MapParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebSafeHueCreator.cs" />
