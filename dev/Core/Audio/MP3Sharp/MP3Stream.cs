@@ -47,7 +47,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
         ///     Creates a new stream instance using the provided filename, and the default chunk size of 4096 bytes.
         /// </summary>
         public MP3Stream(string fileName)
-            : this(new FileStream(fileName, FileMode.Open))
+            : this(new FileStream(fileName, FileMode.Open, FileAccess.Read))
         {
         }
 
