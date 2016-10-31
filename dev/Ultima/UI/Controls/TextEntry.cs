@@ -155,9 +155,6 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_RenderedText.Text = LeadingHtmlTag + LeadingText + (IsPasswordField ? new string('*', Text.Length) : Text);
             m_Carat.Text = LeadingHtmlTag + (LegacyCarat ? "_" : "|");
 
-            if (!IsInitialized || IsDisposed || !IsVisible)
-                return; return;
-
             base.Update(totalMS, frameMS);
         }
 
@@ -187,8 +184,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             if (m_CaratBlinkOn)
                 m_Carat.Draw(spriteBatch, caratPosition, Utility.GetHueVector(Hue));
-            if (!IsInitialized)
-                return;
             base.Draw(spriteBatch, position);
         }
 
