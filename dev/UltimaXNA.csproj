@@ -406,7 +406,6 @@
     <Compile Include="Core\UI\HuedTexture.cs" />
     <Compile Include="Ultima\UI\UltimaCursor.cs" />
     <Compile Include="Ultima\World\WorldInteraction.cs" />
-    <Compile Include="Ultima\Login\LoginClientStatus.cs" />
     <Compile Include="Ultima\Login\LoginView.cs" />
     <Compile Include="Ultima\Login\Accounts\CharacterListEntry.cs" />
     <Compile Include="Ultima\Login\Accounts\Characters.cs" />
