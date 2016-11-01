@@ -26,8 +26,8 @@ namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
                 case 2:
                     //remove party member and refresh list
                     int newPartyCount = reader.ReadByte();
-                    int remoredMember = reader.ReadInt32();
-                    PlayerState.Partying.RemoveMember(_remoredMember);//removing
+                    int removedMember = reader.ReadInt32();
+                    PlayerState.Partying.RemoveMember(removedMember);//removing
                     for (int i = 0; i < newPartyCount; i++) {//new list coming
                         PlayerState.Partying.AddMember(reader.ReadInt32(), false);
                     }
@@ -58,7 +58,7 @@ namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
                 case 7://PARTY INVITE PROGRESS
                     int leaderSerial = reader.ReadInt32();
                     PlayerState.Partying.Status = PartyState.Joining;
-                    PlayerState.Partying.AddMember(_leaderSerial, true);
+                    PlayerState.Partying.AddMember(leaderSerial, true);
                     break;
                 default:
                     partyMessage = "ERROR";//TRACE.WARN??

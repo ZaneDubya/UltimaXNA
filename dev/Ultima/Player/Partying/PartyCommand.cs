@@ -11,9 +11,9 @@ namespace UltimaXNA.Ultima.Player.Partying {
         /// <summary> for example: UserName which is adding or deleting </summary>
         public string SecondaryCmd { get { return m_SecondaryCommand; } set { m_SecondaryCommand = value; } }
 
-        public PartyCommand(string _text) {
-            string[] cmds = _text.Split(new string[] { " " }, StringSplitOptions.None);
-            if (_text.ToLower() == "add") {
+        public PartyCommand(string text) {
+            string[] cmds = text.Split(new string[] { " " }, StringSplitOptions.None);
+            if (text.ToLower() == "add") {
                 PrimaryCmd = PartyCommandType.Add;
             }
             else if (cmds[0].ToLower() == "rem") {
@@ -25,13 +25,13 @@ namespace UltimaXNA.Ultima.Player.Partying {
                 else
                     SecondaryCmd = "unknowncmd";
             }
-            else if (_text.ToLower() == "accept") {
+            else if (text.ToLower() == "accept") {
                 PrimaryCmd = PartyCommandType.Accept;
             }
-            else if (_text.ToLower() == "decline") {
+            else if (text.ToLower() == "decline") {
                 PrimaryCmd = PartyCommandType.Decline;
             }
-            else if (_text.ToLower() == "quit") {
+            else if (text.ToLower() == "quit") {
                 PrimaryCmd = PartyCommandType.Quit;
             }
             else if (cmds[0].ToLower() == "loot") {
@@ -45,18 +45,18 @@ namespace UltimaXNA.Ultima.Player.Partying {
                 }
                 SecondaryCmd = "unknowncmd";
             }
-            else if (_text.ToLower() == "list")//list of party members (new)
+            else if (text.ToLower() == "list")//list of party members (new)
             {
                 PrimaryCmd = PartyCommandType.List;
             }
-            else if (_text.ToLower() == "hlp")//about of party commands (new)
+            else if (text.ToLower() == "hlp")//about of party commands (new)
             {
                 PrimaryCmd = PartyCommandType.HelpMenu;
             }
             else {
                 //public party message
                 PrimaryCmd = PartyCommandType.Public;
-                PlayerMessage = _text;
+                PlayerMessage = text;
                 return;
             }
         }
