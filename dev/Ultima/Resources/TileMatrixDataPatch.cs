@@ -89,23 +89,16 @@ namespace UltimaXNA.Ultima.Resources
             using (FileStream fsIndex = FileManager.GetFile(indexPath))
             {
                 BinaryReader indexReader = new BinaryReader(fsIndex);
-
                 int count = (int)(indexReader.BaseStream.Length / 4);
-
                 uint ptr = 0;
-
                 for (int i = 0; i < count; ++i)
                 {
-
                     uint blockID = indexReader.ReadUInt32();
                     uint x = blockID / tileMatrix.ChunkHeight;
                     uint y = blockID % tileMatrix.ChunkHeight;
                     uint key = MakeChunkKey(x, y);
-
                     ptr += 4;
-
-                    m_LandPatchPtrs.Add(key, ptr);
-
+                    m_LandPatchPtrs[key] = ptr;
                     ptr += 192;
                 }
 
