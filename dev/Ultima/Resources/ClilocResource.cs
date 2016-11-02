@@ -36,7 +36,8 @@ namespace UltimaXNA.Ultima.Resources
 
         public ClilocResource(string language)
         {
-            LoadStringList(language);
+            Language = language;
+            LoadStringList($"cliloc.{language}");
         }
 
         public string GetString(int index)
@@ -44,34 +45,26 @@ namespace UltimaXNA.Ultima.Resources
             if (Table[index] == null)
             {
                 Tracer.Warn("Missing cliloc with index {0}. Client version is lower than expected by Server.", index);
-                return string.Format("Err: Cliloc Entry {0} not found.", index);
+                return $"Err: Cliloc Entry {index} not found.";
             }
-            else
-                return Table[index].ToString();
+            return Table[index].ToString();
         }
 
-        public void LoadStringList(string language)
+        public void LoadStringList(string path)
         {
-            Language = language;
+            path = FileManager.GetFilePath(path);
             Table = new Hashtable();
-
-            string path = FileManager.GetFilePath(String.Format("cliloc.{0}", language));
-
-            if (path == null)
+            if (path == null || !File.Exists(path))
             {
                 return;
             }
-
             ArrayList list = new ArrayList();
-
             byte[] buffer;
-
             using (BinaryReader bin = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 buffer = bin.ReadBytes((int)bin.BaseStream.Length);
                 Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
-
             int pos = 6;
             int count = buffer.Length;
             while (pos < count)
