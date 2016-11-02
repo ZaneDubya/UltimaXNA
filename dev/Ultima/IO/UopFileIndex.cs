@@ -31,6 +31,7 @@ namespace UltimaXNA.Ultima.IO.UOP
         {
             m_Extension = extension;
             m_HasExtra = hasExtra;
+            Open();
         }
 
         protected override FileIndexEntry3D[] ReadEntries()

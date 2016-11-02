@@ -71,6 +71,7 @@ namespace UltimaXNA.Core.Audio
             if (spamCheck && (LastPlayed + MinimumDelay > DateTime.Now))
                 return;
 
+            BeforePlay();
             m_ThisInstance = GetNewInstance(asEffect);
             if (m_ThisInstance == null)
             {
@@ -85,8 +86,7 @@ namespace UltimaXNA.Core.Audio
                     m_ThisInstance.Pitch = pitch;
                     break;
             }
-
-            BeforePlay();
+            
             LastPlayed = DateTime.Now;
 
             byte[] buffer = GetBuffer();
