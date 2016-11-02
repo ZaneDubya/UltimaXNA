@@ -106,6 +106,7 @@ namespace UltimaXNA.Ultima.Resources
                     }
                     staticIndexStream = FileManager.GetFile("staidx{0}.mul", trammel);
                     m_StaticDataStream = FileManager.GetFile("statics{0}.mul", trammel);
+                    index = trammel;
                 }
                 else
                 {
