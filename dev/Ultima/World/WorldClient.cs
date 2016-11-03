@@ -1131,7 +1131,8 @@ namespace UltimaXNA.Ultima.World
                     }
                 case 0x18: // Enable map-diff (files) / number of maps
                     // as of 6.0.0.0, this only tells us the number of maps.
-                    m_World.MapCount = p.MapDiffsCount;
+                    TileMatrixDataPatch.EnableMapDiffs(p.MapDiffs);
+                    m_World.Map.ReloadStatics();
                     break;
                 case 0x19: // Extended stats
                     if (p.ExtendedStatsSerial != WorldModel.PlayerSerial)

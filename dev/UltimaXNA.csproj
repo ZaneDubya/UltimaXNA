@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
+    <Compile Include="Ultima\Data\MapDiffInfo.cs" />
     <Compile Include="Ultima\Input\Macro.cs" />
     <Compile Include="Ultima\Input\MacroArmDisarm.cs" />
     <Compile Include="Ultima\Input\MacroDefinition.cs" />
@@ -308,6 +309,7 @@
     <Compile Include="Ultima\Network\Client\SellItemsPacket.cs" />
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\Resources\GumpDefTranslator.cs" />
+    <Compile Include="Ultima\Resources\UOPIndex.cs" />
     <Compile Include="Ultima\UI\Controls\AGumpPic.cs" />
     <Compile Include="Ultima\UI\Controls\ButtonResizable.cs" />
     <Compile Include="Ultima\UI\Controls\ColorPickerBox.cs" />
