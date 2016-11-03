@@ -55,7 +55,7 @@ namespace UltimaXNA.Ultima.Network.Server
         /// <summary>
         /// Subcommand 0x18: The count of map diffs that were received.
         /// </summary>
-        public int MapDiffsCount
+        public MapDiffInfo MapDiffs
         {
             get;
             private set;
@@ -185,12 +185,7 @@ namespace UltimaXNA.Ultima.Network.Server
 
         void receiveMapDiffManifest(PacketReader reader)
         {
-            MapDiffsCount = reader.ReadInt32();
-            for (int i = 0; i < MapDiffsCount; i++)
-            {
-                int mapPatches = reader.ReadInt32();
-                int staticPatches = reader.ReadInt32();
-            }
+            MapDiffs = new MapDiffInfo(reader);
         }
 
         void receiveContextMenu(PacketReader reader)
