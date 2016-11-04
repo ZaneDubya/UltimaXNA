@@ -5,14 +5,18 @@ namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
     /// Subcommand 0x18: The count of map diffs that were received.
     /// As of 6.0.0.0, this is only used to inform the client of the number of active maps.
     /// </summary>
-    class MapDiffInfo : IGeneralInfo {
-        public readonly int MapDiffsCount;
+    public class MapDiffInfo : IGeneralInfo {
+        public readonly int MapCount;
+        public readonly int[] MapPatches;
+        public readonly int[] StaticPatches;
 
         public MapDiffInfo(PacketReader reader) {
-            MapDiffsCount = reader.ReadInt32();
-            for (int i = 0; i < MapDiffsCount; i++) {
-                int mapPatches = reader.ReadInt32();
-                int staticPatches = reader.ReadInt32();
+            MapCount = reader.ReadInt32();
+            MapPatches = new int[MapCount];
+            StaticPatches = new int[MapCount];
+            for (int i = 0; i < MapCount; i++) {
+                StaticPatches[i] = reader.ReadInt32();
+                MapPatches[i] = reader.ReadInt32();
             }
         }
     }

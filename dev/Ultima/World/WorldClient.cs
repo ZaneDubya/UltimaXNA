@@ -1130,8 +1130,8 @@ namespace UltimaXNA.Ultima.World
                     m_UserInterface.AddControl(new ContextMenuGump(menuInfo.Menu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
                     break;
                 case GeneralInfoPacket.MapDiff:
-                    MapDiffInfo mapDiffInfo = p.Info as MapDiffInfo;
-                    m_World.MapCount = mapDiffInfo.MapDiffsCount;
+                    TileMatrixDataPatch.EnableMapDiffs(p.Info as MapDiffInfo);
+                    m_World.Map.ReloadStatics();
                     break;
                 case GeneralInfoPacket.ExtendedStats: // Extended stats
                     ExtendedStatsInfo extendedStats = p.Info as ExtendedStatsInfo;

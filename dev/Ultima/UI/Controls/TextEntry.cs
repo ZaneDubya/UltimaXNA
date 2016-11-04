@@ -77,6 +77,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             HandlesMouseInput = true;
             HandlesKeyboardFocus = true;
+            IsEditable = true;
         }
 
         public TextEntry(AControl parent, string[] arguements, string[] lines)
