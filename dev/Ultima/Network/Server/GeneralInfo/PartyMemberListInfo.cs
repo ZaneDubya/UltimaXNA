@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   IGeneralInfo.cs
+ *   PartyMemberListInfo.cs
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -8,6 +8,19 @@
  *
  ***************************************************************************/
 
+using UltimaXNA.Core.Network;
+
 namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
-    public interface IGeneralInfo { }
+    class PartyMemberListInfo : IGeneralInfo {
+        public readonly int Count;
+        public readonly int[] Serials;
+
+        public PartyMemberListInfo(PacketReader reader) {
+            Count = reader.ReadByte();
+            Serials = new int[Count];
+            for (int i = 0; i < Count; i++) {
+                Serials[i] = reader.ReadInt32();
+            }
+        }
+    }
 }

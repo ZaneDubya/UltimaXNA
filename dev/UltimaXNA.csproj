@@ -137,7 +137,10 @@
     <Compile Include="Ultima\Network\Server\GeneralInfo\IGeneralInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\MapDiffInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\MapIndexInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\PartyMemberListInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\PartyInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\PartyMessageInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\PartyRemoveMemberInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\SpellBookContentsInfo.cs" />
     <Compile Include="Ultima\Player\Partying\PartyCommand.cs" />
     <Compile Include="Ultima\Player\Partying\PartyCommandType.cs" />
