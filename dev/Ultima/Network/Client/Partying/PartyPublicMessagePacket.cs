@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   PartyCanLootPacket.cs
+ *   PartyPublicMessagePacket.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -9,13 +9,14 @@
  ***************************************************************************/
 using UltimaXNA.Core.Network.Packets;
 
-namespace UltimaXNA.Ultima.Network.Client.PartySystem {
-    class PartyCanLootPacket : SendPacket {
-        public PartyCanLootPacket(bool isLootable) 
-            : base(0xbf, "Party Can Loot") {
+namespace UltimaXNA.Ultima.Network.Client.Partying {
+    public class PartyPublicMessagePacket : SendPacket {
+        public PartyPublicMessagePacket(string msg) 
+            : base(0xbf, "Public Party Message") {
             Stream.Write((short)6);
-            Stream.Write((byte)6);
-            Stream.Write(isLootable);
+            Stream.Write((byte)4);
+            Stream.WriteBigUniNull(msg);
+            Stream.Write((short)0);
         }
     }
 }

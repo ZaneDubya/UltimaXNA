@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   PartyPublicMessagePacket.cs
+ *   GuildLocationQueryPacket.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -9,14 +9,14 @@
  ***************************************************************************/
 using UltimaXNA.Core.Network.Packets;
 
-namespace UltimaXNA.Ultima.Network.Client.PartySystem {
-    public class PartyPublicMessagePacket : SendPacket {
-        public PartyPublicMessagePacket(string msg) 
-            : base(0xbf, "Public Party Message") {
-            Stream.Write((short)6);
-            Stream.Write((byte)4);
-            Stream.WriteBigUniNull(msg);
-            Stream.Write((short)0);
+namespace UltimaXNA.Ultima.Network.Client.Extensions {
+    /// <summary>
+    /// MapUO Protocol: Requests the position of all guild members.
+    /// </summary>
+    public class GuildLocationQueryPacket : SendPacket {
+        public GuildLocationQueryPacket() 
+            : base(0xF0, "Query Guild Member Locations") {
+            Stream.Write((byte)0);
         }
     }
 }

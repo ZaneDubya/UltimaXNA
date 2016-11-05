@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   PartyAcceptPacket.cs
+ *   PartyAddMemberPacket.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -8,15 +8,14 @@
  *
  ***************************************************************************/
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
 
-namespace UltimaXNA.Ultima.Network.Client.PartySystem {
-    public class PartyAcceptPacket : SendPacket {
-        public PartyAcceptPacket(Mobile Leader) 
-            : base(0xbf, "Party Join Accept") {
+namespace UltimaXNA.Ultima.Network.Client.Partying {
+    class PartyAddMemberPacket : SendPacket {
+        public PartyAddMemberPacket() 
+            : base(0xbf, "Add Party Member") {
             Stream.Write((short)6);
-            Stream.Write((byte)8);
-            Stream.Write(Leader.Serial);
+            Stream.Write((byte)1);
+            Stream.Write(0);
         }
     }
 }

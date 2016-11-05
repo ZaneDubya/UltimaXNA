@@ -1,16 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using UltimaXNA;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Patterns;
 using UltimaXNA.Ultima.UI.LoginGumps;
 using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
@@ -24,7 +19,7 @@ namespace ExamplePlugin.MapRenderer
 
         public void Load()
         {
-            LoginGump.AddButton("Debug:Map", OnClick);
+            // LoginGump.AddButton("Debug:Map", OnClick);
         }
 
         public void Unload()

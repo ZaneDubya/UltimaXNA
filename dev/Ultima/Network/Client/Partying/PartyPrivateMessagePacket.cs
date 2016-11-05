@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   PartyAddMemberPacket.cs
+ *   PartyPrivateMessagePacket.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -9,13 +9,15 @@
  ***************************************************************************/
 using UltimaXNA.Core.Network.Packets;
 
-namespace UltimaXNA.Ultima.Network.Client.PartySystem {
-    class PartyAddMemberPacket : SendPacket {
-        public PartyAddMemberPacket() 
-            : base(0xbf, "Add Party Member") {
+namespace UltimaXNA.Ultima.Network.Client.Partying {
+    public class PartyPrivateMessagePacket : SendPacket {
+        public PartyPrivateMessagePacket(Serial memberSerial, string msg) 
+            : base(0xbf, "Private Party Message") {
             Stream.Write((short)6);
-            Stream.Write((byte)1);
-            Stream.Write(0);
+            Stream.Write((byte)3);
+            Stream.Write(memberSerial);
+            Stream.WriteBigUniNull(msg);
+            Stream.Write((short)0);
         }
     }
 }

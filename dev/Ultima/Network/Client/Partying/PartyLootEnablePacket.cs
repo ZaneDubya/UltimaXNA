@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   PartyQueryLocationPacket.cs
+ *   PartyCanLootPacket.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -9,11 +9,13 @@
  ***************************************************************************/
 using UltimaXNA.Core.Network.Packets;
 
-namespace UltimaXNA.Ultima.Network.Client.PartySystem {
-    public class PartyQueryLocationPacket : SendPacket {
-        public PartyQueryLocationPacket() 
-            : base(240, "Query Party Locations") {
-            Stream.Write((byte)0);
+namespace UltimaXNA.Ultima.Network.Client.Partying {
+    class PartyCanLootPacket : SendPacket {
+        public PartyCanLootPacket(bool isLootable) 
+            : base(0xbf, "Party Can Loot") {
+            Stream.Write((short)6);
+            Stream.Write((byte)6);
+            Stream.Write(isLootable);
         }
     }
 }

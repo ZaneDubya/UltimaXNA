@@ -9,7 +9,7 @@
  ***************************************************************************/
 using UltimaXNA.Core.Network.Packets;
 
-namespace UltimaXNA.Ultima.Network.Client.PartySystem {
+namespace UltimaXNA.Ultima.Network.Client.Partying {
     public class PartyRemoveMemberPacket : SendPacket {
         public PartyRemoveMemberPacket(Serial serial) 
             : base(0xbf, "Remove Party Member") {

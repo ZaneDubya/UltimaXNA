@@ -12,7 +12,6 @@
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Network.Client.PartySystem;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
@@ -84,8 +83,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
         {
             if (buttonID == 0)//private message
             {
-                INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
-                m_Network.Send(new PartyPrivateMessagePacket((Serial)btnPrivateMsg.ButtonParameter, "make a dynamic message type"));
+                PlayerState.Partying.SendTell(btnPrivateMsg.ButtonParameter);
             }
         }
 

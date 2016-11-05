@@ -2,7 +2,7 @@
 using System.Linq;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Network.Client.PartySystem;
+using UltimaXNA.Ultima.Network.Client.Partying;
 using UltimaXNA.Ultima.Network.Server.GeneralInfo;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World;
@@ -15,11 +15,28 @@ namespace UltimaXNA.Ultima.Player.Partying
         Serial m_LeaderSerial;
         List<PartyMember> m_PartyMembers = new List<PartyMember>();
         PartyState m_State;
+        bool m_AllowPartyLoot;
 
-        public Mobile Leader => m_PartyMembers.Find(p => p.IsLeader == true).Player;
-        public List<Mobile> List => m_PartyMembers.Select(p => p.Player).ToList();
+        public Mobile Leader => m_PartyMembers.Find(p => p.IsLeader == true).Mobile;
+        public List<Mobile> List => m_PartyMembers.Select(p => p.Mobile).ToList();
         public PartyMember Self => m_PartyMembers[SelfIndex];
-        public int SelfIndex => m_PartyMembers.FindIndex(p => p.Player == WorldModel.Entities.GetPlayerEntity());
+        public int SelfIndex => m_PartyMembers.FindIndex(p => p.Mobile == WorldModel.Entities.GetPlayerEntity());
+
+        public bool AllowPartyLoot
+        {
+            get
+            {
+                if (Status == PartyState.None || Status == PartyState.Joining)
+                    return false;
+                return m_AllowPartyLoot;
+            }
+            set
+            {
+                m_AllowPartyLoot = value;
+                INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+                network.Send(new PartyCanLootPacket(m_AllowPartyLoot));
+            }
+        }
 
         public PartyState Status
         {
@@ -30,9 +47,9 @@ namespace UltimaXNA.Ultima.Player.Partying
             get
             {
                 //is he leader ?? and is he has a party ?
-                if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Player == WorldModel.Entities.GetPlayerEntity()) == null)
+                if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Mobile == WorldModel.Entities.GetPlayerEntity()) == null)
                     LeaveParty();
-                else if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Player == WorldModel.Entities.GetPlayerEntity()).IsLeader)
+                else if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Mobile == WorldModel.Entities.GetPlayerEntity()).IsLeader)
                     return PartyState.Leader;//he has full access
                 return m_State;
             }
@@ -66,7 +83,7 @@ namespace UltimaXNA.Ultima.Player.Partying
         {
             if (serial == m_LeaderSerial)//after refresh list we don't know who is leader
                 isleader = true;
-            int index = m_PartyMembers.FindIndex(p => p.Player.Serial == serial);//if already in ?
+            int index = m_PartyMembers.FindIndex(p => p.Mobile.Serial == serial);//if already in ?
             if (index != -1)//remove and add new member (refreshing ?)
                 m_PartyMembers.RemoveAt(index);
             m_PartyMembers.Add(new PartyMember(serial, isleader));
@@ -83,7 +100,7 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public PartyMember GetMember(Serial serial)
         {
-            return m_PartyMembers.Find(p => p.Player.Serial == serial);
+            return m_PartyMembers.Find(p => p.Mobile.Serial == serial);
         }
 
         public void LeaveParty()
@@ -171,9 +188,9 @@ namespace UltimaXNA.Ultima.Player.Partying
                         for (int i = 0; i < m_PartyMembers.Count; i++)
                         {
                             if (m_PartyMembers[i].IsLeader)
-                                m_world.Interaction.ChatMessage(string.Format("[{0}: {1}][LEADER]", i.ToString(), m_PartyMembers[i].Player.Name), 3, 53, true);
+                                m_world.Interaction.ChatMessage(string.Format("[{0}: {1}][LEADER]", i.ToString(), m_PartyMembers[i].Mobile.Name), 3, 53, true);
                             else
-                                m_world.Interaction.ChatMessage(string.Format("[{0}: {1}]", i.ToString(), m_PartyMembers[i].Player.Name), 3, 55, true);
+                                m_world.Interaction.ChatMessage(string.Format("[{0}: {1}]", i.ToString(), m_PartyMembers[i].Mobile.Name), 3, 55, true);
                         }
                     }
                     else if (PCmd.PrimaryCmd == PartyCommandType.Quit)
@@ -183,9 +200,9 @@ namespace UltimaXNA.Ultima.Player.Partying
                     else if (PCmd.PrimaryCmd == PartyCommandType.Loot)
                     {
                         if (PCmd.SecondaryCmd == "on")
-                            m_Network.Send(new PartyCanLootPacket(true));
+                            AllowPartyLoot = true;
                         else if (PCmd.SecondaryCmd == "off")
-                            m_Network.Send(new PartyCanLootPacket(false));
+                            AllowPartyLoot = false;
                         else
                             m_world.Interaction.ChatMessage("Wrong command. Please use '/loot on' or '/loot off'.", 3, 10, false);
                     }
@@ -199,6 +216,24 @@ namespace UltimaXNA.Ultima.Player.Partying
                     m_world.Interaction.ChatMessage("PARTY SYSTEM ERROR !!!", 3, 30, false);
                     break;
             }
+        }
+
+        internal void SetPartyTarget()
+        {
+            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            network.Send(new PartyPublicMessagePacket("All member attack to ---PLAYERNAME---"));//need improve
+        }
+
+        internal void RequestAddPartyMemberTarget()
+        {
+            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            network.Send(new PartyAddMemberPacket());
+        }
+
+        internal void SendTell(Serial serial)
+        {
+            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            network.Send(new PartyPrivateMessagePacket(serial, "make a dynamic message type"));//need improve
         }
 
         public void RefreshPartyStatusBar()
@@ -217,7 +252,9 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public void RemoveMember(Serial serial)
         {
-            int index = m_PartyMembers.FindIndex(p => p.Player.Serial == serial);
+            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            network.Send(new PartyRemoveMemberPacket(serial));
+            int index = m_PartyMembers.FindIndex(p => p.Mobile.Serial == serial);
             if (index != -1)
             {
                 m_PartyMembers.RemoveAt(index);

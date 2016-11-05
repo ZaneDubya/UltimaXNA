@@ -10,7 +10,7 @@
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 
-namespace UltimaXNA.Ultima.Network.Client.PartySystem {
+namespace UltimaXNA.Ultima.Network.Client.Partying {
     public class PartyDeclinePacket : SendPacket {
         public PartyDeclinePacket(Mobile Leader) 
             : base(0xbf, "Party Join Decline") {
