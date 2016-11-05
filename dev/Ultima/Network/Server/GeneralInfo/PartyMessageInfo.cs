@@ -11,18 +11,18 @@
 using UltimaXNA.Core.Network;
 
 namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
-    class PartyMessageInfo : IGeneralInfo {
+    /// <summary>
+    /// Subcommand 0x06 / 0x03 and 0x06 / 0x04: Party message.
+    /// </summary>
+    public class PartyMessageInfo : IGeneralInfo {
         public readonly bool IsPrivate;
-        public readonly int Count;
-        public readonly int[] Serials;
+        public readonly int Source;
+        public readonly string Message;
 
         public PartyMessageInfo(PacketReader reader, bool isPrivate) {
             IsPrivate = isPrivate;
-            Count = reader.ReadByte();
-            Serials = new int[Count];
-            for (int i = 0; i < Count; i++) {
-                Serials[i] = reader.ReadInt32();
-            }
+            Source = reader.ReadByte();
+            Message = reader.ReadUnicodeString();
         }
     }
 }

@@ -1,14 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Network.Client.PartySystem;
+using UltimaXNA.Ultima.Network.Server.GeneralInfo;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 
-namespace UltimaXNA.Ultima.Player.Partying {
-    public class PartySystem {
+namespace UltimaXNA.Ultima.Player.Partying
+{
+    public class PartySystem
+    {
         Serial m_LeaderSerial;
         List<PartyMember> m_PartyMembers = new List<PartyMember>();
         PartyState m_State;
@@ -18,11 +22,14 @@ namespace UltimaXNA.Ultima.Player.Partying {
         public PartyMember Self => m_PartyMembers[SelfIndex];
         public int SelfIndex => m_PartyMembers.FindIndex(p => p.Player == WorldModel.Entities.GetPlayerEntity());
 
-        public PartyState Status {
-            set {
+        public PartyState Status
+        {
+            set
+            {
                 m_State = value;
             }
-            get {
+            get
+            {
                 //is he leader ?? and is he has a party ?
                 if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Player == WorldModel.Entities.GetPlayerEntity()) == null)
                     LeaveParty();
@@ -32,7 +39,32 @@ namespace UltimaXNA.Ultima.Player.Partying {
             }
         }
 
-        public void AddMember(Serial serial, bool isleader) {
+        public void ReceivePartyMemberList(PartyMemberListInfo info)
+        {
+            Status = PartyState.Joined;
+            m_PartyMembers.Clear();
+            for (int i = 0; i < info.Count; i++)
+                AddMember(info.Serials[i], false);
+            RefreshPartyStatusBar();
+        }
+
+        public void ReceiveRemovePartyMember(PartyRemoveMemberInfo info)
+        {
+            Status = PartyState.Joined;
+            m_PartyMembers.Clear();
+            for (int i = 0; i < info.Count; i++)
+                AddMember(info.Serials[i], false);
+            RefreshPartyStatusBar();
+        }
+
+        public void ReceiveInvitation(PartyInvitationInfo info)
+        {
+            Status = PartyState.Joining;
+            AddMember(info.PartyLeaderSerial, true);
+        }
+
+        public void AddMember(Serial serial, bool isleader)
+        {
             if (serial == m_LeaderSerial)//after refresh list we don't know who is leader
                 isleader = true;
             int index = m_PartyMembers.FindIndex(p => p.Player.Serial == serial);//if already in ?
@@ -43,17 +75,20 @@ namespace UltimaXNA.Ultima.Player.Partying {
                 m_LeaderSerial = serial;
         }
 
-        public PartyMember GetMember(int index) {
+        public PartyMember GetMember(int index)
+        {
             if (index >= 0 && index < m_PartyMembers.Count)
                 return m_PartyMembers[index];
             return null;
         }
 
-        public PartyMember GetMember(Serial serial) {
+        public PartyMember GetMember(Serial serial)
+        {
             return m_PartyMembers.Find(p => p.Player.Serial == serial);
         }
 
-        public void LeaveParty() {
+        public void LeaveParty()
+        {
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_Network.Send(new PartyQuitPacket());
             Status = PartyState.None;
@@ -63,11 +98,13 @@ namespace UltimaXNA.Ultima.Player.Partying {
             m_UserInterface.RemoveControl<PartyHealthTrackerGump>();
         }
 
-        public void PartyStateControl(string text, int hue) {
+        public void PartyStateControl(string text, int hue)
+        {
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
             WorldModel m_world = ServiceRegistry.GetService<WorldModel>();
             PartyCommand PCmd = new PartyCommand(text);//controlling command
-            switch (Status) {
+            switch (Status)
+            {
                 case PartyState.None:
                     if (PCmd.PrimaryCmd == PartyCommandType.Add)//add member
                     {
@@ -95,7 +132,8 @@ namespace UltimaXNA.Ultima.Player.Partying {
                         m_Network.Send(new PartyAcceptPacket(Leader));
                         return;
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Quit) {
+                    else if (PCmd.PrimaryCmd == PartyCommandType.Quit)
+                    {
                         LeaveParty();
                         return;
                     }
@@ -117,28 +155,34 @@ namespace UltimaXNA.Ultima.Player.Partying {
                     {
                         m_Network.Send(new PartyAddMemberPacket());
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Remove && PCmd.SecondaryCmd != "unknowncmd") {
+                    else if (PCmd.PrimaryCmd == PartyCommandType.Remove && PCmd.SecondaryCmd != "unknowncmd")
+                    {
                         int index1 = int.Parse(PCmd.SecondaryCmd);
                         if (GetMember(index1) != null)
                             m_Network.Send(new PartyRemoveMemberPacket(index1));//wrong packet how can send a serial ?
                         else
                             m_world.Interaction.ChatMessage("Wrong party index. please first use '/hlp'.", 3, 10, false);
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.HelpMenu) {
+                    else if (PCmd.PrimaryCmd == PartyCommandType.HelpMenu)
+                    {
                         ShowPartyHelp();
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.List) {
-                        for (int i = 0; i < m_PartyMembers.Count; i++) {
+                    else if (PCmd.PrimaryCmd == PartyCommandType.List)
+                    {
+                        for (int i = 0; i < m_PartyMembers.Count; i++)
+                        {
                             if (m_PartyMembers[i].IsLeader)
                                 m_world.Interaction.ChatMessage(string.Format("[{0}: {1}][LEADER]", i.ToString(), m_PartyMembers[i].Player.Name), 3, 53, true);
                             else
                                 m_world.Interaction.ChatMessage(string.Format("[{0}: {1}]", i.ToString(), m_PartyMembers[i].Player.Name), 3, 55, true);
                         }
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Quit) {
+                    else if (PCmd.PrimaryCmd == PartyCommandType.Quit)
+                    {
                         LeaveParty();
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Loot) {
+                    else if (PCmd.PrimaryCmd == PartyCommandType.Loot)
+                    {
                         if (PCmd.SecondaryCmd == "on")
                             m_Network.Send(new PartyCanLootPacket(true));
                         else if (PCmd.SecondaryCmd == "off")
@@ -146,7 +190,8 @@ namespace UltimaXNA.Ultima.Player.Partying {
                         else
                             m_world.Interaction.ChatMessage("Wrong command. Please use '/loot on' or '/loot off'.", 3, 10, false);
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Public) {
+                    else if (PCmd.PrimaryCmd == PartyCommandType.Public)
+                    {
                         m_Network.Send(new PartyPublicMessagePacket(PCmd.PlayerMessage));
                     }
                     break;
@@ -157,26 +202,31 @@ namespace UltimaXNA.Ultima.Player.Partying {
             }
         }
 
-        public void RefreshPartyStatusBar() {
+        public void RefreshPartyStatusBar()
+        {
             UserInterfaceService m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_UserInterface.RemoveControl<PartyHealthTrackerGump>();
             for (int i = 0; i < List.Count; i++)
                 m_UserInterface.AddControl(new PartyHealthTrackerGump(List[i].Serial), 5, 40 + (48 * i));
 
-            if (m_UserInterface.GetControl<PartyGump>() != null) {
+            if (m_UserInterface.GetControl<PartyGump>() != null)
+            {
                 m_UserInterface.RemoveControl<PartyGump>();
                 m_UserInterface.AddControl(new PartyGump(), 200, 40);
             }
         }
 
-        public void RemoveMember(Serial serial) {
+        public void RemoveMember(Serial serial)
+        {
             int index = m_PartyMembers.FindIndex(p => p.Player.Serial == serial);
-            if (index != -1) {
+            if (index != -1)
+            {
                 m_PartyMembers.RemoveAt(index);
             }
         }
 
-        public void ShowPartyHelp() {
+        public void ShowPartyHelp()
+        {
             WorldModel m_world = ServiceRegistry.GetService<WorldModel>();
             m_world.Interaction.ChatMessage("/add                       - add a new member or create a party", 3, 51, true);
             m_world.Interaction.ChatMessage("/rem {PartyIndex}          - party member who is dispanded from party", 3, 51, true);

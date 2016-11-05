@@ -26,13 +26,13 @@ namespace UltimaXNA.Ultima.Network.Server {
         public const int HouseRevision = 0x1D;
         public const int AOSAbilityIconConfirm = 0x21;
 
-        public readonly short InfoType;
+        public readonly short Subcommand;
         public readonly IGeneralInfo Info;
 
         public GeneralInfoPacket(PacketReader reader)
             : base(0xBF, "General Information") {
-            InfoType = reader.ReadInt16();
-            switch (InfoType) {
+            Subcommand = reader.ReadInt16();
+            switch (Subcommand) {
                 case CloseGump:
                     Info = new CloseGumpInfo(reader);
                     break;
@@ -61,7 +61,7 @@ namespace UltimaXNA.Ultima.Network.Server {
                     // no data, just (bf 00 05 00 21)
                     break;
                 default:
-                    Tracer.Debug($"Unhandled Subcommand {InfoType:X2} in GeneralInfoPacket.");
+                    Tracer.Warn($"Unhandled Subcommand {Subcommand:X2} in GeneralInfoPacket.");
                     break;
             }
         }

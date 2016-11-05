@@ -25,6 +25,7 @@ using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Network.Server.GeneralInfo;
 using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.Player.Partying;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
@@ -836,7 +837,7 @@ namespace UltimaXNA.Ultima.World
                     m_World.Interaction.ChatMessage("[UILD] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Alliance:
-                    m_World.Interaction.ChatMessage(string.Format("[{0}]: {1}", speakerName, text), font, hue, asUnicode);
+                    m_World.Interaction.ChatMessage($"[{speakerName}]: {text}", font, hue, asUnicode);
                     break;
                 case MessageTypes.Command:
                     m_World.Interaction.ChatMessage("[COMMAND] " + text, font, hue, asUnicode);
@@ -1105,7 +1106,7 @@ namespace UltimaXNA.Ultima.World
         {
             // Documented here: http://docs.polserver.com/packets/index.php?Packet=0xBF
             GeneralInfoPacket p = (GeneralInfoPacket)packet;
-            switch (p.InfoType)
+            switch (p.Subcommand)
             {
                 case GeneralInfoPacket.CloseGump:
                     CloseGumpInfo closeGumpInfo = p.Info as CloseGumpInfo;
@@ -1114,10 +1115,25 @@ namespace UltimaXNA.Ultima.World
                     break;
                 case GeneralInfoPacket.Party:
                     PartyInfo partyInfo = p.Info as PartyInfo;
-                    if (partyInfo.partyMessage.Length > 0)
+                    switch (partyInfo.SubsubCommand)
                     {
-                        ReceiveTextMessage(MessageTypes.Alliance, partyInfo.partyMessage, 3,
-                            partyInfo.partyMessageHue, 0xFFFFFFF, partyInfo.partyMessager, true);
+                        case PartyInfo.CommandPartyList:
+                            PlayerState.Partying.ReceivePartyMemberList(partyInfo.Info as PartyMemberListInfo);
+                            break;
+                        case PartyInfo.CommandRemoveMember:
+                            PlayerState.Partying.ReceiveRemovePartyMember(partyInfo.Info as PartyRemoveMemberInfo);
+                            break;
+                        case PartyInfo.CommandPrivateMessage:
+                        case PartyInfo.CommandPublicMessage:
+                            PartyMessageInfo msg = partyInfo.Info as PartyMessageInfo;
+                            PartyMember member = PlayerState.Partying.GetMember((Serial)msg.Source);
+                            // note: msx752 identified hue 50 for "targeted to : " and 34 for "Help me.. I'm stunned !!"
+                            ushort hue = (ushort)(msg.IsPrivate ? 58 : 68);
+                            ReceiveTextMessage(MessageTypes.Alliance, msg.Message, 3, hue, 0xFFFFFFF, member.Player.Name, true);
+                            break;
+                        case PartyInfo.CommandInvitation:
+                            PlayerState.Partying.ReceiveInvitation(partyInfo.Info as PartyInvitationInfo);
+                            break;
                     }
                     break;
                 case GeneralInfoPacket.SetMap:
@@ -1133,10 +1149,12 @@ namespace UltimaXNA.Ultima.World
                     TileMatrixDataPatch.EnableMapDiffs(p.Info as MapDiffInfo);
                     m_World.Map.ReloadStatics();
                     break;
-                case GeneralInfoPacket.ExtendedStats: // Extended stats
+                case GeneralInfoPacket.ExtendedStats:
                     ExtendedStatsInfo extendedStats = p.Info as ExtendedStatsInfo;
                     if (extendedStats.Serial != WorldModel.PlayerSerial)
+                    {
                         Tracer.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
+                    }
                     else
                     {
                         PlayerState.StatLocks.StrengthLock = extendedStats.Locks.Strength;
@@ -1144,11 +1162,11 @@ namespace UltimaXNA.Ultima.World
                         PlayerState.StatLocks.IntelligenceLock = extendedStats.Locks.Intelligence;
                     }
                     break;
-                case GeneralInfoPacket.SpellBookContents: // spellbook data
+                case GeneralInfoPacket.SpellBookContents:
                     SpellbookData spellbook = (p.Info as SpellBookContentsInfo).Spellbook;
                     WorldModel.Entities.GetObject<SpellBook>(spellbook.Serial, true).ReceiveSpellData(spellbook.BookType, spellbook.SpellsBitfield);
                     break;
-                case GeneralInfoPacket.HouseRevision: // House revision state
+                case GeneralInfoPacket.HouseRevision:
                     HouseRevisionInfo houseInfo = p.Info as HouseRevisionInfo;
                     if (CustomHousing.IsHashCurrent(houseInfo.Revision.Serial, houseInfo.Revision.Hash))
                     {
@@ -1174,9 +1192,6 @@ namespace UltimaXNA.Ultima.World
                 case GeneralInfoPacket.AOSAbilityIconConfirm: // (AOS) Ability icon confirm.
                     // no data, just (bf 00 05 21)
                     // What do we do with this???
-                    break;
-                default:
-                    announce_UnhandledPacket(packet, "Subcommand " + p.InfoType);
                     break;
             }
         }

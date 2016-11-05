@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   PartyRemoveMemberInfo.cs
+ *   PartyInvitationInfo.cs
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -12,20 +12,13 @@ using UltimaXNA.Core.Network;
 
 namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
     /// <summary>
-    /// Subcommand 0x06 / 0x03 and 0x06 / 0x02: Remove party member.
+    /// Subcommand 0x06 / 0x07: Invitation to joint a party.
     /// </summary>
-    public class PartyRemoveMemberInfo : IGeneralInfo {
-        public readonly int Count;
-        public readonly int RemovedMember;
-        public readonly int[] Serials;
+    public class PartyInvitationInfo : IGeneralInfo {
+        public readonly int PartyLeaderSerial;
 
-        public PartyRemoveMemberInfo(PacketReader reader) {
-            Count = reader.ReadByte();
-            RemovedMember = reader.ReadInt32();
-            Serials = new int[Count];
-            for (int i = 0; i < Count; i++) {
-                Serials[i] = reader.ReadInt32();
-            }
+        public PartyInvitationInfo(PacketReader reader) {
+            PartyLeaderSerial = reader.ReadInt32();
         }
     }
 }

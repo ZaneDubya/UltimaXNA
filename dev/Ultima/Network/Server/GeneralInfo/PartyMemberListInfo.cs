@@ -11,7 +11,10 @@
 using UltimaXNA.Core.Network;
 
 namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
-    class PartyMemberListInfo : IGeneralInfo {
+    /// <summary>
+    /// Subcommand 0x06 / 0x01: Party menber list.
+    /// </summary>
+    public class PartyMemberListInfo : IGeneralInfo {
         public readonly int Count;
         public readonly int[] Serials;
 
