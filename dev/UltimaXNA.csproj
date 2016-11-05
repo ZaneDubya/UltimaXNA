@@ -147,7 +147,6 @@
     <Compile Include="Ultima\Player\Partying\PartyCommand.cs" />
     <Compile Include="Ultima\Player\Partying\PartyCommandType.cs" />
     <Compile Include="Ultima\Player\Partying\PartyMember.cs" />
-    <Compile Include="Ultima\Player\Partying\PartyState.cs" />
     <Compile Include="Ultima\Player\Partying\PartySystem.cs" />
     <Compile Include="Ultima\Input\Macro.cs" />
     <Compile Include="Ultima\Input\MacroArmDisarm.cs" />

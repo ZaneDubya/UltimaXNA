@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Client.Partying;
 using UltimaXNA.Ultima.Network.Server.GeneralInfo;
+using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
@@ -13,21 +14,17 @@ namespace UltimaXNA.Ultima.Player.Partying
     public class PartySystem
     {
         Serial m_LeaderSerial;
+        Serial m_InvitingPartyLeader;
         List<PartyMember> m_PartyMembers = new List<PartyMember>();
-        PartyState m_State;
         bool m_AllowPartyLoot;
 
-        public Mobile Leader => m_PartyMembers.Find(p => p.IsLeader == true).Mobile;
-        public List<Mobile> List => m_PartyMembers.Select(p => p.Mobile).ToList();
-        public PartyMember Self => m_PartyMembers[SelfIndex];
-        public int SelfIndex => m_PartyMembers.FindIndex(p => p.Mobile == WorldModel.Entities.GetPlayerEntity());
+        public Mobile Leader => m_PartyMembers.Find(p => p.Serial == m_LeaderSerial).Mobile;
+        public List<PartyMember> Members => m_PartyMembers;
 
         public bool AllowPartyLoot
         {
             get
             {
-                if (Status == PartyState.None || Status == PartyState.Joining)
-                    return false;
                 return m_AllowPartyLoot;
             }
             set
@@ -38,57 +35,37 @@ namespace UltimaXNA.Ultima.Player.Partying
             }
         }
 
-        public PartyState Status
-        {
-            set
-            {
-                m_State = value;
-            }
-            get
-            {
-                //is he leader ?? and is he has a party ?
-                if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Mobile == WorldModel.Entities.GetPlayerEntity()) == null)
-                    LeaveParty();
-                else if (m_State == PartyState.Joined && m_PartyMembers.Find(p => p.Mobile == WorldModel.Entities.GetPlayerEntity()).IsLeader)
-                    return PartyState.Leader;//he has full access
-                return m_State;
-            }
-        }
-
         public void ReceivePartyMemberList(PartyMemberListInfo info)
         {
-            Status = PartyState.Joined;
             m_PartyMembers.Clear();
             for (int i = 0; i < info.Count; i++)
-                AddMember(info.Serials[i], false);
+                AddMember(info.Serials[i]);
             RefreshPartyStatusBar();
         }
 
         public void ReceiveRemovePartyMember(PartyRemoveMemberInfo info)
         {
-            Status = PartyState.Joined;
             m_PartyMembers.Clear();
             for (int i = 0; i < info.Count; i++)
-                AddMember(info.Serials[i], false);
+                AddMember(info.Serials[i]);
             RefreshPartyStatusBar();
         }
 
         public void ReceiveInvitation(PartyInvitationInfo info)
         {
-            Status = PartyState.Joining;
-            AddMember(info.PartyLeaderSerial, true);
+            m_InvitingPartyLeader = info.PartyLeaderSerial;
         }
 
-        public void AddMember(Serial serial, bool isleader)
+        public void AddMember(Serial serial)
         {
-            if (serial == m_LeaderSerial)//after refresh list we don't know who is leader
-                isleader = true;
-            int index = m_PartyMembers.FindIndex(p => p.Mobile.Serial == serial);//if already in ?
-            if (index != -1)//remove and add new member (refreshing ?)
+            int index = m_PartyMembers.FindIndex(p => p.Mobile.Serial == serial);
+            if (index != -1)
+            {
                 m_PartyMembers.RemoveAt(index);
-            m_PartyMembers.Add(new PartyMember(serial, isleader));
-            if (isleader)//first add leader
-                m_LeaderSerial = serial;
+            }
+            m_PartyMembers.Add(new PartyMember(serial));
+            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, serial));
         }
 
         public PartyMember GetMember(int index)
@@ -105,13 +82,12 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public void LeaveParty()
         {
-            INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_Network.Send(new PartyLeavePacket());
-            Status = PartyState.None;
+            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            network.Send(new PartyLeavePacket());
             m_PartyMembers.Clear();
-            m_LeaderSerial = 0;
-            UserInterfaceService m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
-            m_UserInterface.RemoveControl<PartyHealthTrackerGump>();
+            m_LeaderSerial = Serial.Null;
+            UserInterfaceService ui = ServiceRegistry.GetService<UserInterfaceService>();
+            ui.RemoveControl<PartyHealthTrackerGump>();
         }
 
         public void PartyStateControl(string text, int hue)
@@ -238,15 +214,19 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public void RefreshPartyStatusBar()
         {
-            UserInterfaceService m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
-            m_UserInterface.RemoveControl<PartyHealthTrackerGump>();
-            for (int i = 0; i < List.Count; i++)
-                m_UserInterface.AddControl(new PartyHealthTrackerGump(List[i].Serial), 5, 40 + (48 * i));
-
-            if (m_UserInterface.GetControl<PartyGump>() != null)
+            UserInterfaceService ui = ServiceRegistry.GetService<UserInterfaceService>();
+            ui.RemoveControl<PartyHealthTrackerGump>();
+            for (int i = 0; i < Members.Count; i++)
             {
-                m_UserInterface.RemoveControl<PartyGump>();
-                m_UserInterface.AddControl(new PartyGump(), 200, 40);
+                ui.AddControl(new PartyHealthTrackerGump(Members[i].Serial), 5, 40 + (48 * i));
+            }
+            Gump gump;
+            if ((gump = ui.GetControl<PartyGump>()) != null)
+            {
+                int x = gump.X;
+                int y = gump.Y;
+                ui.RemoveControl<PartyGump>();
+                ui.AddControl(new PartyGump(), x, y);
             }
         }
 

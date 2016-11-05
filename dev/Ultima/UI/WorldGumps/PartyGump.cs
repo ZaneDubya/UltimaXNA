@@ -1,4 +1,13 @@
-﻿using UltimaXNA.Core.Network;
+﻿/***************************************************************************
+ *   PartyGump.cs
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.Player.Partying;
 using UltimaXNA.Ultima.UI.Controls;
@@ -37,7 +46,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
                 if (!PlayerState.Partying.GetMember(i).IsLeader && PlayerState.Partying.GetMember(PlayerState.Partying.SelfIndex).IsLeader) {
                     AddControl(kickBtn[i] = new Button(this, 35, 70 + lineY, 4017, 4018, ButtonTypes.Activate, PlayerState.Partying.List[i].Serial, ButtonIndexTell + i));// KICK BUTTON
                 }
-                AddControl(new TextLabelAscii(this, 65, 70 + lineY, 2, 1, string.Format("[ {0} ]", i)));
+                AddControl(new TextLabelAscii(this, 65, 70 + lineY, 2, 1, $"[ {i} ]"));
                 if (WorldModel.Entities.GetPlayerEntity().Serial != PlayerState.Partying.List[i].Serial) {
                     AddControl(tellBtn[i] = new Button(this, 100, 70 + lineY, 4029, 4030, ButtonTypes.Activate, PlayerState.Partying.List[i].Serial, ButtonIndexTell + i));// tell BUTTON
                 }
@@ -48,7 +57,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             }
             for (int i = (0 + memberCount); i < 10; i++) {
                 AddControl(kickBtn[i] = new Button(this, 35, 70 + lineY, 4017, 4018, ButtonTypes.Activate, 1, -1));// KICK
-                AddControl(new TextLabelAscii(this, 65, 70 + lineY, 2, 1, string.Format("[ {0} ]", i)));
+                AddControl(new TextLabelAscii(this, 65, 70 + lineY, 2, 1, $"[ {i} ]"));
                 AddControl(tellBtn[i] = new Button(this, 100, 70 + lineY, 4029, 4030, ButtonTypes.Activate, 1, -1));// tell
                 AddControl(new ResizePic(this, 130, 70 + lineY, 3000, 195, 25));
                 AddControl(new TextLabelAscii(this, 205, 72 + lineY, 2, 1, "NONE"));//member name

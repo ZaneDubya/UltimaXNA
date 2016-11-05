@@ -93,7 +93,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             {
                 return;
             }
-            if (PlayerState.Partying.List.Count <= 1)//party bug fixing
+            if (PlayerState.Partying.Members.Count <= 1)
             {
                 PlayerState.Partying.LeaveParty();
                 Dispose();
