@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   PartyAddMemberPacket.cs
+ *   PartyLeavePacket.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -8,14 +8,15 @@
  *
  ***************************************************************************/
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Ultima.World;
 
 namespace UltimaXNA.Ultima.Network.Client.PartySystem {
-    class PartyAddMemberPacket : SendPacket {
-        public PartyAddMemberPacket() 
-            : base(0xbf, "Add Party Member") {
+    public class PartyLeavePacket : SendPacket {
+        public PartyLeavePacket() 
+            : base(0xbf, "Leave Party") {
             Stream.Write((short)6);
-            Stream.Write((byte)1);
-            Stream.Write(0);
+            Stream.Write((byte)2);
+            Stream.Write(WorldModel.Entities.GetPlayerEntity().Serial);
         }
     }
 }

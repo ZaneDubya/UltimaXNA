@@ -315,7 +315,7 @@
     <Compile Include="Ultima\Network\Client\PartySystem\PartyPublicMessagePacket.cs" />
     <Compile Include="Ultima\Network\Client\PartySystem\PartyQueryLocationPacket.cs" />
     <Compile Include="Ultima\Network\Client\PartySystem\PartyQueryStatsPacket.cs" />
-    <Compile Include="Ultima\Network\Client\PartySystem\PartyQuitPacket.cs" />
+    <Compile Include="Ultima\Network\Client\PartySystem\PartyLeavePacket.cs" />
     <Compile Include="Ultima\Network\Client\PartySystem\PartyRemoveMemberPacket.cs" />
     <Compile Include="Ultima\Login\Data\CreateCharacterData.cs" />
     <Compile Include="Ultima\Network\Client\ClientHardwarePacket.cs" />

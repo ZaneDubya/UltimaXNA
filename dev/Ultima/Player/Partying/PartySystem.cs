@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
@@ -90,7 +89,7 @@ namespace UltimaXNA.Ultima.Player.Partying
         public void LeaveParty()
         {
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_Network.Send(new PartyQuitPacket());
+            m_Network.Send(new PartyLeavePacket());
             Status = PartyState.None;
             m_PartyMembers.Clear();
             m_LeaderSerial = 0;
