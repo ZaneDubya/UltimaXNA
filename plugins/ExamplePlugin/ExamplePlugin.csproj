@@ -52,6 +52,7 @@
     <Compile Include="DebugHuesGumpModule.cs" />
     <Compile Include="MapParser.cs" />
     <Compile Include="DebugOutputGumpsModule.cs" />
+    <Compile Include="MapRenderer\MapRendererModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebSafeHueCreator.cs" />
   </ItemGroup>
