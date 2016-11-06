@@ -13,6 +13,7 @@ using System;
 using System.Text.RegularExpressions;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
@@ -184,7 +185,7 @@ namespace UltimaXNA.Ultima.UI
                                 }
                             }
                         }
-                        gump.AddControl(new HtmlGumpling(gump, 
+                        gump.AddControl(new HtmlGumpling(gump,
                             int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[5]), int.Parse(gumpParams[6]),
                             string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshort(ushort.Parse(gumpParams[7])), messageWithArgs)), currentGUMPPage);
@@ -194,11 +195,14 @@ namespace UltimaXNA.Ultima.UI
                     case "tooltip":
                         // Tooltip [cliloc-number]
                         // Adds to the previous layoutarray entry a Tooltip with the in [cliloc-number] defined CliLoc entry.
-                        string cliloc = provider.GetString(int.Parse(gumpPieces[1]));
-                        if (gump.LastControl != null)
-                            gump.LastControl.SetTooltip(cliloc);
-                        else
-                            Tracer.Warn(string.Format("GUMP: No control for gump tooltip: {0}.", gumpParams[1]));
+                        if (Features.TooltipsEnabled)
+                        {
+                            string cliloc = provider.GetString(int.Parse(gumpPieces[1]));
+                            if (gump.LastControl != null)
+                                gump.LastControl.SetTooltip(cliloc);
+                            else
+                                Tracer.Warn(string.Format("GUMP: No control for gump tooltip: {0}.", gumpParams[1]));
+                        }
                         break;
                     case "noresize":
 

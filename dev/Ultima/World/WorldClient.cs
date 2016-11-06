@@ -145,7 +145,6 @@ namespace UltimaXNA.Ultima.World
             network.Register<RecvPacket>(0xC4, "Semivisible", -1, OnSemivisible);
             network.Register<RecvPacket>(0xD2, "Extended 0x20", -1, OnExtended0x20);
             network.Register<RecvPacket>(0xDB, "Character Transfer Log", -1, OnCharacterTransferLog);
-            network.Register<RecvPacket>(0xDC, "SE Introduced Revision", -1, OnToolTipRevision);
             network.Register<RecvPacket>(0xDE, "Update Mobile Status", -1, OnUpdateMobileStatus);
             network.Register<RecvPacket>(0xDF, "Buff/Debuff System", -1, OnBuffDebuff);
             network.Register<RecvPacket>(0xE2, "Mobile status/Animation update", -1, OnMobileStatusAnimationUpdate);
@@ -1075,11 +1074,13 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveToolTipRevision(IRecvPacket packet)
         {
+            if (!Features.TooltipsEnabled)
+                return;
             ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
             AEntity entity = WorldModel.Entities.GetObject<AEntity>(p.Serial, false);
             if (entity == null)
             {
-                // received a tool tip revision for an entity.
+                Tracer.Warn($"Received tooltip for entity {p.Serial} before entity received.");
             }
             else
             {
