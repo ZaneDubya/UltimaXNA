@@ -227,7 +227,7 @@ namespace UltimaXNA.Ultima.World {
             }
             else
             {
-                ChatMessage("[LABEL] " + text, font, hue, asUnicode);
+                ChatMessage(text, font, hue, asUnicode);
             }
         }
 
