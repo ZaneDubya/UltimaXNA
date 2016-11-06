@@ -58,6 +58,9 @@ namespace UltimaXNA.Configuration
             set { SetProperty(ref m_DataDirectory, value); }
         }
 
+        /// <summary>
+        /// When true, allows corner-cutting movement (ala the God client and RunUO administrator-mode movement).
+        /// </summary>
         public bool AllowCornerMovement
         {
             get { return m_AllowCornerMovement; }
