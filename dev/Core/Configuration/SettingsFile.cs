@@ -31,7 +31,7 @@ namespace UltimaXNA.Core.Configuration
             m_SectionCache = new Dictionary<string, ASettingsSection>();
             m_SaveTimer = new Timer
             {
-                Interval = 1000, // save settings every 1 second
+                Interval = 10000, // save settings every 10 seconds
                 AutoReset = true
             };
             m_SaveTimer.Elapsed += OnTimerElapsed;

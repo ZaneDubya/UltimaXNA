@@ -8,6 +8,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
@@ -35,7 +36,7 @@ namespace UltimaXNA.Ultima.World.Maps
         /// <summary>
         /// Unloads all tiles and entities from memory.
         /// </summary>
-        public void Unload()
+        public void Dispose()
         {
             for (int i = 0; i < 64; i++)
             {
@@ -64,7 +65,7 @@ namespace UltimaXNA.Ultima.World.Maps
             Tiles = null;
         }
 
-        public void Load(TileMatrixData tileData, Map map)
+        public void LoadStatics(TileMatrixData tileData, Map map)
         {
             // get data from the tile Matrix
             byte[] groundData = tileData.GetLandChunk(ChunkX, ChunkY);
@@ -95,6 +96,29 @@ namespace UltimaXNA.Ultima.World.Maps
 
                 StaticItem item = new StaticItem(iTileID, hue, i, map);
                 item.Position.Set((int)ChunkX * 8 + iX, (int)ChunkY * 8 + iY, iTileZ);
+            }
+        }
+
+        public void UnloadStatics()
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                if (Tiles[i] != null)
+                {
+                    for (int j = 0; j < Tiles[i].Entities.Count; j++)
+                    {
+                        if (Tiles[i].Entities[j] is Ground || Tiles[i].Entities[j] is StaticItem)
+                        {
+                            int entityCount = Tiles[i].Entities.Count;
+                            Tiles[i].Entities[j].Dispose();
+                            if (entityCount == Tiles[i].Entities.Count)
+                            {
+                                Tiles[i].Entities.RemoveAt(j);
+                            }
+                            j--; // entity will dispose, removing it from collection.
+                        }
+                    }
+                }
             }
         }
     }

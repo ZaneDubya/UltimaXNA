@@ -100,12 +100,6 @@ namespace UltimaXNA.Ultima.World
                 m_Cursor = value;
             }
         }
-
-        public int MapCount
-        {
-            get;
-            set;
-        }
         
         public Map Map
         {

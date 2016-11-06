@@ -230,7 +230,7 @@ namespace UltimaXNA.Core.UI
             for (int i = 0; i < m_Controls.Count; i++)
             {
                 AControl c = m_Controls[i];
-                if (!c.IsInitialized)
+                if (!c.IsInitialized && !c.IsDisposed)
                     c.Initialize();
                 c.Update(totalMS, frameMS);
             }
@@ -640,7 +640,7 @@ namespace UltimaXNA.Core.UI
                 position.X = -8;
             if (position.Y < -8)
                 position.Y = -8;
-            if (position.Y >= Width + 8)
+            if (position.X >= Width + 8)
                 position.X = Width + 8;
             if (position.Y >= Height + 8)
                 position.Y = Height + 8;

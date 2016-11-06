@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.Network.Client
             int triggerCount; int[] triggers;
             SpeechData.GetSpeechTriggers(text, lang, out triggerCount, out triggers);
             if (triggerCount > 0)
-                type = (MessageTypes)(type | MessageTypes.EncodedTriggers);
+                type = type | MessageTypes.EncodedTriggers;
 
             Stream.Write((byte)type);
             Stream.Write((short)hue);

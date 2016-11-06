@@ -11,7 +11,7 @@
 #region usings
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Ultima.Login.Servers;
+using UltimaXNA.Ultima.Login.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server
@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.Network.Server
 
             for (ushort i = 0; i < count; i++)
             {
-                m_servers[i] = new ServerListEntry(reader); ;
+                m_servers[i] = new ServerListEntry(reader);
             }
         }
     }

@@ -30,13 +30,15 @@ namespace UltimaXNA.Configuration
         private bool m_AlwaysRun;
         private bool m_MenuBarDisabled;
 
-        private int m_SpeechColor;
-        private int m_EmoteColor;
-        private int m_PartyMsgColor;
-        private int m_GuildMsgColor;
+        private int m_SpeechColor = 4 * Utility.RandomValue(0, 99) * 5;
+        private int m_EmoteColor = 646;
+        private int m_PartyMsgPrivateColor = 58;
+        private int m_PartyMsgColor = 68;
+        private int m_GuildMsgColor = 70;
         private bool m_IgnoreGuildMsg;
-        private int m_AllianceMsgColor;
+        private int m_AllianceMsgColor = 487;
         private bool m_IgnoreAllianceMsg;
+        private bool m_CrimeQuery;
 
         public UserInterfaceSettings()
         {
@@ -48,6 +50,7 @@ namespace UltimaXNA.Configuration
             Mouse = new MouseProperty();
             AlwaysRun = false;
             MenuBarDisabled = false;
+            CrimeQuery = true;
         }
 
         public bool IsMaximized
@@ -120,6 +123,12 @@ namespace UltimaXNA.Configuration
             set { SetProperty(ref m_EmoteColor, Clamp(value, 0, HueData.HueCount - 1)); }
         }
 
+        public int PartyPrivateMsgColor
+        {
+            get { return m_PartyMsgPrivateColor; }
+            set { SetProperty(ref m_PartyMsgPrivateColor, Clamp(value, 0, HueData.HueCount - 1)); }
+        }
+
         public int PartyMsgColor
         {
             get { return m_PartyMsgColor; }
@@ -148,6 +157,12 @@ namespace UltimaXNA.Configuration
         {
             get { return m_IgnoreAllianceMsg; }
             set { SetProperty(ref m_IgnoreAllianceMsg, value); }
+        }
+
+        public bool CrimeQuery
+        {
+            get { return m_CrimeQuery; }
+            set { SetProperty(ref m_CrimeQuery, value); }
         }
     }
 }
