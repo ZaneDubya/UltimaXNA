@@ -640,7 +640,7 @@ namespace UltimaXNA.Core.UI
                 position.X = -8;
             if (position.Y < -8)
                 position.Y = -8;
-            if (position.Y >= Width + 8)
+            if (position.X >= Width + 8)
                 position.X = Width + 8;
             if (position.Y >= Height + 8)
                 position.Y = Height + 8;
