@@ -59,7 +59,6 @@ namespace UltimaXNA.Ultima.World {
         {
             MessageTypes speechType = MessageTypes.Normal;
             int hue = 0;
-
             switch (mode)
             {
                 case ChatMode.Default:
@@ -75,8 +74,6 @@ namespace UltimaXNA.Ultima.World {
                     hue = Settings.UserInterface.EmoteColor;
                     break;
                 case ChatMode.Party:
-                    speechType = MessageTypes.Alliance;
-                    hue = Settings.UserInterface.PartyMsgColor;
                     PlayerState.Partying.DoPartyCommand(text);
                     return;
                 case ChatMode.Guild:

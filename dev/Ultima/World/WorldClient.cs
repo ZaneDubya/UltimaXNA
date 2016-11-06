@@ -834,13 +834,16 @@ namespace UltimaXNA.Ultima.World
                     m_World.Interaction.ChatMessage("[SPELL] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Guild:
-                    m_World.Interaction.ChatMessage("[UILD] " + text, font, hue, asUnicode);
+                    m_World.Interaction.ChatMessage($"[GUILD] {speakerName}: {text}", font, hue, asUnicode);
                     break;
                 case MessageTypes.Alliance:
-                    m_World.Interaction.ChatMessage($"[{speakerName}]: {text}", font, hue, asUnicode);
+                    m_World.Interaction.ChatMessage($"[ALLIANCE] {speakerName}: {text}", font, hue, asUnicode);
                     break;
                 case MessageTypes.Command:
                     m_World.Interaction.ChatMessage("[COMMAND] " + text, font, hue, asUnicode);
+                    break;
+                case MessageTypes.PartyDisplayOnly:
+                    m_World.Interaction.ChatMessage($"[PARTY] {speakerName}: {text}", font, hue, asUnicode);
                     break;
                 case MessageTypes.Information:
                     m_World.Interaction.CreateLabel(msgType, serial, text, font, hue, asUnicode);
@@ -1129,7 +1132,7 @@ namespace UltimaXNA.Ultima.World
                             PartyMember member = PlayerState.Partying.GetMember((Serial)msg.Source);
                             // note: msx752 identified hue 50 for "targeted to : " and 34 for "Help me.. I'm stunned !!"
                             ushort hue = (ushort)(msg.IsPrivate ? 58 : 68);
-                            ReceiveTextMessage(MessageTypes.Alliance, msg.Message, 3, hue, 0xFFFFFFF, member.Mobile.Name, true);
+                            ReceiveTextMessage(MessageTypes.PartyDisplayOnly, msg.Message, 3, hue, 0xFFFFFFF, member.Mobile.Name, true);
                             break;
                         case PartyInfo.CommandInvitation:
                             PlayerState.Partying.ReceiveInvitation(partyInfo.Info as PartyInvitationInfo);
