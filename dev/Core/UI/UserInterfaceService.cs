@@ -230,7 +230,7 @@ namespace UltimaXNA.Core.UI
             for (int i = 0; i < m_Controls.Count; i++)
             {
                 AControl c = m_Controls[i];
-                if (!c.IsInitialized)
+                if (!c.IsInitialized && !c.IsDisposed)
                     c.Initialize();
                 c.Update(totalMS, frameMS);
             }
