@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
@@ -26,7 +27,7 @@ namespace UltimaXNA.Ultima.World.Managers
         private List<QueuedWornItem> m_QueuedWornItems = new List<QueuedWornItem>();
         private Dictionary<int, AEntity> m_Entities = new Dictionary<int, AEntity>();
         private List<AEntity> m_Entities_Queued = new List<AEntity>();
-
+        private List<Serial> m_RetainedPlayerEntities = new List<Serial>();
         private bool m_EntitiesCollectionIsLocked = false;
         private List<int> m_SerialsToRemove = new List<int>();
 
@@ -38,26 +39,51 @@ namespace UltimaXNA.Ultima.World.Managers
         public void Reset(bool clearPlayerEntity = false)
         {
             m_QueuedWornItems.Clear();
-
-            if (clearPlayerEntity)
+            m_RetainedPlayerEntities.Clear();
+            if (!clearPlayerEntity)
             {
-                m_Entities.Clear();
-                foreach (AEntity entity in m_Entities.Values)
+                Mobile player = GetPlayerEntity();
+                if (player != null)
                 {
-                    entity.Dispose();
+                    RetainPlayerEntities(player, m_RetainedPlayerEntities);
                 }
             }
-            else
+            foreach (AEntity e in m_Entities.Values)
             {
-                foreach (AEntity entity in m_Entities.Values)
+                if (!m_RetainedPlayerEntities.Contains(e.Serial))
+                    e.Dispose();
+            }
+        }
+
+        void RetainPlayerEntities(Mobile player, List<Serial> retained)
+        {
+            retained.Add(player.Serial);
+            for (int i = (int)EquipLayer.FirstValid; i <= (int)EquipLayer.LastUserValid; i++)
+            {
+                AEntity e = player.Equipment[i];
+                if (e != null && !e.IsDisposed)
                 {
-                    if (!entity.IsClientEntity)
-                        entity.Dispose();
+                    retained.Add(e.Serial);
+                    if (e is Container)
+                    {
+                        RecursiveRetainPlayerEntities(e as Container, retained);
+                    }
                 }
-                AEntity player = GetPlayerEntity();
-                m_Entities.Clear();
-                if (player != null)
-                    m_Entities.Add(player.Serial, player);
+            }
+        }
+
+        void RecursiveRetainPlayerEntities(Container container, List<Serial> retained)
+        {
+            foreach (AEntity e in container.Contents)
+            {
+                if (e != null && !e.IsDisposed)
+                {
+                    retained.Add(e.Serial);
+                    if (e is Container)
+                    {
+                        RecursiveRetainPlayerEntities(e as Container, retained);
+                    }
+                }
             }
         }
 

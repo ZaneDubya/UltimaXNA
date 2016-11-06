@@ -306,7 +306,7 @@ namespace UltimaXNA.Ultima.World
             foreach (ItemInContainer i in p.Items)
             {
                 // Add the item...
-                Item item = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
+                Item item = AddItem(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
                 item.InContainerPosition = new Point(i.X, i.Y);
                 // ... and add it the container contents of the container.
                 Container container = WorldModel.Entities.GetObject<Container>(i.ContainerSerial, true);
@@ -320,7 +320,7 @@ namespace UltimaXNA.Ultima.World
             AddSingleItemToContainerPacket p = (AddSingleItemToContainerPacket)packet;
 
             // Add the item...
-            Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
+            Item item = AddItem(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
             item.InContainerPosition = new Point(p.X, p.Y);
             // ... and add it the container contents of the container.
             AEntity container = WorldModel.Entities.GetObject<AEntity>(p.ContainerSerial, false);
@@ -329,7 +329,7 @@ namespace UltimaXNA.Ultima.World
                 // shouldn't we already have the container? Throw an error?
                 Tracer.Warn("SingleItemToContainer packet arrived before container entity created.");
             }
-            if (container is Container) // place in container
+            if (container is Container)
             {
                 (container as Container).AddItem(item);
             }
@@ -339,7 +339,7 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        Item add_Item(Serial serial, int itemID, int nHue, Serial parentSerial, int amount)
+        Item AddItem(Serial serial, int itemID, int nHue, Serial parentSerial, int amount)
         {
             Item item;
             if (itemID == 0x2006)
@@ -414,7 +414,7 @@ namespace UltimaXNA.Ultima.World
             // If the iItemID >= 0x4000, then this is a multiobject.
             if (p.ItemID <= 0x4000)
             {
-                Item item = add_Item(p.Serial, p.ItemID, p.Hue, 0, p.Amount);
+                Item item = AddItem(p.Serial, p.ItemID, p.Hue, 0, p.Amount);
                 item.Position.Set(p.X, p.Y, p.Z);
             }
             else
@@ -429,7 +429,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveWornItem(IRecvPacket packet)
         {
             WornItemPacket p = (WornItemPacket)packet;
-            Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ParentSerial, 0);
+            Item item = AddItem(p.Serial, p.ItemId, p.Hue, p.ParentSerial, 0);
             WorldModel.Entities.AddWornItem(item, p.Layer, p.ParentSerial);
             if (item.PropertyList.Hash == 0)
                 m_Network.Send(new QueryPropertiesPacket(item.Serial));
@@ -454,7 +454,7 @@ namespace UltimaXNA.Ultima.World
 
             for (int i = 0; i < p.Equipment.Length; i++)
             {
-                Item item = add_Item(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, p.Serial, 0);
+                Item item = AddItem(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, p.Serial, 0);
                 mobile.WearItem(item, p.Equipment[i].Layer);
                 if (item.PropertyList.Hash == 0)
                     m_Network.Send(new QueryPropertiesPacket(item.Serial));
@@ -961,7 +961,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveNewSubserver(IRecvPacket packet)
         {
             SubServerPacket p = (SubServerPacket)packet;
-            announce_UnhandledPacket(packet);
+            // this packet does not matter on modern server software that handles an entire shard on one server.
         }
 
         void ReceiveObjectHelpResponse(IRecvPacket packet)
