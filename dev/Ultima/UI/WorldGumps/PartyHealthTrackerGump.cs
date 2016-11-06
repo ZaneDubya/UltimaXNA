@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   PartyHealthTrackerGump.cs
- *   Copyright (c) 2015 UltimaXNA Development Team
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -10,7 +9,6 @@
  ***************************************************************************/
 
 using UltimaXNA.Core.Input;
-using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI.Controls;
@@ -18,13 +16,10 @@ using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.UI.WorldGumps {
-    internal class PartyHealthTrackerGump : Gump
+    class PartyHealthTrackerGump : Gump
     {
         Button btnPrivateMsg;
-
         GumpPic[] m_BarBGs;
-
-        //private ResizePic m_Background;
         GumpPicWithWidth[] m_Bars;
 
         public PartyHealthTrackerGump(Serial serial)
@@ -39,8 +34,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             Mobile = WorldModel.Entities.GetObject<Mobile>(serial, false);
             if (Mobile == null)
             {
-                Dispose();
                 PlayerState.Partying.RemoveMember(serial);
+                Dispose();
                 return;
             }
             //AddControl(m_Background = new ResizePic(this, 0, 0, 3000, 131, 48));//I need opacity %1 background
@@ -101,8 +96,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             }
             m_Bars[0].PercentWidthDrawn = ((float)Mobile.Health.Current / Mobile.Health.Max);
 
-            ///I couldn't find correct visual
-
+            // I couldn't find correct visual
             //if (Mobile.Flags.IsBlessed)
             //    m_Bars[0].GumpID = 0x0809;
             //else if (Mobile.Flags.IsPoisoned)

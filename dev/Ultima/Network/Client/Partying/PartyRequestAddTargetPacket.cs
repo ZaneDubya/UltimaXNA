@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   PartyAddMemberPacket.cs
+ *   PartyRequestAddTargetPacket.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -10,8 +10,8 @@
 using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Client.Partying {
-    class PartyAddMemberPacket : SendPacket {
-        public PartyAddMemberPacket() 
+    class PartyRequestAddTargetPacket : SendPacket {
+        public PartyRequestAddTargetPacket() 
             : base(0xbf, "Add Party Member") {
             Stream.Write((short)6);
             Stream.Write((byte)1);

@@ -154,9 +154,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 Mode = ChatMode.Default;
             }
 
-            // if in default, only switch mode if there is a single command char (;, :, etc) followed by any other char.
-            // in not in default, only switch mode if the single command char is the only char entered.
-            if ((Mode == ChatMode.Default && m_TextEntry.Text.Length == 2) ||
+            // only switch mode if the single command char is the only char entered.
+            if ((Mode == ChatMode.Default && m_TextEntry.Text.Length == 1) ||
                 (Mode != ChatMode.Default && m_TextEntry.Text.Length == 1))
             {
                 switch (m_TextEntry.Text[0])

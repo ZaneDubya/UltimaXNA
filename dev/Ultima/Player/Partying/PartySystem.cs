@@ -1,4 +1,15 @@
-﻿using System.Collections.Generic;
+﻿/***************************************************************************
+ *   PartySystem.cs
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+
+using System.Collections.Generic;
+using System.Linq;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Network.Client;
@@ -7,7 +18,6 @@ using UltimaXNA.Ultima.Network.Server.GeneralInfo;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.Player.Partying
 {
@@ -18,8 +28,9 @@ namespace UltimaXNA.Ultima.Player.Partying
         List<PartyMember> m_PartyMembers = new List<PartyMember>();
         bool m_AllowPartyLoot;
 
-        public Mobile Leader => m_PartyMembers.Find(p => p.Serial == m_LeaderSerial).Mobile;
+        public Serial LeaderSerial => m_LeaderSerial;
         public List<PartyMember> Members => m_PartyMembers;
+        public bool InParty => m_PartyMembers.Count > 1;
 
         public bool AllowPartyLoot
         {
@@ -40,7 +51,7 @@ namespace UltimaXNA.Ultima.Player.Partying
             m_PartyMembers.Clear();
             for (int i = 0; i < info.Count; i++)
                 AddMember(info.Serials[i]);
-            RefreshPartyStatusBar();
+            RefreshPartyGumps();
         }
 
         public void ReceiveRemovePartyMember(PartyRemoveMemberInfo info)
@@ -48,7 +59,7 @@ namespace UltimaXNA.Ultima.Player.Partying
             m_PartyMembers.Clear();
             for (int i = 0; i < info.Count; i++)
                 AddMember(info.Serials[i]);
-            RefreshPartyStatusBar();
+            RefreshPartyGumps();
         }
 
         public void ReceiveInvitation(PartyInvitationInfo info)
@@ -90,107 +101,75 @@ namespace UltimaXNA.Ultima.Player.Partying
             ui.RemoveControl<PartyHealthTrackerGump>();
         }
 
-        public void PartyStateControl(string text, int hue)
+        public void DoPartyCommand(string text)
         {
-            INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
-            WorldModel m_world = ServiceRegistry.GetService<WorldModel>();
-            PartyCommand PCmd = new PartyCommand(text);//controlling command
-            switch (Status)
+            // I do this a little differently than the legacy client. With legacy, if you type "/add this other player,
+            // please ?" the client will detect the first word is "add" and request an add player target. Instead, I
+            // interpret this as a message, and send the message "add this other player, please?" as a party message.
+            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            WorldModel world = ServiceRegistry.GetService<WorldModel>();
+            string command = text.ToLower();
+            bool playerInParty = PlayerState.Partying.Members.Count > 1;
+            bool playerIsLeader = PlayerState.Partying.LeaderSerial == WorldModel.PlayerSerial;
+            bool commandHandled = false;
+            switch (command)
             {
-                case PartyState.None:
-                    if (PCmd.PrimaryCmd == PartyCommandType.Add)//add member
-                    {
-                        Status = PartyState.Joining;
-                        AddMember(WorldModel.Entities.GetPlayerEntity().Serial, true);
-                        m_Network.Send(new PartyAddMemberPacket());
-                    }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.HelpMenu)
-                        ShowPartyHelp();
-                    else
-                        m_world.Interaction.ChatMessage("Wrong command you don't have a party. Please use /hlp", 3, 10, false);
+                case "help":
+                    ShowPartyHelp();
+                    commandHandled = true;
                     break;
-
-                case PartyState.Joining:
-                    if (PCmd.PrimaryCmd == PartyCommandType.Add)//add member
+                case "add":
+                    if (!playerInParty)
                     {
-                        LeaveParty();
-                        Status = PartyState.Joining;
-                        AddMember(WorldModel.Entities.GetPlayerEntity().Serial, true);
-                        m_Network.Send(new PartyAddMemberPacket());
-                        return;
+                        world.Interaction.ChatMessage("Who would you like to add to your party?", 3, 10, false);
+                        m_LeaderSerial = WorldModel.PlayerSerial;
+                        network.Send(new PartyRequestAddTargetPacket());
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Accept && Leader != WorldModel.Entities.GetPlayerEntity())//accept party
+                    else if (playerInParty && playerIsLeader)
                     {
-                        m_Network.Send(new PartyAcceptPacket(Leader));
-                        return;
+                        world.Interaction.ChatMessage("Who would you like to add to your party?", 3, 10, false);
+                        network.Send(new PartyRequestAddTargetPacket());
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Quit)
+                    else if (playerInParty && !playerIsLeader)
                     {
-                        LeaveParty();
-                        return;
+                        world.Interaction.ChatMessage("You may only add members to the party if you are the leader.", 3, 10, false);
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Decline && Leader != WorldModel.Entities.GetPlayerEntity())//decline decline party
-                    {
-                        m_Network.Send(new PartyDeclinePacket(Leader));
-                        return;
-                    }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.HelpMenu)
-                        ShowPartyHelp();
-                    else
-                        LeaveParty();
-                    m_world.Interaction.ChatMessage("Wrong command. You can use '/accept' or '/decline'.", 3, 10, false);
+                    commandHandled = true;
                     break;
-
-                case PartyState.Leader:
-                case PartyState.Joined:
-                    if (PCmd.PrimaryCmd == PartyCommandType.Add && Leader == WorldModel.Entities.GetPlayerEntity()) //he is party leader
+                case "rem":
+                case "remove":
+                    if (playerInParty && playerIsLeader)
                     {
-                        m_Network.Send(new PartyAddMemberPacket());
+                        world.Interaction.ChatMessage("Who would you like to remove from your party?", 3, 10, false);
+                        network.Send(new PartyRequestRemoveTargetPacket());
                     }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Remove && PCmd.SecondaryCmd != "unknowncmd")
-                    {
-                        int index1 = int.Parse(PCmd.SecondaryCmd);
-                        if (GetMember(index1) != null)
-                            m_Network.Send(new PartyRemoveMemberPacket(index1));//wrong packet how can send a serial ?
-                        else
-                            m_world.Interaction.ChatMessage("Wrong party index. please first use '/hlp'.", 3, 10, false);
-                    }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.HelpMenu)
-                    {
-                        ShowPartyHelp();
-                    }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.List)
-                    {
-                        for (int i = 0; i < m_PartyMembers.Count; i++)
-                        {
-                            if (m_PartyMembers[i].IsLeader)
-                                m_world.Interaction.ChatMessage(string.Format("[{0}: {1}][LEADER]", i.ToString(), m_PartyMembers[i].Mobile.Name), 3, 53, true);
-                            else
-                                m_world.Interaction.ChatMessage(string.Format("[{0}: {1}]", i.ToString(), m_PartyMembers[i].Mobile.Name), 3, 55, true);
-                        }
-                    }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Quit)
-                    {
-                        LeaveParty();
-                    }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Loot)
-                    {
-                        if (PCmd.SecondaryCmd == "on")
-                            AllowPartyLoot = true;
-                        else if (PCmd.SecondaryCmd == "off")
-                            AllowPartyLoot = false;
-                        else
-                            m_world.Interaction.ChatMessage("Wrong command. Please use '/loot on' or '/loot off'.", 3, 10, false);
-                    }
-                    else if (PCmd.PrimaryCmd == PartyCommandType.Public)
-                    {
-                        m_Network.Send(new PartyPublicMessagePacket(PCmd.PlayerMessage));
-                    }
+                    commandHandled = true;
                     break;
-
-                default:
-                    m_world.Interaction.ChatMessage("PARTY SYSTEM ERROR !!!", 3, 30, false);
+                case "accept":
+                    if (!playerInParty && m_InvitingPartyLeader.IsValid)
+                    {
+                        network.Send(new PartyAcceptPacket(m_InvitingPartyLeader));
+                        m_LeaderSerial = m_InvitingPartyLeader;
+                        m_InvitingPartyLeader = Serial.Null;
+                    }
+                    commandHandled = true;
                     break;
+                case "decline":
+                    if (!playerInParty && m_InvitingPartyLeader.IsValid)
+                    {
+                        network.Send(new PartyDeclinePacket(m_InvitingPartyLeader));
+                        m_InvitingPartyLeader = Serial.Null;
+                    }
+                    commandHandled = true;
+                    break;
+                case "quit":
+                    LeaveParty();
+                    commandHandled = true;
+                    break;
+            }
+            if (!commandHandled)
+            {
+                network.Send(new PartyPublicMessagePacket(text));
             }
         }
 
@@ -203,7 +182,7 @@ namespace UltimaXNA.Ultima.Player.Partying
         internal void RequestAddPartyMemberTarget()
         {
             INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
-            network.Send(new PartyAddMemberPacket());
+            network.Send(new PartyRequestAddTargetPacket());
         }
 
         internal void SendTell(Serial serial)
@@ -212,7 +191,7 @@ namespace UltimaXNA.Ultima.Player.Partying
             network.Send(new PartyPrivateMessagePacket(serial, "make a dynamic message type"));//need improve
         }
 
-        public void RefreshPartyStatusBar()
+        public void RefreshPartyGumps()
         {
             UserInterfaceService ui = ServiceRegistry.GetService<UserInterfaceService>();
             ui.RemoveControl<PartyHealthTrackerGump>();
@@ -244,14 +223,11 @@ namespace UltimaXNA.Ultima.Player.Partying
         public void ShowPartyHelp()
         {
             WorldModel m_world = ServiceRegistry.GetService<WorldModel>();
-            m_world.Interaction.ChatMessage("/add                       - add a new member or create a party", 3, 51, true);
-            m_world.Interaction.ChatMessage("/rem {PartyIndex}          - party member who is dispanded from party", 3, 51, true);
-            m_world.Interaction.ChatMessage("/accept                    - joining a party", 3, 51, true);
-            m_world.Interaction.ChatMessage("/decline                   - rejecting a party", 3, 51, true);
-            m_world.Interaction.ChatMessage("/list                      - party member list", 3, 51, true);
-            m_world.Interaction.ChatMessage("/loot {on/off}             - party members can loot to you", 3, 51, true);
-            m_world.Interaction.ChatMessage("/{message}                 - public party message", 3, 51, true);
-            //m_world.Interaction.ChatMessage("/trg                       - mark an enemy (leader command)", 3, 51, true);//new
+            m_world.Interaction.ChatMessage("/add       - add a new member or create a party", 3, 51, true);
+            m_world.Interaction.ChatMessage("/rem       - kick a member from your party", 3, 51, true);
+            m_world.Interaction.ChatMessage("/accept    - join a party", 3, 51, true);
+            m_world.Interaction.ChatMessage("/decline   - decline a party invitation", 3, 51, true);
+            m_world.Interaction.ChatMessage("/quit      - leave your current party", 3, 51, true);
         }
     }
 }

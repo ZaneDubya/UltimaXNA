@@ -131,6 +131,7 @@
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
     <Compile Include="Ultima\Network\Client\Extensions\GuildLocationQueryPacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyRemoveMemberPacket.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\CloseGumpInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\ContextMenuInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\ExtendedStatsInfo.cs" />
@@ -144,8 +145,6 @@
     <Compile Include="Ultima\Network\Server\GeneralInfo\PartyMessageInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\PartyRemoveMemberInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\SpellBookContentsInfo.cs" />
-    <Compile Include="Ultima\Player\Partying\PartyCommand.cs" />
-    <Compile Include="Ultima\Player\Partying\PartyCommandType.cs" />
     <Compile Include="Ultima\Player\Partying\PartyMember.cs" />
     <Compile Include="Ultima\Player\Partying\PartySystem.cs" />
     <Compile Include="Ultima\Input\Macro.cs" />
@@ -308,14 +307,14 @@
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
     <Compile Include="Ultima\Data\ClientVersion.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyAcceptPacket.cs" />
-    <Compile Include="Ultima\Network\Client\Partying\PartyAddMemberPacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyRequestAddTargetPacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyLootEnablePacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyDeclinePacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyPrivateMessagePacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyPublicMessagePacket.cs" />
     <Compile Include="Ultima\Network\Client\Extensions\PartyLocationQueryPacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyLeavePacket.cs" />
-    <Compile Include="Ultima\Network\Client\Partying\PartyRemoveMemberPacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyRequestRemoveTargetPacket.cs" />
     <Compile Include="Ultima\Login\Data\CreateCharacterData.cs" />
     <Compile Include="Ultima\Network\Client\ClientHardwarePacket.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />

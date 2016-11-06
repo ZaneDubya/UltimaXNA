@@ -7,14 +7,14 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.Player.Partying;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 
-namespace UltimaXNA.Ultima.UI.WorldGumps {
+namespace UltimaXNA.Ultima.UI.WorldGumps
+{
     public class PartyGump : Gump {
+        const int ButtonIndexLoot = 0;
         const int ButtonIndexLeave = 1;
         const int ButtonIndexAdd = 2;
         const int ButtonIndexSetTarget = 3;
@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
 
         public PartyGump()
             : base(0, 0) {
-            if (PlayerState.Partying.List.Count == 1) {
+            if (PlayerState.Partying.Members.Count == 1) {
                 PlayerState.Partying.LeaveParty();
             }
             IsMoveable = true;
@@ -39,19 +39,19 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             AddControl(new TextLabelAscii(this, 160, 45, 2, 112, "Member Name"));
             int lineY = 0;
             int memberCount = 0;
-            for (int i = 0; i < PlayerState.Partying.List.Count; i++) {
-                if (PlayerState.Partying.Status == PartyState.None || PlayerState.Partying.Status == PartyState.Joining) {
-                    break;
-                }
-                if (!PlayerState.Partying.GetMember(i).IsLeader && PlayerState.Partying.GetMember(PlayerState.Partying.SelfIndex).IsLeader) {
-                    AddControl(kickBtn[i] = new Button(this, 35, 70 + lineY, 4017, 4018, ButtonTypes.Activate, PlayerState.Partying.List[i].Serial, ButtonIndexTell + i));// KICK BUTTON
+            bool playerIsLeader = PlayerState.Partying.LeaderSerial == WorldModel.PlayerSerial;
+            bool playerInParty = PlayerState.Partying.Members.Count > 1;
+            for (int i = 0; i < PlayerState.Partying.Members.Count; i++) {
+                bool memberIsPlayer = PlayerState.Partying.GetMember(i).Serial == WorldModel.PlayerSerial;
+                if (playerIsLeader && !memberIsPlayer) {
+                    AddControl(kickBtn[i] = new Button(this, 35, 70 + lineY, 4017, 4018, ButtonTypes.Activate, PlayerState.Partying.Members[i].Serial, ButtonIndexTell + i));// KICK BUTTON
                 }
                 AddControl(new TextLabelAscii(this, 65, 70 + lineY, 2, 1, $"[ {i} ]"));
-                if (WorldModel.Entities.GetPlayerEntity().Serial != PlayerState.Partying.List[i].Serial) {
-                    AddControl(tellBtn[i] = new Button(this, 100, 70 + lineY, 4029, 4030, ButtonTypes.Activate, PlayerState.Partying.List[i].Serial, ButtonIndexTell + i));// tell BUTTON
+                if (!memberIsPlayer) {
+                    AddControl(tellBtn[i] = new Button(this, 100, 70 + lineY, 4029, 4030, ButtonTypes.Activate, PlayerState.Partying.Members[i].Serial, ButtonIndexTell + i));// tell BUTTON
                 }
                 AddControl(new ResizePic(this, 130, 70 + lineY, 3000, 195, 25));
-                AddControl(new TextLabelAscii(this, 135, 72 + lineY, 2, 98, PlayerState.Partying.List[i].Name));//member name
+                AddControl(new TextLabelAscii(this, 135, 72 + lineY, 2, 98, PlayerState.Partying.Members[i].Mobile.Name));//member name
                 lineY += 30;
                 memberCount++;
             }
@@ -67,27 +67,24 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             int gumpID2 = PlayerState.Partying.AllowPartyLoot ? 4008 : 4002;
             string txtLootStatus = PlayerState.Partying.AllowPartyLoot ? "Party CAN loot me" :" Party CANNOT loot me";
             AddControl(txtLoot = new TextLabelAscii(this, 100, 75 + lineY, 2, 1, txtLootStatus));
-            if (PlayerState.Partying.Status != PartyState.None) {
-                AddControl(btnLoot = new Button(this, 65, 75 + lineY, gumpID1, gumpID2, ButtonTypes.Activate, 0, 0));// loot BUTTON
+            if (PlayerState.Partying.InParty) {
+                AddControl(btnLoot = new Button(this, 65, 75 + lineY, gumpID1, gumpID2, ButtonTypes.Activate, ButtonIndexLoot, 0));
             }
             lineY += 25;
-            string txtLeave = (PlayerState.Partying.Status == PartyState.Leader) ? "Disband the party" : "Leave the party";
+            string txtLeave = (playerIsLeader) ? "Disband the party" : "Leave the party";
             AddControl(new TextLabelAscii(this, 100, 75 + lineY, 2, 1, txtLeave));
-            if (PlayerState.Partying.Status != PartyState.None) {
-                AddControl(new Button(this, 65, 75 + lineY, 4017, 4018, ButtonTypes.Activate, 0, ButtonIndexLeave));// leave BUTTON
+            if (playerInParty) {
+                AddControl(new Button(this, 65, 75 + lineY, 4017, 4018, ButtonTypes.Activate, 0, ButtonIndexLeave));
             }
             lineY += 25;
             AddControl(new TextLabelAscii(this, 100, 75 + lineY, 2, 1, "Add new member"));
-            if (PlayerState.Partying.Status != PartyState.Joined) {
-                AddControl(new Button(this, 65, 75 + lineY, 4005, 4006, ButtonTypes.Activate, 0, ButtonIndexAdd));// add BUTTON
+            if (playerInParty) {
+                AddControl(new Button(this, 65, 75 + lineY, 4005, 4006, ButtonTypes.Activate, 0, ButtonIndexAdd));
             }
             lineY += 25;
             AddControl(new TextLabelAscii(this, 100, 75 + lineY, 2, 1, "Mark an enemy"));
-            if (PlayerState.Partying.Status == PartyState.Leader) {
-                AddControl(new Button(this, 65, 75 + lineY, 4005, 4006, ButtonTypes.Activate, 0, ButtonIndexSetTarget));// set a target BUTTON
-            }
-            if (PlayerState.Partying.Status == PartyState.Joined || PlayerState.Partying.Status == PartyState.Leader) {
-                PlayerState.Partying.RefreshPartyStatusBar();
+            if (playerIsLeader) {
+                AddControl(new Button(this, 65, 75 + lineY, 4005, 4006, ButtonTypes.Activate, 0, ButtonIndexSetTarget));
             }
         }
 
@@ -95,7 +92,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             if (buttonID == -1) {
                 return;
             }
-            INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
+            bool playerInParty = PlayerState.Partying.Members.Count > 1;
+            bool playerIsLeader = PlayerState.Partying.LeaderSerial == WorldModel.PlayerSerial;
             if (buttonID >= ButtonIndexTell) {
                 int serial = tellBtn[buttonID - ButtonIndexTell].ButtonParameter;
                 PlayerState.Partying.SendTell(serial);
@@ -103,11 +101,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             else if (buttonID >= ButtonIndexTell) {
                 int serial = kickBtn[buttonID - ButtonIndexTell].ButtonParameter;
                 PlayerState.Partying.RemoveMember(serial);
-                if (PlayerState.Partying.List.Count == 1) {
+                if (PlayerState.Partying.Members.Count == 1) {
                     PlayerState.Partying.LeaveParty();
                 }
             }
-            else if (buttonID == 0 && PlayerState.Partying.Status != PartyState.None && PlayerState.Partying.Status != PartyState.Joining) {
+            else if (buttonID == ButtonIndexLoot && playerInParty) {
                 if (PlayerState.Partying.AllowPartyLoot) {
                     btnLoot.GumpUpID = 4002;
                     btnLoot.GumpDownID = 4002;
@@ -122,19 +120,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
                 }
             }
             else if (buttonID == ButtonIndexLeave) {
-                PlayerState.Partying.LeaveParty();//leaving party
+                PlayerState.Partying.LeaveParty();
             }
             else if (buttonID == ButtonIndexAdd) {
-                if (PlayerState.Partying.Status == PartyState.None) {
-                    PlayerState.Partying.Status = PartyState.Joining;
-                    PlayerState.Partying.AddMember(WorldModel.Entities.GetPlayerEntity().Serial, true);
+                if (!playerInParty) {
                     PlayerState.Partying.RequestAddPartyMemberTarget();
                 }
-                else if (PlayerState.Partying.Status == PartyState.Leader) {
+                else if (playerIsLeader) {
                     PlayerState.Partying.RequestAddPartyMemberTarget();
-                }
-                else {
-                    //no access
                 }
             }
             else if (buttonID == ButtonIndexSetTarget) {

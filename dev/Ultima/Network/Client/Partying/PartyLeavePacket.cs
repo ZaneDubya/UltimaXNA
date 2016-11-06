@@ -16,7 +16,7 @@ namespace UltimaXNA.Ultima.Network.Client.Partying {
             : base(0xbf, "Leave Party") {
             Stream.Write((short)6);
             Stream.Write((byte)2);
-            Stream.Write(WorldModel.Entities.GetPlayerEntity().Serial);
+            Stream.Write(WorldModel.PlayerSerial);
         }
     }
 }

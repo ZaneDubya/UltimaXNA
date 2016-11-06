@@ -77,7 +77,7 @@ namespace UltimaXNA.Ultima.World {
                 case ChatMode.Party:
                     speechType = MessageTypes.Alliance;
                     hue = Settings.UserInterface.PartyMsgColor;
-                    PlayerState.Partying.PartyStateControl(text, hue);//party controlling
+                    PlayerState.Partying.DoPartyCommand(text);
                     return;
                 case ChatMode.Guild:
                     speechType = MessageTypes.Guild;

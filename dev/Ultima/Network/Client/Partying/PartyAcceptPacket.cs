@@ -8,15 +8,14 @@
  *
  ***************************************************************************/
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.Network.Client.Partying {
     public class PartyAcceptPacket : SendPacket {
-        public PartyAcceptPacket(Mobile Leader) 
+        public PartyAcceptPacket(Serial invitingPartyLeader) 
             : base(0xbf, "Party Join Accept") {
             Stream.Write((short)6);
             Stream.Write((byte)8);
-            Stream.Write(Leader.Serial);
+            Stream.Write(invitingPartyLeader);
         }
     }
 }
