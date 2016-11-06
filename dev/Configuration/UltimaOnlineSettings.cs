@@ -19,8 +19,9 @@ namespace UltimaXNA.Configuration
     {
         public const string SectionName = "ultimaOnline";
 
-        private string m_DataDirectory;
-        private byte[] m_ClientVersion;
+        bool m_AllowCornerMovement = false;
+        string m_DataDirectory;
+        byte[] m_ClientVersion;
 
         public UltimaOnlineSettings()
         {
@@ -28,8 +29,8 @@ namespace UltimaXNA.Configuration
         }
 
         /// <summary>
-        /// The patch version which is sent to the server. RunUO (and possibly other server software)
-        /// rely on the client's reported patch version to enable/disable certain packets and features.
+        /// The patch version which is sent to the server. RunUO (and possibly other server software) rely on the
+        /// client's reported patch version to enable/disable certain packets and features.
         /// </summary>
         public byte[] PatchVersion
         {
@@ -55,6 +56,12 @@ namespace UltimaXNA.Configuration
         {
             get { return m_DataDirectory; }
             set { SetProperty(ref m_DataDirectory, value); }
+        }
+
+        public bool AllowCornerMovement
+        {
+            get { return m_AllowCornerMovement; }
+            set { SetProperty(ref m_AllowCornerMovement, value); }
         }
     }
 }
