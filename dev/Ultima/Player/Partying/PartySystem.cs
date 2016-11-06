@@ -31,6 +31,7 @@ namespace UltimaXNA.Ultima.Player.Partying
         public Serial LeaderSerial => m_LeaderSerial;
         public List<PartyMember> Members => m_PartyMembers;
         public bool InParty => m_PartyMembers.Count > 1;
+        public bool PlayerIsLeader => InParty && PlayerState.Partying.LeaderSerial == WorldModel.PlayerSerial;
 
         public bool AllowPartyLoot
         {
@@ -48,10 +49,15 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public void ReceivePartyMemberList(PartyMemberListInfo info)
         {
+            bool wasInParty = InParty;
             m_PartyMembers.Clear();
             for (int i = 0; i < info.Count; i++)
                 AddMember(info.Serials[i]);
             RefreshPartyGumps();
+            if (InParty && !wasInParty)
+            {
+                AllowPartyLoot = m_AllowPartyLoot;
+            }
         }
 
         public void ReceiveRemovePartyMember(PartyRemoveMemberInfo info)
@@ -109,8 +115,6 @@ namespace UltimaXNA.Ultima.Player.Partying
             INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
             WorldModel world = ServiceRegistry.GetService<WorldModel>();
             string command = text.ToLower();
-            bool playerInParty = PlayerState.Partying.Members.Count > 1;
-            bool playerIsLeader = PlayerState.Partying.LeaderSerial == WorldModel.PlayerSerial;
             bool commandHandled = false;
             switch (command)
             {
@@ -119,24 +123,12 @@ namespace UltimaXNA.Ultima.Player.Partying
                     commandHandled = true;
                     break;
                 case "add":
-                    if (!playerInParty)
-                    {
-                        m_LeaderSerial = WorldModel.PlayerSerial;
-                        network.Send(new PartyRequestAddTargetPacket());
-                    }
-                    else if (playerInParty && playerIsLeader)
-                    {
-                        network.Send(new PartyRequestAddTargetPacket());
-                    }
-                    else if (playerInParty && !playerIsLeader)
-                    {
-                        world.Interaction.ChatMessage("You may only add members to the party if you are the leader.", 3, 10, false);
-                    }
+                    RequestAddPartyMemberTarget();
                     commandHandled = true;
                     break;
                 case "rem":
                 case "remove":
-                    if (playerInParty && playerIsLeader)
+                    if (InParty && PlayerIsLeader)
                     {
                         world.Interaction.ChatMessage("Who would you like to remove from your party?", 3, 10, false);
                         network.Send(new PartyRequestRemoveTargetPacket());
@@ -144,7 +136,7 @@ namespace UltimaXNA.Ultima.Player.Partying
                     commandHandled = true;
                     break;
                 case "accept":
-                    if (!playerInParty && m_InvitingPartyLeader.IsValid)
+                    if (!InParty && m_InvitingPartyLeader.IsValid)
                     {
                         network.Send(new PartyAcceptPacket(m_InvitingPartyLeader));
                         m_LeaderSerial = m_InvitingPartyLeader;
@@ -153,7 +145,7 @@ namespace UltimaXNA.Ultima.Player.Partying
                     commandHandled = true;
                     break;
                 case "decline":
-                    if (!playerInParty && m_InvitingPartyLeader.IsValid)
+                    if (!InParty && m_InvitingPartyLeader.IsValid)
                     {
                         network.Send(new PartyDeclinePacket(m_InvitingPartyLeader));
                         m_InvitingPartyLeader = Serial.Null;
@@ -171,16 +163,23 @@ namespace UltimaXNA.Ultima.Player.Partying
             }
         }
 
-        internal void SetPartyTarget()
-        {
-            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
-            network.Send(new PartyPublicMessagePacket("All member attack to ---PLAYERNAME---"));//need improve
-        }
-
         internal void RequestAddPartyMemberTarget()
         {
             INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
-            network.Send(new PartyRequestAddTargetPacket());
+            WorldModel world = ServiceRegistry.GetService<WorldModel>();
+            if (!InParty)
+            {
+                m_LeaderSerial = WorldModel.PlayerSerial;
+                network.Send(new PartyRequestAddTargetPacket());
+            }
+            else if (InParty && PlayerIsLeader)
+            {
+                network.Send(new PartyRequestAddTargetPacket());
+            }
+            else if (InParty && !PlayerIsLeader)
+            {
+                world.Interaction.ChatMessage("You may only add members to the party if you are the leader.", 3, 10, false);
+            }
         }
 
         internal void SendTell(Serial serial)
