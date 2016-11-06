@@ -16,6 +16,7 @@ using System.IO;
 using UltimaXNA.Core.Windows;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Network.Server.GeneralInfo;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources

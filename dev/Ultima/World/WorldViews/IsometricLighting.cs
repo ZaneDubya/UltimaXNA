@@ -20,6 +20,11 @@ namespace UltimaXNA.Ultima.World.WorldViews
         private float m_LightDirection = 4.12f;
         private float m_LightHeight = -0.75f;
 
+        public IsometricLighting()
+        {
+            RecalculateLightningValues();
+        }
+
         public int PersonalLightning
         {
             set { m_LightLevelPersonal = value; RecalculateLightningValues(); }
