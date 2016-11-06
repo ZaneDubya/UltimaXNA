@@ -16,12 +16,12 @@ namespace UltimaXNA.Ultima.Network.Server.GeneralInfo {
     /// </summary>
     public class PartyMessageInfo : IGeneralInfo {
         public readonly bool IsPrivate;
-        public readonly int Source;
+        public readonly Serial Source;
         public readonly string Message;
 
         public PartyMessageInfo(PacketReader reader, bool isPrivate) {
             IsPrivate = isPrivate;
-            Source = reader.ReadByte();
+            Source = (Serial)reader.ReadInt32();
             Message = reader.ReadUnicodeString();
         }
     }

@@ -8,6 +8,7 @@
  *
  ***************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UltimaXNA.Core.Network;
@@ -163,6 +164,32 @@ namespace UltimaXNA.Ultima.Player.Partying
             }
         }
 
+        internal void BeginPrivateMessage(int serial)
+        {
+            PartyMember member = GetMember((Serial)serial);
+            if (member != null)
+            {
+                ChatControl chat = ServiceRegistry.GetService<ChatControl>();
+                chat.SetModeToPartyPrivate(member.Name, member.Serial);
+            }
+        }
+
+        public void SendPartyPrivateMessage(Serial serial, string text)
+        {
+            WorldModel world = ServiceRegistry.GetService<WorldModel>();
+            PartyMember recipient = GetMember(serial);
+            if (recipient != null)
+            {
+                INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+                network.Send(new PartyPrivateMessagePacket(serial, text));
+                world.Interaction.ChatMessage($"To {recipient.Name}: {text}", 3, Settings.UserInterface.PartyPrivateMsgColor, false);
+            }
+            else
+            {
+                world.Interaction.ChatMessage("They are no longer in your party.", 3, Settings.UserInterface.PartyPrivateMsgColor, false);
+            }
+        }
+
         internal void RequestAddPartyMemberTarget()
         {
             INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
@@ -180,12 +207,6 @@ namespace UltimaXNA.Ultima.Player.Partying
             {
                 world.Interaction.ChatMessage("You may only add members to the party if you are the leader.", 3, 10, false);
             }
-        }
-
-        internal void SendTell(Serial serial)
-        {
-            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
-            network.Send(new PartyPrivateMessagePacket(serial, "make a dynamic message type"));//need improve
         }
 
         public void RefreshPartyGumps()

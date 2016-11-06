@@ -55,39 +55,6 @@ namespace UltimaXNA.Ultima.World {
             }
         }
 
-        public void SendSpeech(string text, ChatMode mode) // used by chatwindow.
-        {
-            MessageTypes speechType = MessageTypes.Normal;
-            int hue = 0;
-            switch (mode)
-            {
-                case ChatMode.Default:
-                    speechType = MessageTypes.Normal;
-                    hue = Settings.UserInterface.SpeechColor;
-                    break;
-                case ChatMode.Whisper:
-                    speechType = MessageTypes.Whisper;
-                    hue = Settings.UserInterface.SpeechColor;
-                    break;
-                case ChatMode.Emote:
-                    speechType = MessageTypes.Emote;
-                    hue = Settings.UserInterface.EmoteColor;
-                    break;
-                case ChatMode.Party:
-                    PlayerState.Partying.DoPartyCommand(text);
-                    return;
-                case ChatMode.Guild:
-                    speechType = MessageTypes.Guild;
-                    hue = Settings.UserInterface.GuildMsgColor;
-                    break;
-                case ChatMode.Alliance:
-                    speechType = MessageTypes.Alliance;
-                    hue = Settings.UserInterface.AllianceMsgColor;
-                    break;
-            }
-            m_Network.Send(new AsciiSpeechPacket(speechType, 0, hue + 2, "ENU", text));
-        }
-
         /// <summary>
         /// Informs the server we have single-clicked on an entity. Also requests a context menu.
         /// </summary>

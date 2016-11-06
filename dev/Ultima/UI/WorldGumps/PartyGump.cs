@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                         AddControl(new Button(this, 85, 70 + lineY, 4029, 4030, ButtonTypes.Activate, PlayerState.Partying.Members[i].Serial, ButtonIndexTell + i));// tell BUTTON
                     }
                     AddControl(new ResizePic(this, 130, 70 + lineY, 3000, 195, 25));
-                    AddControl(new HtmlGumpling(this, 130, 72 + lineY, 195, 20, 0, 0, $"<center><big><font color='#444'>{PlayerState.Partying.Members[i].Mobile.Name}"));
+                    AddControl(new HtmlGumpling(this, 130, 72 + lineY, 195, 20, 0, 0, $"<center><big><font color='#444'>{PlayerState.Partying.Members[i].Name}"));
                 }
                 else
                 {
@@ -93,7 +93,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             bool playerIsLeader = PlayerState.Partying.LeaderSerial == WorldModel.PlayerSerial;
             if (buttonID >= ButtonIndexTell) {
                 int serial = PlayerState.Partying.GetMember(buttonID - ButtonIndexTell).Serial;
-                PlayerState.Partying.SendTell(serial);
+                PlayerState.Partying.BeginPrivateMessage(serial);
             }
             else if (buttonID >= ButtonIndexKick) {
                 int serial = PlayerState.Partying.GetMember(buttonID - ButtonIndexKick).Serial;

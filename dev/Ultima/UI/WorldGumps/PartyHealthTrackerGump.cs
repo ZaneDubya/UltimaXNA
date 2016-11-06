@@ -72,7 +72,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
         {
             if (buttonID == 0)//private message
             {
-                PlayerState.Partying.SendTell(btnPrivateMsg.ButtonParameter);
+                PlayerState.Partying.BeginPrivateMessage(btnPrivateMsg.ButtonParameter);
             }
         }
 

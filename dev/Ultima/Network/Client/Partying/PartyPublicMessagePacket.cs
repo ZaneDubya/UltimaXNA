@@ -16,7 +16,6 @@ namespace UltimaXNA.Ultima.Network.Client.Partying {
             Stream.Write((short)6);
             Stream.Write((byte)4);
             Stream.WriteBigUniNull(msg);
-            Stream.Write((short)0);
         }
     }
 }

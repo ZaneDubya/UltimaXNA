@@ -4,6 +4,7 @@
         Whisper,
         Emote,
         Party,
+        PartyPrivate,
         Guild,
         Alliance
     }

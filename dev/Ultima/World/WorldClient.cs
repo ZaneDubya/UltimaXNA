@@ -1129,9 +1129,9 @@ namespace UltimaXNA.Ultima.World
                         case PartyInfo.CommandPrivateMessage:
                         case PartyInfo.CommandPublicMessage:
                             PartyMessageInfo msg = partyInfo.Info as PartyMessageInfo;
-                            PartyMember member = PlayerState.Partying.GetMember((Serial)msg.Source);
+                            PartyMember member = PlayerState.Partying.GetMember(msg.Source);
                             // note: msx752 identified hue 50 for "targeted to : " and 34 for "Help me.. I'm stunned !!"
-                            ushort hue = (ushort)(msg.IsPrivate ? 58 : 68);
+                            ushort hue = (ushort)(msg.IsPrivate ? Settings.UserInterface.PartyPrivateMsgColor : Settings.UserInterface.PartyMsgColor);
                             ReceiveTextMessage(MessageTypes.PartyDisplayOnly, msg.Message, 3, hue, 0xFFFFFFF, member.Mobile.Name, true);
                             break;
                         case PartyInfo.CommandInvitation:
