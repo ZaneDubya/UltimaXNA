@@ -76,7 +76,7 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public void AddMember(Serial serial)
         {
-            int index = m_PartyMembers.FindIndex(p => p.Mobile.Serial == serial);
+            int index = m_PartyMembers.FindIndex(p => p.Serial == serial);
             if (index != -1)
             {
                 m_PartyMembers.RemoveAt(index);
@@ -95,7 +95,7 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public PartyMember GetMember(Serial serial)
         {
-            return m_PartyMembers.Find(p => p.Mobile.Serial == serial);
+            return m_PartyMembers.Find(p => p.Serial == serial);
         }
 
         public void LeaveParty()
@@ -215,7 +215,7 @@ namespace UltimaXNA.Ultima.Player.Partying
             ui.RemoveControl<PartyHealthTrackerGump>();
             for (int i = 0; i < Members.Count; i++)
             {
-                ui.AddControl(new PartyHealthTrackerGump(Members[i].Serial), 5, 40 + (48 * i));
+                ui.AddControl(new PartyHealthTrackerGump(Members[i]), 5, 40 + (48 * i));
             }
             Gump gump;
             if ((gump = ui.GetControl<PartyGump>()) != null)
@@ -231,7 +231,7 @@ namespace UltimaXNA.Ultima.Player.Partying
         {
             INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
             network.Send(new PartyRemoveMemberPacket(serial));
-            int index = m_PartyMembers.FindIndex(p => p.Mobile.Serial == serial);
+            int index = m_PartyMembers.FindIndex(p => p.Serial == serial);
             if (index != -1)
             {
                 m_PartyMembers.RemoveAt(index);

@@ -11,6 +11,7 @@
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.Player.Partying;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
@@ -18,35 +19,34 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 namespace UltimaXNA.Ultima.UI.WorldGumps {
     class PartyHealthTrackerGump : Gump
     {
+        Serial m_Serial;
+
         Button btnPrivateMsg;
         GumpPic[] m_BarBGs;
         GumpPicWithWidth[] m_Bars;
+        TextLabel m_Name;
 
-        public PartyHealthTrackerGump(Serial serial)
-            : base(serial, 0)
+        public PartyHealthTrackerGump(PartyMember member)
+            : base(member.Serial, 0)
         {
             while (UserInterface.GetControl<MobileHealthTrackerGump>() != null)
             {
-                UserInterface.GetControl<MobileHealthTrackerGump>(serial).Dispose();
+                UserInterface.GetControl<MobileHealthTrackerGump>(member.Serial).Dispose();
             }
             IsMoveable = false;
             IsUncloseableWithRMB = true;
-            Mobile = WorldModel.Entities.GetObject<Mobile>(serial, false);
-            if (Mobile == null)
-            {
-                PlayerState.Partying.RemoveMember(serial);
-                Dispose();
-                return;
-            }
+            m_Serial = member.Serial;
             //AddControl(m_Background = new ResizePic(this, 0, 0, 3000, 131, 48));//I need opacity %1 background
 
-            AddControl(new TextLabel(this, 1, 0, 1, Mobile.Name));
+            AddControl(m_Name = new TextLabel(this, 1, 0, 1, member.Name));
             //m_Background.MouseDoubleClickEvent += Background_MouseDoubleClickEvent; //maybe private message calling?
             m_BarBGs = new GumpPic[3];
             int sameX = 15;
             int sameY = 3;
-            if (WorldModel.Entities.GetPlayerEntity().Serial != serial)//you can't send a message to self
-                AddControl(btnPrivateMsg = new Button(this, 0, 20, 11401, 11402, ButtonTypes.Activate, serial, 0));//private party message / use bandage ??
+            if (WorldModel.Entities.GetPlayerEntity().Serial != member.Serial)//you can't send a message to self
+            {
+                AddControl(btnPrivateMsg = new Button(this, 0, 20, 11401, 11402, ButtonTypes.Activate, member.Serial, 0));//private party message / use bandage ??
+            }
             AddControl(m_BarBGs[0] = new GumpPic(this, sameX, 15 + sameY, 9750, 0));
             AddControl(m_BarBGs[1] = new GumpPic(this, sameX, 24 + sameY, 9750, 0));
             AddControl(m_BarBGs[2] = new GumpPic(this, sameX, 33 + sameY, 9750, 0));
@@ -62,12 +62,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             }
         }
 
-        public Mobile Mobile
-        {
-            get;
-            private set;
-        }
-
         public override void OnButtonClick(int buttonID)
         {
             if (buttonID == 0)//private message
@@ -78,33 +72,30 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (Mobile == null)
-            {
-                return;
-            }
-            if (PlayerState.Partying.Members.Count <= 1)
+            PartyMember member = PlayerState.Partying.GetMember(m_Serial);
+            if (member == null)
             {
                 Dispose();
                 return;
             }
-            m_Bars[0].PercentWidthDrawn = ((float)Mobile.Health.Current / Mobile.Health.Max);
-
-            // I couldn't find correct visual
-            //if (Mobile.Flags.IsBlessed)
-            //    m_Bars[0].GumpID = 0x0809;
-            //else if (Mobile.Flags.IsPoisoned)
-            //    m_Bars[0].GumpID = 0x0808;
-
-            m_Bars[1].PercentWidthDrawn = ((float)Mobile.Mana.Current / Mobile.Mana.Max);
-
-            m_Bars[2].PercentWidthDrawn = ((float)Mobile.Stamina.Current / Mobile.Stamina.Max);
-
+            m_Name.Text = member.Name;
+            Mobile mobile = member.Mobile;
+            if (mobile == null)
+            {
+                m_Bars[0].PercentWidthDrawn = m_Bars[1].PercentWidthDrawn = m_Bars[2].PercentWidthDrawn = 0f;
+            }
+            else
+            {
+                m_Bars[0].PercentWidthDrawn = ((float)mobile.Health.Current / mobile.Health.Max);
+                m_Bars[1].PercentWidthDrawn = ((float)mobile.Mana.Current / mobile.Mana.Max);
+                m_Bars[2].PercentWidthDrawn = ((float)mobile.Stamina.Current / mobile.Stamina.Max);
+                // I couldn't find correct visual
+                //if (Mobile.Flags.IsBlessed)
+                //    m_Bars[0].GumpID = 0x0809;
+                //else if (Mobile.Flags.IsPoisoned)
+                //    m_Bars[0].GumpID = 0x0808;
+            }
             base.Update(totalMS, frameMS);
-        }
-
-        void Background_MouseDoubleClickEvent(AControl caller, int x, int y, MouseButton button)//need opacity %1 BG for this
-        {
-            //CALL PRIVATE MESSAGE METHOD ???
         }
     }
 }
