@@ -68,14 +68,9 @@ namespace UltimaXNA.Ultima.World
             Register<MoveAcknowledgePacket>(0x22, "Move Acknowledged", 3, new TypedPacketReceiveHandler(ReceiveMoveAck));
             Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
             Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
-            if (ClientVersion.HasExtendedAddItemPacket(Settings.UltimaOnline.PatchVersion))
-            {
-                Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 20, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
-            }
-            else
-            {
-                Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 21, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
-            }
+            Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 
+                ClientVersion.HasExtendedAddItemPacket(Settings.UltimaOnline.PatchVersion) ? 21 : 20,
+                new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
             Register<LiftRejectionPacket>(0x27, "Lift Rejection", 2, new TypedPacketReceiveHandler(ReceiveRejectMoveItemRequest));
             Register<ResurrectionMenuPacket>(0x2C, "Resurect menu", 2, new TypedPacketReceiveHandler(ReceiveResurrectionMenu));
             Register<MobileAttributesPacket>(0x2D, "Mob Attributes", 17, new TypedPacketReceiveHandler(ReceiveMobileAttributes));
@@ -115,6 +110,9 @@ namespace UltimaXNA.Ultima.World
             Register<DeathAnimationPacket>(0xAF, "Death Animation", 13, new TypedPacketReceiveHandler(ReceiveDeathAnimation));
             Register<DisplayGumpFastPacket>(0xB0, "Display Gump Fast", -1, new TypedPacketReceiveHandler(ReceiveDisplayGumpFast));
             Register<ObjectHelpResponsePacket>(0xB7, "Object Help Response ", -1, new TypedPacketReceiveHandler(ReceiveObjectHelpResponse));
+            Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 
+                ClientVersion.HasExtendedFeatures(Settings.UltimaOnline.PatchVersion) ? 5 : 3,
+                new TypedPacketReceiveHandler(ReceiveEnableFeatures));
             Register<QuestArrowPacket>(0xBA, "Quest Arrow", 6, new TypedPacketReceiveHandler(ReceiveQuestArrow));
             Register<SeasonChangePacket>(0xBC, "Seasonal Change", 3, new TypedPacketReceiveHandler(ReceiveSeasonalInformation));
             Register<GeneralInfoPacket>(0xBF, "General Information", -1, new TypedPacketReceiveHandler(ReceiveGeneralInfo));
@@ -1288,6 +1286,11 @@ namespace UltimaXNA.Ultima.World
         void ReceiveSetWeather(IRecvPacket packet)
         {
             announce_UnhandledPacket(packet);
+        }
+
+        void ReceiveEnableFeatures(IRecvPacket packet) {
+            SupportedFeaturesPacket p = (SupportedFeaturesPacket)packet;
+            Features.SetFlags(p.Flags);
         }
     }
 }

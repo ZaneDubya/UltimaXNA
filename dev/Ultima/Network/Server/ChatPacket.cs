@@ -33,7 +33,6 @@ namespace UltimaXNA.Ultima.Network.Server
         public ChatPacket(PacketReader reader)
             : base(0xB3, "Chat Packet")
         {
-
             m_language = reader.ReadString(3);
             reader.ReadInt16(); // unknown.
             m_commandtype = reader.ReadByte();

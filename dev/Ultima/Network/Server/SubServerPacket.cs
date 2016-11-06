@@ -17,48 +17,23 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class SubServerPacket : RecvPacket
     {
-        readonly short m_x;
-        readonly short m_y;
-        readonly short m_z;
-        readonly short m_mapWidth;
-        readonly short m_mapHeight;
-
-        public short X
-        {
-            get { return m_x; }
-        }
-
-        public short Y
-        {
-            get { return m_y; }
-        }
-
-        public short Z
-        {
-            get { return m_z; }
-        }
-
-        public short MapWidth
-        {
-            get { return m_mapWidth; }
-        }
-
-        public short MapHeight
-        {
-            get { return m_mapHeight; }
-        }
+        public readonly short X;
+        public readonly short Y;
+        public readonly short Z;
+        public readonly short MapWidth;
+        public readonly short MapHeight;
 
         public SubServerPacket(PacketReader reader)
-            : base(0xB3, "Chat Packet")
+            : base(0x76, "Move to subserver")
         {
-            m_x = reader.ReadInt16();
-            m_y = reader.ReadInt16();
-            m_z = reader.ReadInt16();
-            reader.ReadByte();
-            reader.ReadInt16();
-            reader.ReadInt16();
-            m_mapWidth = reader.ReadInt16();
-            m_mapHeight = reader.ReadInt16();
+            X = reader.ReadInt16();
+            Y = reader.ReadInt16();
+            Z = reader.ReadInt16();
+            reader.ReadByte(); // unknown - always 0
+            reader.ReadInt16(); // server boundary x
+            reader.ReadInt16(); // server boundary y
+            MapWidth = reader.ReadInt16();
+            MapHeight = reader.ReadInt16();
         }
     }
 }
