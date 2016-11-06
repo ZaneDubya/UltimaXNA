@@ -170,22 +170,27 @@ namespace UltimaXNA.Ultima.IO
             }
         }
 
-        public static string GetFilePath(string name) {
-            if (m_FileDirectory != null) {
-                name = Path.Combine(m_FileDirectory, name);
-                // Fix for opening files which don't exist -Smjert
-                if (File.Exists(name))
-                    return name;
+        public static string GetFilePath(string path)
+        {
+            if (m_FileDirectory != null)
+            {
+                path = Path.Combine(m_FileDirectory, path);
+                if (File.Exists(path))
+                    return path;
             }
-
             return null;
+        }
+
+        public static string[] GetFilePaths(string searchPattern)
+        {
+            string[] files = Directory.GetFiles(m_FileDirectory, searchPattern);
+            return files;
         }
 
         public static bool Exists(string name) {
             try {
                 name = Path.Combine(m_FileDirectory, name);
                 Tracer.Debug("Checking if file exists [{0}]", name);
-
                 if (File.Exists(name)) {
                     return true;
                 }
@@ -210,7 +215,7 @@ namespace UltimaXNA.Ultima.IO
         public static FileStream GetFile(string name) {
             try {
                 name = Path.Combine(m_FileDirectory, name);
-                return new FileStream(name, FileMode.Open, FileAccess.Read, FileShare.Read);
+                return new FileStream(name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             }
             catch { return null; }
         }

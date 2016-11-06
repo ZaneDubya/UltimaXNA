@@ -52,7 +52,7 @@ namespace UltimaXNA.Ultima.IO
 
             int length = (int)((new FileInfo(IndexPath).Length / 3) / 4);
 
-            using (FileStream index = new FileStream(IndexPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream index = new FileStream(IndexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 BinaryReader bin = new BinaryReader(index);
 
