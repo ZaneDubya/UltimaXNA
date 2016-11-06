@@ -20,6 +20,9 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Core.Network;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -31,11 +34,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private TextEntry m_TextEntry;
         private List<ChatLineTimed> m_TextEntries;
         private List<Tuple<ChatMode, string>> m_MessageHistory;
-
         private InputManager m_Input;
         private WorldModel m_World;
-
         private int m_MessageHistoryIndex = -1;
+        private Serial m_PrivateMessageSerial = Serial.Null;
+        private string m_PrivateMessageName;
 
         private ChatMode m_Mode = ChatMode.Default;
         private ChatMode Mode
@@ -47,7 +50,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 switch (value)
                 {
                     case ChatMode.Default:
-                        m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>", 
+                        m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.SpeechColor, 1)));
                         m_TextEntry.LeadingText = string.Empty;
                         m_TextEntry.Text = string.Empty;
@@ -58,25 +61,31 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                         m_TextEntry.LeadingText = "Whisper: ";
                         m_TextEntry.Text = string.Empty;
                         break;
-                    case ChatMode.Emote: // emote
+                    case ChatMode.Emote:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.EmoteColor, 1)));
                         m_TextEntry.LeadingText = "Emote: ";
                         m_TextEntry.Text = string.Empty;
                         break;
-                    case ChatMode.Party: // party
+                    case ChatMode.Party:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.PartyMsgColor, 1)));
                         m_TextEntry.LeadingText = "Party: ";
                         m_TextEntry.Text = string.Empty;
                         break;
-                    case ChatMode.Guild: // guild
+                    case ChatMode.PartyPrivate:
+                        m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
+                            Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.PartyPrivateMsgColor, 1)));
+                        m_TextEntry.LeadingText = $"To {m_PrivateMessageName}: ";
+                        m_TextEntry.Text = string.Empty;
+                        break;
+                    case ChatMode.Guild:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.GuildMsgColor, 1)));
                         m_TextEntry.LeadingText = "Guild: ";
                         m_TextEntry.Text = string.Empty;
                         break;
-                    case ChatMode.Alliance: // alliance
+                    case ChatMode.Alliance:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.AllianceMsgColor, 1)));
                         m_TextEntry.LeadingText = "Alliance: ";
@@ -99,6 +108,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_World = ServiceRegistry.GetService<WorldModel>();
 
             IsUncloseableWithRMB = true;
+        }
+
+        public void SetModeToPartyPrivate(string name, Serial serial)
+        {
+            m_PrivateMessageName = name;
+            m_PrivateMessageSerial = serial;
+            Mode = ChatMode.PartyPrivate;
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -154,26 +170,25 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 Mode = ChatMode.Default;
             }
 
-            // if in default, only switch mode if there is a single command char (;, :, etc) followed by any other char.
-            // in not in default, only switch mode if the single command char is the only char entered.
-            if ((Mode == ChatMode.Default && m_TextEntry.Text.Length == 2) ||
+            // only switch mode if the single command char is the only char entered.
+            if ((Mode == ChatMode.Default && m_TextEntry.Text.Length == 1) ||
                 (Mode != ChatMode.Default && m_TextEntry.Text.Length == 1))
             {
                 switch (m_TextEntry.Text[0])
                 {
-                    case ':': // emote
+                    case ':':
                         Mode = ChatMode.Emote;
                         break;
-                    case ';': // whisper
+                    case ';':
                         Mode = ChatMode.Whisper;
                         break;
-                    case '/': // party
+                    case '/':
                         Mode = ChatMode.Party;
                         break;
-                    case '\\': // guild
+                    case '\\':
                         Mode = ChatMode.Guild;
                         break;
-                    case '|': // alliance
+                    case '|':
                         Mode = ChatMode.Alliance;
                         break;
                 }
@@ -195,74 +210,110 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void OnKeyboardReturn(int textID, string text)
         {
+            // local variables
+            ChatMode sentMode = Mode;
+            MessageTypes speechType = MessageTypes.Normal;
+            int hue = 0;
+            // save this message and reset chat for next entry
             m_TextEntry.Text = string.Empty;
             m_MessageHistory.Add(new Tuple<ChatMode, string>(Mode, text));
             m_MessageHistoryIndex = m_MessageHistory.Count;
-            m_World.Interaction.SendSpeech(text, Mode);
             Mode = ChatMode.Default;
+            // send the message and display it locally.
+            switch (sentMode)
+            {
+                case ChatMode.Default:
+                    speechType = MessageTypes.Normal;
+                    hue = Settings.UserInterface.SpeechColor;
+                    break;
+                case ChatMode.Whisper:
+                    speechType = MessageTypes.Whisper;
+                    hue = Settings.UserInterface.SpeechColor;
+                    break;
+                case ChatMode.Emote:
+                    speechType = MessageTypes.Emote;
+                    hue = Settings.UserInterface.EmoteColor;
+                    break;
+                case ChatMode.Party:
+                    PlayerState.Partying.DoPartyCommand(text);
+                    return;
+                case ChatMode.PartyPrivate:
+                    PlayerState.Partying.SendPartyPrivateMessage(m_PrivateMessageSerial, text);
+                    return;
+                case ChatMode.Guild:
+                    speechType = MessageTypes.Guild;
+                    hue = Settings.UserInterface.GuildMsgColor;
+                    break;
+                case ChatMode.Alliance:
+                    speechType = MessageTypes.Alliance;
+                    hue = Settings.UserInterface.AllianceMsgColor;
+                    break;
+            }
+            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            network.Send(new AsciiSpeechPacket(speechType, 0, hue + 2, "ENU", text));
         }
 
         public void AddLine(string text, int font, int hue, bool asUnicode)
         {
-            m_TextEntries.Add(new ChatLineTimed(string.Format("<outline color='#{3}' style='font-family:{1}{2};'>{0}", 
-                text, asUnicode ? "uni" : "ascii", font, Utility.GetColorFromUshort(Resources.HueData.GetHue(hue, -1))), 
+            m_TextEntries.Add(new ChatLineTimed(string.Format("<outline color='#{3}' style='font-family:{1}{2};'>{0}",
+                text, asUnicode ? "uni" : "ascii", font, Utility.GetColorFromUshort(Resources.HueData.GetHue(hue, -1))),
                 Width));
         }
-    }
 
-    class ChatLineTimed
-    {
-        string m_text;
-        public string Text { get { return m_text; } }
-        float m_createdTime = float.MinValue;
-        bool m_isExpired;
-        public bool IsExpired { get { return m_isExpired; } }
-        float m_alpha;
-        public float Alpha { get { return m_alpha; } }
-        private int m_width = 0;
-
-        const float Time_Display = 10000.0f;
-        const float Time_Fadeout = 4000.0f;
-
-        private RenderedText m_Texture;
-        public int TextHeight { get { return m_Texture.Height; } }
-
-        public ChatLineTimed(string text, int width)
+        class ChatLineTimed
         {
-            m_text = text;
-            m_isExpired = false;
-            m_alpha = 1.0f;
-            m_width = width;
+            string m_text;
+            public string Text { get { return m_text; } }
+            float m_createdTime = float.MinValue;
+            bool m_isExpired;
+            public bool IsExpired { get { return m_isExpired; } }
+            float m_alpha;
+            public float Alpha { get { return m_alpha; } }
+            private int m_width = 0;
 
-            m_Texture = new RenderedText(m_text, m_width);
-        }
+            const float Time_Display = 10000.0f;
+            const float Time_Fadeout = 4000.0f;
 
-        public void Update(double totalMS, double frameMS)
-        {
-            if (m_createdTime == float.MinValue)
-                m_createdTime = (float)totalMS;
-            float time = (float)totalMS - m_createdTime;
-            if (time > Time_Display)
-                m_isExpired = true;
-            else if (time > (Time_Display - Time_Fadeout))
+            private RenderedText m_Texture;
+            public int TextHeight { get { return m_Texture.Height; } }
+
+            public ChatLineTimed(string text, int width)
             {
-                m_alpha = 1.0f - ((time) - (Time_Display - Time_Fadeout)) / Time_Fadeout;
+                m_text = text;
+                m_isExpired = false;
+                m_alpha = 1.0f;
+                m_width = width;
+
+                m_Texture = new RenderedText(m_text, m_width);
             }
-        }
 
-        public void Draw(SpriteBatchUI sb, Point position)
-        {
-            m_Texture.Draw(sb, position, Utility.GetHueVector(0, false, (m_alpha < 1.0f), true));
-        }
+            public void Update(double totalMS, double frameMS)
+            {
+                if (m_createdTime == float.MinValue)
+                    m_createdTime = (float)totalMS;
+                float time = (float)totalMS - m_createdTime;
+                if (time > Time_Display)
+                    m_isExpired = true;
+                else if (time > (Time_Display - Time_Fadeout))
+                {
+                    m_alpha = 1.0f - ((time) - (Time_Display - Time_Fadeout)) / Time_Fadeout;
+                }
+            }
 
-        public void Dispose()
-        {
-            m_Texture = null;
-        }
+            public void Draw(SpriteBatchUI sb, Point position)
+            {
+                m_Texture.Draw(sb, position, Utility.GetHueVector(0, false, (m_alpha < 1.0f), true));
+            }
 
-        public override string ToString()
-        {
-            return m_text;
+            public void Dispose()
+            {
+                m_Texture = null;
+            }
+
+            public override string ToString()
+            {
+                return m_text;
+            }
         }
     }
 }
