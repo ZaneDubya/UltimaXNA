@@ -22,9 +22,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public PartyGump()
             : base(0, 0) {
-            if (PlayerState.Partying.Members.Count == 1) {
-                PlayerState.Partying.LeaveParty();
-            }
             IsMoveable = true;
             AddControl(new ResizePic(this, 0, 0, 2600, 350, PlayerState.Partying.InParty ? 500 : 425));
             AddControl(new TextLabelAscii(this, 105, 15, 2, 902, "Party Manifest"));
@@ -42,7 +39,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     {
                         if (playerIsLeader)
                         {
-                            AddControl(new Button(this, 35, 70 + lineY, 4017, 4018, ButtonTypes.Activate, PlayerState.Partying.Members[i].Serial, ButtonIndexTell + i));// KICK BUTTON
+                            AddControl(new Button(this, 35, 70 + lineY, 4017, 4018, ButtonTypes.Activate, PlayerState.Partying.Members[i].Serial, ButtonIndexKick + i));// KICK BUTTON
                         }
                         AddControl(new Button(this, 85, 70 + lineY, 4029, 4030, ButtonTypes.Activate, PlayerState.Partying.Members[i].Serial, ButtonIndexTell + i));// tell BUTTON
                     }
@@ -101,9 +98,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             else if (buttonID >= ButtonIndexKick) {
                 int serial = PlayerState.Partying.GetMember(buttonID - ButtonIndexKick).Serial;
                 PlayerState.Partying.RemoveMember(serial);
-                if (PlayerState.Partying.Members.Count == 1) {
-                    PlayerState.Partying.LeaveParty();
-                }
             }
             else if (buttonID == ButtonIndexLoot && playerInParty) {
                 if (PlayerState.Partying.AllowPartyLoot) {
