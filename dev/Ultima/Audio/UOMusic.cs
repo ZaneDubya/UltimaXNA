@@ -84,7 +84,6 @@ namespace UltimaXNA.Ultima.Audio {
 
             try {
                 m_Stream = new MP3Stream(Path, NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK);
-
                 Frequency = m_Stream.Frequency;
 
                 m_Playing = true;

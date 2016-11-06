@@ -30,7 +30,14 @@ namespace UltimaXNA.Ultima.Player
                 {
                     m_SkillsLoaded = true;
                     foreach (Skill skill in SkillsData.List)
-                        m_Skills.Add(skill.ID, new SkillEntry(this, skill.ID, skill.Index, skill.UseButton, skill.Name, 0.0f, 0.0f, 0, 0.0f));
+                        if (skill.Index == -1)
+                        {
+                            // do nothing.
+                        }
+                        else
+                        {
+                            m_Skills.Add(skill.ID, new SkillEntry(this, skill.ID, skill.Index, skill.UseButton, skill.Name, 0.0f, 0.0f, 0, 0.0f));
+                        }
                 }
                 return m_Skills;
             }

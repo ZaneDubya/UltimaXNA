@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.IO
 {
     class MulFileIndex : AFileIndex
     {
-        private string idxPath;
+        private readonly string IndexPath;
         public int patchFile { get; set; }
 
         /// <summary>
@@ -35,19 +35,24 @@ namespace UltimaXNA.Ultima.IO
         public MulFileIndex(string idxFile, string mulFile, int length, int patch_file)
             : base(mulFile)
         {
-            idxPath = FileManager.GetFilePath(idxFile);
+            IndexPath = FileManager.GetFilePath(idxFile);
             Length = length;
             patchFile = patch_file;  
+            Open();
         }
 
         protected override FileIndexEntry3D[] ReadEntries()
         {
+            if (!File.Exists(IndexPath) || !File.Exists(DataPath))
+            {
+                return new FileIndexEntry3D[0];
+            }
 
             List<FileIndexEntry3D> entries = new List<FileIndexEntry3D>();
 
-            int length = (int)((new FileInfo(idxPath).Length / 3) / 4);
+            int length = (int)((new FileInfo(IndexPath).Length / 3) / 4);
 
-            using (FileStream index = new FileStream(idxPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream index = new FileStream(IndexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 BinaryReader bin = new BinaryReader(index);
 

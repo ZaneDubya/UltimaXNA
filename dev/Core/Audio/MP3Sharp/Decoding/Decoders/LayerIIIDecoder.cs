@@ -228,8 +228,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
         ///     Constructor.
         ///     REVIEW: these constructor arguments should be moved to the decodeFrame() method.
         /// </summary>
-        public LayerIIIDecoder(Bitstream stream0, Header header0, SynthesisFilter filtera, SynthesisFilter filterb,
-            ABuffer buffer0, int whichCh0)
+        public LayerIIIDecoder(Bitstream stream, Header header, SynthesisFilter filtera, SynthesisFilter filterb, ABuffer buffer, int whichCh)
         {
             Huffman.Initialize();
 
@@ -276,20 +275,17 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
             sfBandIndex = new SBI[9]; // SZD: MPEG2.5 +3 indices
             int[] l0 =
             {
-                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522,
-                576
+                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522, 576
             };
             int[] s0 = {0, 4, 8, 12, 18, 24, 32, 42, 56, 74, 100, 132, 174, 192};
             int[] l1 =
             {
-                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 114, 136, 162, 194, 232, 278, 330, 394, 464, 540,
-                576
+                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 114, 136, 162, 194, 232, 278, 330, 394, 464, 540, 576
             };
             int[] s1 = {0, 4, 8, 12, 18, 26, 36, 48, 62, 80, 104, 136, 180, 192};
             int[] l2 =
             {
-                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522,
-                576
+                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522, 576
             };
             int[] s2 = {0, 4, 8, 12, 18, 26, 36, 48, 62, 80, 104, 134, 174, 192};
 
@@ -360,19 +356,19 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
             scalefac_buffer = new int[54];
             // END OF scalefac_buffer
 
-            stream = stream0;
-            header = header0;
+            this.stream = stream;
+            this.header = header;
             filter1 = filtera;
             filter2 = filterb;
-            buffer = buffer0;
-            which_channels = whichCh0;
+            this.buffer = buffer;
+            which_channels = whichCh;
 
             frame_start = 0;
-            channels = (header.mode() == Header.SINGLE_CHANNEL) ? 1 : 2;
-            max_gr = (header.version() == Header.MPEG1) ? 2 : 1;
+            channels = (this.header.mode() == Header.SINGLE_CHANNEL) ? 1 : 2;
+            max_gr = (this.header.version() == Header.MPEG1) ? 2 : 1;
 
-            sfreq = header.sample_frequency() +
-                    ((header.version() == Header.MPEG1) ? 3 : (header.version() == Header.MPEG25_LSF) ? 6 : 0); // SZD
+            sfreq = this.header.sample_frequency() +
+                    ((this.header.version() == Header.MPEG1) ? 3 : (this.header.version() == Header.MPEG25_LSF) ? 6 : 0); // SZD
 
             if (channels == 2)
             {

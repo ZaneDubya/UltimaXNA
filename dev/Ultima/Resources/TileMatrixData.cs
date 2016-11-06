@@ -96,7 +96,6 @@ namespace UltimaXNA.Ultima.Resources
                     else
                     {
                         mapPath2 = FileManager.GetFilePath(String.Format("map{0}LegacyMUL.uop", trammel));
-
                         if (File.Exists(mapPath2))
                         {
                             m_MapDataStream = new FileStream(mapPath2, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
