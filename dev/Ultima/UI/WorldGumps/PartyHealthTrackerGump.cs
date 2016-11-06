@@ -68,12 +68,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             private set;
         }
 
-        public override void Dispose()
-        {
-            //m_Background.MouseDoubleClickEvent -= Background_MouseDoubleClickEvent;
-            base.Dispose();
-        }
-
         public override void OnButtonClick(int buttonID)
         {
             if (buttonID == 0)//private message
@@ -90,7 +84,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps {
             }
             if (PlayerState.Partying.Members.Count <= 1)
             {
-                PlayerState.Partying.LeaveParty();
                 Dispose();
                 return;
             }

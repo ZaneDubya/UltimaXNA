@@ -121,13 +121,11 @@ namespace UltimaXNA.Ultima.Player.Partying
                 case "add":
                     if (!playerInParty)
                     {
-                        world.Interaction.ChatMessage("Who would you like to add to your party?", 3, 10, false);
                         m_LeaderSerial = WorldModel.PlayerSerial;
                         network.Send(new PartyRequestAddTargetPacket());
                     }
                     else if (playerInParty && playerIsLeader)
                     {
-                        world.Interaction.ChatMessage("Who would you like to add to your party?", 3, 10, false);
                         network.Send(new PartyRequestAddTargetPacket());
                     }
                     else if (playerInParty && !playerIsLeader)
