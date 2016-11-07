@@ -21,6 +21,7 @@ using UltimaXNA.Core.Windows;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Input;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
@@ -410,12 +411,16 @@ namespace UltimaXNA.Ultima.World.Input
                     // Send double click packet.
                     // Set LastTarget == targeted Mobile.
                     // If in WarMode, set Attacking == true.
-                    World.Interaction.DoubleClick(overEntity);
+                    Mobile mobile = overEntity as Mobile;
                     World.Interaction.LastTarget = overEntity.Serial;
 
                     if (WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode)
                     {
-                        m_Network.Send(new AttackRequestPacket(overEntity.Serial));
+                        World.Interaction.AttackRequest(mobile);
+                    }
+                    else
+                    {
+                        World.Interaction.DoubleClick(overEntity);
                     }
                 }
             }
@@ -436,6 +441,8 @@ namespace UltimaXNA.Ultima.World.Input
                 }
                 else if (overEntity is Mobile)
                 {
+                    if (PlayerState.Partying.GetMember(overEntity.Serial) != null)//is he in your party// number of 0x11 packet dont have information about stamina/mana k(IMPORTANT!!!)
+                        return;
                     // request basic stats - gives us the name rename flag
                     m_Network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, overEntity.Serial));
                     // drag off a status gump for this mobile.

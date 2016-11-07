@@ -130,6 +130,23 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
+    <Compile Include="Ultima\Network\Client\Extensions\GuildLocationQueryPacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyRemoveMemberPacket.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\CloseGumpInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\ContextMenuInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\ExtendedStatsInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\HouseRevisionInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\IGeneralInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\MapDiffInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\MapIndexInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\PartyInvitationInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\PartyMemberListInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\PartyInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\PartyMessageInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\PartyRemoveMemberInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\SpellBookContentsInfo.cs" />
+    <Compile Include="Ultima\Player\Partying\PartyMember.cs" />
+    <Compile Include="Ultima\Player\Partying\PartySystem.cs" />
     <Compile Include="Ultima\Input\Macro.cs" />
     <Compile Include="Ultima\Input\MacroArmDisarm.cs" />
     <Compile Include="Ultima\Input\MacroDefinition.cs" />
@@ -294,6 +311,17 @@
     <Compile Include="Ultima\Network\Server\BookHeaderNewPacket.cs" />
     <Compile Include="Ultima\Network\Server\BookHeaderOldPacket.cs" />
     <Compile Include="Ultima\Network\Server\BookPagesPacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyAcceptPacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyRequestAddTargetPacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyLootEnablePacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyDeclinePacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyPrivateMessagePacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyPublicMessagePacket.cs" />
+    <Compile Include="Ultima\Network\Client\Extensions\PartyLocationQueryPacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyLeavePacket.cs" />
+    <Compile Include="Ultima\Network\Client\Partying\PartyRequestRemoveTargetPacket.cs" />
+    <Compile Include="Ultima\Login\Data\CreateCharacterData.cs" />
+    <Compile Include="Ultima\Network\Client\ClientHardwarePacket.cs" />
     <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
     <Compile Include="Ultima\Resources\BodyDef.cs" />
@@ -311,7 +339,9 @@
     <Compile Include="Ultima\Network\Client\SellItemsPacket.cs" />
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\Resources\GumpDefTranslator.cs" />
+    <Compile Include="Ultima\Resources\UOPIndex.cs" />
     <Compile Include="Ultima\UI\Controls\AGumpPic.cs" />
+    <Compile Include="Ultima\UI\Controls\ButtonResizable.cs" />
     <Compile Include="Ultima\UI\Controls\ColorPickerBox.cs" />
     <Compile Include="Ultima\UI\Controls\EquipmentSlot.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicWithWidth.cs" />
@@ -320,13 +350,18 @@
     <Compile Include="Ultima\UI\LoginGumps\CreditsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\BookGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ContextMenuGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\CrimeQueryGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\LogoutGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\MobileHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\PartyGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\PartyHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorBuyGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorSellGump.cs" />
     <Compile Include="Ultima\World\Entities\Items\BaseBook.cs" />
+    <Compile Include="Ultima\World\Data\CustomHouse.cs" />
+    <Compile Include="Ultima\World\Data\CustomHousePlane.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />
     <Compile Include="Ultima\Data\SpellBookTypes.cs" />
     <Compile Include="Ultima\Data\StatLocks.cs" />
@@ -409,12 +444,10 @@
     <Compile Include="Core\UI\HuedTexture.cs" />
     <Compile Include="Ultima\UI\UltimaCursor.cs" />
     <Compile Include="Ultima\World\WorldInteraction.cs" />
-    <Compile Include="Ultima\Login\LoginClientStatus.cs" />
     <Compile Include="Ultima\Login\LoginView.cs" />
     <Compile Include="Ultima\Login\Accounts\CharacterListEntry.cs" />
     <Compile Include="Ultima\Login\Accounts\Characters.cs" />
-    <Compile Include="Ultima\Login\Servers\ServerListEntry.cs" />
-    <Compile Include="Ultima\Login\Servers\Servers.cs" />
+    <Compile Include="Ultima\Login\Data\ServerListEntry.cs" />
     <Compile Include="Ultima\Data\Features.cs" />
     <Compile Include="Ultima\Player\SkillData.cs" />
     <Compile Include="Ultima\Player\StatLockData.cs" />
@@ -538,7 +571,7 @@
     <Compile Include="Ultima\Network\Server\WeatherPacket.cs" />
     <Compile Include="Ultima\Network\Server\WornItemPacket.cs" />
     <Compile Include="Ultima\Resources\ContainerData.cs" />
-    <Compile Include="Ultima\World\CustomHousing.cs" />
+    <Compile Include="Ultima\World\Data\CustomHousing.cs" />
     <Compile Include="Ultima\Data\HairStyles.cs" />
     <Compile Include="Ultima\Resources\ParticleData.cs" />
     <Compile Include="Ultima\Resources\SkillsData.cs" />
@@ -572,10 +605,6 @@
     <Compile Include="Ultima\World\Entities\Multis\Multi.cs" />
     <Compile Include="Ultima\World\Entities\Overhead.cs" />
     <Compile Include="Ultima\World\Entities\PropertyList.cs" />
-    <Compile Include="Ultima\Login\States\CharacterListState.cs" />
-    <Compile Include="Ultima\Login\States\CreateCharacterState.cs" />
-    <Compile Include="Ultima\Login\States\LoggingInState.cs" />
-    <Compile Include="Ultima\Login\States\SelectServerState.cs" />
     <Compile Include="Ultima\World\Maps\MapChunk.cs" />
     <Compile Include="Ultima\World\Managers\StaticManager.cs" />
     <Compile Include="Ultima\World\WorldViews\IsometricLighting.cs" />
@@ -637,9 +666,6 @@
     <Compile Include="Core\Network\PacketHandler.cs" />
     <Compile Include="Core\Network\QueuedPacket.cs" />
     <Compile Include="Core\Network\SocketState.cs" />
-    <Compile Include="Ultima\Login\States\AState.cs" />
-    <Compile Include="Ultima\Login\States\StateManager.cs" />
-    <Compile Include="Ultima\Login\States\LoginState.cs" />
     <Compile Include="Ultima\Serial.cs" />
     <Compile Include="Ultima\World\WorldViews\MiniMapChunk.cs" />
     <Compile Include="Ultima\World\WorldViews\MiniMapTexture.cs" />
@@ -730,9 +756,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Ultima\IO\Fonts\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

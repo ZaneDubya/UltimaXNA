@@ -11,73 +11,64 @@
 #region usings
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.IO;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.IO;
 #endregion
 
-namespace UltimaXNA.Ultima.Resources
-{
-    public class GumpMulResource
-    {
-        private GraphicsDevice m_graphicsDevice;
+namespace UltimaXNA.Ultima.Resources {
+    public class GumpMulResource {
+        GraphicsDevice m_graphicsDevice;
 
-        private AFileIndex m_FileIndex = ClientVersion.IsUopFormat ? FileManager.CreateFileIndex("gumpartLegacyMUL.uop", 0xFFFF, true, ".tga") : FileManager.CreateFileIndex("Gumpidx.mul", "Gumpart.mul", 0x10000, 12);
+        private AFileIndex m_FileIndex = ClientVersion.InstallationIsUopFormat ? FileManager.CreateFileIndex("gumpartLegacyMUL.uop", 0xFFFF, true, ".tga") : FileManager.CreateFileIndex("Gumpidx.mul", "Gumpart.mul", 0x10000, 12);
         public AFileIndex FileIndex { get { return m_FileIndex; } }
 
         private Texture2D[] m_TextureCache = new Texture2D[0x10000];
 
-        public GumpMulResource(GraphicsDevice graphics)
-        {
+        public GumpMulResource(GraphicsDevice graphics) {
             m_graphicsDevice = graphics;
         }
 
-        public unsafe Texture2D GetGumpXNA(int index, bool replaceMask080808 = false)
-        {
-            if (index < 0)
+        public unsafe Texture2D GetGumpXNA(int index, bool replaceMask080808 = false) {
+            if (index < 0) {
                 return null;
+            }
 
-            if (m_TextureCache[index] == null)
-            {
+            if (m_TextureCache[index] == null) {
                 int length, extra;
                 bool patched;
-
                 BinaryFileReader reader = m_FileIndex.Seek(index, out length, out extra, out patched);
-                if (reader == null)
+                if (reader == null) {
                     return null;
-
+                }
                 int width = (extra >> 16) & 0xFFFF;
                 int height = extra & 0xFFFF;
-
-                int metrics_dataread_start = (int)reader.Position;
-
+                if (width == 0 || height == 0) {
+                    return null;
+                }
+                int shortsToRead = length - (height * 2);
+                if (reader.Stream.Length - reader.Position < (shortsToRead * 2)) {
+                    Tracer.Error($"Could not read gump {index:X4}: not enough data. Gump texture file truncated?");
+                    return null;
+                }
                 int[] lookups = reader.ReadInts(height);
-                ushort[] fileData = reader.ReadUShorts(length - (height * 2));
-
+                int metrics_dataread_start = (int)reader.Position;
+                ushort[] fileData = reader.ReadUShorts(shortsToRead);
                 ushort[] pixels = new ushort[width * height];
-
-                fixed (ushort* line = &pixels[0])
-                {
-                    fixed (ushort* data = &fileData[0])
-                    {
-                        for (int y = 0; y < height; ++y)
-                        {
+                fixed (ushort* line = &pixels[0]) {
+                    fixed (ushort* data = &fileData[0]) {
+                        for (int y = 0; y < height; ++y) {
                             ushort* dataRef = data + (lookups[y] - height) * 2;
-
                             ushort* cur = line + (y * width);
                             ushort* end = cur + width;
-
-                            while (cur < end)
-                            {
+                            while (cur < end) {
                                 ushort color = *dataRef++;
                                 ushort* next = cur + *dataRef++;
-
-                                if (color == 0)
-                                {
+                                if (color == 0) {
                                     cur = next;
                                 }
-                                else
-                                {
+                                else {
                                     color |= 0x8000;
                                     while (cur < next)
                                         *cur++ = color;
@@ -86,16 +77,13 @@ namespace UltimaXNA.Ultima.Resources
                         }
                     }
                 }
-
                 Metrics.ReportDataRead(length);
-
-                if (replaceMask080808)
-                {
+                if (replaceMask080808) {
                     for (int i = 0; i < pixels.Length; i++)
-                        if (pixels[i] == 0x8421)
+                        if (pixels[i] == 0x8421) {
                             pixels[i] = 0xFC1F;
+                        }
                 }
-
                 Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Bgra5551);
                 texture.SetData(pixels);
                 m_TextureCache[index] = texture;

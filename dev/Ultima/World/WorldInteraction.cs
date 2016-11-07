@@ -8,6 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,6 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
@@ -26,8 +26,7 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.UI;
 #endregion
 
-namespace UltimaXNA.Ultima.World
-{
+namespace UltimaXNA.Ultima.World {
     /// <summary>
     /// Hosts methods for interacting with the world.
     /// </summary>
@@ -56,42 +55,6 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        public void SendSpeech(string text, ChatMode mode) // used by chatwindow.
-        {
-            MessageTypes speechType = MessageTypes.Normal;
-            int hue = 0;
-
-            switch (mode)
-            {
-                case ChatMode.Default:
-                    speechType = MessageTypes.Normal;
-                    hue = Settings.UserInterface.SpeechColor;
-                    break;
-                case ChatMode.Whisper:
-                    speechType = MessageTypes.Whisper;
-                    hue = Settings.UserInterface.SpeechColor;
-                    break;
-                case ChatMode.Emote:
-                    speechType = MessageTypes.Emote;
-                    hue = Settings.UserInterface.EmoteColor;
-                    break;
-                case ChatMode.Party:
-                    // not yet implemented
-                    speechType = MessageTypes.Normal;
-                    hue = Settings.UserInterface.SpeechColor;
-                    break;
-                case ChatMode.Guild:
-                    speechType = MessageTypes.Guild;
-                    hue = Settings.UserInterface.GuildMsgColor;
-                    break;
-                case ChatMode.Alliance:
-                    speechType = MessageTypes.Alliance;
-                    hue = Settings.UserInterface.AllianceMsgColor;
-                    break;
-            }
-            m_Network.Send(new AsciiSpeechPacket(speechType, 0, hue + 2, "ENU", text));
-        }
-
         /// <summary>
         /// Informs the server we have single-clicked on an entity. Also requests a context menu.
         /// </summary>
@@ -106,7 +69,29 @@ namespace UltimaXNA.Ultima.World
         {
             if (item!=null)
                 m_Network.Send(new DoubleClickPacket(item.Serial));
-        } 
+        }
+        
+        public void AttackRequest(Mobile mobile)
+        {
+            // Do nothing on Invulnerable
+            if (mobile.Notoriety == 0x7){
+            }
+            // Attack Innocents, Reds and Greys
+            else if (mobile.Notoriety == 0x1 || mobile.Notoriety == 0x3 || mobile.Notoriety == 0x4 || mobile.Notoriety == 0x5 || mobile.Notoriety == 0x6)
+            {
+                m_Network.Send(new AttackRequestPacket(mobile.Serial));
+            }
+            // CrimeQuery is enabled, ask before attacking others
+            else if (Settings.UserInterface.CrimeQuery)
+            {
+                m_UserInterface.AddControl(new CrimeQueryGump(mobile), 0, 0);
+            }
+            // CrimeQuery is disabled, so attack without asking
+            else
+            {
+                m_Network.Send(new AttackRequestPacket(mobile.Serial));
+            }
+        }
 
         public void ToggleWarMode() // used by paperdollgump.
         {
@@ -225,7 +210,7 @@ namespace UltimaXNA.Ultima.World
             }
             else
             {
-                ChatMessage("[LABEL] " + text, font, hue, asUnicode);
+                ChatMessage(text, font, hue, asUnicode);
             }
         }
 

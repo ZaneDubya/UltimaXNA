@@ -21,7 +21,7 @@ namespace UltimaXNA.Core.Graphics
 {
     public class SpriteBatch3D
     {
-        private const int MAX_VERTICES_PER_DRAW = 0x2000;
+        private const int MAX_VERTICES_PER_DRAW = 0x4000;
         private const int INITIAL_TEXTURE_COUNT = 0x800;
         private const float MAX_ACCURATE_SINGLE_FLOAT = 65536; // this number is somewhat arbitrary; it's the number at which the
         // difference between two subsequent integers is +/-0.005. See http://stackoverflow.com/questions/872544/precision-of-floating-point
@@ -221,7 +221,7 @@ namespace UltimaXNA.Core.Graphics
                     List<VertexPositionNormalTextureHue> vertexList = vertexEnumerator.Current.Value;
                     GraphicsDevice.Textures[0] = texture;
 
-                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, CopyVerticesToArray(vertexList), 0, vertexList.Count, m_IndexBuffer, 0, vertexList.Count / 2);
+                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, CopyVerticesToArray(vertexList), 0,  Math.Min(vertexList.Count,MAX_VERTICES_PER_DRAW), m_IndexBuffer, 0, vertexList.Count / 2);
                     vertexList.Clear();
                     m_VertexListQueue.Enqueue(vertexList);
                 }

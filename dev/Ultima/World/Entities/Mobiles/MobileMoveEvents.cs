@@ -1,4 +1,13 @@
-﻿using System;
+﻿/***************************************************************************
+ *   MobileMoveEvents.cs
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+ using System;
 
 namespace UltimaXNA.Ultima.World.Entities.Mobiles
 {
@@ -14,20 +23,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         private int m_FastWalkKey;
         MobileMoveEvent[] m_History;
 
-        public bool SlowSync
-        {
-            get
-            {
-                if (m_SequenceNextSend > m_LastSequenceAck + 4)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
+        public bool SlowSync => (m_SequenceNextSend > m_LastSequenceAck + 4);
 
         public MobileMoveEvents()
         {

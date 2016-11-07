@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities.Multis

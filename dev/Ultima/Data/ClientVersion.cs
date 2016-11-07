@@ -1,76 +1,81 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using UltimaXNA.Ultima.IO;
 
-namespace UltimaXNA.Ultima.Data
-{
-    public static class ClientVersion
-    {
-        private static readonly Version m_UnknownClientVersion = new Version("0.0.0.0");
-        private static readonly Version m_ExtendedFeaturesVersion = new Version("6.0.14.2");
-        private static readonly Version m_ConvertedToUOPVersion = new Version("7.0.24.0");
+namespace UltimaXNA.Ultima.Data {
+    public static class ClientVersion {
+        // NOTE FROM ZaneDubya: DO NOT change DefaultVersion from 6.0.6.2.
+        // We are focusing our efforts on getting a specific version of the client working.
+        // Once we have this version working, we will attempt to support additional versions.
+        // We will not support any issues you experience after changing this value.
+        public static readonly byte[] DefaultVersion = { 6, 0, 6, 2 };
 
-        private static Version m_Version = null;
-        private static bool m_VersionUnlocked = false; // set to true after server sends 0xbd packet.
+        static readonly byte[] m_UnknownClientVersion = { 0, 0, 0, 0 };
+        static readonly byte[] m_ExtendedAddItemToContainer = { 6, 0, 1, 7 };
+        static readonly byte[] m_ExtendedFeaturesVersion = { 6, 0, 14, 2 };
+        static readonly byte[] m_ConvertedToUOPVersion = { 7, 0, 24, 0 };
+        static byte[] m_ClientExeVersion;
 
-        public static Version Version
-        {
-            get
-            {
-                if (m_Version == null)
-                {
-                    string clientExe = FileManager.GetPath("client.exe");
-
-                    if (File.Exists(clientExe))
-                    {
-                        FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(clientExe);
-                        m_Version = new Version(
-                            fileVersionInfo.FileMajorPart,
-                            fileVersionInfo.FileMinorPart,
-                            fileVersionInfo.FileBuildPart,
-                            fileVersionInfo.FilePrivatePart);
+        public static byte[] ClientExe {
+            get {
+                if (m_ClientExeVersion == null) {
+                    string path = FileManager.GetPath("client.exe");
+                    if (File.Exists(path)) {
+                        FileVersionInfo clientExeVersion = FileVersionInfo.GetVersionInfo(path);
+                        m_ClientExeVersion = new byte[] {
+                            (byte)clientExeVersion.FileMajorPart, (byte)clientExeVersion.FileMinorPart,
+                            (byte)clientExeVersion.FileBuildPart, (byte)clientExeVersion.FilePrivatePart };
                     }
-                    else
-                    {
-                        m_Version = m_UnknownClientVersion;
+                    else {
+                        m_ClientExeVersion = m_UnknownClientVersion;
                     }
                 }
-
-                if (m_VersionUnlocked)
-                    return m_Version;
-                else
-                    return m_UnknownClientVersion;
+                return m_ClientExeVersion;
             }
         }
 
-        /// <summary>
-        /// Call after server sends version request packet - 0xbd
-        /// </summary>
-        public static void UnlockVersion()
-        {
-            m_VersionUnlocked = true;
+        public static bool InstallationIsUopFormat => GreaterThanOrEqualTo(ClientExe, m_ConvertedToUOPVersion);
+
+        public static bool HasExtendedFeatures(byte[] version) => GreaterThanOrEqualTo(version, m_ExtendedFeaturesVersion);
+
+        public static bool HasExtendedAddItemPacket(byte[] version) => GreaterThanOrEqualTo(version, m_ExtendedAddItemToContainer);
+
+        public static bool EqualTo(byte[] a, byte[] b) {
+            if (a == null || b == null) {
+                return false;
+            }
+            if (a.Length != b.Length) {
+                return false;
+            }
+            int index = 0;
+            while (index < a.Length) {
+                if (a[index] != b[index]) {
+                    return false;
+                }
+                index++;
+            }
+            return true;
         }
 
-        public static void ClearVersion()
-        {
-            m_Version = null;
-            m_VersionUnlocked = false;
-        }
-
-        public static bool IsUnknownClientVersion
-        {
-            get { return Version == m_UnknownClientVersion; }
-        }
-
-        public static bool HasExtendedClientFeatures
-        {
-            get { return Version >= m_ExtendedFeaturesVersion; }
-        }
-
-        public static bool IsUopFormat
-        {
-            get { return Version >= m_ConvertedToUOPVersion; }
+        /// <summary> Compare two arrays of equal size. Returns true if first parameter array is greater than or equal to second. </summary>
+        static bool GreaterThanOrEqualTo(byte[] a, byte[] b) {
+            if (a == null || b == null) {
+                return false;
+            }
+            if (a.Length != b.Length) {
+                return false;
+            }
+            int index = 0;
+            while (index < a.Length) {
+                if (a[index] > b[index]) {
+                    return true;
+                }
+                if (a[index] < b[index]) {
+                    return false;
+                }
+                index++;
+            }
+            return true;
         }
     }
 }

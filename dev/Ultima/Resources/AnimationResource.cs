@@ -18,41 +18,40 @@ using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.Resources
 {
-    internal sealed class AnimationResource
+    sealed class AnimationResource
     {
-        private const int ANIM_COUNT = 0x0800;
-        private const int ANIM_MASK = 0x07FF;
+        const int ANIM_COUNT = 0x0800;
+        const int ANIM_MASK = 0x07FF;
 
         public const int HUMANOID_STAND_INDEX = 0x04;
         public const int HUMANOID_MOUNT_INDEX = 0x19;
         public const int HUMANOID_SIT_INDEX = 0x23; // 35
 
-        private const int COUNT_ANIMS = 0x1000;
-        private const int COUNT_ACTIONS = 36; // max UO action index is 34 (0-based, thus 35), we add one additional index for the humanoid sitting action.
-        private const int COUNT_DIRECTIONS = 8;
+        const int COUNT_ANIMS = 0x1000;
+        const int COUNT_ACTIONS = 36; // max UO action index is 34 (0-based, thus 35), we add one additional index for the humanoid sitting action.
+        const int COUNT_DIRECTIONS = 8;
 
-        private AFileIndex m_FileIndex = (AFileIndex)FileManager.CreateFileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
-        public AFileIndex FileIndex { get { return m_FileIndex; } }
+        AFileIndex m_FileIndex = FileManager.CreateFileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
+        AFileIndex m_FileIndex2 = FileManager.CreateFileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
+        AFileIndex m_FileIndex3 = FileManager.CreateFileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
+        AFileIndex m_FileIndex4 = FileManager.CreateFileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
+        AFileIndex m_FileIndex5 = FileManager.CreateFileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
 
-        private AFileIndex m_FileIndex2 = (AFileIndex)FileManager.CreateFileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
-        public AFileIndex FileIndex2 { get { return m_FileIndex2; } }
+        IAnimationFrame[][][][] m_Cache;
+        GraphicsDevice m_Graphics;
 
-        private AFileIndex m_FileIndex3 = (AFileIndex)FileManager.CreateFileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
-        public AFileIndex FileIndex3 { get { return m_FileIndex3; } }
-
-        private AFileIndex m_FileIndex4 = (AFileIndex)FileManager.CreateFileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
-        public AFileIndex FileIndex4 { get { return m_FileIndex4; } }
-
-        private AFileIndex m_FileIndex5 = (AFileIndex)FileManager.CreateFileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
-        public AFileIndex FileIndex5 { get { return m_FileIndex5; } }
-
-        private IAnimationFrame[][][][] m_Cache;
-        private GraphicsDevice m_Graphics;
+        public AFileIndex FileIndex => m_FileIndex;
+        public AFileIndex FileIndex2 => m_FileIndex2;
+        public AFileIndex FileIndex3 => m_FileIndex3;
+        public AFileIndex FileIndex4 => m_FileIndex4;
+        public AFileIndex FileIndex5 => m_FileIndex5;
 
         public AnimationResource(GraphicsDevice graphics)
         {
             m_Graphics = graphics;
             m_Cache = new IAnimationFrame[COUNT_ANIMS][][][];
+            int hue = 0;
+            IAnimationFrame[] fs = GetAnimation(719, ref hue, 0, 0);
         }
 
         public IAnimationFrame[] GetAnimation(int body, ref int hue, int action, int direction)
@@ -66,7 +65,7 @@ namespace UltimaXNA.Ultima.Resources
             if (body <= 0)
                 return null;
 
-            if (!BodyExists(body))
+            if (!DoesBodyExist(body))
                 BodyDef.TranslateBodyAndHue(ref body, ref hue);
 
             IAnimationFrame[] frames = CheckCache(body, action, direction);
@@ -103,7 +102,7 @@ namespace UltimaXNA.Ultima.Resources
             return m_Cache[body][action][direction] = frames;
         }
 
-        private IAnimationFrame[] LoadAnimation(BinaryFileReader reader, AnimationFrame.SittingTransformation sitting)
+        IAnimationFrame[] LoadAnimation(BinaryFileReader reader, AnimationFrame.SittingTransformation sitting)
         {
             ushort[] palette = GetPalette(reader); // 0x100 * 2 = 0x0200 bytes
             int read_start = (int)reader.Position; // save file position after palette.
@@ -111,7 +110,8 @@ namespace UltimaXNA.Ultima.Resources
             int frameCount = reader.ReadInt(); // 0x04 bytes
 
             int[] lookups = new int[frameCount]; // frameCount * 0x04 bytes
-            for (int i = 0; i < frameCount; ++i) { lookups[i] = reader.ReadInt(); }
+            for (int i = 0; i < frameCount; ++i)
+            { lookups[i] = reader.ReadInt(); }
 
             IAnimationFrame[] frames = new AnimationFrame[frameCount];
             for (int i = 0; i < frameCount; ++i)
@@ -129,7 +129,7 @@ namespace UltimaXNA.Ultima.Resources
             return frames;
         }
 
-        private ushort[] GetPalette(BinaryFileReader reader)
+        ushort[] GetPalette(BinaryFileReader reader)
         {
             ushort[] pal = new ushort[0x100];
             for (int i = 0; i < 0x100; ++i)
@@ -139,7 +139,7 @@ namespace UltimaXNA.Ultima.Resources
             return pal;
         }
 
-        private IAnimationFrame[] CheckCache(int body, int action, int direction)
+        IAnimationFrame[] CheckCache(int body, int action, int direction)
         {
             // Make sure the cache is complete.
             if (m_Cache[body] == null)
@@ -154,7 +154,7 @@ namespace UltimaXNA.Ultima.Resources
                 return null;
         }
 
-        private void GetIndexes(int body, int action, int direction, out int index, out AFileIndex fileIndex)
+        void GetIndexes(int body, int action, int direction, out int index, out AFileIndex fileIndex)
         {
             if (body < 0 || body >= COUNT_ANIMS)
                 body = 0;
@@ -166,51 +166,43 @@ namespace UltimaXNA.Ultima.Resources
                 case 1:
                     {
                         fileIndex = m_FileIndex;
-
                         if (body < 200)
                             index = body * 110;
                         else if (body < 400)
                             index = 22000 + ((body - 200) * 65);
                         else
                             index = 35000 + ((body - 400) * 175);
-
                         break;
                     }
                 case 2:
                     {
                         fileIndex = m_FileIndex2;
-
                         if (body < 200)
                             index = body * 110;
                         else
                             index = 22000 + ((body - 200) * 65);
-
                         break;
                     }
                 case 3:
                     {
                         fileIndex = m_FileIndex3;
-
                         if (body < 300)
                             index = body * 65;
                         else if (body < 400)
                             index = 33000 + ((body - 300) * 110);
                         else
                             index = 35000 + ((body - 400) * 175);
-
                         break;
                     }
                 case 4:
                     {
                         fileIndex = m_FileIndex4;
-
                         if (body < 200)
                             index = body * 110;
                         else if (body < 400)
                             index = 22000 + ((body - 200) * 65);
                         else
                             index = 35000 + ((body - 400) * 175);
-
                         break;
                     }
                 case 5:
@@ -222,7 +214,6 @@ namespace UltimaXNA.Ultima.Resources
                             index = 22000 + ((body - 200) * 65);
                         else
                             index = 35000 + ((body - 400) * 175);
-
                         break;
                     }
             }
@@ -239,13 +230,12 @@ namespace UltimaXNA.Ultima.Resources
             }
         }
 
-        private bool BodyExists(int body)
+        bool DoesBodyExist(int body)
         {
             int animIndex;
             AFileIndex fileIndex;
             int length, extra;
             bool patched;
-
             GetIndexes(body, 0, 0, out animIndex, out fileIndex);
             BinaryFileReader reader = fileIndex.Seek(animIndex, out length, out extra, out patched);
             if (reader == null)

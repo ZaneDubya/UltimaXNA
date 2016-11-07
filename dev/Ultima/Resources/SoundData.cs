@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.Resources
         {
             try
             {
-                m_Index = ClientVersion.IsUopFormat ? FileManager.CreateFileIndex("soundLegacyMUL.uop", 0xFFF, false, ".dat") : FileManager.CreateFileIndex("soundidx.mul", "sound.mul", 0x1000, -1); // new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
+                m_Index = ClientVersion.InstallationIsUopFormat ? FileManager.CreateFileIndex("soundLegacyMUL.uop", 0xFFF, false, ".dat") : FileManager.CreateFileIndex("soundidx.mul", "sound.mul", 0x1000, -1); // new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
                // m_Stream = new FileStream(FileManager.GetFilePath("sound.mul"), FileMode.Open);
                 m_filesPrepared = true;
             }

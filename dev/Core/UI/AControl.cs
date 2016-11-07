@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Core.UI
@@ -137,16 +138,7 @@ namespace UltimaXNA.Core.UI
         /// </summary>
         public bool IsVisible { get; set; }
 
-        private bool _isedit = true;
-
-        public bool IsEditable
-        {
-            get { return _isedit; }
-            set
-            {
-                _isedit = value;
-            }
-        }
+        public bool IsEditable { get; set; }
 
         /// <summary>
         /// A list of all the child controls that this control owns.
@@ -631,25 +623,18 @@ namespace UltimaXNA.Core.UI
 
         #region Tooltip
 
-        private string m_Tooltip = null;
+        string m_Tooltip;
 
-        public string Tooltip
-        {
-            get { return m_Tooltip; }
-        }
+        public string Tooltip => m_Tooltip;
 
-        public bool HasTooltip
-        {
-            get
-            {
-                return (m_Tooltip != null);
-            }
-        }
+        public bool HasTooltip => Features.TooltipsEnabled && (m_Tooltip != null);
 
         public void SetTooltip(string caption)
         {
-            if (caption == null)
+            if (string.IsNullOrEmpty(caption))
+            {
                 ClearTooltip();
+            }
             else
             {
                 m_Tooltip = caption;

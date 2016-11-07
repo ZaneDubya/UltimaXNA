@@ -9,34 +9,31 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.Login.Servers;
+using UltimaXNA.Ultima.Login.Data;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.LoginGumps
-{
-    public delegate void BackToLoginScreenEvent();
-    public delegate void SelectLastServerEvent();
-    public delegate void LoginToAServerEvent(int index);
+namespace UltimaXNA.Ultima.UI.LoginGumps {
+    class SelectServerGump : Gump {
+        Action m_OnBackToLoginScreen;
+        Action m_OnSelectLastServer;
+        Action<int> m_OnSelectServer;
 
-    class SelectServerGump : Gump
-    {
-        public event BackToLoginScreenEvent OnBackToLoginScreen;
-        public event SelectLastServerEvent OnSelectLastServer;
-        public event LoginToAServerEvent OnSelectServer;
-
-        enum SelectServerGumpButtons
-        {
+        enum SelectServerGumpButtons {
             QuitButton,
             BackButton,
             ForwardButton
         }
 
-        public SelectServerGump()
-            : base(0, 0)
-        {
+        public SelectServerGump(ServerListEntry[] servers, Action onBackToLogin, Action onSelectLastServer, Action<int> onSelectServer)
+            : base(0, 0) {
+            m_OnBackToLoginScreen = onBackToLogin;
+            m_OnSelectLastServer = onSelectLastServer;
+            m_OnSelectServer = onSelectServer;
+
             // get the resource provider
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
@@ -62,8 +59,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new HtmlGumpling(this, 472, 72, 80, 20, 0, 0, provider.GetString(1044578)), 1);
             // display the serverlist the server list.
             int idx = 0;
-            foreach (ServerListEntry e in ServerList.List)
-            {
+            foreach (ServerListEntry e in servers) {
                 // HINT: Do not use e.Index in place of idx: e.Index may non start from 0, or may contain holes, expecially on POL server
                 AddControl(new HtmlGumpling(this, 224, 104 + idx * 25, 200, 20, 0, 0, "<big><a href=\"SHARD=" + e.Index + "\" style=\"text-decoration: none\">" + e.Name + "</a></big>"), 1);
                 idx++;
@@ -79,31 +75,27 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             IsUncloseableWithRMB = true;
         }
 
-        public override void OnButtonClick(int buttonID)
-        {
-            switch ((SelectServerGumpButtons)buttonID)
-            {
+        public override void OnButtonClick(int buttonID) {
+            switch ((SelectServerGumpButtons)buttonID) {
                 case SelectServerGumpButtons.QuitButton:
                     UltimaGame.IsRunning = false;
                     break;
                 case SelectServerGumpButtons.BackButton:
-                    OnBackToLoginScreen();
+                    m_OnBackToLoginScreen();
                     break;
                 case SelectServerGumpButtons.ForwardButton:
-                    OnSelectLastServer();
+                    m_OnSelectLastServer();
                     break;
             }
         }
 
-        public override void OnHtmlInputEvent(string href, MouseEvent e)
-        {
+        public override void OnHtmlInputEvent(string href, MouseEvent e) {
             if (e != MouseEvent.Click)
                 return;
 
-            if (href.Length > 6 && href.StartsWith("SHARD="))
-            {
+            if (href.Length > 6 && href.StartsWith("SHARD=")) {
                 int serverIndex = int.Parse(href.Substring(6));
-                OnSelectServer(serverIndex);
+                m_OnSelectServer(serverIndex);
             }
         }
     }

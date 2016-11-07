@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public static Action<MoveRequestPacket> SendMoveRequestPacket;
 
-        public static bool NewDiagonalMovement = false;
+        public static bool NewDiagonalMovement = true;
 
         public bool RequiresUpdate
         {
@@ -56,6 +56,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         Direction m_playerMobile_NextMove = Direction.Nothing;
         Direction m_Facing = Direction.Up;
+        const int m_MinimumStaminaToRun = 2;
+
         public Direction Facing
         {
             get { return m_Facing; }
@@ -116,7 +118,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         /// Does not change the actual facing value.
         /// </summary>
         /// <param name="facing"></param>
-        private void PlayerMobile_SendChangeFacingMsg(Direction facing)
+        void PlayerMobile_SendChangeFacingMsg(Direction facing)
         {
             if ((Facing & Direction.FacingMask) != (facing & Direction.FacingMask))
             {
@@ -161,9 +163,15 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 {
                     while ((moveEvent = m_MoveEvents.GetNextMoveEvent(out sequence)) != null)
                     {
-                        if (moveEvent.CreatedByPlayerInput)
-                            SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
                         Facing = (Direction)moveEvent.Facing;
+                        Mobile pl = (Mobile)m_entity;
+                        if (pl.Stamina.Current == 0)
+                            break;
+                        if ((pl.Stamina.Current < m_MinimumStaminaToRun) && (pl.Stamina.Current > 0) && ((Facing & Direction.Running) == Direction.Running))
+                            Facing &= Direction.FacingMask;
+                
+                        if (moveEvent.CreatedByPlayerInput)
+                            SendMoveRequestPacket(new MoveRequestPacket((byte)Facing, (byte)sequence, moveEvent.Fastwalk));
                         Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
                         if (p != CurrentPosition)
                         {
@@ -241,7 +249,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
-        private bool PlayerMobile_CheckForMoveEvent()
+        bool PlayerMobile_CheckForMoveEvent()
         {
             if (m_playerMobile_NextMove != Direction.Nothing)
             {
@@ -283,7 +291,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             return false;
         }
 
-        private bool PlayerMobile_GetNextTile(Position3D current, Point goal, out Direction facing, out Point nextPosition, out int nextZ)
+        bool PlayerMobile_GetNextTile(Position3D current, Point goal, out Direction facing, out Point nextPosition, out int nextZ)
         {
             bool moveIsOkay;
 
@@ -301,7 +309,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 // if blocked, attempt moving in the direction 1/8 counterclockwise to the direction specified.
                 if (!moveIsOkay)
                 {
-                    facing = (Direction)((facing - 1) & Direction.ValueMask);
+                    facing = (facing - 1) & Direction.ValueMask;
                     nextPosition = MobileMovementCheck.OffsetTile(current, facing);
                     moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
                 }
@@ -309,7 +317,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                 // if blocked, attempt moving in the direction 1/8 clockwise to the direction specified.
                 if (!moveIsOkay)
                 {
-                    facing = (Direction)((facing + 2) & Direction.ValueMask);
+                    facing = (facing + 2) & Direction.ValueMask;
                     nextPosition = MobileMovementCheck.OffsetTile(current, facing);
                     moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
                 }
@@ -329,7 +337,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
-        private Direction getNextFacing(Position3D current, Point goal)
+        Direction getNextFacing(Position3D current, Point goal)
         {
             Direction facing;
 

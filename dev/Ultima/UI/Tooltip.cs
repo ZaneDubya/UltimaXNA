@@ -26,10 +26,10 @@ namespace UltimaXNA.Ultima.UI
             protected set;
         }
 
-        private RenderedText m_RenderedText;
+        RenderedText m_RenderedText;
 
-        private int m_PropertyListHash = 0;
-        private AEntity m_Entity;
+        int m_PropertyListHash = 0;
+        AEntity m_Entity;
 
         public Tooltip(string caption)
         {
