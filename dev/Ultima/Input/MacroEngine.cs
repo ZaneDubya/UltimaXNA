@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Input;
 
 namespace UltimaXNA.Ultima.Input
 {
@@ -11,31 +15,17 @@ namespace UltimaXNA.Ultima.Input
 
         public void Run(Action action)
         {
-            for (int i = 0; i < m_RunningMacros.Count; i++)
-            {
-                if (m_RunningMacros[i].Action == action)
-                {
-                    m_RunningMacros.RemoveAt(i);
-                    i--;
-                }
-            }
-            m_RunningMacros.Add(new RunningMacroAction(action));
+            if (m_RunningMacros.FindIndex(p => p.Action == action) == -1) //ignoring state which prevents multiple calls
+                m_RunningMacros.Add(new RunningMacroAction(action));
         }
 
         public void Update(double frameMS)
         {
-            for (int i = 0; i < m_RunningMacros.Count; i++)
+            m_RunningMacros.RemoveAll(p => p.IsFinished);
+            m_RunningMacros.ForEach(item =>
             {
-                if (m_RunningMacros[i].IsFinished)
-                {
-                    m_RunningMacros.RemoveAt(i);
-                    i--;
-                }
-                else
-                {
-                    m_RunningMacros[i].Update(frameMS);
-                }
-            }
+                item.Update(frameMS);
+            });
         }
 
         private class RunningMacroAction
@@ -52,25 +42,80 @@ namespace UltimaXNA.Ultima.Input
                 private set;
             }
 
-            private double m_LastMacroTimestamp = 0;
-            private int m_MacroIndex = 0;
+            public DateTime? m_MacroDelayer;
+            public int m_MacroIndex = 0;
 
             public RunningMacroAction(Action action)
             {
                 Action = action;
                 IsFinished = false;
-
                 m_MacroIndex = 0;
-                m_LastMacroTimestamp = 0;
             }
 
             public void Update(double frameMS)
             {
-                IsFinished = true;
+                if (Action.Macros.Count == 0 ||
+                    m_MacroIndex == Action.Macros.Count ||
+                    Action.Macros[0].Type == MacroType.None)
+                {
+                    IsFinished = true;
+                    return;
+                }
+                RunMacro(this);
             }
         }
 
-        private static void RunMacroAction(Action action)
+        private static void RunMacro(RunningMacroAction raction)
+        {
+            WorldModel world = ServiceRegistry.GetService<WorldModel>();
+
+            switch (raction.Action.Macros[raction.m_MacroIndex].Type)
+            {
+                case MacroType.Say:
+                    world.Interaction.SendSpeech(raction.Action.Macros[raction.m_MacroIndex].ValueString, ChatMode.Default);
+                    break;
+                case MacroType.Delay:
+                    if (raction.m_MacroDelayer == null) //delay starts
+                    {
+                        raction.m_MacroDelayer = DateTime.Now;
+                        return;
+                    }
+
+                    int delayMs = 0;
+                    bool result = int.TryParse(raction.Action.Macros[raction.m_MacroIndex].ValueString, out delayMs);
+                    if (result)
+                    {
+                        TimeSpan ts = DateTime.Now - raction.m_MacroDelayer.Value;
+                        if ((int)ts.TotalMilliseconds >= delayMs) //delay ends
+                        {
+                            raction.m_MacroDelayer = null;
+                        }
+                        else
+                        {
+                            return; //prevent iterates
+                        }
+                    }
+                    break;
+                case MacroType.UseSkill:
+                    world.Interaction.UseSkill(raction.Action.Macros[raction.m_MacroIndex].ValueInteger);
+                    break;
+                case MacroType.CastSpell:
+                    world.Interaction.CastSpell(raction.Action.Macros[raction.m_MacroIndex].ValueInteger);
+                    break;
+                case MacroType.LastTarget:
+                    var source = WorldModel.Entities.GetObject<AEntity>(world.Interaction.LastTarget, false);
+                    if (source != null)
+                    {
+                        world.Input.MousePick.PickOnly = PickType.PickStatics | PickType.PickObjects;
+                        world.Cursor.mouseTargetingEventObject(source);
+                        //need change the cursor
+                    }
+                    break;
+            }
+            raction.m_MacroIndex++;
+        }
+
+        private static void RunMacroAction(Action action)//old method
         {
             /*WorldModel world = ServiceRegistry.GetService<WorldModel>();
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();

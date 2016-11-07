@@ -366,7 +366,7 @@ namespace UltimaXNA.Ultima.World.Input
                         break;
                     case Direction.East:
                         CursorOffset = new Point(36, 24);
-                        artIndex = 8301;break;
+                        artIndex = 8301; break;
                     case Direction.Down:
                         CursorOffset = new Point(14, 33);
                         artIndex = 8302;
@@ -541,7 +541,7 @@ namespace UltimaXNA.Ultima.World.Input
             ClearTargetingWithoutTargetCancelPacket();
         }
 
-        void mouseTargetingEventObject(AEntity selectedEntity)
+        public void mouseTargetingEventObject(AEntity selectedEntity)
         {
             // If we are passed a null object, keep targeting.
             if (selectedEntity == null)
