@@ -1314,9 +1314,9 @@ namespace UltimaXNA.Ultima.World
             BookHeaderNewPacket p = (BookHeaderNewPacket)packet;
             BaseBook book = WorldModel.Entities.GetObject<BaseBook>(p.Serial, true);
 
-            book.Writable = (p.flag1 == 1 && p.flag2 == 1);
-            book.Title = p.title;
-            book.Author = p.author;
+            book.Writable = (p.Flag0 == 1 && p.Flag1 == 1);
+            book.Title = p.Title;
+            book.Author = p.Author;
         }
 
         private void ReceiveBookHeaderOld(IRecvPacket packet)
