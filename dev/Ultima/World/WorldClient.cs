@@ -828,7 +828,11 @@ namespace UltimaXNA.Ultima.World
                     m_World.Interaction.ChatMessage("[YELL] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Spell:
-                    m_World.Interaction.ChatMessage("[SPELL] " + text, font, hue, asUnicode);
+                    if (serial.IsValid)
+                    {
+                        overhead = WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue, asUnicode);
+                        PlayerState.Journaling.AddEntry(text, font, hue, speakerName, asUnicode);
+                    }
                     break;
                 case MessageTypes.Guild:
                     m_World.Interaction.ChatMessage($"[GUILD] {speakerName}: {text}", font, hue, asUnicode);
