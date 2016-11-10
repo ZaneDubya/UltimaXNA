@@ -187,7 +187,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             }
         };
 
-        private int _headerstring = -1;
+        private int h_headerstring = -1;
         public short checksum;
         private Crc16 crc;
         public int framesize;
@@ -212,7 +212,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         public virtual int SyncHeader
         {
             // E.B
-            get { return _headerstring; }
+            get { return h_headerstring; }
         }
 
         private void InitBlock()
@@ -255,7 +255,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             do
             {
                 headerstring = stream.syncHeader(syncmode);
-                _headerstring = headerstring; // E.B
+                h_headerstring = headerstring; // E.B
 
                 if (syncmode == Bitstream.INITIAL_SYNC)
                 {
@@ -416,10 +416,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         /// <summary>
         ///     Returns Mode.
         /// </summary>
-        public int mode()
-        {
-            return h_mode;
-        }
+        public int mode() => h_mode;
 
         /// <summary>
         ///     Returns Protection bit.
