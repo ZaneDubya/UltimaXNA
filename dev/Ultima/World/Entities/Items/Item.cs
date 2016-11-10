@@ -133,7 +133,6 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 
         public override void Update(double frameMS)
         {
-            if (WorldView.AllLabels && !(this is StaticItem))
             {
                 AddOverhead(MessageTypes.Label, Name, 3, 0, false);
             }
