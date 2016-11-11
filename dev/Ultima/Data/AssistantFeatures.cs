@@ -2,6 +2,10 @@
 
 namespace UltimaXNA.Ultima.Data
 {
+    /// <summary>
+    /// These are the features that are made available by Razor. Servers can explicitly disallow enabling these
+    /// features. However, because this client doesn't support Razor, for the most part, you can ignore these.
+    /// </summary>
     [Flags]
     public enum AssistantFeatures : ulong
     {
