@@ -24,12 +24,12 @@ namespace UltimaXNA.Ultima.Resources
 {
     public class TileMatrixData
     {
-        // === Static Data ============================================================================================
+        // ============================================================================================================ Static Data ============================================================================================
         private readonly uint[] MapChunkHeightList = { 512, 512, 200, 256, 181 };
         private const int m_SizeLandChunk = 196;
         private const int m_SizeLandChunkData = 192;
         private const uint m_bufferedLandChunksMaxCount = 256;
-        // === Instance data ==========================================================================================
+        // ============================================================================================================ Instance data ==========================================================================================
         private uint m_MapIndex;
         private byte[] m_EmptyStaticsChunk;
         private byte[] m_InvalidLandChunk;

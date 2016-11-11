@@ -23,14 +23,14 @@ namespace UltimaXNA.Ultima.Resources
 {
     public class TileMatrixDataPatch
     {
-        // === Static Data ============================================================================================
+        // ============================================================================================================ Static Data ============================================================================================
         private static MapDiffInfo EnabledDiffs;
         public static void EnableMapDiffs(MapDiffInfo diffs)
         {
             EnabledDiffs = diffs;
         }
 
-        // === Instance data ==========================================================================================
+        // ============================================================================================================ Instance data ==========================================================================================
         private FileStream m_LandPatchStream;
         private FileStream m_StaticPatchStream;
 
