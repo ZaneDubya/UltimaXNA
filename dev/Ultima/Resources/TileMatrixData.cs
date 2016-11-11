@@ -29,6 +29,7 @@ namespace UltimaXNA.Ultima.Resources
         const int SizeOfLandChunk = 196;
         const int SizeOfLandChunkData = 192;
         const uint CountBufferedLandChunk = 256;
+        const int SizeOfInitialStaticTileLoadingBuffer = 16384;
         static byte[] m_EmptyStaticsChunk = new byte[0];
         static byte[] m_InvalidLandChunk = new byte[SizeOfLandChunkData];
         // === Instance data ==========================================================================================
@@ -48,56 +49,26 @@ namespace UltimaXNA.Ultima.Resources
         {
             MapIndex = index;
             FileStream staticIndexStream;
-            string mapPath = FileManager.GetFilePath(String.Format("map{0}.mul", index));
-            if (File.Exists(mapPath))
+            // Map file fallback order: mapX.mul => mapXLegacyMUL.uop => (if trammel / map index 1) => map0.mul => mapXLegacyMUL.uop
+            if (!LoadMap(MapIndex, out m_MapDataStream, out m_UOPIndex))
             {
-                m_MapDataStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            }
-            else
-            {
-                mapPath = FileManager.GetFilePath(String.Format("map{0}LegacyMUL.uop", index));
-                if (File.Exists(mapPath))
+                if (MapIndex == 1 && LoadMap(0, out m_MapDataStream, out m_UOPIndex))
                 {
-                    m_MapDataStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    m_UOPIndex = new UOPIndex(m_MapDataStream);
-                }
-            }
-            if (m_MapDataStream == null)
-            {
-                // the map we tried to load does not exist. Try alternate for felucca / trammel ?
-                if (index == 1)
-                {
-                    uint trammel = 0;
-                    string mapPath2 = FileManager.GetFilePath(String.Format("map{0}.mul", trammel));
-
-                    if (File.Exists(mapPath2))
-                    {
-                        m_MapDataStream = new FileStream(mapPath2, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    }
-                    else
-                    {
-                        mapPath2 = FileManager.GetFilePath(String.Format("map{0}LegacyMUL.uop", trammel));
-                        if (File.Exists(mapPath2))
-                        {
-                            m_MapDataStream = new FileStream(mapPath2, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                            m_UOPIndex = new UOPIndex(m_MapDataStream);
-                        }
-                    }
-                    staticIndexStream = FileManager.GetFile("staidx{0}.mul", trammel);
-                    m_StaticDataStream = FileManager.GetFile("statics{0}.mul", trammel);
+                    Tracer.Debug("Map file for index 1 did not exist, successfully loaded index 0 instead.");
                 }
                 else
                 {
-                    Tracer.Critical("Unknown map index {0}", index);
+                    Tracer.Critical($"Unknown map index {MapIndex}");
                 }
             }
+            m_Patch = new TileMatrixDataPatch(this, MapIndex);
 
-            staticIndexStream = FileManager.GetFile("staidx{0}.mul", index);
-            m_StaticDataStream = FileManager.GetFile("statics{0}.mul", index);
-            m_StaticIndexReader = new BinaryReader(staticIndexStream);
-
-            ChunkHeight = MapChunkHeightList[index];
+            ChunkHeight = MapChunkHeightList[MapIndex];
             ChunkWidth = (uint)m_MapDataStream.Length / (ChunkHeight * SizeOfLandChunk);
+
+            staticIndexStream = FileManager.GetFile("staidx{0}.mul", MapIndex);
+            m_StaticDataStream = FileManager.GetFile("statics{0}.mul", MapIndex);
+            m_StaticIndexReader = new BinaryReader(staticIndexStream);
 
             m_BufferedLandChunkKeys = new uint[CountBufferedLandChunk];
             m_BufferedLandChunks = new byte[CountBufferedLandChunk][];
@@ -105,8 +76,27 @@ namespace UltimaXNA.Ultima.Resources
             {
                 m_BufferedLandChunks[i] = new byte[SizeOfLandChunkData];
             }
-            m_StaticTileLoadingBuffer = new byte[2048];
-            m_Patch = new TileMatrixDataPatch(this, index);
+            m_StaticTileLoadingBuffer = new byte[SizeOfInitialStaticTileLoadingBuffer];
+        }
+
+        bool LoadMap(uint index, out FileStream mapDataStream, out UOPIndex uopIndex)
+        {
+            mapDataStream = null;
+            uopIndex = null;
+            string mapPathMUL = FileManager.GetFilePath($"map{index}.mul");
+            string mapPathUOP = FileManager.GetFilePath($"map{index}LegacyMUL.uop");
+            if (File.Exists(mapPathMUL))
+            {
+                mapDataStream = new FileStream(mapPathMUL, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                return true;
+            }
+            if (File.Exists(mapPathUOP))
+            {
+                mapDataStream = new FileStream(mapPathUOP, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                uopIndex = new UOPIndex(m_MapDataStream);
+                return true;
+            }
+            return false;
         }
 
         public void Dispose()
@@ -118,7 +108,7 @@ namespace UltimaXNA.Ultima.Resources
 
         public byte[] GetLandChunk(uint chunkX, uint chunkY)
         {
-            return (m_MapDataStream == null) ? m_InvalidLandChunk : readLandChunk(chunkX, chunkY);
+            return (m_MapDataStream == null) ? m_InvalidLandChunk : ReadLandChunk(chunkX, chunkY);
         }
 
         /// <summary>
@@ -127,7 +117,7 @@ namespace UltimaXNA.Ultima.Resources
         public void GetLandTile(uint tileX, uint tileY, out ushort TileID, out sbyte altitude)
         {
             uint index = (((tileX % 8) + (tileY % 8) * 8) * 3);
-            byte[] data = readLandChunk(tileX >> 3, tileY >> 3);
+            byte[] data = ReadLandChunk(tileX >> 3, tileY >> 3);
             TileID = BitConverter.ToUInt16(data, (int)index);
             altitude = (sbyte)data[index + 2];
         }
@@ -181,21 +171,20 @@ namespace UltimaXNA.Ultima.Resources
             }
         }
 
-        unsafe byte[] readLandChunk(uint chunkX, uint chunkY)
+        unsafe byte[] ReadLandChunk(uint chunkX, uint chunkY)
         {
             // bounds check: keep chunk index within bounds of map
             chunkX %= ChunkWidth;
             chunkY %= ChunkHeight;
-
             // if this chunk is cached in the buffer, return the cached chunk.
             uint key = (chunkX << 16) + chunkY;
             uint index = chunkX % 16 + ((chunkY % 16) * 16);
             if (m_BufferedLandChunkKeys[index] == key)
+            {
                 return m_BufferedLandChunks[index];
-
+            }
             // if it was not cached in the buffer, we will be loading it.
             m_BufferedLandChunkKeys[index] = key;
-
             // load the map chunk from a file. Check the patch file first (mapdif#.mul), then the base file (map#.mul).
             if (m_Patch.TryGetLandPatch(MapIndex, chunkX, chunkY, ref m_BufferedLandChunks[index]))
             {
