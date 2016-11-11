@@ -144,9 +144,6 @@ namespace UltimaXNA.Core.Network
                     m_TypedHandlers[id].RemoveAt(i);
                     break;
                 }
-                else {
-                    Tracer.Critical("Unable to unregister this handler.");
-                }
             }
         }
 
