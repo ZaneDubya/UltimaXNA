@@ -16,6 +16,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
+using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
 
 namespace UltimaXNA.Core
@@ -70,6 +71,7 @@ namespace UltimaXNA.Core
             if (!HasConsole)
             {
 #if DEBUG
+                Tracer.Info("Console started in Debug mode");
                 AllocConsole();
                 InvalidateOutAndError();
 #else
@@ -121,7 +123,7 @@ namespace UltimaXNA.Core
             initializeStdOutError.Invoke(null, new object[] { true });
         }
 
-        private static void SetOutAndErrorNull()
+        static void SetOutAndErrorNull()
         {
             Console.SetOut(TextWriter.Null);
             Console.SetError(TextWriter.Null);

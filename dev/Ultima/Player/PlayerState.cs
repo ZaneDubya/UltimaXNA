@@ -13,11 +13,11 @@ namespace UltimaXNA.Ultima.Player {
 
         static PlayerState() {
             m_Instance = new PlayerState();
-
             m_Instance.m_Journal = new JournalData();
             m_Instance.m_Skills = new SkillData();
             m_Instance.m_StatLocks = new StatLockData();
             m_Instance.m_Partying = new PartySystem();
+            m_Instance.m_Features = new Features();
         }
 
         public static JournalData Journaling => m_Instance.m_Journal;
