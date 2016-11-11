@@ -1,4 +1,5 @@
-﻿using UltimaXNA.Ultima.Player.Partying;
+﻿using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Player.Partying;
 
 namespace UltimaXNA.Ultima.Player {
     class PlayerState {
@@ -22,5 +23,6 @@ namespace UltimaXNA.Ultima.Player {
         public static SkillData Skills => m_Instance.m_Skills;
         public static StatLockData StatLocks => m_Instance.m_StatLocks;
         public static PartySystem Partying => m_Instance.m_Partying;
+        public static AssistantFeatures DisabledFeatures = AssistantFeatures.None;
     }
 }

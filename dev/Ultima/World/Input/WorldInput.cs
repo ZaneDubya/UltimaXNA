@@ -157,9 +157,7 @@ namespace UltimaXNA.Ultima.World.Input
                     ContinuousMouseMovementCheck = false;
                 }
 
-                // If 1. The mouse is over the world (not over UI) and
-                //    2. The cursor is not blocking input, then interpret mouse input.
-                if (IsMouseOverWorld && !World.Cursor.IsHoldingItem)
+                if (IsMouseOverWorld)
                 {
                     InternalParseMouse(frameMS);
                 }

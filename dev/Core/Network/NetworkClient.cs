@@ -448,7 +448,7 @@ namespace UltimaXNA.Core.Network
                     byte[] formatBuffer = m_BufferPool.AcquireBuffer();
                     Buffer.BlockCopy(buffer, index, formatBuffer, 0, length - index);
                     Tracer.Warn("Unhandled packet with id: 0x{0:x2}, possible subid: 0x{1:x2}{2}{3}", buffer[index], buffer[index + 1], Environment.NewLine, Utility.FormatBuffer(formatBuffer, length - index));
-                    index += length;
+                    index += length - index;
                     break;
                 }
 
