@@ -58,7 +58,7 @@ namespace UltimaXNA.Ultima.Resources
                 }
                 else
                 {
-                    Tracer.Critical($"Unknown map index {MapIndex}");
+                    Tracer.Critical($"Unable to load map index {MapIndex}");
                 }
             }
             ChunkHeight = MapChunkHeightList[MapIndex];
@@ -73,7 +73,7 @@ namespace UltimaXNA.Ultima.Resources
                 }
                 else
                 {
-                    Tracer.Critical($"Unknown static index {MapIndex}");
+                    Tracer.Critical($"Unable to load static index {MapIndex}");
                 }
             }
             // load buffers
@@ -123,8 +123,9 @@ namespace UltimaXNA.Ultima.Resources
 
         public void Dispose()
         {
-            m_StaticIndexReader?.Close();
             m_MapDataStream?.Close();
+            m_UOPIndex?.Close();
+            m_StaticIndexReader?.Close();
             m_StaticDataStream?.Close();
         }
 
