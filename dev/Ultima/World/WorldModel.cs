@@ -33,12 +33,11 @@ namespace UltimaXNA.Ultima.World
         // ============================================================================================================
         // Private variables
         // ============================================================================================================
-        private Map m_Map;
-        private WorldCursor m_Cursor;
-        // services
-        private readonly INetworkClient m_Network;
-        private readonly UserInterfaceService m_UserInterface;
-        private readonly UltimaGame m_Engine;
+        Map m_Map;
+        WorldCursor m_Cursor;
+        readonly INetworkClient m_Network;
+        readonly UserInterfaceService m_UserInterface;
+        readonly UltimaGame m_Engine;
 
         // ============================================================================================================
         // Public Static Properties
@@ -110,10 +109,7 @@ namespace UltimaXNA.Ultima.World
         {
             get
             {
-                if (m_Map == null)
-                    return 0xFFFFFFFF;
-                else
-                    return m_Map.Index;
+                return (m_Map == null) ? 0xFFFFFFFF : m_Map.Index;
             }
             set
             {
@@ -264,7 +260,7 @@ namespace UltimaXNA.Ultima.World
             Disconnect();
         }
 
-        private void SaveOpenGumps()
+        void SaveOpenGumps()
         {
             Settings.Gumps.SavedGumps.Clear();
             foreach (AControl gump in m_UserInterface.Controls)
@@ -283,7 +279,7 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void RestoreSavedGumps()
+        void RestoreSavedGumps()
         {
             foreach (SavedGumpProperty savedGump in Settings.Gumps.SavedGumps)
             {
