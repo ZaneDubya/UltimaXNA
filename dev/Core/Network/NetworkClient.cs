@@ -132,9 +132,6 @@ namespace UltimaXNA.Core.Network
                             m_TypedHandlers[id].RemoveAt(i);
                             i--;
                         }
-                        else {
-                            Tracer.Critical("Unable to unregister this handler.");
-                        }
                     }
                 }
             }
@@ -328,19 +325,15 @@ namespace UltimaXNA.Core.Network
             try
             {
                 Socket socket = state.Socket;
-
                 if (socket.Connected == false)
                 {
                     Disconnect();
                     return;
                 }
-
                 int length = socket.EndReceive(result);
-
                 if (length > 0)
                 {
                     byte[] buffer = state.Buffer;
-
                     if (m_IsDecompressionEnabled)
                     {
                         DecompressBuffer(ref buffer, ref length);
@@ -440,9 +433,7 @@ namespace UltimaXNA.Core.Network
                     // TODO: Move this to a buffer pool, need to investigate max byte[].length and pool size
                     byte[] packetBuffer = new byte[realLength];
                     Buffer.BlockCopy(buffer, index, packetBuffer, 0, realLength);
-
                     AddPacket(packetHandler, packetBuffer, realLength);
-
                     index += realLength;
                 }
                 else
