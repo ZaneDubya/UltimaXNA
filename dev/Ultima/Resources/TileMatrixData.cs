@@ -1,7 +1,7 @@
 ﻿/***************************************************************************
  *   TileMatrixData.cs
- *   Based on TileMatrix.cs from RunUO
- *      (c) The RunUO Software Team
+ *   Based on TileMatrix.cs from RunUO: https://github.com/runuo/runuo
+ *      Copyright (c) 2002 The RunUO Software Team
  *   And on code from OpenUO: https://github.com/jeffboulanger/OpenUO
  *      Copyright (c) 2011 OpenUO Software Team.
  *   
@@ -32,6 +32,7 @@ namespace UltimaXNA.Ultima.Resources
         const int SizeOfInitialStaticTileLoadingBuffer = 16384;
         static byte[] m_EmptyStaticsChunk = new byte[0];
         static byte[] m_InvalidLandChunk = new byte[SizeOfLandChunkData];
+
         // === Instance data ==========================================================================================
         public readonly uint ChunkHeight;
         public readonly uint ChunkWidth;
@@ -48,7 +49,6 @@ namespace UltimaXNA.Ultima.Resources
         public TileMatrixData(uint index)
         {
             MapIndex = index;
-            FileStream staticIndexStream;
             // Map file fallback order: mapX.mul => mapXLegacyMUL.uop => (if trammel / map index 1) => map0.mul => mapXLegacyMUL.uop
             if (!LoadMapStream(MapIndex, out m_MapDataStream, out m_UOPIndex))
             {
@@ -153,10 +153,10 @@ namespace UltimaXNA.Ultima.Resources
                 length = 0;
                 return m_EmptyStaticsChunk;
             }
-            return readStaticChunk(chunkX, chunkY, out length);
+            return ReadStaticChunk(chunkX, chunkY, out length);
         }
 
-        unsafe byte[] readStaticChunk(uint chunkX, uint chunkY, out int length)
+        unsafe byte[] ReadStaticChunk(uint chunkX, uint chunkY, out int length)
         {
             // bounds check: keep chunk index within bounds of map
             chunkX %= ChunkWidth;
