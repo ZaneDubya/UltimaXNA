@@ -20,6 +20,7 @@ using UltimaXNA.Ultima.Input;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
@@ -188,7 +189,7 @@ namespace UltimaXNA.Ultima.Login {
 
         void ReceiveEnableFeatures(IRecvPacket packet) {
             SupportedFeaturesPacket p = (SupportedFeaturesPacket)packet;
-            Features.SetFlags(p.Flags);
+            PlayerState.ClientFeatures.SetFlags(p.Flags);
         }
 
         void ReceiveVersionRequest(IRecvPacket packet) {

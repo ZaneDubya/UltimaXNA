@@ -9,6 +9,7 @@ namespace UltimaXNA.Ultima.Player {
         SkillData m_Skills;
         StatLockData m_StatLocks;
         PartySystem m_Partying;
+        Features m_Features;
 
         static PlayerState() {
             m_Instance = new PlayerState();
@@ -23,6 +24,7 @@ namespace UltimaXNA.Ultima.Player {
         public static SkillData Skills => m_Instance.m_Skills;
         public static StatLockData StatLocks => m_Instance.m_StatLocks;
         public static PartySystem Partying => m_Instance.m_Partying;
+        public static Features ClientFeatures => m_Instance.m_Features;
         public static AssistantFeatures DisabledFeatures = AssistantFeatures.None;
     }
 }

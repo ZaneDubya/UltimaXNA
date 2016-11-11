@@ -29,6 +29,7 @@ using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Player;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -410,23 +411,23 @@ namespace UltimaXNA.Ultima.World.Input
 
         protected override void DrawTooltip(SpriteBatchUI spritebatch, Point position)
         {
-            if (!Features.TooltipsEnabled)
-                return;
             // Do not draw tooltips if:
-            // 1. Holding an item.
-            // Draw tooltips for items:
-            // 1. Items in the world (MouseOverItem)
-            // 2. ItemGumplings (both in paperdoll and in containers)
-            // 3. the Backpack icon (in paperdolls).
-            if (IsHoldingItem)
+            // * Client version is lower than the point at which tooltips are enabled.
+            // * Player is holding an item.
+            if (!PlayerState.ClientFeatures.TooltipsEnabled || IsHoldingItem)
             {
                 if (m_Tooltip != null)
                 {
                     m_Tooltip.Dispose();
                     m_Tooltip = null;
                 }
+                return;
             }
-            else if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
+            // Draw tooltips for items:
+            // 1. Items in the world (MouseOverItem)
+            // 2. ItemGumplings (both in paperdoll and in containers)
+            // 3. the Backpack icon (in paperdolls).
+            if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
             {
                 if (m_Tooltip == null)
                     m_Tooltip = new Tooltip(MouseOverItem);

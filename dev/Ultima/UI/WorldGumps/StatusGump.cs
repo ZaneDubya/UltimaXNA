@@ -17,6 +17,7 @@ using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.Player;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -74,7 +75,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             IsMoveable = true;
 
-            if (Data.Features.AOS)
+            if (PlayerState.ClientFeatures.AOS)
             {
                 AddControl(new GumpPic(this, 0, 0, 0x2A6C, 0));
 
@@ -141,7 +142,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 m_RefreshTime = totalMS;
                 // we can just set these without checking if they've changed.
                 // The label will only update if the value has changed.
-                if (Data.Features.AOS)
+                if (PlayerState.ClientFeatures.AOS)
                 {
                     m_Labels[(int)MobileStats.Name].Text = string.Format("<center>{0}", m_Mobile.Name);
                     m_Labels[(int)MobileStats.Strength].Text = m_Mobile.Strength.ToString();

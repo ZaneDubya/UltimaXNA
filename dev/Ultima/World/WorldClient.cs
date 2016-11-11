@@ -1076,7 +1076,7 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveToolTipRevision(IRecvPacket packet)
         {
-            if (!Features.TooltipsEnabled)
+            if (!PlayerState.ClientFeatures.TooltipsEnabled)
                 return;
             ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
             AEntity entity = WorldModel.Entities.GetObject<AEntity>(p.Serial, false);
@@ -1294,7 +1294,7 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveEnableFeatures(IRecvPacket packet) {
             SupportedFeaturesPacket p = (SupportedFeaturesPacket)packet;
-            Features.SetFlags(p.Flags);
+            PlayerState.ClientFeatures.SetFlags(p.Flags);
         }
 
         void ReceiveProtocolExtension(IRecvPacket packet)

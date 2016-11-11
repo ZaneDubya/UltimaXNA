@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Player;
 #endregion
 
 namespace UltimaXNA.Core.UI
@@ -627,7 +628,7 @@ namespace UltimaXNA.Core.UI
 
         public string Tooltip => m_Tooltip;
 
-        public bool HasTooltip => Features.TooltipsEnabled && (m_Tooltip != null);
+        public bool HasTooltip => PlayerState.ClientFeatures.TooltipsEnabled && (m_Tooltip != null);
 
         public void SetTooltip(string caption)
         {

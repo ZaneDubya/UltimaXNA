@@ -21,10 +21,10 @@ namespace UltimaXNA.Ultima.Data {
                 if (m_ClientExeVersion == null) {
                     string path = FileManager.GetPath("client.exe");
                     if (File.Exists(path)) {
-                        FileVersionInfo clientExeVersion = FileVersionInfo.GetVersionInfo(path);
+                        FileVersionInfo exe = FileVersionInfo.GetVersionInfo(path);
                         m_ClientExeVersion = new byte[] {
-                            (byte)clientExeVersion.FileMajorPart, (byte)clientExeVersion.FileMinorPart,
-                            (byte)clientExeVersion.FileBuildPart, (byte)clientExeVersion.FilePrivatePart };
+                            (byte)exe.FileMajorPart, (byte)exe.FileMinorPart,
+                            (byte)exe.FileBuildPart, (byte)exe.FilePrivatePart };
                     }
                     else {
                         m_ClientExeVersion = m_UnknownClientVersion;
