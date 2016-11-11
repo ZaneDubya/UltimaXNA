@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         }
 
         private string ReadCreditsFile() {
-            string path = @"Data\credits.txt";
+            string path = @"Data/credits.txt";
             if (!File.Exists(path))
                 return "<span color='#000'>Credits file not found.";
             try {
