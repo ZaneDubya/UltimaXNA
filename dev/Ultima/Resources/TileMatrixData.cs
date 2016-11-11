@@ -18,7 +18,6 @@ using UltimaXNA.Core.Windows;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources

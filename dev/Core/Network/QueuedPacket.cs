@@ -8,7 +8,6 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.Core.Network

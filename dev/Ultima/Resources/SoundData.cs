@@ -14,7 +14,6 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.IO;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.IO;

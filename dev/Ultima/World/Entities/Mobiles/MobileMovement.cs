@@ -11,7 +11,6 @@
 #region usings
 using System;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.Network.Client;
 #endregion
 

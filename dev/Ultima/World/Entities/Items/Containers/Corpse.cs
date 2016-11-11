@@ -9,9 +9,7 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.Entities.Mobiles;

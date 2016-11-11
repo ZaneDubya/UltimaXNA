@@ -8,7 +8,6 @@
  *
  ***************************************************************************/
 
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Ultima.Data

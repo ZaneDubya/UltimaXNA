@@ -9,14 +9,13 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.Input;
 using System.IO;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.LoginGumps {
+namespace UltimaXNA.Ultima.UI.LoginGumps
+{
     public class CreditsGump : Gump {
         public CreditsGump()
             : base(0, 0) {

@@ -13,7 +13,6 @@ using System;
 using System.Text.RegularExpressions;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion

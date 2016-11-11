@@ -14,7 +14,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Windows;
 #endregion

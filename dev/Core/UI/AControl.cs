@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
-using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Player;
 #endregion
 

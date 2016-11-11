@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Input;
 using UltimaXNA.Core.IO;
 using UltimaXNA.Core.Windows;
-using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.World;
 
 namespace UltimaXNA.Ultima.Input
 {

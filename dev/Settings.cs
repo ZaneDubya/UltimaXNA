@@ -11,8 +11,6 @@
 
 #region usings
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Configuration;
 #endregion

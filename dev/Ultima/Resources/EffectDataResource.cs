@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using System.IO;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.IO;

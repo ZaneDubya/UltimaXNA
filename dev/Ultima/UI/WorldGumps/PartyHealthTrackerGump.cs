@@ -8,15 +8,14 @@
  *
  ***************************************************************************/
 
-using UltimaXNA.Core.Input;
-using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.Player.Partying;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 
-namespace UltimaXNA.Ultima.UI.WorldGumps {
+namespace UltimaXNA.Ultima.UI.WorldGumps
+{
     class PartyHealthTrackerGump : Gump
     {
         Serial m_Serial;
