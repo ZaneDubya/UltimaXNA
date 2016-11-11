@@ -13,7 +13,7 @@ using System;
 using System.Text.RegularExpressions;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
@@ -195,7 +195,7 @@ namespace UltimaXNA.Ultima.UI
                     case "tooltip":
                         // Tooltip [cliloc-number]
                         // Adds to the previous layoutarray entry a Tooltip with the in [cliloc-number] defined CliLoc entry.
-                        if (Features.TooltipsEnabled)
+                        if (PlayerState.ClientFeatures.TooltipsEnabled)
                         {
                             string cliloc = provider.GetString(int.Parse(gumpPieces[1]));
                             if (gump.LastControl != null)

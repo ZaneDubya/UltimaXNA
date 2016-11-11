@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Ultima.Resources;
+﻿using UltimaXNA.Ultima.Resources;
 
 namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
 {

@@ -7,7 +7,6 @@
  *   code), please let me know!
  *
  ***************************************************************************/
-using System;
 using System.Runtime.InteropServices;
 
 namespace UltimaXNA.Core.Diagnostics

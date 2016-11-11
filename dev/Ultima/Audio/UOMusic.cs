@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.Audio {
 
         protected string Path {
             get {
-                string path = FileManager.GetPath(string.Format("Music\\Digital\\{0}.mp3", Name));
+                string path = FileManager.GetPath(string.Format("Music/Digital/{0}.mp3", Name));
                 return path;
             }
         }

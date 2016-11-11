@@ -118,7 +118,7 @@ namespace UltimaXNA.Ultima.Resources
             {
                 if (lookups[i] < lookups[0])
                 {
-                    frames[i] = AnimationFrame.Empty; // Fix for broken animations, per issue13
+                    frames[i] = AnimationFrame.NullFrame; // Fix for broken animations, per issue13
                 }
                 else
                 {

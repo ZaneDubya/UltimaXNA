@@ -14,7 +14,6 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI.Fonts;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Resources.Fonts;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Input;

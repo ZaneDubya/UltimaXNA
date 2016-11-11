@@ -14,7 +14,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using UltimaXNA.Configuration;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;

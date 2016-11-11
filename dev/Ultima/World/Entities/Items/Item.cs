@@ -133,7 +133,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 
         public override void Update(double frameMS)
         {
-            if (WorldView.AllLabels && !(this is StaticItem))
+            if (WorldView.AllLabels && !(this is StaticItem) && (Parent == null) && (ItemData.Weight != 255))
             {
                 AddOverhead(MessageTypes.Label, Name, 3, 0, false);
             }
@@ -162,9 +162,9 @@ namespace UltimaXNA.Ultima.World.Entities.Items
                 return true;
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Last Parent routines 
-        // ======================================================================
+        // ============================================================================================================
 
         private AEntity m_lastParent;
         public bool HasLastParent

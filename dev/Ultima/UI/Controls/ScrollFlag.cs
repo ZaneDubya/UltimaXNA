@@ -14,7 +14,6 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -24,9 +23,9 @@ namespace UltimaXNA.Ultima.UI.Controls
     /// </summary>
     class ScrollFlag : AControl, IScrollBar
     {
-        // ================================================================================
+        // ============================================================================================================
         // Private variables
-        // ================================================================================
+        // ============================================================================================================
         private Texture2D m_GumpSlider = null;
 
         private int m_SliderExtentTop, m_SliderExtentHeight;
@@ -37,9 +36,9 @@ namespace UltimaXNA.Ultima.UI.Controls
         private bool m_BtnSliderClicked = false;
         private Point m_ClickPosition;
 
-        // ================================================================================
+        // ============================================================================================================
         // Public properties
-        // ================================================================================
+        // ============================================================================================================
         public int Value
         {
             get
@@ -86,9 +85,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Ctor, Initialize, Update, and Draw
-        // ================================================================================
+        // ============================================================================================================
         public ScrollFlag(AControl parent)
             : base(parent)
         {

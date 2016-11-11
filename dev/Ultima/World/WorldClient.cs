@@ -127,6 +127,7 @@ namespace UltimaXNA.Ultima.World
             Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(ReceiveSendCustomHouse));
             Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(ReceiveToolTipRevision));
             Register<CompressedGumpPacket>(0xDD, "Compressed Gump", -1, new TypedPacketReceiveHandler(ReceiveCompressedGump));
+            Register<ProtocolExtensionPacket>(0xF0, "Protocol Extension", -1, new TypedPacketReceiveHandler(ReceiveProtocolExtension));
             /* Deprecated (not used by RunUO) and/or not implmented
              * Left them here incase we need to implement in the future
             network.Register<HealthBarStatusPacket>(0x17, "Health Bar Status Update", 12, OnHealthBarStatusUpdate);
@@ -146,7 +147,6 @@ namespace UltimaXNA.Ultima.World
             network.Register<RecvPacket>(0xDE, "Update Mobile Status", -1, OnUpdateMobileStatus);
             network.Register<RecvPacket>(0xDF, "Buff/Debuff System", -1, OnBuffDebuff);
             network.Register<RecvPacket>(0xE2, "Mobile status/Animation update", -1, OnMobileStatusAnimationUpdate);
-            network.Register<RecvPacket>(0xF0, "Krrios client special", -1, OnKrriosClientSpecial);
             */
             MobileMovement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
         }
@@ -263,9 +263,9 @@ namespace UltimaXNA.Ultima.World
             m_Network.Send(packet);
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Effect handling
-        // ======================================================================
+        // ============================================================================================================
 
         void ReceiveGraphicEffect(IRecvPacket packet)
         {
@@ -282,9 +282,9 @@ namespace UltimaXNA.Ultima.World
             WorldModel.Effects.Add((GraphicEffectExtendedPacket)packet);
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Entity handling
-        // ======================================================================
+        // ============================================================================================================
 
         void ReceiveAddMultipleItemsToContainer(IRecvPacket packet)
         {
@@ -604,9 +604,9 @@ namespace UltimaXNA.Ultima.World
             m_World.Interaction.ClearHolding();
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Corpse handling
-        // ======================================================================
+        // ============================================================================================================
 
         void ReceiveCorpseClothing(IRecvPacket packet)
         {
@@ -622,9 +622,9 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Combat handling
-        // ======================================================================
+        // ============================================================================================================
 
         void ReceiveChangeCombatant(IRecvPacket packet)
         {
@@ -686,9 +686,9 @@ namespace UltimaXNA.Ultima.World
             entity.Health.Update(p.Current, p.Max);
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Chat / messaging handling
-        // ======================================================================
+        // ============================================================================================================
 
         void ReceiveCLILOCMessage(IRecvPacket packet)
         {
@@ -828,7 +828,11 @@ namespace UltimaXNA.Ultima.World
                     m_World.Interaction.ChatMessage("[YELL] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Spell:
-                    m_World.Interaction.ChatMessage("[SPELL] " + text, font, hue, asUnicode);
+                    if (serial.IsValid)
+                    {
+                        overhead = WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue, asUnicode);
+                        PlayerState.Journaling.AddEntry(text, font, hue, speakerName, asUnicode);
+                    }
                     break;
                 case MessageTypes.Guild:
                     m_World.Interaction.ChatMessage($"[GUILD] {speakerName}: {text}", font, hue, asUnicode);
@@ -851,9 +855,9 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Gump & Menu handling
-        // ======================================================================
+        // ============================================================================================================
 
         void ReceiveResurrectionMenu(IRecvPacket packet)
         {
@@ -1072,7 +1076,7 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveToolTipRevision(IRecvPacket packet)
         {
-            if (!Features.TooltipsEnabled)
+            if (!PlayerState.ClientFeatures.TooltipsEnabled)
                 return;
             ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
             AEntity entity = WorldModel.Entities.GetObject<AEntity>(p.Serial, false);
@@ -1290,7 +1294,22 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveEnableFeatures(IRecvPacket packet) {
             SupportedFeaturesPacket p = (SupportedFeaturesPacket)packet;
-            Features.SetFlags(p.Flags);
+            PlayerState.ClientFeatures.SetFlags(p.Flags);
+        }
+
+        void ReceiveProtocolExtension(IRecvPacket packet)
+        {
+            ProtocolExtensionPacket p = packet as ProtocolExtensionPacket;
+            switch (p.Subcommand)
+            {
+                case ProtocolExtensionPacket.SubcommandNegotiateFeatures:
+                    PlayerState.DisabledFeatures = p.DisabledFeatures;
+                    m_Network.Send(new NegotiateFeatureResponsePacket());
+                    break;
+                default:
+                    Tracer.Warn($"Unhandled protocol extension packet (0xF0) with subcommand: 0x{p.Subcommand:x2}");
+                    break;
+            }
         }
     }
 }

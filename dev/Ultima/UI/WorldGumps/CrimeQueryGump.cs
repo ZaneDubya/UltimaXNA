@@ -12,7 +12,6 @@
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 

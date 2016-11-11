@@ -66,9 +66,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Public methods and properties: ctr, update, draw
-        // ======================================================================
+        // ============================================================================================================
 
         public MobileView(AEntity entity)
             : base(entity)
@@ -119,6 +119,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             InternalSetupLayers();
 
+            if (m_MobileLayers[0].Frame == null)
+                m_MobileLayers[0].Frame = AnimationFrame.NullFrame;
             int drawCenterY = m_MobileLayers[0].Frame.Center.Y;
 
             int drawX, drawY;
@@ -187,9 +189,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
             return true;
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Code to get frames for drawing
-        // ======================================================================
+        // ============================================================================================================
 
         private IAnimationFrame getFrame(int body, ref int hue, int facing, int action, float frame, out int frameCount)
         {
@@ -253,9 +255,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 return iFacing + 5;
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Layer management
-        // ======================================================================
+        // ============================================================================================================
 
         private int m_LayerCount = 0;
         private int m_FrameCount = 0;

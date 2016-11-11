@@ -9,14 +9,13 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.Input;
 using System.IO;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.LoginGumps {
+namespace UltimaXNA.Ultima.UI.LoginGumps
+{
     public class CreditsGump : Gump {
         public CreditsGump()
             : base(0, 0) {
@@ -30,7 +29,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         }
 
         private string ReadCreditsFile() {
-            string path = @"Data\credits.txt";
+            string path = @"Data/credits.txt";
             if (!File.Exists(path))
                 return "<span color='#000'>Credits file not found.";
             try {

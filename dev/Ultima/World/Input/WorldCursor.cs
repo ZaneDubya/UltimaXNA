@@ -11,7 +11,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Windows;
@@ -28,7 +27,7 @@ using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Configuration.Properties;
-using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Player;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -268,9 +267,9 @@ namespace UltimaXNA.Ultima.World.Input
             base.Dispose();
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Drawing routines
-        // ======================================================================
+        // ============================================================================================================
 
         private HuedTexture m_ItemSprite = null;
         private int m_ItemSpriteArtIndex = -1;
@@ -410,23 +409,23 @@ namespace UltimaXNA.Ultima.World.Input
 
         protected override void DrawTooltip(SpriteBatchUI spritebatch, Point position)
         {
-            if (!Features.TooltipsEnabled)
-                return;
             // Do not draw tooltips if:
-            // 1. Holding an item.
-            // Draw tooltips for items:
-            // 1. Items in the world (MouseOverItem)
-            // 2. ItemGumplings (both in paperdoll and in containers)
-            // 3. the Backpack icon (in paperdolls).
-            if (IsHoldingItem)
+            // * Client version is lower than the point at which tooltips are enabled.
+            // * Player is holding an item.
+            if (!PlayerState.ClientFeatures.TooltipsEnabled || IsHoldingItem)
             {
                 if (m_Tooltip != null)
                 {
                     m_Tooltip.Dispose();
                     m_Tooltip = null;
                 }
+                return;
             }
-            else if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
+            // Draw tooltips for items:
+            // 1. Items in the world (MouseOverItem)
+            // 2. ItemGumplings (both in paperdoll and in containers)
+            // 3. the Backpack icon (in paperdolls).
+            if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
             {
                 if (m_Tooltip == null)
                     m_Tooltip = new Tooltip(MouseOverItem);
@@ -469,9 +468,9 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Targeting enum and routines
-        // ======================================================================
+        // ============================================================================================================
 
         public enum TargetType
         {
@@ -570,9 +569,9 @@ namespace UltimaXNA.Ultima.World.Input
             ClearTargetingWithoutTargetCancelPacket();
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Interaction routines
-        // ======================================================================
+        // ============================================================================================================
 
         private void InternalRegisterInteraction()
         {
@@ -586,9 +585,9 @@ namespace UltimaXNA.Ultima.World.Input
             m_World.Interaction.OnClearHolding -= ClearHolding;
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Pickup/Drop/Hold item routines
-        // ======================================================================
+        // ============================================================================================================
 
         private Item m_HeldItem = null;
         internal Item HeldItem

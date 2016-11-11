@@ -18,7 +18,6 @@ using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;

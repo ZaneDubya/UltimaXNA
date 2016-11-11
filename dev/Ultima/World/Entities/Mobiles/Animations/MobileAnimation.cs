@@ -8,12 +8,7 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Resources;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.World.Entities;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations

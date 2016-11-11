@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
- *   ClientPingPacket.cs
- *   
+ *   NegotiateFeatureResponsePacket.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -13,12 +14,12 @@ using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    public class ClientPingPacket : SendPacket
+    class NegotiateFeatureResponsePacket : SendPacket
     {
-        public ClientPingPacket()
-            : base(0x73, "Ping Packet", 2)
+        public NegotiateFeatureResponsePacket()
+            : base(0xF0, "Negotiate Feature Response")
         {
-            Stream.Write((byte)0);
+            Stream.Write((byte)0xFF); // acknowledge handshake.
         }
     }
 }

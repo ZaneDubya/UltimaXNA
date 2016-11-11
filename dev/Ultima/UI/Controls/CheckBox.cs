@@ -24,14 +24,18 @@ namespace UltimaXNA.Ultima.UI.Controls
     /// <summary>
     /// A checkbox control.
     /// </summary>
-    internal class CheckBox : AControl
+    class CheckBox : AControl
     {
-        private Texture2D m_Inactive, m_Active;
+        Texture2D m_Inactive, m_Active;
+        bool m_ischecked = false;
 
         public bool IsChecked
         {
-            get;
-            set;
+            get { return m_ischecked; }
+            set
+            {
+                m_ischecked = value;
+            }
         }
 
         public CheckBox(AControl parent)
@@ -53,25 +57,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             initialState = Int32.Parse(arguements[5]) == 1;
             switchID = Int32.Parse(arguements[6]);
 
-            buildGumpling(x, y, inactiveID, activeID, initialState, switchID);
+            BuildGumpling(x, y, inactiveID, activeID, initialState, switchID);
         }
 
         public CheckBox(AControl parent, int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
             : this(parent)
         {
-            buildGumpling(x, y, inactiveID, activeID, initialState, switchID);
-        }
-
-        private void buildGumpling(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
-        {
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-            m_Inactive = provider.GetUITexture(inactiveID);
-            m_Active = provider.GetUITexture(activeID);
-
-            Position = new Point(x, y);
-            Size = new Point(m_Inactive.Width, m_Inactive.Height);
-            IsChecked = initialState;
-            GumpLocalID = switchID;
+            BuildGumpling(x, y, inactiveID, activeID, initialState, switchID);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
@@ -90,6 +82,18 @@ namespace UltimaXNA.Ultima.UI.Controls
         protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             IsChecked = !IsChecked;
+        }
+
+        void BuildGumpling(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
+        {
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            m_Inactive = provider.GetUITexture(inactiveID);
+            m_Active = provider.GetUITexture(activeID);
+
+            Position = new Point(x, y);
+            Size = new Point(m_Inactive.Width, m_Inactive.Height);
+            IsChecked = initialState;
+            GumpLocalID = switchID;
         }
     }
 }

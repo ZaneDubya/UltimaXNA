@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Core.Audio;
-using System;
 #endregion
 
 namespace UltimaXNA.Ultima.Audio
