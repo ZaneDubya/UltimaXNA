@@ -50,9 +50,9 @@ namespace UltimaXNA.Ultima.Resources
             MapIndex = index;
             FileStream staticIndexStream;
             // Map file fallback order: mapX.mul => mapXLegacyMUL.uop => (if trammel / map index 1) => map0.mul => mapXLegacyMUL.uop
-            if (!LoadMap(MapIndex, out m_MapDataStream, out m_UOPIndex))
+            if (!LoadMapStream(MapIndex, out m_MapDataStream, out m_UOPIndex))
             {
-                if (MapIndex == 1 && LoadMap(0, out m_MapDataStream, out m_UOPIndex))
+                if (MapIndex == 1 && LoadMapStream(0, out m_MapDataStream, out m_UOPIndex))
                 {
                     Tracer.Debug("Map file for index 1 did not exist, successfully loaded index 0 instead.");
                 }
@@ -61,15 +61,22 @@ namespace UltimaXNA.Ultima.Resources
                     Tracer.Critical($"Unknown map index {MapIndex}");
                 }
             }
-            m_Patch = new TileMatrixDataPatch(this, MapIndex);
-
             ChunkHeight = MapChunkHeightList[MapIndex];
             ChunkWidth = (uint)m_MapDataStream.Length / (ChunkHeight * SizeOfLandChunk);
-
-            staticIndexStream = FileManager.GetFile("staidx{0}.mul", MapIndex);
-            m_StaticDataStream = FileManager.GetFile("statics{0}.mul", MapIndex);
-            m_StaticIndexReader = new BinaryReader(staticIndexStream);
-
+            // load map patch and statics
+            m_Patch = new TileMatrixDataPatch(this, MapIndex);
+            if (!LoadStaticsStream(MapIndex, out m_StaticDataStream, out m_StaticIndexReader))
+            {
+                if (MapIndex == 1 && LoadStaticsStream(0, out m_StaticDataStream, out m_StaticIndexReader))
+                {
+                    Tracer.Debug("Statics file for index 1 did not exist, successfully loaded index 0 instead.");
+                }
+                else
+                {
+                    Tracer.Critical($"Unknown static index {MapIndex}");
+                }
+            }
+            // load buffers
             m_BufferedLandChunkKeys = new uint[CountBufferedLandChunk];
             m_BufferedLandChunks = new byte[CountBufferedLandChunk][];
             for (uint i = 0; i < CountBufferedLandChunk; i++)
@@ -79,21 +86,36 @@ namespace UltimaXNA.Ultima.Resources
             m_StaticTileLoadingBuffer = new byte[SizeOfInitialStaticTileLoadingBuffer];
         }
 
-        bool LoadMap(uint index, out FileStream mapDataStream, out UOPIndex uopIndex)
+        bool LoadMapStream(uint index, out FileStream mapDataStream, out UOPIndex uopIndex)
         {
             mapDataStream = null;
             uopIndex = null;
-            string mapPathMUL = FileManager.GetFilePath($"map{index}.mul");
-            string mapPathUOP = FileManager.GetFilePath($"map{index}LegacyMUL.uop");
-            if (File.Exists(mapPathMUL))
+            string path = FileManager.GetFilePath($"map{index}.mul");
+            if (File.Exists(path))
             {
-                mapDataStream = new FileStream(mapPathMUL, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                mapDataStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 return true;
             }
-            if (File.Exists(mapPathUOP))
+            path = FileManager.GetFilePath($"map{index}LegacyMUL.uop");
+            if (File.Exists(path))
             {
-                mapDataStream = new FileStream(mapPathUOP, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                mapDataStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 uopIndex = new UOPIndex(m_MapDataStream);
+                return true;
+            }
+            return false;
+        }
+
+        bool LoadStaticsStream(uint index, out FileStream dataStream, out BinaryReader indexReader)
+        {
+            dataStream = null;
+            indexReader = null;
+            string pathData = FileManager.GetFilePath($"statics{index}.mul");
+            string pathIndex = FileManager.GetFilePath($"staidx{index}.mul");
+            if (File.Exists(pathData) && File.Exists(pathIndex))
+            {
+                dataStream = new FileStream(pathData, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                indexReader = new BinaryReader(new FileStream(pathIndex, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
                 return true;
             }
             return false;
