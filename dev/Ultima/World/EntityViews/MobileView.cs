@@ -119,6 +119,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             InternalSetupLayers();
 
+            if (m_MobileLayers[0].Frame == null)
+                m_MobileLayers[0].Frame = AnimationFrame.NullFrame;
             int drawCenterY = m_MobileLayers[0].Frame.Center.Y;
 
             int drawX, drawY;

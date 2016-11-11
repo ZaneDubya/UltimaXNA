@@ -130,7 +130,9 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
+    <Compile Include="Ultima\Data\AssistantFeatures.cs" />
     <Compile Include="Ultima\Network\Client\Extensions\GuildLocationQueryPacket.cs" />
+    <Compile Include="Ultima\Network\Client\NegotiateFeatureResponsePacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyRemoveMemberPacket.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\CloseGumpInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\ContextMenuInfo.cs" />
@@ -145,6 +147,7 @@
     <Compile Include="Ultima\Network\Server\GeneralInfo\PartyMessageInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\PartyRemoveMemberInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\SpellBookContentsInfo.cs" />
+    <Compile Include="Ultima\Network\Server\ProtocolExtensionPacket.cs" />
     <Compile Include="Ultima\Player\Partying\PartyMember.cs" />
     <Compile Include="Ultima\Player\Partying\PartySystem.cs" />
     <Compile Include="Ultima\Input\Macro.cs" />
@@ -749,7 +752,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Ultima\Network\Server\ProtocolExtensions\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

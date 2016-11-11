@@ -34,12 +34,14 @@ namespace UltimaXNA.Ultima.Resources
 
         private const int DoubleXor = (0x200 << 22) | (0x200 << 12);
 
-        public static readonly AnimationFrame Empty = new AnimationFrame();
-        public static readonly AnimationFrame[] EmptyFrames = new AnimationFrame[1] { Empty };
+        public static readonly AnimationFrame NullFrame = new AnimationFrame();
+        public static readonly AnimationFrame[] NullFrames = { NullFrame };
 
         private AnimationFrame()
         {
-
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            Texture = provider.GetItemTexture(1);
+            Center = new Point(0, 0);
         }
 
         public unsafe AnimationFrame(GraphicsDevice graphics, ushort[] palette, BinaryFileReader reader, SittingTransformation sitting)

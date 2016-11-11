@@ -72,29 +72,9 @@ namespace UltimaXNA.Core.Input
             m_WndProc = null;
         }
 
-        public bool IsCtrlDown
-        {
-            get
-            {
-                if (NativeMethods.GetKeyState((int)WinKeys.ControlKey) < 0)
-                {
-                    return true;
-                }
-                return false;
-            }
-        }
+        public bool IsCtrlDown => NativeMethods.GetKeyState((int)WinKeys.ControlKey) < 0;
 
-        public bool IsShiftDown
-        {
-            get
-            {
-                if (NativeMethods.GetKeyState((int)WinKeys.ShiftKey) < 0)
-                {
-                    return true;
-                }
-                return false;
-            }
-        }
+        public bool IsShiftDown => NativeMethods.GetKeyState((int)WinKeys.ShiftKey) < 0;
 
         public int MouseStationaryTimeMS
         {
