@@ -159,11 +159,8 @@ namespace UltimaXNA.Core.UI
         
         /// <summary>
         /// Adds or toggles the passed control to the list of active controls.
+        /// If control succesfully added to active control list, returns control. If add unsuccessful, returns null.
         /// </summary>
-        /// <param name="control">The control to be opened or toggled.</param>
-        /// <param name="x">C coordinate where new control should be placed.</param>
-        /// <param name="y">Y coordinate where new control should be placed.</param>
-        /// <returns>If the control was added to the list of active controls, then returns the added control. If the control was not added, returns null.</returns>
         public AControl AddControl(AControl control, int x, int y)
         {
             if (control.IsDisposed)
@@ -180,7 +177,7 @@ namespace UltimaXNA.Core.UI
         {
             foreach (AControl c in m_Controls)
             {
-                if (c.GetType() == typeof(T))
+                if (typeof(T).IsAssignableFrom(c.GetType()))
                 {
                     if (!localID.HasValue || (c.GumpLocalID == localID))
                     {

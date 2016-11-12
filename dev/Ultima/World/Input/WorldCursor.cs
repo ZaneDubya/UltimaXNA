@@ -615,17 +615,12 @@ namespace UltimaXNA.Ultima.World.Input
         }
 
         /// <summary>
-        /// Picks up an item.
+        /// Picks up an item. For stacks, picks up entire stack if shift is down or picking up from a corpse.
+        /// Otherwise, shows "pick up how many?" gump unless amountToPickUp param is set or amount is 1. 
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="amount">Optional, defaults to null. If null, and the item amount is greater than 1, a 'pick up how many' gump will appear?</param>
-        private void PickUpItem(Item item, int x, int y, int? amount = null)
+        private void PickUpItem(Item item, int x, int y, int? amountToPickUp = null)
         {
-            // hold 'shift' to pick up an entire stack.
-            // if in a bag and is a quantity, then show the 'lift amount' prompt, else just lift it outright.
-            if (!m_Input.IsShiftDown && !amount.HasValue && !(item is Corpse) && item.Amount > 1)
+            if (!m_Input.IsShiftDown && !amountToPickUp.HasValue && !(item is Corpse) && item.Amount > 1)
             {
                 SplitItemStackGump gump = new SplitItemStackGump(item, new Point(x, y));
                 m_UserInterface.AddControl(gump, m_Input.MousePosition.X - 80, m_Input.MousePosition.Y - 40);
@@ -633,46 +628,44 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else
             {
-                PickupItemWithoutAmountCheck(item, x, y, amount.HasValue ? amount.Value : item.Amount);
+                PickupItemWithoutAmountCheck(item, x, y, amountToPickUp.HasValue ? amountToPickUp.Value : item.Amount);
             }
         }
 
+        /// <summary>
+        /// Picks up item/amount from stack. If item cannot be picked up, nothing happens. If item is within container,
+        /// removes it from the containing entity. Informs server we picked up the item. Server can cancel pick up.
+        /// Note: I am unsure what will happen if we can pick up an item and add to inventory before server can cancel.
+        /// </summary>
         private void PickupItemWithoutAmountCheck(Item item, int x, int y, int amount)
         {
-            // make sure we can pick up the item before actually picking it up!
-            if (item.TryPickUp())
+            if (!item.TryPickUp())
             {
-                // if the item is within a container or worn by a mobile, remove it from that containing entity.
-                if (item.Parent != null)
-                {
-                    // Because we are moving the item from a parent entity into the world, the client will now be checking to see if it is out of range.
-                    // To make sure it is 'in range', we set the item's world position to the world postion of the entity it was removed from.
-                    item.Position.Set(item.Parent.Position.X, item.Parent.Position.Y, item.Parent.Position.Z);
-
-                    // remove the item from the containing entity.
-                    if (item.Parent is Mobile)
-                        (item.Parent as Mobile).RemoveItem(item.Serial);
-                    else if (item.Parent is Container)
-                    {
-                        AEntity parent = item.Parent;
-                        if (parent is Corpse)
-                            (parent as Corpse).RemoveItem(item.Serial);
-                        else
-                            (parent as Container).RemoveItem(item.Serial);
-                    }
-                    item.Parent = null;
-                }
-
-                // set the amount
-                item.Amount = amount;
-                // set our local holding item variables.
-                HeldItem = item;
-                m_HeldItemOffset = new Point(x, y);
-
-                // let the server know we're picking up the item. If the server says we can't pick it up, it will send us a cancel pick up message.
-                // TEST: what if we can pick something up and drop it in our inventory before the server has a chance to respond?
-                m_Network.Send(new PickupItemPacket(item.Serial, amount));
+                return;
             }
+            // Removing item from parent causes client "in range" check. Set position to parent entity position.
+            if (item.Parent != null)
+            {
+                item.Position.Set(item.Parent.Position.X, item.Parent.Position.Y, item.Parent.Position.Z);
+                if (item.Parent is Mobile)
+                {
+                    (item.Parent as Mobile).RemoveItem(item.Serial);
+                }
+                else if (item.Parent is Container)
+                {
+                    AEntity parent = item.Parent;
+                    if (parent is Corpse)
+                        (parent as Corpse).RemoveItem(item.Serial);
+                    else
+                        (parent as Container).RemoveItem(item.Serial);
+                }
+                item.Parent = null;
+            }
+            m_UserInterface.RemoveControl<Gump>(item.Serial);
+            item.Amount = amount;
+            HeldItem = item;
+            m_HeldItemOffset = new Point(x, y);
+            m_Network.Send(new PickupItemPacket(item.Serial, amount));
         }
 
         private void MergeHeldItem(AEntity target)
