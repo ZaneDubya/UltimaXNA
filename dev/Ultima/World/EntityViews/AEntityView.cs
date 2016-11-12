@@ -28,17 +28,12 @@ namespace UltimaXNA.Ultima.World.EntityViews
     /// </summary>
     public abstract class AEntityView
     {
-        public static Techniques s_Technique = Techniques.Default;
-
-        AEntity m_Entity;
-        public AEntity Entity
-        {
-            get { return m_Entity; }
-        }
+        public static Techniques Technique = Techniques.Default;
+        public readonly AEntity Entity;
 
         public AEntityView(AEntity entity)
         {
-            m_Entity = entity;
+            Entity = entity;
             SortZ = Entity.Z;
         }
 
@@ -175,7 +170,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             if (vertexBuffer[0].Hue != HueVector)
                 vertexBuffer[0].Hue = vertexBuffer[1].Hue = vertexBuffer[2].Hue = vertexBuffer[3].Hue = HueVector;
 
-            if (!spriteBatch.DrawSprite(DrawTexture, vertexBuffer, s_Technique))
+            if (!spriteBatch.DrawSprite(DrawTexture, vertexBuffer, Technique))
             {
                 // the vertex buffer was not on screen, return false (did not draw)
                 return false;
