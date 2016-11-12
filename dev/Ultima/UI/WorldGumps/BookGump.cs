@@ -24,21 +24,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class BookGump : Gump
     {
-        // ================================================================================
-        // Private variables
-        // ================================================================================
-        private BaseBook m_Book;
-        private GumpPic m_BookBackground;
-        private GumpPic m_PageCornerLeft;
-        private GumpPic m_PageCornerRight;
-        private List<TextEntry> textEntries = new List<TextEntry>();
-        private TextEntry titleTextEntry;
-        private TextEntry authorTextEntry;
-        private int m_lastPage;
+        BaseBook m_Book;
+        GumpPic m_BookBackground;
+        GumpPic m_PageCornerLeft;
+        GumpPic m_PageCornerRight;
+        List<TextEntry> textEntries = new List<TextEntry>();
+        TextEntry titleTextEntry;
+        TextEntry authorTextEntry;
+        int m_lastPage;
+        WorldModel m_World;
 
-        private WorldModel m_World;
-            
-        private ushort[] m_GumpBaseIDs = new ushort[] 
+        ushort[] m_GumpBaseIDs =
         {
             0x1F4, // Yellow Cornered Book
             0x1FE, // Regular Cornered Book
@@ -65,10 +61,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Book.OnEntityUpdated += OnEntityUpdate;
             m_lastPage = (m_Book.PagesCount + 2) / 2;
             IsMoveable = true;
-            
             m_World = ServiceRegistry.GetService<WorldModel>();
-
-            CreateBookGump();
+            BuildGump();
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -95,34 +89,29 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // ================================================================================
         // OnEntityUpdate - called when book entity is updated by server.
         // ================================================================================
-        private void OnEntityUpdate()
+        void OnEntityUpdate()
         {
-            CreateBookGump();
+            BuildGump();
         }
 
-        private void CreateBookGump()
+        void BuildGump()
         {
             ClearControls();
-
             if (m_Book.ItemID >= 0xFEF && m_Book.ItemID <= 0xFF2)
             {
                 m_BookBackground = new GumpPic(this, 0, 0, 0x1FE, 0);
                 m_PageCornerLeft = new GumpPic(this, 0, 0, 0x1FF, 0);
                 m_PageCornerRight = new GumpPic(this, 356, 0, 0x200, 0);
             }
-
             AddControl(m_BookBackground);   // book background gump
-
             AddControl(m_PageCornerLeft);   // page turn left
             m_PageCornerLeft.GumpLocalID = 0;
             m_PageCornerLeft.MouseClickEvent += PageCorner_MouseClickEvent;
             m_PageCornerLeft.MouseDoubleClickEvent += PageCorner_MouseDoubleClickEvent;
-
             AddControl(m_PageCornerRight);  // page turn right
             m_PageCornerRight.GumpLocalID = 1;
             m_PageCornerRight.MouseClickEvent += PageCorner_MouseClickEvent;
             m_PageCornerRight.MouseDoubleClickEvent += PageCorner_MouseDoubleClickEvent;
-
             // Draw the title and author page
             titleTextEntry = new TextEntry(this, 45, 50, 160, 300, 1, 0, 0, m_Book.Title);
             titleTextEntry.MakeThisADragger();
@@ -134,7 +123,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(titleTextEntry, 1);
             AddControl(new HtmlGumpling(this, 45, 90, 160, 300, 0, 0, string.Format("Author:")), 1);
             AddControl(authorTextEntry, 1);
-
             // Add book pages to active pages
             bool isRight = true;
             int activePage = 1;
@@ -159,18 +147,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 }
             }
             SetActivePage(1);
-
             AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(0x058);
         }
 
-        private void PageCorner_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
+        void PageCorner_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
                 return;
-
-            isContentChanged();
-
+            IsContentChanged();
             if (sender.GumpLocalID == 0)
             {
                 SetActivePage(ActivePage - 1);
@@ -179,17 +164,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 SetActivePage(ActivePage + 1);
             }
-
             AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(0x055);
         }
 
-        private void PageCorner_MouseDoubleClickEvent(AControl sender, int x, int y, MouseButton button)
+        void PageCorner_MouseDoubleClickEvent(AControl sender, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
                 return;
 
-            isContentChanged();
+            IsContentChanged();
 
             if (sender.GumpLocalID == 0)
             {
@@ -203,15 +187,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         protected override void CloseWithRightMouseButton()
         {
-            isContentChanged();
-
+            IsContentChanged();
             AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(0x058);
-
             base.CloseWithRightMouseButton();
         }
 
-        private void SetActivePage(int page)
+        void SetActivePage(int page)
         {
             if (page < 1)
                 page = 1;
@@ -225,7 +207,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_PageCornerRight.Page = (page != m_lastPage) ? 0 : int.MaxValue;
         }
 
-        private void isContentChanged()
+        void IsContentChanged()
         {
             // When ActivePage is 1, we should return leftPageIndex = 1 and rightPageIndex = 2
             // When ActivePage is 2, we should return leftPageIndex = 3 and rightPageIndex = 4
@@ -246,50 +228,47 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 string test = m_Book.Pages[rightPageIndex].getAllLines();
                 if (rightPageIndex < textEntries.Count && textEntries[rightPageIndex].Text != test)
                 {
-                    m_World.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, getTextEntryAsArray(textEntries[rightPageIndex]));
+                    m_World.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(textEntries[rightPageIndex]));
                 }
             }
             else
             {
                 if (textEntries[leftPageIndex].Text != m_Book.Pages[leftPageIndex].getAllLines())
                 {
-                    m_World.Interaction.BookPageChange(m_Book.Serial, leftPageIndex, getTextEntryAsArray(textEntries[leftPageIndex]));
+                    m_World.Interaction.BookPageChange(m_Book.Serial, leftPageIndex, GetTextEntryAsArray(textEntries[leftPageIndex]));
                 }
                 if (rightPageIndex < textEntries.Count - 1 && textEntries[rightPageIndex].Text != m_Book.Pages[rightPageIndex].getAllLines())
                 {
-                    m_World.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, getTextEntryAsArray(textEntries[rightPageIndex]));
+                    m_World.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(textEntries[rightPageIndex]));
                 }
             }
         }
 
-        private string[] getTextEntryAsArray(TextEntry te)
+        string[] GetTextEntryAsArray(TextEntry te)
         {
-            List<String> lineList = new List<String>();
+            List<string> lineList = new List<string>();
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < te.Text.Length; i++)
             {
-                if(!char.IsControl(te.Text[i]))
+                if (!char.IsControl(te.Text[i]))
                 {
                     sb.Append(te.Text[i]);
                 }
                 else
                 {
-                    if (sb.ToString() != String.Empty)
+                    if (sb.ToString() != string.Empty)
                     {
                         lineList.Add(sb.ToString());
                         sb = new StringBuilder();
                     }
                 }
-
                 // Last character of text
                 if (i == te.Text.Length - 1)
                     lineList.Add(sb.ToString());
             }
-
             string[] lines = new string[lineList.Count];
             lineList.CopyTo(lines);
-
             return lines;
         }
     }
