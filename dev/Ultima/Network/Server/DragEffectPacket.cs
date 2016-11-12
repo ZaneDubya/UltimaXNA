@@ -17,83 +17,33 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class DragEffectPacket : RecvPacket
     {
-        readonly int m_itemId;
-        readonly int m_amount;
-        readonly Serial m_sourceContainer;
-        readonly int m_sourceX;
-        readonly int m_sourceY;
-        readonly int m_sourceZ;
-        readonly Serial m_destContainer;
-        readonly int m_destX;
-        readonly int m_destY;
-        readonly int m_destZ;
-
-        public int ItemId 
-        {
-            get { return m_itemId; }
-        }
-
-        public int Amount 
-        {
-            get { return m_itemId; } 
-        }
-
-        public Serial SourceContainer 
-        {
-            get { return m_sourceContainer; }
-        }
-
-        public int SourceX 
-        {
-            get { return m_sourceX; } 
-        }
-
-        public int SourceY 
-        {
-            get { return m_sourceY; } 
-        }
-
-        public int SourceZ
-        {
-            get { return m_sourceZ; } 
-        }
-
-        public Serial DestContainer 
-        {
-            get { return m_destContainer; } 
-        }
-
-        public int DestX 
-        {
-            get { return m_destX; } 
-        }
-
-        public int DestY         
-        {
-            get { return m_destY; }
-        }
-
-        public int DestZ 
-        {
-            get { return m_destZ; }
-        }
+        public readonly int ItemId;
+        public readonly int Amount;
+        public readonly Serial Source;
+        public readonly int SourceX;
+        public readonly int SourceY;
+        public readonly int SourceZ;
+        public readonly Serial Destination;
+        public readonly int DestX;
+        public readonly int DestY;
+        public readonly int DestZ;
 
         public DragEffectPacket(PacketReader reader)
             : base(0x23, "Dragging Item")
         {
-            m_itemId = reader.ReadUInt16();
+            ItemId = reader.ReadUInt16();
             reader.ReadByte(); // 0x03 bytes unknown.
             reader.ReadByte(); //
             reader.ReadByte(); //
-            m_amount = reader.ReadUInt16();
-            m_sourceContainer = reader.ReadInt32(); // 0xFFFFFFFF for ground
-            m_sourceX = reader.ReadUInt16();
-            m_sourceY = reader.ReadUInt16();
-            m_sourceZ = reader.ReadByte();
-            m_destContainer = reader.ReadInt32(); // 0xFFFFFFFF for ground
-            m_destX = reader.ReadUInt16();
-            m_destY = reader.ReadUInt16();
-            m_destZ = reader.ReadByte();
+            Amount = reader.ReadUInt16();
+            Source = reader.ReadInt32(); // 0x00000000 or 0xFFFFFFFF for ground
+            SourceX = reader.ReadUInt16();
+            SourceY = reader.ReadUInt16();
+            SourceZ = reader.ReadByte();
+            Destination = reader.ReadInt32(); // 0x00000000 or 0xFFFFFFFF for ground
+            DestX = reader.ReadUInt16();
+            DestY = reader.ReadUInt16();
+            DestZ = reader.ReadByte();
         }
     }
 }

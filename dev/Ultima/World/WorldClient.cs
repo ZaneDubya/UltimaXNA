@@ -470,12 +470,12 @@ namespace UltimaXNA.Ultima.World
 
             // bool iSourceGround = false;
             // bool iDestGround = false;
-            if (p.SourceContainer == Serial.World)
+            if (p.Source == Serial.World)
             {
                 // iSourceGround = true;
             }
 
-            if (p.DestContainer == Serial.World)
+            if (p.Destination == Serial.World)
             {
                 // iDestGround = true;
             }
