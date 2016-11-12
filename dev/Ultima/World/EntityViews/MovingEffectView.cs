@@ -12,13 +12,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 {
     public class MovingEffectView : AEntityView
     {
-        MovingEffect Effect
-        {
-            get
-            {
-                return (MovingEffect)base.Entity;
-            }
-        }
+        MovingEffect Effect => (MovingEffect)Entity;
 
         EffectData m_AnimData;
         bool m_Animated;

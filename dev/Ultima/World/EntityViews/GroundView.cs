@@ -15,8 +15,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             get { return (Ground)base.Entity; }
         }
 
-        private bool m_DrawAs3DStretched = false;
-        private bool m_NoDraw = false;
+        bool m_DrawAs3DStretched;
+        bool m_NoDraw;
 
         public GroundView(Ground ground)
             : base(ground)
@@ -60,16 +60,15 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, map);
         }
 
-        private Vector3 m_vertex0_yOffset, m_vertex1_yOffset, m_vertex2_yOffset, m_vertex3_yOffset;
-        private VertexPositionNormalTextureHue[] m_vertexBufferAlternate = new VertexPositionNormalTextureHue[]
-        {
-                    new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
-                    new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
-                    new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 1, 0)),
-                    new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
+        Vector3 m_vertex0_yOffset, m_vertex1_yOffset, m_vertex2_yOffset, m_vertex3_yOffset;
+        VertexPositionNormalTextureHue[] m_vertexBufferAlternate = {
+            new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
+            new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
+            new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 1, 0)),
+            new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
         };
 
-        private bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
             // this is an isometric stretched tile and needs a specialized draw routine.
             m_vertexBufferAlternate[0].Position = drawPosition + m_vertex0_yOffset;
@@ -93,11 +92,11 @@ namespace UltimaXNA.Ultima.World.EntityViews
             return true;
         }
 
-        private bool m_MustUpdateSurroundings = true;
-        private Surroundings m_SurroundingTiles;
-        private Vector3[] m_Normals = new Vector3[4];
+        bool m_MustUpdateSurroundings = true;
+        Surroundings m_SurroundingTiles;
+        Vector3[] m_Normals = new Vector3[4];
 
-        private void updateVertexBuffer()
+        void updateVertexBuffer()
         {
             m_vertex0_yOffset = new Vector3(IsometricRenderer.TILE_SIZE_INTEGER_HALF, -(Entity.Z * 4), 0);
             m_vertex1_yOffset = new Vector3(IsometricRenderer.TILE_SIZE_FLOAT, IsometricRenderer.TILE_SIZE_INTEGER_HALF - (m_SurroundingTiles.East * 4), 0);
@@ -119,13 +118,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        static Point[] kSurroundingsIndexes = new Point[11] { 
+        static Point[] kSurroundingsIndexes = { 
             new Point(0, -1), new Point(1, -1), 
             new Point(-1, 0), new Point(1, 0), new Point(2, 0), 
             new Point(-1, 1), new Point(0, 1), new Point(1, 1), new Point(2, 1), 
             new Point(0, 2), new Point(1, 2) };
 
-        private void updateSurroundingsAndNormals(Map map)
+        void updateSurroundingsAndNormals(Map map)
         {
             Point origin = new Point(Entity.Position.X, Entity.Position.Y);
 
@@ -142,7 +141,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             if (!isFlat)
             {
                 int low = 0, high = 0, sort = 0;
-                sort = map.GetAverageZ((int)Entity.Z, (int)m_SurroundingTiles.South, (int)m_SurroundingTiles.East, (int)m_SurroundingTiles.Down, ref low, ref high);
+                sort = map.GetAverageZ(Entity.Z, (int)m_SurroundingTiles.South, (int)m_SurroundingTiles.East, (int)m_SurroundingTiles.Down, ref low, ref high);
                 if (sort != SortZ)
                 {
                     SortZ = sort;
@@ -167,7 +166,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         }
 
         public static float Y_Normal = 1f;
-        private Vector3 calculateNormal(float A, float B, float C, float D)
+        Vector3 calculateNormal(float A, float B, float C, float D)
         {
             Vector3 iVector = new Vector3(
                 (A - B),

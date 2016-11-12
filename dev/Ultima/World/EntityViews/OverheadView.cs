@@ -21,10 +21,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
 {
     class OverheadView : AEntityView
     {
-        new Overhead Entity
-        {
-            get { return (Overhead)base.Entity; }
-        }
+        new Overhead Entity => (Overhead)base.Entity;
+        RenderedText m_Texture;
 
         public OverheadView(Overhead entity)
             : base(entity)
@@ -38,7 +36,5 @@ namespace UltimaXNA.Ultima.World.EntityViews
             HueVector = Utility.GetHueVector(Entity.Hue, false, false, true);
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
         }
-
-        private RenderedText m_Texture = null;
     }
 }

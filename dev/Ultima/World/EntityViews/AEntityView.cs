@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
     {
         public static Techniques s_Technique = Techniques.Default;
 
-        private AEntity m_Entity = null;
+        AEntity m_Entity;
         public AEntity Entity
         {
             get { return m_Entity; }
@@ -48,22 +48,22 @@ namespace UltimaXNA.Ultima.World.EntityViews
         // Sort routines
         // ============================================================================================================
 
-        public int SortZ = 0;
+        public int SortZ;
 
         // ============================================================================================================
         // Draw methods and properties
         // ============================================================================================================
 
-        public float Rotation = 0f;
+        public float Rotation;
         public static float PI = (float)Math.PI;
 
-        protected bool DrawFlip = false;
+        protected bool DrawFlip;
         protected Rectangle DrawArea = Rectangle.Empty;
-        protected Texture2D DrawTexture = null;
+        protected Texture2D DrawTexture;
         protected Vector3 HueVector = Vector3.Zero;
 
-        protected bool IsShadowCastingView = false;
-        protected float DrawShadowZDepth = 0;
+        protected bool IsShadowCastingView;
+        protected float DrawShadowZDepth;
 
         public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
         {
@@ -247,7 +247,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         // Y Clipping (used during deferred draws.
         // ============================================================================================================
 
-        protected int m_YClipLine = 0;
+        protected int m_YClipLine;
 
         /// <summary>
         /// Between the time when this is called and when ClearYClipLine() is called, this view will only draw sprites below
@@ -324,7 +324,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             return UnderSurfaceCheck(map, x, y) && UnderSurfaceCheck(map, x + 1, y + 1) && UnderSurfaceCheck(map, x + 2, y + 2);
         }
 
-        private bool UnderSurfaceCheck(Map map, int x, int y)
+        bool UnderSurfaceCheck(Map map, int x, int y)
         {
             MapTile tile;
             AEntity e0, e1;
