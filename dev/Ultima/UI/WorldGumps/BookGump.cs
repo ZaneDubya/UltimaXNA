@@ -10,14 +10,13 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
+using System.Text;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.Audio;
+using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Items;
-using System;
-using System.Text;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps

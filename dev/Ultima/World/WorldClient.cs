@@ -1243,7 +1243,7 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveBookHeaderOld(BookHeaderOldPacket p)
         {
-            // Not yet implemented...
+            AnnounceUnhandledPacket(p);
         }
 
         void ReceiveEnableFeatures(SupportedFeaturesPacket p) {

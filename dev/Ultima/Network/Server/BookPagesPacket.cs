@@ -18,61 +18,26 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class BookPagesPacket : RecvPacket
     {
-        private Serial m_Serial;
-        private int m_PageCount;
-        private BaseBook.BookPageInfo[] m_Pages;
-
-        public Serial Serial
-        {
-            get { return m_Serial; }
-            set { m_Serial = value; }
-        }
-
-        public int PageCount
-        {
-            get
-            {
-                return m_PageCount;
-            }
-
-            set
-            {
-                m_PageCount = value;
-            }
-        }
-
-        public BaseBook.BookPageInfo[] Pages
-        {
-            get
-            {
-                return m_Pages;
-            }
-
-            set
-            {
-                m_Pages = value;
-            }
-        }
+        public readonly Serial Serial;
+        public readonly int PageCount;
+        public readonly BaseBook.BookPageInfo[] Pages;
 
         public BookPagesPacket(PacketReader reader)
             : base(0x66, "Book Pages")
         {
-            m_Serial = reader.ReadInt32();
-            m_PageCount = reader.ReadInt16();
-            m_Pages = new BaseBook.BookPageInfo[m_PageCount];
-
-            for (int i = 0; i < m_PageCount; ++i)
+            Serial = reader.ReadInt32();
+            PageCount = reader.ReadInt16();
+            Pages = new BaseBook.BookPageInfo[PageCount];
+            for (int i = 0; i < PageCount; ++i)
             {
                 int page = reader.ReadInt16();
                 int length = reader.ReadInt16();
                 string[] lines = new string[length];
-
                 for (int j = 0; j < length; j++)
                 {
                     lines[j] = reader.ReadString();
                 }
-
-                m_Pages[i] = new BaseBook.BookPageInfo(lines);
+                Pages[i] = new BaseBook.BookPageInfo(lines);
             }
         }
     }
