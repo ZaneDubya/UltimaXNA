@@ -293,41 +293,41 @@ namespace UltimaXNA.Ultima.World
                     (container as SpellBook).ReceiveSpellData(data.BookType, data.SpellsBitfield);
                 }
             }
-
-            foreach (ItemInContainer i in p.Items)
+            foreach (ItemInContainer pItem in p.Items)
             {
-                // Add the item...
-                Item item = AddItem(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
-                item.InContainerPosition = new Point(i.X, i.Y);
-                // ... and add it the container contents of the container.
-                Container container = WorldModel.Entities.GetObject<Container>(i.ContainerSerial, true);
-                if (container != null)
-                    container.AddItem(item);
+                Item item = CreateItem(pItem.Serial, pItem.ItemID, pItem.Hue, pItem.Amount);
+                item.InContainerPosition = new Point(pItem.X, pItem.Y);
+                PlaceItemInContainer(item, pItem.ContainerSerial);
             }
         }
 
         void ReceiveAddSingleItemToContainer(AddSingleItemToContainerPacket p)
         {
-            Item item = AddItem(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
+            Item item = CreateItem(p.Serial, p.ItemId, p.Hue, p.Amount);
             item.InContainerPosition = new Point(p.X, p.Y);
-            // ... and add it the container contents of the container.
-            AEntity container = WorldModel.Entities.GetObject<AEntity>(p.ContainerSerial, false);
-            if (container == null)
-            {
-                // shouldn't we already have the container? Throw an error?
-                Tracer.Warn("SingleItemToContainer packet arrived before container entity created.");
-            }
-            if (container is Container)
-            {
-                (container as Container).AddItem(item);
-            }
-            else if (container is Mobile) // secure trade
-            {
+            PlaceItemInContainer(item, p.ContainerSerial);
+        }
 
+        void PlaceItemInContainer(Item item, Serial cSerial)
+        {
+            // This code is necessary sanity checking: It may be possible that the server will ask us to add an item to
+            // a mobile, which this codebase does not currently handle.
+            AEntity cGeneric = WorldModel.Entities.GetObject<AEntity>(cSerial, false);
+            if (cGeneric == null)
+            {
+                cGeneric = WorldModel.Entities.GetObject<Container>(cSerial, true);
+            }
+            if (cGeneric is Container)
+            {
+                (cGeneric as Container).AddItem(item);
+            }
+            else
+            {
+                Tracer.Warn($"Illegal PlaceItemInContainer({item}, {cSerial}): container is {cGeneric.GetType()}.");
             }
         }
 
-        Item AddItem(Serial serial, int itemID, int nHue, Serial parentSerial, int amount)
+        Item CreateItem(Serial serial, int itemID, int nHue, int amount)
         {
             Item item;
             if (itemID == 0x2006)
@@ -357,11 +357,15 @@ namespace UltimaXNA.Ultima.World
                         item = WorldModel.Entities.GetObject<BaseBook>(serial, true);
                     }
                     else
+                    {
                         item = WorldModel.Entities.GetObject<Item>(serial, true);
+                    }
                 }
             }
             if (item == null)
+            {
                 return null;
+            }
             item.Amount = amount;
             item.ItemID = itemID;
             item.Hue = nHue;
@@ -406,7 +410,7 @@ namespace UltimaXNA.Ultima.World
             // If the iItemID >= 0x4000, then this is a multiobject.
             if (p.ItemID <= 0x4000)
             {
-                Item item = AddItem(p.Serial, p.ItemID, p.Hue, 0, p.Amount);
+                Item item = CreateItem(p.Serial, p.ItemID, p.Hue, p.Amount);
                 item.Position.Set(p.X, p.Y, p.Z);
             }
             else
@@ -420,10 +424,12 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveWornItem(WornItemPacket p)
         {
-            Item item = AddItem(p.Serial, p.ItemId, p.Hue, p.ParentSerial, 0);
+            Item item = CreateItem(p.Serial, p.ItemId, p.Hue, 0);
             WorldModel.Entities.AddWornItem(item, p.Layer, p.ParentSerial);
             if (item.PropertyList.Hash == 0)
+            {
                 m_Network.Send(new QueryPropertiesPacket(item.Serial));
+            }
         }
 
         void ReceiveDeleteObject(RemoveEntityPacket p)
@@ -440,21 +446,20 @@ namespace UltimaXNA.Ultima.World
             mobile.Flags = p.Flags;
             mobile.Notoriety = p.Notoriety;
             mobile.Notoriety = p.Notoriety;
-
             for (int i = 0; i < p.Equipment.Length; i++)
             {
-                Item item = AddItem(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, p.Serial, 0);
+                Item item = CreateItem(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, 1);
                 mobile.WearItem(item, p.Equipment[i].Layer);
                 if (item.PropertyList.Hash == 0)
+                {
                     m_Network.Send(new QueryPropertiesPacket(item.Serial));
+                }
             }
-
             if (mobile.Name == null || mobile.Name == string.Empty)
             {
                 mobile.Name = "Unknown";
                 m_Network.Send(new RequestNamePacket(p.Serial));
             }
-
             m_Network.Send(new SingleClickPacket(p.Serial)); // look at the object so we receive its stats.
         }
 

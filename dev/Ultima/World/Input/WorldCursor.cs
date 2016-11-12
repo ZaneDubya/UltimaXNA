@@ -661,11 +661,23 @@ namespace UltimaXNA.Ultima.World.Input
                 }
                 item.Parent = null;
             }
-            m_UserInterface.RemoveControl<Gump>(item.Serial);
+            RecursivelyCloseItemGumps(item);
             item.Amount = amount;
             HeldItem = item;
             m_HeldItemOffset = new Point(x, y);
             m_Network.Send(new PickupItemPacket(item.Serial, amount));
+        }
+
+        void RecursivelyCloseItemGumps(Item item)
+        {
+            m_UserInterface.RemoveControl<Gump>(item.Serial);
+            if (item is Container)
+            {
+                foreach (Item child in (item as Container).Contents)
+                {
+                    RecursivelyCloseItemGumps(child);
+                }
+            }
         }
 
         private void MergeHeldItem(AEntity target)
