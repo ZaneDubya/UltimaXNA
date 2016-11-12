@@ -91,6 +91,11 @@ namespace UltimaXNA.Core.Input
             }
         }
 
+        public MouseState MouseState
+        {
+            get { return m_MouseStateThisFrame; }
+        }
+
         private bool hasMouseBeenStationarySinceLastUpdate
         {
             get

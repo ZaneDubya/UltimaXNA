@@ -10,7 +10,9 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 #endregion
@@ -19,7 +21,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     public class DebugGump : Gump
     {
-        private WorldModel m_World;
+        WorldModel m_World;
+        HtmlGumpling m_Debug;
 
         public DebugGump()
             : base(0, 0)
@@ -29,6 +32,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             IsMoveable = true;
 
             AddControl(new ResizePic(this, 0, 0, 0x2436, 256 + 16, 256 + 16));
+            AddControl(m_Debug = new HtmlGumpling(this, 0, 0, 256, 256, 0, 0, string.Empty));
+        }
+
+        public override void Update(double totalMS, double frameMS)
+        {
+            base.Update(totalMS, frameMS);
+            InputManager input = ServiceRegistry.GetService<InputManager>();
+            bool lmb = input.MouseState.LeftButton == ButtonState.Pressed;
+            bool rmb = input.MouseState.RightButton == ButtonState.Pressed;
+            m_Debug.Text = $"{(lmb ? "LMB" : string.Empty)}:{(rmb ? "RMB" : string.Empty)}";
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
