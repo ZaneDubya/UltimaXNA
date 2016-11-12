@@ -14,7 +14,6 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Core.Resources;

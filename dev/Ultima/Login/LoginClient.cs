@@ -20,6 +20,7 @@ using UltimaXNA.Ultima.Input;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
@@ -31,7 +32,6 @@ namespace UltimaXNA.Ultima.Login {
         readonly UltimaGame m_Engine;
         readonly UserInterfaceService m_UserInterface;
         Timer m_KeepAliveTimer;
-        List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
         string m_UserName;
         SecureString m_Password;
 
@@ -39,7 +39,6 @@ namespace UltimaXNA.Ultima.Login {
             m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_Engine = ServiceRegistry.GetService<UltimaGame>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
-            m_RegisteredHandlers = new List<Tuple<int, TypedPacketReceiveHandler>>();
             Initialize();
         }
 
@@ -47,41 +46,30 @@ namespace UltimaXNA.Ultima.Login {
         // Packet registration and unregistration
         // ============================================================================================================
         void Initialize() {
-            Register<LoginConfirmPacket>(0x1B, "Login Confirm", 37, ReceiveLoginConfirmPacket);
-            Register<LoginCompletePacket>(0x55, "Login Complete", 1, ReceiveLoginComplete);
-            Register<ServerPingPacket>(0x73, "Server Ping Packet", 2, ReceivePingPacket);
-            Register<LoginRejectionPacket>(0x82, "Login Rejection", 2, ReceiveLoginRejection);
-            Register<DeleteResultPacket>(0x85, "Delete Character Response", 2, ReceiveDeleteCharacterResponse);
-            Register<CharacterListUpdatePacket>(0x86, "Character List Update", -1, ReceiveCharacterListUpdate);
-            Register<ServerRelayPacket>(0x8C, "ServerRelay", 11, ReceiveServerRelay);
-            Register<ServerListPacket>(0xA8, "Game Server List", -1, ReceiveServerList);
-            Register<CharacterCityListPacket>(0xA9, "Characters / Starting Locations", -1, ReceiveCharacterList);
-            Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, ReceiveEnableFeatures);
-            Register<VersionRequestPacket>(0xBD, "Version Request", -1, ReceiveVersionRequest);
+            Register<LoginConfirmPacket>(0x1B, 37, ReceiveLoginConfirmPacket);
+            Register<LoginCompletePacket>(0x55, 1, ReceiveLoginComplete);
+            Register<ServerPingPacket>(0x73, 2, ReceivePingPacket);
+            Register<LoginRejectionPacket>(0x82, 2, ReceiveLoginRejection);
+            Register<DeleteResultPacket>(0x85, 2, ReceiveDeleteCharacterResponse);
+            Register<CharacterListUpdatePacket>(0x86, -1, ReceiveCharacterListUpdate);
+            Register<ServerRelayPacket>(0x8C, 11, ReceiveServerRelay);
+            Register<ServerListPacket>(0xA8, -1, ReceiveServerList);
+            Register<CharacterCityListPacket>(0xA9, -1, ReceiveCharacterList);
+            Register<SupportedFeaturesPacket>(0xB9, 3, ReceiveEnableFeatures);
+            Register<VersionRequestPacket>(0xBD, -1, ReceiveVersionRequest);
         }
 
         public void Dispose() {
             StopKeepAlivePackets();
-            for (int i = 0; i < m_RegisteredHandlers.Count; i++) {
-                m_Network.Unregister(m_RegisteredHandlers[i].Item1, m_RegisteredHandlers[i].Item2);
-            }
-            m_RegisteredHandlers.Clear();
-            m_RegisteredHandlers = null;
+            m_Network.Unregister(this);
         }
 
-        public void Register<T>(int id, string name, int length, TypedPacketReceiveHandler onReceive) where T : IRecvPacket {
-            m_RegisteredHandlers.Add(new Tuple<int, TypedPacketReceiveHandler>(id, onReceive));
-            m_Network.Register<T>(id, name, length, onReceive);
+        public void Register<T>(int id, int length, Action<T> onReceive) where T : IRecvPacket {
+            m_Network.Register(this, id, length, onReceive);
         }
 
         public void Unregister(int id) {
-            for (int i = 0; i < m_RegisteredHandlers.Count; i++) {
-                if (m_RegisteredHandlers[i].Item1 == id) {
-                    m_Network.Unregister(m_RegisteredHandlers[i].Item1, m_RegisteredHandlers[i].Item2);
-                    m_RegisteredHandlers.RemoveAt(i);
-                    i--;
-                }
-            }
+            m_Network.Unregister(this, id);
         }
 
         // ============================================================================================================
@@ -143,59 +131,53 @@ namespace UltimaXNA.Ultima.Login {
             if (ClientVersion.HasExtendedFeatures(Settings.UltimaOnline.PatchVersion)) {
                 Tracer.Info("Client version is greater than 6.0.14.2, enabling extended 0xB9 packet.");
                 Unregister(0xB9);
-                Register<SupportedFeaturesPacket>(0xB9, "Supported Features Extended", 5, ReceiveEnableFeatures);
+                Register<SupportedFeaturesPacket>(0xB9, 5, ReceiveEnableFeatures);
             }
             m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.PatchVersion));
         }
 
-        void ReceiveDeleteCharacterResponse(IRecvPacket packet) {
-            DeleteResultPacket p = (DeleteResultPacket)packet;
-            MsgBoxGump.Show(p.Result, MsgBoxTypes.OkOnly);
+        void ReceiveDeleteCharacterResponse(DeleteResultPacket packet) {
+            MsgBoxGump.Show(packet.Result, MsgBoxTypes.OkOnly);
         }
 
-        void ReceiveCharacterListUpdate(IRecvPacket packet) {
-            CharacterListUpdatePacket p = (CharacterListUpdatePacket)packet;
-            Characters.SetCharacterList(p.Characters);
+        void ReceiveCharacterListUpdate(CharacterListUpdatePacket packet) {
+            Characters.SetCharacterList(packet.Characters);
             (m_Engine.ActiveModel as LoginModel).ShowCharacterList();
         }
 
-        void ReceiveCharacterList(IRecvPacket packet) {
-            CharacterCityListPacket p = (CharacterCityListPacket)packet;
-            Characters.SetCharacterList(p.Characters);
-            Characters.SetStartingLocations(p.Locations);
+        void ReceiveCharacterList(CharacterCityListPacket packet) {
+            Characters.SetCharacterList(packet.Characters);
+            Characters.SetStartingLocations(packet.Locations);
             StartKeepAlivePackets();
             (m_Engine.ActiveModel as LoginModel).ShowCharacterList();
         }
 
-        void ReceiveServerList(IRecvPacket packet) {
-            (m_Engine.ActiveModel as LoginModel).ShowServerList(((ServerListPacket)packet).Servers);
+        void ReceiveServerList(ServerListPacket packet) {
+            (m_Engine.ActiveModel as LoginModel).ShowServerList((packet).Servers);
         }
 
-        void ReceiveLoginRejection(IRecvPacket packet) {
+        void ReceiveLoginRejection(LoginRejectionPacket packet) {
             Disconnect();
-            LoginRejectionPacket p = (LoginRejectionPacket)packet;
-            (m_Engine.ActiveModel as LoginModel).ShowLoginRejection(p.Reason);
+            (m_Engine.ActiveModel as LoginModel).ShowLoginRejection(packet.Reason);
         }
 
-        void ReceiveServerRelay(IRecvPacket packet) {
+        void ReceiveServerRelay(ServerRelayPacket packet) {
             // On OSI, upon receiving this packet, the client would disconnect and
             // log in to the specified server. Since emulated servers use the same
             // server for both shard selection and world, we don't need to disconnect.
-            ServerRelayPacket p = (ServerRelayPacket)packet;
             m_Network.IsDecompressionEnabled = true;
-            m_Network.Send(new GameLoginPacket(p.AccountId, m_UserName, m_Password.ConvertToUnsecureString()));
+            m_Network.Send(new GameLoginPacket(packet.AccountId, m_UserName, m_Password.ConvertToUnsecureString()));
         }
 
-        void ReceiveEnableFeatures(IRecvPacket packet) {
-            SupportedFeaturesPacket p = (SupportedFeaturesPacket)packet;
-            Features.SetFlags(p.Flags);
+        void ReceiveEnableFeatures(SupportedFeaturesPacket packet) {
+            PlayerState.ClientFeatures.SetFlags(packet.Flags);
         }
 
-        void ReceiveVersionRequest(IRecvPacket packet) {
+        void ReceiveVersionRequest(VersionRequestPacket packet) {
             SendClientVersion();
         }
 
-        void ReceivePingPacket(IRecvPacket packet) {
+        void ReceivePingPacket(ServerPingPacket packet) {
 
         }
 
@@ -207,10 +189,10 @@ namespace UltimaXNA.Ultima.Login {
         LoginConfirmPacket m_QueuedLoginConfirmPacket;
         bool m_LoggingInToWorld;
 
-        void ReceiveLoginConfirmPacket(IRecvPacket packet) {
-            m_QueuedLoginConfirmPacket = (LoginConfirmPacket)packet;
+        void ReceiveLoginConfirmPacket(LoginConfirmPacket packet) {
+            m_QueuedLoginConfirmPacket = packet;
             // set the player serial and create the player entity. Don't need to do anything with it yet.
-            WorldModel.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
+            WorldModel.PlayerSerial = packet.Serial;
             Mobile player = WorldModel.Entities.GetObject<Mobile>(WorldModel.PlayerSerial, true);
             if (player == null) {
                 Tracer.Critical("Could not create player object.");
@@ -218,7 +200,7 @@ namespace UltimaXNA.Ultima.Login {
             CheckIfOkayToLogin();
         }
 
-        void ReceiveLoginComplete(IRecvPacket packet) {
+        void ReceiveLoginComplete(LoginCompletePacket packet) {
             CheckIfOkayToLogin();
         }
 

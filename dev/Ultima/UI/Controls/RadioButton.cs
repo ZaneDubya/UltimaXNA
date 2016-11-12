@@ -19,7 +19,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override void OnMouseClick(int x, int y, MouseButton button)
         {
-            base.OnMouseClick(x, y, button);
             if (Parent != null)
             {
                 foreach (AControl control in Parent.Children)
@@ -28,6 +27,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                         (control as RadioButton).IsChecked = false;
                 }
             }
+            base.OnMouseClick(x, y, button);
         }
     }
 }

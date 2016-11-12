@@ -14,7 +14,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Windows;
 #endregion
@@ -90,6 +89,11 @@ namespace UltimaXNA.Core.Input
                 p.Y = m_MouseStateThisFrame.Y;
                 return p;
             }
+        }
+
+        public MouseState MouseState
+        {
+            get { return m_MouseStateThisFrame; }
         }
 
         private bool hasMouseBeenStationarySinceLastUpdate

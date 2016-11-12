@@ -5,9 +5,9 @@ using UltimaXNA;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Patterns;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.UI.LoginGumps;
 
-namespace ExamplePlugin {
+namespace ExamplePlugin
+{
     class DebugOutputGumpsModule : IModule {
         public string Name => "DebugOutputGumpsModule";
         Task m_WriteGumps;

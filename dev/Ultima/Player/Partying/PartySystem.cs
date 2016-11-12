@@ -8,9 +8,7 @@
  *
  ***************************************************************************/
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Network.Client;

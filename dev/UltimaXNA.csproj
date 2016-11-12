@@ -451,7 +451,7 @@
     <Compile Include="Ultima\Login\Accounts\CharacterListEntry.cs" />
     <Compile Include="Ultima\Login\Accounts\Characters.cs" />
     <Compile Include="Ultima\Login\Data\ServerListEntry.cs" />
-    <Compile Include="Ultima\Data\Features.cs" />
+    <Compile Include="Ultima\Player\Features.cs" />
     <Compile Include="Ultima\Player\SkillData.cs" />
     <Compile Include="Ultima\Player\StatLockData.cs" />
     <Compile Include="Ultima\Network\Client\AsciiSpeechPacket.cs" />

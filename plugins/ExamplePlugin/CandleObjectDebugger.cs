@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using UltimaXNA;
-using UltimaXNA.Ultima.Resources;
-using UltimaXNA.Core.Resources;
-
-namespace ExamplePlugin
+﻿namespace ExamplePlugin
 {
     class CandleObjectDebugger
     {

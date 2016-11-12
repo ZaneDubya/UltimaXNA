@@ -44,7 +44,6 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
             AddControl(new ResizePic(this, 96, 285, 0x13BE, 492, 190));
             AddControl(new GumpPic(this, 0, 0, 0x157C, 0)); // 0x2329 - upper-left border graphic
             AddControl(new GumpPic(this, 294, 42, 0x058A, 0)); // 0x2329 - castle graphic
-
             // quit button
             AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;

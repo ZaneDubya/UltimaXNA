@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.Resources
         {
             m_Table = new Dictionary<int, ContainerData>();
 
-            string path = @"data\containers.cfg";
+            string path = @"data/containers.cfg";
 
             if (!File.Exists(path))
             {

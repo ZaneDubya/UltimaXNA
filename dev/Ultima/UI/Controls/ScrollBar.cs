@@ -14,7 +14,6 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -24,9 +23,9 @@ namespace UltimaXNA.Ultima.UI.Controls
     /// </summary>
     class ScrollBar : AControl, IScrollBar
     {
-        // ================================================================================
+        // ============================================================================================================
         // Private variables
-        // ================================================================================
+        // ============================================================================================================
         private Texture2D[] m_GumpUpButton = null;
         private Texture2D[] m_GumpDownButton = null;
         private Texture2D[] m_GumpBackground = null;
@@ -44,9 +43,9 @@ namespace UltimaXNA.Ultima.UI.Controls
         private float m_TimeUntilNextClick;
         private const float c_TimeBetweenClicks = 500f;
 
-        // ================================================================================
+        // ============================================================================================================
         // Public properties
-        // ================================================================================
+        // ============================================================================================================
         public int Value
         {
             get
@@ -93,9 +92,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Ctors, Initialize, Update, and Draw
-        // ================================================================================
+        // ============================================================================================================
         public ScrollBar(AControl parent)
             : base(parent)
         {

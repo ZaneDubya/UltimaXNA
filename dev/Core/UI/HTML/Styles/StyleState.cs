@@ -11,7 +11,6 @@
 
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Core.Extensions;
 
 namespace UltimaXNA.Core.UI.HTML.Styles
 {

@@ -19,13 +19,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 {
     class LightningEffectView : AEntityView
     {
-        LightningEffect Effect
-        {
-            get
-            {
-                return (LightningEffect)base.Entity;
-            }
-        }
+        LightningEffect Effect => (LightningEffect)Entity;
 
         int m_DisplayItemID = -1;
 
@@ -67,8 +61,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
         }
 
-        static Point[] s_Offsets = new Point[10]
-            {
+        static Point[] s_Offsets = {
                 new Point(48, 0),
                 new Point(68, 0),
                 new Point(92, 0),
