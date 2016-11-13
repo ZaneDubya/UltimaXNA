@@ -15,6 +15,7 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 #endregion
 
@@ -25,25 +26,25 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // ============================================================================================================
         // Private variables
         // ============================================================================================================
-        private SpellBook m_Spellbook;
-        private HtmlGumpling[] m_CircleHeaders;
-        private HtmlGumpling[] m_Indexes;
+        SpellBook m_Spellbook;
+        HtmlGumpling[] m_CircleHeaders;
+        HtmlGumpling[] m_Indexes;
 
         // ============================================================================================================
         // Private services 
         // ============================================================================================================
-        private WorldModel m_World;
+        WorldModel m_World;
 
         // ============================================================================================================
         // Ctor, Update, Dispose
         // ============================================================================================================
-        public SpellbookGump(SpellBook entity, int itemID)
+        public SpellbookGump(SpellBook entity)
             : base(entity.Serial, 0)
         {
             m_World = ServiceRegistry.GetService<WorldModel>();
 
             m_Spellbook = entity;
-            m_Spellbook.OnEntityUpdated += OnEntityUpdate;
+            m_Spellbook.SetCallbacks(OnEntityUpdate, OnEntityDispose);
 
             IsMoveable = true;
 
@@ -68,7 +69,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Dispose()
         {
-            m_Spellbook.OnEntityUpdated -= OnEntityUpdate;
+            m_Spellbook.ClearCallBacks(OnEntityUpdate, OnEntityDispose);
             if (m_PageCornerLeft != null)
             {
                 m_PageCornerLeft.MouseClickEvent -= PageCorner_MouseClickEvent;
@@ -85,24 +86,29 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // ============================================================================================================
         // OnEntityUpdate - called when spellbook entity is updated by server.
         // ============================================================================================================
-        private void OnEntityUpdate()
+        void OnEntityUpdate(AEntity entity)
         {
             if (m_Spellbook.BookType == SpellBookTypes.Magic)
                 CreateMageryGumplings();
         }
 
+        void OnEntityDispose(AEntity entity)
+        {
+            Dispose();
+        }
+
         // ============================================================================================================
         // Child control creation
-        // The spellbook is laid out as such:
+        // The spellbook is laid out as follows:
         // 1. A list of all spells in the book. Clicking on a spell will turn to that spell's page.
         // 2. One page per spell in the book. Icon, runes, reagents, etc.
         // ============================================================================================================
-        private GumpPic m_PageCornerLeft;
-        private GumpPic m_PageCornerRight;
-        private int m_MaxPage = 0;
-        private List<KeyValuePair<int, int>> m_SpellList = new List<KeyValuePair<int, int>>();
+        GumpPic m_PageCornerLeft;
+        GumpPic m_PageCornerRight;
+        int m_MaxPage = 0;
+        List<KeyValuePair<int, int>> m_SpellList = new List<KeyValuePair<int, int>>();
 
-        private void CreateMageryGumplings()
+        void CreateMageryGumplings()
         {
             ClearControls();
 
@@ -171,7 +177,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             SetActivePage(1);
         }
 
-        private void CreateSpellPage(int page, bool rightPage, int circle, SpellDefinition spell)
+        void CreateSpellPage(int page, bool rightPage, int circle, SpellDefinition spell)
         {
             // header: "NTH CIRCLE"
             AddControl(new HtmlGumpling(this, 64 + (rightPage ? 148 : 0), 10, 130, 200, 0, 0,
@@ -252,14 +258,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
         }
 
-        private void SpellCircle_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
+        void SpellCircle_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
                 return;
             SetActivePage(sender.GumpLocalID / 2 + 1);
         }
 
-        private void PageCorner_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
+        void PageCorner_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
                 return;
@@ -274,7 +280,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
         }
 
-        private void PageCorner_MouseDoubleClickEvent(AControl sender, int x, int y, MouseButton button)
+        void PageCorner_MouseDoubleClickEvent(AControl sender, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
                 return;
@@ -289,7 +295,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
         }
 
-        private void SetActivePage(int page)
+        void SetActivePage(int page)
         {
             if (page < 1)
                 page = 1;
@@ -302,7 +308,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             for (int currentCol = 0; currentCol < 2; currentCol++)
             {
                 bool isRightPage = (currentCol + 1 == 2);
-                currentSpellInfoIndex += currentCol; 
+                currentSpellInfoIndex += currentCol;
 
                 // Create Spell Index page
                 if (currentPage <= 4)

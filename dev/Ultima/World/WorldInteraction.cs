@@ -152,7 +152,7 @@ namespace UltimaXNA.Ultima.World {
                 }
                 else if (entity is SpellBook)
                 {
-                    gump = new SpellbookGump((SpellBook)entity, ((Container)entity).ItemID);
+                    gump = new SpellbookGump((SpellBook)entity);
                     m_UserInterface.AddControl(gump, 96, 96);
                 }
                 else

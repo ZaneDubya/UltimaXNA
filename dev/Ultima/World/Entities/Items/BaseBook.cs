@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 using System.Linq;
-using System.Collections.Generic;
 using UltimaXNA.Ultima.World.Maps;
 using System.Text;
 
@@ -17,11 +16,11 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 {
     public class BaseBook : Item
     {
-        private string m_Title;
-        private string m_Author;
-        private BookPageInfo[] m_Pages;
-        private bool m_Writable;
-        private static ushort[] m_BookItemIDs = new ushort[] {
+        string m_Title;
+        string m_Author;
+        BookPageInfo[] m_Pages;
+        bool m_Writable;
+        static ushort[] m_BookItemIDs = {
             0xFEF, // Brown Book
             0xFF0, // Tan Book
             0xFF1, // Red Book
@@ -30,7 +29,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 
         public static bool IsBookItem(ushort itemID)
         {
-            return m_BookItemIDs.Contains<ushort>(itemID);
+            return m_BookItemIDs.Contains(itemID);
         }
 
         public string Title
@@ -63,16 +62,16 @@ namespace UltimaXNA.Ultima.World.Entities.Items
         }
 
         public BaseBook(Serial serial, Map map) 
-            : this(serial, map, 20, true)
+            : this(serial, map, true)
         {
         }
 
-        public BaseBook(Serial serial, Map map, int pageCount, bool writable)
-            : this(serial, map, pageCount, writable, null, null)
+        public BaseBook(Serial serial, Map map, bool writable)
+            : this(serial, map, writable, null, null)
         {
         }
 
-        public BaseBook(Serial serial, Map map, int pageCount, bool writable, string title, string author)
+        public BaseBook(Serial serial, Map map, bool writable, string title, string author)
             : base(serial, map)
         {
             m_Title = title;
@@ -81,73 +80,38 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             m_Pages = new BookPageInfo[0];
         }
 
-        public string ContentAsString
-        {
-            get
-            {
-                StringBuilder sb = new StringBuilder();
-
-                foreach (BookPageInfo bpi in this.m_Pages)
-                {
-                    foreach (string line in bpi.Lines)
-                    {
-                        sb.AppendLine(line);
-                    }
-                }
-
-                return sb.ToString();
-            }
-        }
-
-        public string[] ContentAsStringArray
-        {
-            get
-            {
-                List<string> lines = new List<string>();
-
-                foreach (BookPageInfo bpi in this.m_Pages)
-                {
-                    lines.AddRange(bpi.Lines);
-                }
-
-                return lines.ToArray();
-            }
-        }
-
         public class BookPageInfo
         {
-            private string[] m_lines;
-
+            string[] m_Lines;
             public string[] Lines
             {
                 get
                 {
-                    return m_lines;
+                    return m_Lines;
                 }
-
                 set
                 {
-                    m_lines = value;
+                    m_Lines = value;
                 }
             }
 
             public BookPageInfo()
             {
-                m_lines = new string[0];
+                m_Lines = new string[0];
             }
 
             public BookPageInfo(string[] lines)
             {
-                m_lines = lines;
+                m_Lines = lines;
             }
 
             public string getAllLines()
             {
                 StringBuilder sb = new StringBuilder();
 
-                for (int i = 0; i < m_lines.Length; i++)
+                for (int i = 0; i < m_Lines.Length; i++)
                 {
-                    sb.AppendLine(m_lines[i]);
+                    sb.AppendLine(m_Lines[i]);
                 }
 
                 return sb.ToString();

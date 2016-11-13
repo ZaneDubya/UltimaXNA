@@ -1230,7 +1230,7 @@ namespace UltimaXNA.Ultima.World
         {
             BaseBook book = WorldModel.Entities.GetObject<BaseBook>(p.Serial, false);
             book.Pages = p.Pages;
-            m_UserInterface.AddControl(new BookGump(book, book.Serial), 200, 200);
+            m_UserInterface.AddControl(new BookGump(book), 200, 200);
         }
 
         void ReceiveBookHeaderNew(BookHeaderNewPacket p)

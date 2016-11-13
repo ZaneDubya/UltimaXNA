@@ -16,6 +16,7 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 #endregion
 
@@ -28,9 +29,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         GumpPic m_PageCornerLeft;
         GumpPic m_PageCornerRight;
         List<TextEntry> textEntries = new List<TextEntry>();
-        TextEntry titleTextEntry;
-        TextEntry authorTextEntry;
-        int m_lastPage;
+        TextEntry m_TitleTextEntry;
+        TextEntry m_AuthorTextEntry;
+        int m_LastPage;
         WorldModel m_World;
 
         ushort[] m_GumpBaseIDs =
@@ -53,12 +54,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // ================================================================================
         // Ctor, Update, Dispose
         // ================================================================================
-        public BookGump(BaseBook entity, int itemID)
+        public BookGump(BaseBook entity)
             : base(entity.Serial, 0)
         {
             m_Book = entity;
-            m_Book.OnEntityUpdated += OnEntityUpdate;
-            m_lastPage = (m_Book.PagesCount + 2) / 2;
+            m_Book.SetCallbacks(OnEntityUpdate, OnEntityDispose);
+            m_LastPage = (m_Book.PagesCount + 2) / 2;
             IsMoveable = true;
             m_World = ServiceRegistry.GetService<WorldModel>();
             BuildGump();
@@ -71,7 +72,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Dispose()
         {
-            m_Book.OnEntityUpdated -= OnEntityUpdate;
+            m_Book.ClearCallBacks(OnEntityUpdate, OnEntityDispose);
             if (m_PageCornerLeft != null)
             {
                 m_PageCornerLeft.MouseClickEvent -= PageCorner_MouseClickEvent;
@@ -88,9 +89,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // ================================================================================
         // OnEntityUpdate - called when book entity is updated by server.
         // ================================================================================
-        void OnEntityUpdate()
+        void OnEntityUpdate(AEntity entity)
         {
+            m_Book = entity as BaseBook;
             BuildGump();
+        }
+
+        void OnEntityDispose(AEntity entity)
+        {
+            Dispose();
         }
 
         void BuildGump()
@@ -112,16 +119,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_PageCornerRight.MouseClickEvent += PageCorner_MouseClickEvent;
             m_PageCornerRight.MouseDoubleClickEvent += PageCorner_MouseDoubleClickEvent;
             // Draw the title and author page
-            titleTextEntry = new TextEntry(this, 45, 50, 160, 300, 1, 0, 0, m_Book.Title);
-            titleTextEntry.MakeThisADragger();
-            titleTextEntry.IsEditable = m_Book.Writable;
-            authorTextEntry = new TextEntry(this, 45, 110, 160, 300, 1, 0, 0, m_Book.Author);
-            authorTextEntry.MakeThisADragger();
-            authorTextEntry.IsEditable = m_Book.Writable;
-            AddControl(new HtmlGumpling(this, 45, 30, 160, 300, 0, 0, string.Format("Title:")), 1);
-            AddControl(titleTextEntry, 1);
+            m_TitleTextEntry = new TextEntry(this, 45, 50, 160, 300, 1, 0, 0, m_Book.Title);
+            m_TitleTextEntry.MakeThisADragger();
+            m_TitleTextEntry.IsEditable = m_Book.Writable;
+            m_AuthorTextEntry = new TextEntry(this, 45, 110, 160, 300, 1, 0, 0, m_Book.Author);
+            m_AuthorTextEntry.MakeThisADragger();
+            m_AuthorTextEntry.IsEditable = m_Book.Writable;
+            AddControl(m_TitleTextEntry, 1);
             AddControl(new HtmlGumpling(this, 45, 90, 160, 300, 0, 0, string.Format("Author:")), 1);
-            AddControl(authorTextEntry, 1);
+            AddControl(m_AuthorTextEntry, 1);
             // Add book pages to active pages
             bool isRight = true;
             int activePage = 1;
@@ -180,7 +186,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             else
             {
-                SetActivePage(m_lastPage);
+                SetActivePage(m_LastPage);
             }
         }
 
@@ -196,14 +202,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (page < 1)
                 page = 1;
-            if (page > m_lastPage)
-                page = m_lastPage;
+            if (page > m_LastPage)
+                page = m_LastPage;
 
             ActivePage = page;
 
             // Hide the page corners if we're at the first or final page.
             m_PageCornerLeft.Page = (page != 1) ? 0 : int.MaxValue;
-            m_PageCornerRight.Page = (page != m_lastPage) ? 0 : int.MaxValue;
+            m_PageCornerRight.Page = (page != m_LastPage) ? 0 : int.MaxValue;
         }
 
         void IsContentChanged()
@@ -219,9 +225,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // Else if leftPageIndex >= 0, they are all pages
             if (leftPageIndex < 0)
             {
-                if (titleTextEntry.Text != m_Book.Title || authorTextEntry.Text != m_Book.Author)
+                if (m_TitleTextEntry.Text != m_Book.Title || m_AuthorTextEntry.Text != m_Book.Author)
                 {
-                    m_World.Interaction.BookHeaderNewChange(m_Book.Serial, titleTextEntry.Text, authorTextEntry.Text);
+                    m_World.Interaction.BookHeaderNewChange(m_Book.Serial, m_TitleTextEntry.Text, m_AuthorTextEntry.Text);
                 }
 
                 string test = m_Book.Pages[rightPageIndex].getAllLines();
