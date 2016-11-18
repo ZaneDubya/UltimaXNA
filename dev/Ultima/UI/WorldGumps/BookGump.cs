@@ -22,13 +22,13 @@ using UltimaXNA.Ultima.World.Entities.Items;
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    class BookGump : Gump
+    public class BookGump : Gump
     {
         BaseBook m_Book;
         GumpPic m_BookBackground;
         GumpPic m_PageCornerLeft;
         GumpPic m_PageCornerRight;
-        List<TextEntry> textEntries = new List<TextEntry>();
+        List<TextEntry> m_TextEntries = new List<TextEntry>();
         TextEntry m_TitleTextEntry;
         TextEntry m_AuthorTextEntry;
         int m_LastPage;
@@ -61,7 +61,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Book.SetCallbacks(OnEntityUpdate, OnEntityDispose);
             m_LastPage = (m_Book.PagesCount + 2) / 2;
             IsMoveable = true;
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = ServiceRegistry.GetService<WorldModel>(false);
             BuildGump();
         }
 
@@ -135,19 +135,19 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 if (isRight)
                 {
-                    textEntries.Add(new TextEntry(this, 235, 32, 160, 300, 1, 0, 200, m_Book.Pages[i].getAllLines()));
-                    textEntries[i].MakeThisADragger();
-                    textEntries[i].IsEditable = m_Book.Writable;
-                    AddControl(textEntries[i], activePage);
+                    m_TextEntries.Add(new TextEntry(this, 235, 32, 160, 300, 1, 0, 200, m_Book.Pages[i].GetAllLines()));
+                    m_TextEntries[i].MakeThisADragger();
+                    m_TextEntries[i].IsEditable = m_Book.Writable;
+                    AddControl(m_TextEntries[i], activePage);
                     isRight = false;
                     activePage++;
                 }
                 else
                 {
-                    textEntries.Add(new TextEntry(this, 45, 32, 160, 300, 1, 0, 200, m_Book.Pages[i].getAllLines()));
-                    textEntries[i].MakeThisADragger();
-                    textEntries[i].IsEditable = m_Book.Writable;
-                    AddControl(textEntries[i], activePage);
+                    m_TextEntries.Add(new TextEntry(this, 45, 32, 160, 300, 1, 0, 200, m_Book.Pages[i].GetAllLines()));
+                    m_TextEntries[i].MakeThisADragger();
+                    m_TextEntries[i].IsEditable = m_Book.Writable;
+                    AddControl(m_TextEntries[i], activePage);
                     isRight = true;
                 }
             }
@@ -227,24 +227,22 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 if (m_TitleTextEntry.Text != m_Book.Title || m_AuthorTextEntry.Text != m_Book.Author)
                 {
-                    m_World.Interaction.BookHeaderNewChange(m_Book.Serial, m_TitleTextEntry.Text, m_AuthorTextEntry.Text);
+                    m_World?.Interaction.BookHeaderNewChange(m_Book.Serial, m_TitleTextEntry.Text, m_AuthorTextEntry.Text);
                 }
-
-                string test = m_Book.Pages[rightPageIndex].getAllLines();
-                if (rightPageIndex < textEntries.Count && textEntries[rightPageIndex].Text != test)
+                if (rightPageIndex < m_TextEntries.Count && m_TextEntries[rightPageIndex].Text != m_Book.Pages[rightPageIndex].GetAllLines())
                 {
-                    m_World.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(textEntries[rightPageIndex]));
+                    m_World?.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(m_TextEntries[rightPageIndex]));
                 }
             }
             else
             {
-                if (textEntries[leftPageIndex].Text != m_Book.Pages[leftPageIndex].getAllLines())
+                if (m_TextEntries[leftPageIndex].Text != m_Book.Pages[leftPageIndex].GetAllLines())
                 {
-                    m_World.Interaction.BookPageChange(m_Book.Serial, leftPageIndex, GetTextEntryAsArray(textEntries[leftPageIndex]));
+                    m_World?.Interaction.BookPageChange(m_Book.Serial, leftPageIndex, GetTextEntryAsArray(m_TextEntries[leftPageIndex]));
                 }
-                if (rightPageIndex < textEntries.Count - 1 && textEntries[rightPageIndex].Text != m_Book.Pages[rightPageIndex].getAllLines())
+                if (rightPageIndex < m_TextEntries.Count - 1 && m_TextEntries[rightPageIndex].Text != m_Book.Pages[rightPageIndex].GetAllLines())
                 {
-                    m_World.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(textEntries[rightPageIndex]));
+                    m_World?.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(m_TextEntries[rightPageIndex]));
                 }
             }
         }

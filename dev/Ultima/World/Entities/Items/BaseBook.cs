@@ -105,15 +105,13 @@ namespace UltimaXNA.Ultima.World.Entities.Items
                 m_Lines = lines;
             }
 
-            public string getAllLines()
+            public string GetAllLines()
             {
                 StringBuilder sb = new StringBuilder();
-
                 for (int i = 0; i < m_Lines.Length; i++)
                 {
-                    sb.AppendLine(m_Lines[i]);
+                    sb.Append($"{m_Lines[i]}\n");
                 }
-
                 return sb.ToString();
             }
         }
