@@ -21,6 +21,14 @@ namespace ExamplePlugin {
         void OnClickDebugGump() {
             BaseBook book = new BaseBook(Serial.NewDynamicSerial, null);
             book.ItemID = 0xFEF;
+            book.IsEditable = true;
+            book.Pages = new BaseBook.BookPageInfo[] {
+                 new BaseBook.BookPageInfo(),
+                 new BaseBook.BookPageInfo(),
+                 new BaseBook.BookPageInfo(),
+                 new BaseBook.BookPageInfo(),
+                 new BaseBook.BookPageInfo(),
+            };
             ServiceRegistry.GetService<UserInterfaceService>().AddControl(new BookGump(book), 10, 10);
         }
     }

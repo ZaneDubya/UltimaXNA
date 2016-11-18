@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             m_Book = entity;
             m_Book.SetCallbacks(OnEntityUpdate, OnEntityDispose);
-            m_LastPage = (m_Book.PagesCount + 2) / 2;
+            m_LastPage = (m_Book.PageCount + 2) / 2;
             IsMoveable = true;
             m_World = ServiceRegistry.GetService<WorldModel>(false);
             BuildGump();
@@ -119,25 +119,25 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_PageCornerRight.MouseClickEvent += PageCorner_MouseClickEvent;
             m_PageCornerRight.MouseDoubleClickEvent += PageCorner_MouseDoubleClickEvent;
             // Draw the title and author page
-            m_TitleTextEntry = new TextEntry(this, 45, 50, 160, 300, 1, 0, 0, m_Book.Title);
+            m_TitleTextEntry = new TextEntry(this, 45, 50, 155, 300, 1, 0, 0, m_Book.Title);
             m_TitleTextEntry.MakeThisADragger();
-            m_TitleTextEntry.IsEditable = m_Book.Writable;
+            m_TitleTextEntry.IsEditable = m_Book.IsEditable;
             m_AuthorTextEntry = new TextEntry(this, 45, 110, 160, 300, 1, 0, 0, m_Book.Author);
             m_AuthorTextEntry.MakeThisADragger();
-            m_AuthorTextEntry.IsEditable = m_Book.Writable;
+            m_AuthorTextEntry.IsEditable = m_Book.IsEditable;
             AddControl(m_TitleTextEntry, 1);
-            AddControl(new HtmlGumpling(this, 45, 90, 160, 300, 0, 0, string.Format("Author:")), 1);
+            AddControl(new HtmlGumpling(this, 45, 90, 155, 300, 0, 0, string.Format("Author:")), 1);
             AddControl(m_AuthorTextEntry, 1);
             // Add book pages to active pages
             bool isRight = true;
             int activePage = 1;
-            for (int i = 0; i < m_Book.PagesCount; i++)
+            for (int i = 0; i < m_Book.PageCount; i++)
             {
                 if (isRight)
                 {
                     m_TextEntries.Add(new TextEntry(this, 235, 32, 160, 300, 1, 0, 200, m_Book.Pages[i].GetAllLines()));
                     m_TextEntries[i].MakeThisADragger();
-                    m_TextEntries[i].IsEditable = m_Book.Writable;
+                    m_TextEntries[i].IsEditable = m_Book.IsEditable;
                     AddControl(m_TextEntries[i], activePage);
                     isRight = false;
                     activePage++;
@@ -146,7 +146,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 {
                     m_TextEntries.Add(new TextEntry(this, 45, 32, 160, 300, 1, 0, 200, m_Book.Pages[i].GetAllLines()));
                     m_TextEntries[i].MakeThisADragger();
-                    m_TextEntries[i].IsEditable = m_Book.Writable;
+                    m_TextEntries[i].IsEditable = m_Book.IsEditable;
                     AddControl(m_TextEntries[i], activePage);
                     isRight = true;
                 }

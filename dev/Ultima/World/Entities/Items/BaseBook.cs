@@ -19,7 +19,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
         string m_Title;
         string m_Author;
         BookPageInfo[] m_Pages;
-        bool m_Writable;
+        bool m_IsEditable;
         static ushort[] m_BookItemIDs = {
             0xFEF, // Brown Book
             0xFF0, // Tan Book
@@ -44,16 +44,13 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             set { m_Author = value; }
         }
 
-        public bool Writable
+        public bool IsEditable
         {
-            get { return m_Writable; }
-            set { m_Writable = value; }
+            get { return m_IsEditable; }
+            set { m_IsEditable = value; }
         }
 
-        public int PagesCount
-        {
-            get { return m_Pages.Length; }
-        }
+        public int PageCount => m_Pages.Length;
 
         public BookPageInfo[] Pages
         {
@@ -76,7 +73,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
         {
             m_Title = title;
             m_Author = author;
-            m_Writable = writable;
+            m_IsEditable = writable;
             m_Pages = new BookPageInfo[0];
         }
 

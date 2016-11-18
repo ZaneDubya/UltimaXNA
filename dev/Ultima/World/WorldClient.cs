@@ -1236,7 +1236,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveBookHeaderNew(BookHeaderNewPacket p)
         {
             BaseBook book = WorldModel.Entities.GetObject<BaseBook>(p.Serial, true);
-            book.Writable = (p.Flag0 == 1 && p.Flag1 == 1);
+            book.IsEditable = (p.Flag0 == 1 && p.Flag1 == 1);
             book.Title = p.Title;
             book.Author = p.Author;
         }
