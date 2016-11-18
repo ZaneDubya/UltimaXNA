@@ -17,7 +17,18 @@ namespace UltimaXNA.Core.Audio
 {
     abstract class ASound : IDisposable
     {
-        public string Name { get; private set; }
+        private string m_Name;
+        public string Name
+        {
+            get { return m_Name; }
+            private set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    m_Name = value.Replace(".mp3", "");
+                else
+                    m_Name = string.Empty;
+            }
+        }
         public DateTime LastPlayed = DateTime.MinValue;
         public static TimeSpan MinimumDelay = TimeSpan.FromSeconds(1d);
 

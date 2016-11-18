@@ -1148,7 +1148,22 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveOpenWebBrowser(OpenWebBrowserPacket p)
         {
-            Process.Start("iexplore.exe", p.WebsiteUrl);
+            if (!string.IsNullOrEmpty(p.WebsiteUrl))
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start(p.WebsiteUrl);
+                }
+                catch (System.ComponentModel.Win32Exception noBrowser)
+                {
+                    if (noBrowser.ErrorCode == -2147467259)
+                        UI.MsgBoxGump.Show(noBrowser.Message, UI.MsgBoxTypes.OkOnly);
+                }
+                catch (System.Exception other)
+                {
+                    UI.MsgBoxGump.Show(other.Message, UI.MsgBoxTypes.OkOnly);
+                }
+            }
         }
 
         void ReceiveOverallLightLevel(OverallLightLevelPacket p)
