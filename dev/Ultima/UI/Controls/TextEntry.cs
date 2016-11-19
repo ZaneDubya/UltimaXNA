@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         bool m_CaratBlinkOn;
         float m_MSSinceLastCaratBlink;
         RenderedText m_RenderedText;
-        RenderedText m_Carat;
+        RenderedText m_RenderedCarat;
 
         public int Hue;
         public int EntryID;
@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             MaxCharCount = maxCharCount;
             m_CaratBlinkOn = false;
             m_RenderedText = new RenderedText(string.Empty, 2048, true);
-            m_Carat = new RenderedText(string.Empty, 16, true);
+            m_RenderedCarat = new RenderedText(string.Empty, 16, true);
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -95,13 +95,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (UserInterface.KeyboardFocusControl == this)
             {
                 // if we're not already focused, turn the carat on immediately.
-                // if we're using the legacy carat, keep it visible. Else blink it every x seconds.
                 if (!m_IsFocused)
                 {
                     m_IsFocused = true;
                     m_CaratBlinkOn = true;
                     m_MSSinceLastCaratBlink = 0f;
                 }
+                // if we're using the legacy carat, keep it visible. Else blink it every x seconds.
                 if (LegacyCarat)
                 {
                     m_CaratBlinkOn = true;
@@ -113,9 +113,13 @@ namespace UltimaXNA.Ultima.UI.Controls
                     {
                         m_MSSinceLastCaratBlink = 0;
                         if (m_CaratBlinkOn == true)
+                        {
                             m_CaratBlinkOn = false;
+                        }
                         else
+                        {
                             m_CaratBlinkOn = true;
+                        }
                     }
                 }
             }
@@ -124,29 +128,26 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_IsFocused = false;
                 m_CaratBlinkOn = false;
             }
-
             m_RenderedText.Text = LeadingHtmlTag + LeadingText + (IsPasswordField ? new string('*', Text.Length) : Text);
-            m_Carat.Text = LeadingHtmlTag + (LegacyCarat ? "_" : "|");
-
+            m_RenderedCarat.Text = LeadingHtmlTag + (LegacyCarat ? "_" : "|");
             base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             Point caratPosition = new Point(position.X, position.Y);
-
             if (IsEditable)
             {
-                if (m_RenderedText.Width + m_Carat.Width <= Width)
+                if (m_RenderedText.Width + m_RenderedCarat.Width <= Width)
                 {
                     m_RenderedText.Draw(spriteBatch, position, Utility.GetHueVector(Hue));
                     caratPosition.X += m_RenderedText.Width;
                 }
                 else
                 {
-                    int textOffset = m_RenderedText.Width - (Width - m_Carat.Width);
+                    int textOffset = m_RenderedText.Width - (Width - m_RenderedCarat.Width);
                     m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0, Utility.GetHueVector(Hue));
-                    caratPosition.X += (Width - m_Carat.Width);
+                    caratPosition.X += (Width - m_RenderedCarat.Width);
                 }
             }
             else
@@ -156,7 +157,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
 
             if (m_CaratBlinkOn)
-                m_Carat.Draw(spriteBatch, caratPosition, Utility.GetHueVector(Hue));
+            {
+                m_RenderedCarat.Draw(spriteBatch, caratPosition, Utility.GetHueVector(Hue));
+            }
             base.Draw(spriteBatch, position);
         }
 
@@ -195,11 +198,13 @@ namespace UltimaXNA.Ultima.UI.Controls
                 default:
                     // place a char, so long as it's within the widths limit.
                     if (MaxCharCount != 0 && Text.Length >= MaxCharCount)
+                    {
                         return;
-
+                    }
                     if (NumericOnly && !char.IsNumber(e.KeyChar))
+                    {
                         return;
-
+                    }
                     if (ReplaceDefaultTextOnFirstKeypress)
                     {
                         Text = string.Empty;
