@@ -20,70 +20,42 @@ using UltimaXNA.Core.Windows;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    internal class TextEntry : AControl
+    class TextEntry : AControl
     {
-        private string m_Text = string.Empty;
+        const float MSBetweenCaratBlinks = 500f;
+        
+        bool m_IsFocused;
+        bool m_CaratBlinkOn;
+        float m_MSSinceLastCaratBlink;
+        RenderedText m_RenderedText;
+        RenderedText m_Carat;
 
-        public int Hue = 0;
-        public int EntryID = 0;
-        public int LimitSize = 0;
-        public bool IsPasswordField = false;
-        public bool ReplaceDefaultTextOnFirstKeypress = false;
-        public bool NumericOnly = false;
+        public int Hue;
+        public int EntryID;
+        public int MaxCharCount;
+        public bool IsPasswordField;
+        public bool ReplaceDefaultTextOnFirstKeypress;
+        public bool NumericOnly;
         public string LeadingHtmlTag = string.Empty;
         public string LeadingText = string.Empty;
-
-        public string Text
-        {
-            get
-            {
-                if (m_Text != null)
-                    return m_Text;
-                return string.Empty;
-            }
-            set { m_Text = value; }
-        }
-
+        public string Text { get; set; }
         public bool LegacyCarat { get; set; }
 
-        public override bool HandlesMouseInput
-        {
-            get { return base.HandlesMouseInput & IsEditable; }
-            set
-            {
-                base.HandlesMouseInput = value;
-            }
-        }
-
-        public override bool HandlesKeyboardFocus
-        {
-            get { return base.HandlesKeyboardFocus & IsEditable; }
-            set
-            {
-                base.HandlesKeyboardFocus = value;
-            }
-        }
-
-        private bool m_IsFocused = false;
-        private bool m_CaratBlinkOn = false;
-        private float m_MSSinceLastCaratBlink = 0f;
-        private const float c_MSBetweenCaratBlinks = 500f;
-
-        private RenderedText m_RenderedText;
-        private RenderedText m_Carat;
+        public override bool HandlesMouseInput => base.HandlesMouseInput & IsEditable;
+        public override bool HandlesKeyboardFocus => base.HandlesKeyboardFocus & IsEditable;
 
         public TextEntry(AControl parent)
             : base(parent)
         {
-            HandlesMouseInput = true;
-            HandlesKeyboardFocus = true;
+            base.HandlesMouseInput = true;
+            base.HandlesKeyboardFocus = true;
             IsEditable = true;
         }
 
         public TextEntry(AControl parent, string[] arguements, string[] lines)
             : this(parent)
         {
-            int x, y, width, height, hue, entryID, textIndex, limitSize = 0;
+            int x, y, width, height, hue, entryID, textIndex, maxCharCount = 0;
             x = Int32.Parse(arguements[1]);
             y = Int32.Parse(arguements[2]);
             width = Int32.Parse(arguements[3]);
@@ -94,25 +66,25 @@ namespace UltimaXNA.Ultima.UI.Controls
             textIndex = Int32.Parse(arguements[7]);
             if (arguements[0] == "textentrylimited")
             {
-                limitSize = Int32.Parse(arguements[8]);
+                maxCharCount = Int32.Parse(arguements[8]);
             }
-            buildGumpling(x, y, width, height, hue, entryID, limitSize, lines[textIndex]);
+            BuildGumpling(x, y, width, height, hue, entryID, maxCharCount, lines[textIndex]);
         }
 
-        public TextEntry(AControl parent, int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
+        public TextEntry(AControl parent, int x, int y, int width, int height, int hue, int entryID, int maxCharCount, string text)
             : this(parent)
         {
-            buildGumpling(x, y, width, height, hue, entryID, limitSize, text);
+            BuildGumpling(x, y, width, height, hue, entryID, maxCharCount, text);
         }
 
-        private void buildGumpling(int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
+        void BuildGumpling(int x, int y, int width, int height, int hue, int entryID, int maxCharCount, string text)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);
             Hue = hue;
             EntryID = entryID;
             Text = text;
-            LimitSize = limitSize;
+            MaxCharCount = maxCharCount;
             m_CaratBlinkOn = false;
             m_RenderedText = new RenderedText(string.Empty, 2048, true);
             m_Carat = new RenderedText(string.Empty, 16, true);
@@ -137,7 +109,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 else
                 {
                     m_MSSinceLastCaratBlink += ((float)frameMS);
-                    if (m_MSSinceLastCaratBlink >= c_MSBetweenCaratBlinks)
+                    if (m_MSSinceLastCaratBlink >= MSBetweenCaratBlinks)
                     {
                         m_MSSinceLastCaratBlink = 0;
                         if (m_CaratBlinkOn == true)
@@ -222,7 +194,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
                 default:
                     // place a char, so long as it's within the widths limit.
-                    if (LimitSize != 0 && Text.Length >= LimitSize)
+                    if (MaxCharCount != 0 && Text.Length >= MaxCharCount)
                         return;
 
                     if (NumericOnly && !char.IsNumber(e.KeyChar))
