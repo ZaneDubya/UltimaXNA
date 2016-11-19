@@ -76,15 +76,15 @@ namespace UltimaXNA.Ultima.UI.Controls {
             if (arguements.Length > 7) {
                 buttonID = Int32.Parse(arguements[7]);
             }
-            buildGumpling(x, y, gumpID1, gumpID2, (ButtonTypes)buttonType, param, buttonID);
+            BuildGumpling(x, y, gumpID1, gumpID2, (ButtonTypes)buttonType, param, buttonID);
         }
 
         public Button(AControl parent, int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
             : this(parent) {
-            buildGumpling(x, y, gumpID1, gumpID2, buttonType, param, buttonID);
+            BuildGumpling(x, y, gumpID1, gumpID2, buttonType, param, buttonID);
         }
 
-        void buildGumpling(int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID) {
+        void BuildGumpling(int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID) {
             Position = new Point(x, y);
             GumpUpID = gumpID1;
             GumpDownID = gumpID2;

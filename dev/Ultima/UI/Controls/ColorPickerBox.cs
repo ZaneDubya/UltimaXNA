@@ -66,7 +66,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public ColorPickerBox(AControl parent, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
             : this(parent)
         {
-            buildGumpling(area, swatchWidth, swatchHeight, hues);
+            BuildGumpling(area, swatchWidth, swatchHeight, hues);
         }
 
         public ColorPickerBox(AControl parent, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues, int index)
@@ -74,10 +74,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             m_openArea = openArea;
             m_Index = index;
-            buildGumpling(closedArea, swatchWidth, swatchHeight, hues);
+            BuildGumpling(closedArea, swatchWidth, swatchHeight, hues);
         }
 
-        void buildGumpling(Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
+        void BuildGumpling(Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
         {
             m_hueWidth = swatchWidth;
             m_hueHeight = swatchHeight;

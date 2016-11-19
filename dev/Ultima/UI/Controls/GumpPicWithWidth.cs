@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public GumpPicWithWidth(AControl parent, int x, int y, int gumpID, int hue, float percentWidth)
             : base(parent)
         {
-            buildGumpling(x, y, gumpID, hue);
+            BuildGumpling(x, y, gumpID, hue);
             PercentWidthDrawn = percentWidth;
         }
 

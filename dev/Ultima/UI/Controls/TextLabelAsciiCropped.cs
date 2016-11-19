@@ -44,10 +44,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         public TextLabelAsciiCropped(AControl parent, int x, int y, int width, int height, int font, int hue, string text)
             : this(parent)
         {
-            buildGumpling(x, y, width, height, font, hue, text);
+            BuildGumpling(x, y, width, height, font, hue, text);
         }
 
-        void buildGumpling(int x, int y, int width, int height, int font, int hue, string text)
+        void BuildGumpling(int x, int y, int width, int height, int font, int hue, string text)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);

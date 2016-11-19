@@ -88,16 +88,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             background = Int32.Parse(arguements[6]);
             scrollbar = Int32.Parse(arguements[7]);
 
-            buildGumpling(x, y, width, height, background, scrollbar, "<font color=#000>" + lines[textIndex]);
+            BuildGumpling(x, y, width, height, background, scrollbar, "<font color=#000>" + lines[textIndex]);
         }
 
         public HtmlGumpling(AControl parent, int x, int y, int width, int height, int background, int scrollbar, string text)
             : base(parent)
         {
-            buildGumpling(x, y, width, height, background, scrollbar, text);
+            BuildGumpling(x, y, width, height, background, scrollbar, text);
         }
 
-        void buildGumpling(int x, int y, int width, int height, int background, int scrollbar, string text)
+        void BuildGumpling(int x, int y, int width, int height, int background, int scrollbar, string text)
         {
             Position = new Point(x, y);
             base.Width = width;

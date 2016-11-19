@@ -65,16 +65,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             width = Int32.Parse(arguements[3]);
             height = Int32.Parse(arguements[4]);
 
-            buildGumpling(x, y, width, height);
+            BuildGumpling(x, y, width, height);
         }
 
         public CheckerTrans(AControl parent, int x, int y, int width, int height)
             : this(parent)
         {
-            buildGumpling(x, y, width, height);
+            BuildGumpling(x, y, width, height);
         }
 
-        void buildGumpling(int x, int y, int width, int height)
+        void BuildGumpling(int x, int y, int width, int height)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);

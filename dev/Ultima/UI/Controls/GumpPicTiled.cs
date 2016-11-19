@@ -37,16 +37,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             width = Int32.Parse(arguements[3]);
             height = Int32.Parse(arguements[4]);
             gumpID = Int32.Parse(arguements[5]);
-            buildGumpling(x, y, width, height, gumpID);
+            BuildGumpling(x, y, width, height, gumpID);
         }
 
         public GumpPicTiled(AControl parent, int x, int y, int width, int height, int gumpID)
             : this(parent)
         {
-            buildGumpling(x, y, width, height, gumpID);
+            BuildGumpling(x, y, width, height, gumpID);
         }
 
-        void buildGumpling(int x, int y, int width, int height, int gumpID)
+        void BuildGumpling(int x, int y, int width, int height, int gumpID)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);

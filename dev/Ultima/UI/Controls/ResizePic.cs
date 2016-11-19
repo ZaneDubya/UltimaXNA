@@ -34,17 +34,17 @@ namespace UltimaXNA.Ultima.UI.Controls {
             gumpID = Int32.Parse(arguements[3]);
             width = Int32.Parse(arguements[4]);
             height = Int32.Parse(arguements[5]);
-            buildGumpling(x, y, gumpID, width, height);
+            BuildGumpling(x, y, gumpID, width, height);
         }
 
         public ResizePic(AControl parent, int x, int y, int gumpID, int width, int height)
             : this(parent) {
-            buildGumpling(x, y, gumpID, width, height);
+            BuildGumpling(x, y, gumpID, width, height);
         }
 
         public ResizePic(AControl parent, AControl createBackgroundAroundThisControl)
             : this(parent) {
-            buildGumpling(createBackgroundAroundThisControl.X - 4,
+            BuildGumpling(createBackgroundAroundThisControl.X - 4,
                 createBackgroundAroundThisControl.Y - 4,
                 9350,
                 createBackgroundAroundThisControl.Width + 8,
@@ -52,7 +52,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
             Page = createBackgroundAroundThisControl.Page;
         }
 
-        void buildGumpling(int x, int y, int gumpID, int width, int height) {
+        void BuildGumpling(int x, int y, int gumpID, int width, int height) {
             Position = new Point(x, y);
             Size = new Point(width, height);
             GumpID = gumpID;

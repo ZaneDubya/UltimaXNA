@@ -50,10 +50,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         public TextLabelAscii(AControl parent, int x, int y, int font, int hue, string text, int width = 400)
             : this(parent, width)
         {
-            buildGumpling(x, y, font, hue, text);
+            BuildGumpling(x, y, font, hue, text);
         }
 
-        void buildGumpling(int x, int y, int font, int hue, string text)
+        void BuildGumpling(int x, int y, int font, int hue, string text)
         {
             Position = new Point(x, y);
             Hue = hue;

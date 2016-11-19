@@ -45,13 +45,13 @@ namespace UltimaXNA.Ultima.UI.Controls
         public ItemGumpling(AControl parent, Item item)
             : base(parent)
         {
-            buildGumpling(item);
+            BuildGumpling(item);
             HandlesMouseInput = true;
 
             m_World = ServiceRegistry.GetService<WorldModel>();
         }
 
-        void buildGumpling(Item item)
+        void BuildGumpling(Item item)
         {
             Position = item.InContainerPosition;
             Item = item;

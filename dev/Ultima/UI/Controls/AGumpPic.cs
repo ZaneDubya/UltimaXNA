@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             MakeThisADragger();
         }
 
-        protected void buildGumpling(int x, int y, int gumpID, int hue)
+        protected void BuildGumpling(int x, int y, int gumpID, int hue)
         {
             Position = new Point(x, y);
             GumpID = gumpID;
