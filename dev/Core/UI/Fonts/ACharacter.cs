@@ -11,7 +11,7 @@
 
 namespace UltimaXNA.Core.UI.Fonts
 {
-    abstract internal class ACharacter : ICharacter
+    abstract class ACharacter : ICharacter
     {
         public int Width
         {
@@ -43,7 +43,7 @@ namespace UltimaXNA.Core.UI.Fonts
             set;
         }
 
-        protected bool HuePassedColor = false;
+        protected bool HuePassedColor;
 
         protected uint[] m_PixelData;
 

@@ -20,12 +20,11 @@ namespace UltimaXNA.Core.UI.HTML.Elements
             get
             {
                 if (Character < 32)
-                    return 0;
-                else
                 {
-                    ICharacter ch = Style.Font.GetCharacter(Character);
-                    return ch.Width + ch.ExtraWidth + (Style.IsBold ? 1 : 0);
+                    return 0;
                 }
+                ICharacter ch = Style.Font.GetCharacter(Character);
+                return ch.Width + ch.ExtraWidth + (Style.IsBold ? 1 : 0);
             }
             set { }
         }
@@ -39,7 +38,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
             set { }
         }
 
-        public char Character = '\0';
+        public char Character;
 
         public CharacterElement(StyleState style, char c)
             : base(style)

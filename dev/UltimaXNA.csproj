@@ -238,7 +238,6 @@
     <Compile Include="Core\Resources\IAnimationFrame.cs" />
     <Compile Include="Core\Resources\IResource.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
-    <Compile Include="Core\UI\HTML\HtmlDocument_OldCode.cs" />
     <Compile Include="Core\UI\HTML\HtmlImage.cs" />
     <Compile Include="Core\UI\HTML\Elements\BlockElement.cs" />
     <Compile Include="Core\UI\HTML\HtmlDocument.cs" />

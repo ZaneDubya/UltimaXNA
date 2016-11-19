@@ -47,21 +47,17 @@ namespace UltimaXNA.Core.UI.Fonts
             height = Height;
             int biggestwidth = 0;
             List<char> word = new List<char>();
-
             for (int i = 0; i < text.Length; i++)
             {
                 char c = text[i];
-
-                if (((int)c) > 32)
+                if (c > 32)
                 {
                     word.Add(c);
                 }
-
                 if (c == ' ' || i == text.Length - 1 || c == '\n')
                 {
                     // Size the word, character by character.
                     int wordwidth = 0;
-
                     if (word.Count > 0)
                     {
                         for (int j = 0; j < word.Count; j++)
@@ -70,7 +66,6 @@ namespace UltimaXNA.Core.UI.Fonts
                             wordwidth += charwidth;
                         }
                     }
-
                     // Now make sure this line can fit the word.
                     if (width + wordwidth <= wrapwidth)
                     {
@@ -122,7 +117,6 @@ namespace UltimaXNA.Core.UI.Fonts
                         }
                     }
                 }
-
                 if (c == '\n')
                 {
                     if (width > biggestwidth)
@@ -131,9 +125,10 @@ namespace UltimaXNA.Core.UI.Fonts
                     width = 0;
                 }
             }
-
             if (biggestwidth > width)
+            {
                 width = biggestwidth;
+            }
         }
     }
 }

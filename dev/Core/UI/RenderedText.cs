@@ -21,16 +21,14 @@ namespace UltimaXNA.Core.UI
     /// </summary>
     class RenderedText
     {
-        // private variables
-        private const int DefaultRenderedTextWidth = 200;
+        const int DefaultRenderedTextWidth = 200;
 
-        private string m_Text = null;
-        private HtmlDocument m_Document;
-        private bool m_MustRender = true;
-        private bool m_CollapseContent = false;
-        private int m_MaxWidth;
-
-        // public properties
+        string m_Text;
+        HtmlDocument m_Document;
+        bool m_MustRender;
+        bool m_CollapseContent;
+        int m_MaxWidth;
+        
         public string Text
         {
             get { return m_Text; }
@@ -92,12 +90,12 @@ namespace UltimaXNA.Core.UI
             get;
             set;
         }
-
-        // !!!! Do these need to be exposed????
+        
         public HtmlLinkList Regions
         {
             get { return m_Document.Links; }
         }
+
         public Texture2D Texture
         {
             get
@@ -106,13 +104,13 @@ namespace UltimaXNA.Core.UI
                 return m_Document.Texture;
             }
         }
-        // !!!! Do these need to be exposed????
 
         public RenderedText(string text, int maxWidth = DefaultRenderedTextWidth, bool collapseContent = false)
         {
             Text = text;
             MaxWidth = maxWidth;
             m_CollapseContent = collapseContent;
+            m_MustRender = true;
         }
 
         // ============================================================================================================
@@ -127,33 +125,26 @@ namespace UltimaXNA.Core.UI
         public void Draw(SpriteBatchUI sb, Rectangle destRectangle, int xScroll, int yScroll, Vector3? hueVector = null)
         {
             if (Text == null)
+            {
                 return;
-
+            }
             Rectangle sourceRectangle;
-
-            if (xScroll > Width)
+            if ((xScroll > Width) || (xScroll < -MaxWidth) || (yScroll > Height) || (yScroll < -Height))
+            {
                 return;
-            else if (xScroll < -MaxWidth)
-                return;
-            else
-                sourceRectangle.X = xScroll;
-
-            if (yScroll > Height)
-                return;
-            else if (yScroll < -Height)
-                return;
-            else
-                sourceRectangle.Y = yScroll;
-
+            }
+            sourceRectangle.X = xScroll;
+            sourceRectangle.Y = yScroll;
             int maxX = sourceRectangle.X + destRectangle.Width;
             if (maxX <= Width)
+            {
                 sourceRectangle.Width = destRectangle.Width;
+            }
             else
             {
                 sourceRectangle.Width = Width - sourceRectangle.X;
                 destRectangle.Width = sourceRectangle.Width;
             }
-
             int maxY = sourceRectangle.Y + destRectangle.Height;
             if (maxY <= Height)
             {
@@ -164,15 +155,13 @@ namespace UltimaXNA.Core.UI
                 sourceRectangle.Height = Height - sourceRectangle.Y;
                 destRectangle.Height = sourceRectangle.Height;
             }
-
             sb.Draw2D(m_Document.Texture, destRectangle, sourceRectangle, hueVector.HasValue ? hueVector.Value : Vector3.Zero);
-
             for (int i = 0; i < m_Document.Links.Count; i++)
             {
                 HtmlLink link = m_Document.Links[i];
-                Point position;
-                Rectangle sourceRect;
-                if (ClipRectangle(new Point(xScroll, yScroll), link.Area, destRectangle, out position, out sourceRect))
+                Point pos;
+                Rectangle srcRect;
+                if (ClipRectangle(new Point(xScroll, yScroll), link.Area, destRectangle, out pos, out srcRect))
                 {
                     // only draw the font in a different color if this is a HREF region.
                     // otherwise it is a dummy region used to notify images that they are
@@ -181,15 +170,21 @@ namespace UltimaXNA.Core.UI
                     {
                         int linkHue = 0;
                         if (link.Index == MouseOverRegionID)
+                        {
                             if (IsMouseDown)
+                            {
                                 linkHue = link.Style.ActiveColorHue;
+                            }
                             else
+                            {
                                 linkHue = link.Style.HoverColorHue;
+                            }
+                        }
                         else
+                        {
                             linkHue = link.Style.ColorHue;
-
-                        sb.Draw2D(m_Document.Texture, new Vector3(position.X, position.Y, 0),
-                            sourceRect, Utility.GetHueVector(linkHue));
+                        }
+                        sb.Draw2D(m_Document.Texture, new Vector3(pos.X, pos.Y, 0), srcRect, Utility.GetHueVector(linkHue));
                     }
                 }
             }
@@ -198,50 +193,59 @@ namespace UltimaXNA.Core.UI
             {
                 HtmlImage image = m_Document.Images[i];
                 Point position;
-                Rectangle sourceRect;
-                if (ClipRectangle(new Point(xScroll, yScroll), image.Area, destRectangle, out position, out sourceRect))
+                Rectangle srcRect;
+                if (ClipRectangle(new Point(xScroll, yScroll), image.Area, destRectangle, out position, out srcRect))
                 {
                     Rectangle srcImage = new Rectangle(
-                        sourceRect.X - image.Area.X, sourceRect.Y - image.Area.Y,
-                        sourceRect.Width, sourceRect.Height);
+                        srcRect.X - image.Area.X, srcRect.Y - image.Area.Y,
+                        srcRect.Width, srcRect.Height);
                     Texture2D texture = null;
 
                     // is the mouse over this image?
                     if (image.LinkIndex != -1 && image.LinkIndex == MouseOverRegionID)
                     {
                         if (IsMouseDown)
+                        {
                             texture = image.TextureDown;
+                        }
                         if (texture == null)
+                        {
                             texture = image.TextureOver;
+                        }
                         if (texture == null)
+                        {
                             texture = image.Texture;
+                        }
                     }
-
                     if (texture == null)
+                    {
                         texture = image.Texture;
-
+                    }
                     if (srcImage.Width > texture.Width)
+                    {
                         srcImage.Width = texture.Width;
+                    }
                     if (srcImage.Height > texture.Height)
+                    {
                         srcImage.Height = texture.Height;
-
+                    }
                     sb.Draw2D(texture, new Vector3(position.X, position.Y, 0),
                         srcImage, Utility.GetHueVector(0, false, false, true));
                 }
             }
         }
 
-        private bool ClipRectangle(Point offset, Rectangle srcRect, Rectangle clipTo, out Point posClipped, out Rectangle srcClipped)
+        bool ClipRectangle(Point offset, Rectangle srcRect, Rectangle clipTo, out Point posClipped, out Rectangle srcClipped)
         {
             posClipped = new Point(clipTo.X + srcRect.X - offset.X, clipTo.Y + srcRect.Y - offset.Y);
             srcClipped = srcRect;
-
             Rectangle dstClipped = srcRect;
             dstClipped.X += clipTo.X - offset.X;
             dstClipped.Y += clipTo.Y - offset.Y;
-
             if (dstClipped.Bottom < clipTo.Top)
+            {
                 return false;
+            }
             if (dstClipped.Top < clipTo.Top)
             {
                 srcClipped.Y += (clipTo.Top - dstClipped.Top);
@@ -249,12 +253,16 @@ namespace UltimaXNA.Core.UI
                 posClipped.Y += (clipTo.Top - dstClipped.Top);
             }
             if (dstClipped.Top > clipTo.Bottom)
+            {
                 return false;
+            }
             if (dstClipped.Bottom > clipTo.Bottom)
                 srcClipped.Height += (clipTo.Bottom - dstClipped.Bottom);
 
             if (dstClipped.Right < clipTo.Left)
+            {
                 return false;
+            }
             if (dstClipped.Left < clipTo.Left)
             {
                 srcClipped.X += (clipTo.Left - dstClipped.Left);
@@ -262,14 +270,17 @@ namespace UltimaXNA.Core.UI
                 posClipped.X += (clipTo.Left - dstClipped.Left);
             }
             if (dstClipped.Left > clipTo.Right)
+            {
                 return false;
+            }
             if (dstClipped.Right > clipTo.Right)
+            {
                 srcClipped.Width += (clipTo.Right - dstClipped.Right);
-
+            }
             return true;
         }
 
-        private void RenderIfNecessary()
+        void RenderIfNecessary()
         {
             if (m_Document == null || m_MustRender)
             {
@@ -278,7 +289,6 @@ namespace UltimaXNA.Core.UI
                     m_Document.Dispose();
                     m_Document = null;
                 }
-
                 if (Text != null)
                 {
                     m_Document = new HtmlDocument(Text, MaxWidth, m_CollapseContent);

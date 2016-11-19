@@ -23,28 +23,15 @@ namespace UltimaXNA.Core.UI.HTML
 {
     class HtmlDocument
     {
-        private BlockElement m_Root = null;
-        private bool m_CollapseToContent = false;
+        BlockElement m_Root;
+        bool m_CollapseToContent;
 
         // ============================================================================================================
         // Public properties
         // ============================================================================================================
 
-        public int Width
-        {
-            get
-            {
-                return m_Root.Width;
-            }
-        }
-
-        public int Height
-        {
-            get
-            {
-                return m_Root.Height;
-            }
-        }
+        public int Width => m_Root.Width;
+        public int Height => m_Root.Height;
 
         public int Ascender
         {
@@ -78,15 +65,14 @@ namespace UltimaXNA.Core.UI.HTML
         {
             m_Root = ParseHtmlToBlocks(html);
             m_CollapseToContent = collapseBlocks;
-
             Images = new HtmlImageList();
             GetAllImages(Images, m_Root);
-
             Links = GetAllHrefRegionsInBlock(m_Root);
-
             DoLayout(m_Root, width);
             if (Ascender != 0)
-                m_Root.Height -= Ascender; // ascender is always negative.
+            {
+                m_Root.Height -= Ascender; // ascender should always be negative.
+            }
             Texture = DoRender(m_Root);
         }
 
@@ -98,37 +84,40 @@ namespace UltimaXNA.Core.UI.HTML
             Links.Clear();
             Links = null;
             if (Texture != null && !Texture.IsDisposed)
+            {
                 Texture.Dispose();
+            }
         }
 
         // ============================================================================================================
         // Parse and create boxes
         // ============================================================================================================
 
-        private static HTMLparser m_Parser;
+        static HTMLparser m_Parser;
 
-        private BlockElement ParseHtmlToBlocks(string html)
+        BlockElement ParseHtmlToBlocks(string html)
         {
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             StyleParser styles = new StyleParser(provider);
-
             BlockElement root, currentBlock;
             root = currentBlock = new BlockElement("root", styles.Style); // this is the root!
-
             // if this is not HTML, do not parse tags. Otherwise search out and interpret tags.
             bool parseHTML = true;
             if (!parseHTML)
             {
                 for (int i = 0; i < html.Length; i++)
+                {
                     currentBlock.AddAtom(new CharacterElement(styles.Style, html[i]));
+                }
             }
             else
             {
                 if (m_Parser == null)
+                {
                     m_Parser = new HTMLparser();
+                }
                 m_Parser.Init(html);
                 HTMLchunk chunk;
-
                 while ((chunk = ParseNext(m_Parser)) != null)
                 {
                     if (!(chunk.oHTML == string.Empty))
@@ -139,7 +128,9 @@ namespace UltimaXNA.Core.UI.HTML
                         text = EscapeCharacters.ReplaceEscapeCharacters(text);
                         //Add the characters to the current box
                         for (int i = 0; i < text.Length; i++)
+                        {
                             currentBlock.AddAtom(new CharacterElement(styles.Style, text[i]));
+                        }
                     }
                     else
                     {
@@ -160,20 +151,17 @@ namespace UltimaXNA.Core.UI.HTML
                             bool isBlockTag = false;
                             switch (chunk.sTag)
                             {
-                                // ============================================================================================================
+                                // ====================================================================================
                                 // Anchor elements are added to the open tag collection as HREFs.
-                                // ============================================================================================================
                                 case "a":
                                     styles.InterpretHREF(chunk, null);
                                     break;
-                                // ============================================================================================================
+                                // ====================================================================================
                                 // These html elements are ignored.
-                                // ============================================================================================================
                                 case "body":
                                     break;
-                                // ============================================================================================================
+                                // ====================================================================================
                                 // These html elements are blocks but can also have styles
-                                // ============================================================================================================
                                 case "center":
                                 case "left":
                                 case "right":
@@ -182,9 +170,8 @@ namespace UltimaXNA.Core.UI.HTML
                                     styles.ParseTag(chunk, atom);
                                     isBlockTag = true;
                                     break;
-                                // ============================================================================================================
+                                // ====================================================================================
                                 // These html elements are styles, and are added to the StyleParser.
-                                // ============================================================================================================
                                 case "span":
                                 case "font":
                                 case "b":
@@ -197,10 +184,9 @@ namespace UltimaXNA.Core.UI.HTML
                                 case "small":
                                     styles.ParseTag(chunk, null);
                                     break;
-                                // ============================================================================================================
+                                // ====================================================================================
                                 // These html elements are added as atoms only. They cannot impart style
                                 // onto other atoms.
-                                // ============================================================================================================
                                 case "br":
                                     atom = new CharacterElement(styles.Style, '\n');
                                     break;
@@ -214,9 +200,8 @@ namespace UltimaXNA.Core.UI.HTML
                                     atom = new ImageElement(styles.Style, ImageElement.ImageTypes.Item);
                                     styles.ParseTag(chunk, atom);
                                     break;
-                                // ============================================================================================================
+                                // ====================================================================================
                                 // Every other element is not interpreted, but rendered as text. Easy!
-                                // ============================================================================================================
                                 default:
                                     {
                                         string text = html.Substring(chunk.iChunkOffset, chunk.iChunkLength);
@@ -245,7 +230,7 @@ namespace UltimaXNA.Core.UI.HTML
             return root;
         }
 
-        private HTMLchunk ParseNext(HTMLparser parser)
+        HTMLchunk ParseNext(HTMLparser parser)
         {
             HTMLchunk chunk = parser.ParseNext();
             return chunk;
@@ -260,7 +245,7 @@ namespace UltimaXNA.Core.UI.HTML
         /// </summary>
         /// <param name="root"></param>
         /// <param name="width"></param>
-        private void DoLayout(BlockElement root, int width)
+        void DoLayout(BlockElement root, int width)
         {
             CalculateLayoutWidthsRecursive(root);
             root.Width = width;
@@ -268,12 +253,11 @@ namespace UltimaXNA.Core.UI.HTML
             root.Height += 1; // for outlined chars. hack
         }
 
-        private void CalculateLayoutWidthsRecursive(BlockElement root)
+        void CalculateLayoutWidthsRecursive(BlockElement root)
         {
             int widthMinLongest = 0, widthMin = 0;
             int widthMaxLongest = 0, widthMax = 0;
             int styleWidth = 0;
-
             foreach (AElement child in root.Children)
             {
                 if (child is BlockElement)
@@ -323,7 +307,7 @@ namespace UltimaXNA.Core.UI.HTML
             root.Layout_MaxWidth = (widthMax + styleWidth > widthMaxLongest) ? widthMax + styleWidth : widthMaxLongest;
         }
 
-        private void LayoutElements(BlockElement root)
+        void LayoutElements(BlockElement root)
         {
             // 1. Determine if all blocks can fit on one line with max width.
             //      -> If yes, then place all blocks!
@@ -334,9 +318,7 @@ namespace UltimaXNA.Core.UI.HTML
             //      -> Flow blocks to the next y line until all remaining blocks can fit on one line.
             //      -> Expand remaining blocks, and start all over again.
             //      -> Actually, this is not yet implemented. Any takers? :(
-
             int ascender = 0;
-
             if (root.Layout_MaxWidth <= root.Width) // 1
             {
                 if (m_CollapseToContent)
@@ -347,7 +329,9 @@ namespace UltimaXNA.Core.UI.HTML
                 foreach (AElement element in root.Children)
                 {
                     if (element is BlockElement)
+                    {
                         (element as BlockElement).Width = (element as BlockElement).Layout_MaxWidth;
+                    }
                 }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y, out ascender);
             }
@@ -382,12 +366,13 @@ namespace UltimaXNA.Core.UI.HTML
                 // just display an error message and call it a day?
                 root.Err_Cant_Fit_Children = true;
             }
-
             if (ascender < Ascender)
+            {
                 Ascender = ascender;
+            }
         }
 
-        private void LayoutElementsHorizontal(BlockElement root, int x, int y, out int ascenderDelta)
+        void LayoutElementsHorizontal(BlockElement root, int x, int y, out int ascenderDelta)
         {
             int x0 = x;
             int x1 = x + root.Width;
@@ -421,7 +406,6 @@ namespace UltimaXNA.Core.UI.HTML
                             rightX += e1.Width;
                         }
                     }
-
                     e0.Layout_X = x0;
                     e0.Layout_Y = y;
                     y += lineHeight;
@@ -568,7 +552,7 @@ namespace UltimaXNA.Core.UI.HTML
         /// <summary>
         /// Breaks a word at its max value.
         /// </summary>
-        private void LayoutElements_BreakWordAtLineEnd(List<AElement> elements, int start, int lineWidth, List<AElement> word, int wordWidth, int styleWidth)
+        void LayoutElements_BreakWordAtLineEnd(List<AElement> elements, int start, int lineWidth, List<AElement> word, int wordWidth, int styleWidth)
         {
             CharacterElement lineend = new Elements.CharacterElement(word[0].Style, '\n');
             int width = lineend.Width + styleWidth + 2;
@@ -592,7 +576,7 @@ namespace UltimaXNA.Core.UI.HTML
         /// </summary>
         /// <param name="root"></param>
         /// <returns></returns>
-        private Texture2D DoRender(BlockElement root)
+        Texture2D DoRender(BlockElement root)
         {
             SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
             GraphicsDevice graphics = sb.GraphicsDevice;
@@ -624,7 +608,7 @@ namespace UltimaXNA.Core.UI.HTML
             return texture;
         }
 
-        unsafe private void DoRenderBlock(BlockElement root, uint* ptr, int width, int height)
+        unsafe void DoRenderBlock(BlockElement root, uint* ptr, int width, int height)
         {
             foreach (AElement element in root.Children)
             {
@@ -672,7 +656,7 @@ namespace UltimaXNA.Core.UI.HTML
         // Image and href link region handling
         // ============================================================================================================
 
-        private void GetAllImages(HtmlImageList images, BlockElement block)
+        void GetAllImages(HtmlImageList images, BlockElement block)
         {
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
@@ -703,7 +687,7 @@ namespace UltimaXNA.Core.UI.HTML
             }
         }
 
-        private HtmlLinkList GetAllHrefRegionsInBlock(BlockElement block)
+        HtmlLinkList GetAllHrefRegionsInBlock(BlockElement block)
         {
             return new HtmlLinkList();
         }

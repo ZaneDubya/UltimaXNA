@@ -36,10 +36,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool IsPasswordField;
         public bool ReplaceDefaultTextOnFirstKeypress;
         public bool NumericOnly;
-        public string LeadingHtmlTag = string.Empty;
-        public string LeadingText = string.Empty;
-        public string Text { get; set; }
-        public bool LegacyCarat { get; set; }
+        public string LeadingHtmlTag;
+        public string LeadingText;
+        public string Text;
+        public bool LegacyCarat;
 
         public override bool HandlesMouseInput => base.HandlesMouseInput & IsEditable;
         public override bool HandlesKeyboardFocus => base.HandlesKeyboardFocus & IsEditable;
@@ -61,7 +61,6 @@ namespace UltimaXNA.Ultima.UI.Controls
             width = Int32.Parse(arguements[3]);
             height = Int32.Parse(arguements[4]);
             hue = ServerRecievedHueTransform(Int32.Parse(arguements[5]));
-
             entryID = Int32.Parse(arguements[6]);
             textIndex = Int32.Parse(arguements[7]);
             if (arguements[0] == "textentrylimited")
@@ -128,8 +127,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_IsFocused = false;
                 m_CaratBlinkOn = false;
             }
-            m_RenderedText.Text = LeadingHtmlTag + LeadingText + (IsPasswordField ? new string('*', Text.Length) : Text);
-            m_RenderedCarat.Text = LeadingHtmlTag + (LegacyCarat ? "_" : "|");
+            string text = Text == null ? null : (IsPasswordField ? new string('*', Text.Length) : Text);
+            m_RenderedText.Text = $"{LeadingHtmlTag}{LeadingText}{text}";
+            m_RenderedCarat.Text = $"{LeadingHtmlTag}{(LegacyCarat ? "_" : "|")}";
             base.Update(totalMS, frameMS);
         }
 
