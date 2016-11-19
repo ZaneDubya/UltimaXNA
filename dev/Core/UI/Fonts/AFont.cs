@@ -41,7 +41,8 @@ namespace UltimaXNA.Core.UI.Fonts
 
         public abstract void Initialize(BinaryReader reader);
 
-        public void GetTextDimensions(ref string text, ref int width, ref int height, int wrapwidth)
+        // This code does not report correct dimensions for styled text :(
+        /*public void GetTextDimensions(ref string text, ref int width, ref int height, int wrapwidth)
         {
             width = 0;
             height = Height;
@@ -129,6 +130,6 @@ namespace UltimaXNA.Core.UI.Fonts
             {
                 width = biggestwidth;
             }
-        }
+        }*/
     }
 }
