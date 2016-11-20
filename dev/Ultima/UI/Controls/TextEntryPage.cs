@@ -110,16 +110,16 @@ namespace UltimaXNA.Ultima.UI.Controls
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
-            Point caratPosition = m_RenderedText.Document.GetCaratPosition(m_CaratAt);
             if (IsEditable)
             {
                 m_RenderedText.Draw(spriteBatch, position);
-                caratPosition.X += m_RenderedText.Width;
-            }
-
-            if (m_CaratBlinkOn)
-            {
-                m_RenderedCarat.Draw(spriteBatch, caratPosition);
+                if (m_CaratBlinkOn)
+                {
+                    Point caratPosition = m_RenderedText.Document.GetCaratPosition(m_CaratAt);
+                    caratPosition.X += position.X;
+                    caratPosition.Y += position.Y;
+                    m_RenderedCarat.Draw(spriteBatch, caratPosition);
+                }
             }
             base.Draw(spriteBatch, position);
         }
