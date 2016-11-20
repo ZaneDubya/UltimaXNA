@@ -2,11 +2,12 @@
 
 namespace UltimaXNA.Core.UI.HTML.Elements
 {
-    class AutoLineBreakElement : AElement
+    class InternalBreakElement : AElement
     {
         public override bool CanBreakAtThisAtom => true;
         public override bool IsThisAtomABreakingSpace => true;
         public override bool IsThisAtomALineBreak => true;
+        public override bool IsThisAtomInternalOnly => true;
 
         public override int Height
         {
@@ -34,7 +35,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
             }
         }
 
-        public AutoLineBreakElement(StyleState style) : base(style)
+        public InternalBreakElement(StyleState style) : base(style)
         {
 
         }

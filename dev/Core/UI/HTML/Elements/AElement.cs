@@ -25,6 +25,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         public virtual bool CanBreakAtThisAtom => true;
         public virtual bool IsThisAtomABreakingSpace => false;
         public virtual bool IsThisAtomALineBreak => false;
+        public virtual bool IsThisAtomInternalOnly => false;
 
         public StyleState Style;
 
