@@ -10,6 +10,7 @@
 #region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Graphics;
@@ -29,11 +30,18 @@ namespace UltimaXNA.Core.UI.HTML
         BlockElement m_Root;
         bool m_CollapseToContent;
         Texture2D m_Texture;
+        Action<int> m_OnPageOverflow;
 
         public int Width => m_Root.Width;
         public int Height => m_Root.Height;
 
         public int Ascender
+        {
+            get;
+            private set;
+        }
+
+        public int MaxLineCount
         {
             get;
             private set;
@@ -76,6 +84,15 @@ namespace UltimaXNA.Core.UI.HTML
             SetHtml(html, width);
         }
 
+        ~HtmlDocument()
+        {
+            m_OnPageOverflow = null;
+        }
+
+        // ============================================================================================================
+        // SetHtml, Render, Reset
+        // ============================================================================================================
+
         public void SetHtml(string html, int width)
         {
             Reset();
@@ -87,6 +104,12 @@ namespace UltimaXNA.Core.UI.HTML
             {
                 m_Root.Height -= Ascender; // ascender should always be negative.
             }
+        }
+
+        public void SetMaxLines(int max, Action<int> onPageOverflow)
+        {
+            MaxLineCount = max;
+            m_OnPageOverflow = onPageOverflow;
         }
 
         public void Render()
@@ -401,6 +424,7 @@ namespace UltimaXNA.Core.UI.HTML
             int height = 0, lineHeight = 0;
             ascenderDelta = 0;
             int lineBeganAtElementIndex = 0;
+            int lineCount = 0;
 
             for (int i = 0; i < root.Children.Count; i++)
             {
@@ -436,6 +460,17 @@ namespace UltimaXNA.Core.UI.HTML
                     height += lineHeight;
                     lineHeight = 0;
                     lineBeganAtElementIndex = i + 1;
+                    lineCount++;
+                    if (MaxLineCount > 0 && lineCount >= MaxLineCount)
+                    {
+                        int index = 0;
+                        for (int j = 0; j < i; j++)
+                        {
+                            index += root.Children[j].IsThisAtomInternalOnly ? 0 : 1;
+                        }
+                        m_OnPageOverflow?.Invoke(index);
+                        break;
+                    }
                 }
                 else
                 {
@@ -457,11 +492,11 @@ namespace UltimaXNA.Core.UI.HTML
                         // longer than 8 chars, where the break would be after character 3 and before 3 characters from the end?
                         if (word.Count == 1 && word[0].IsThisAtomABreakingSpace)
                         {
-                            root.Children.Insert(i + 1, new AutoLineBreakElement(e0.Style));
+                            root.Children.Insert(i + 1, new InternalBreakElement(e0.Style));
                         }
                         else
                         {
-                            root.Children.Insert(i, new AutoLineBreakElement(e0.Style));
+                            root.Children.Insert(i, new InternalBreakElement(e0.Style));
                             i--;
                         }
                     }
@@ -596,7 +631,7 @@ namespace UltimaXNA.Core.UI.HTML
         /// </summary>
         void LayoutElements_BreakWordAtLineEnd(List<AElement> elements, int start, int lineWidth, List<AElement> word, int wordWidth, int styleWidth)
         {
-            AutoLineBreakElement lineend = new AutoLineBreakElement(word[0].Style);
+            InternalBreakElement lineend = new InternalBreakElement(word[0].Style);
             int width = lineend.Width + styleWidth + 2;
             for (int i = 0; i < word.Count; i++)
             {
@@ -761,7 +796,7 @@ namespace UltimaXNA.Core.UI.HTML
                     return carat;
                 }
                 carat.X += e.Width;
-                if (e is AutoLineBreakElement)
+                if (e is InternalBreakElement)
                 {
                     if (index == textIndex)
                     {

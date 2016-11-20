@@ -9,6 +9,7 @@
  ***************************************************************************/
 
 #region usings
+using System;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
@@ -29,12 +30,11 @@ namespace UltimaXNA.Ultima.UI.Controls
         RenderedText m_RenderedText;
         RenderedText m_RenderedCarat;
         int m_CaratAt;
+        Action<int, string> m_OnPageOverflow;
         
         public string LeadingHtmlTag;
         public string Text;
-        public int LineCount;
         public int EntryID;
-        public bool InformParentOfReturnPress;
 
         public int CaratAt
         {
@@ -58,34 +58,37 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override bool HandlesMouseInput => base.HandlesMouseInput & IsEditable;
         public override bool HandlesKeyboardFocus => base.HandlesKeyboardFocus & IsEditable;
+        public int MaxLineCount => m_RenderedText.Document.MaxLineCount;
 
         // ============================================================================================================
         // Ctors and BuildGumpling Methods
         // ============================================================================================================
 
-        public TextEntryPage(AControl parent, int x, int y, int width, int height, int lineCount, int entryID)
-            : this(parent)
-        {
-            BuildGumpling(x, y, width, height, lineCount, entryID);
-        }
-
-        TextEntryPage(AControl parent)
+        public TextEntryPage(AControl parent, int x, int y, int width, int height, int entryID)
             : base(parent)
         {
             base.HandlesMouseInput = true;
             base.HandlesKeyboardFocus = true;
             IsEditable = true;
-        }
-
-        void BuildGumpling(int x, int y, int width, int height, int lineCount, int entryID)
-        {
             Position = new Point(x, y);
             Size = new Point(width, height);
-            LineCount = lineCount;
             EntryID = entryID;
             m_CaratBlinkOn = false;
             m_RenderedText = new RenderedText(string.Empty, Width, true);
             m_RenderedCarat = new RenderedText(string.Empty, 16, true);
+        }
+
+        public void SetMaxLines(int maxLines, Action<int, string> onPageOverflow)
+        {
+            m_RenderedText.Document.SetMaxLines(maxLines, OnDocumentSplitPage);
+            m_OnPageOverflow = onPageOverflow;
+        }
+
+        void OnDocumentSplitPage(int index)
+        {
+            string overflowText = Text.Substring(index);
+            Text = Text.Substring(0, index);
+            m_OnPageOverflow(EntryID, overflowText);
         }
 
         // ============================================================================================================
@@ -156,37 +159,10 @@ namespace UltimaXNA.Ultima.UI.Controls
                     Parent.KeyboardTabToNextFocus(this);
                     break;
                 case WinKeys.Enter:
-                    if (InformParentOfReturnPress)
-                    {
-                        Parent.OnKeyboardReturn(EntryID, Text);
-                    }
-                    else
-                    {
-                        InsertCharacter(CaratAt, '\n');
-                    }
+                    InsertCharacter(CaratAt, '\n');
                     break;
                 case WinKeys.Back:
-                    if (Text.Length > 0)
-                    {
-                        int escapedLength;
-                        if (EscapeCharacters.TryFindEscapeCharacterBackwards(Text, CaratAt, out escapedLength))
-                        {
-                            Text = Text.Substring(0, Text.Length - escapedLength);
-                            int carat = CaratAt - 1;
-                            string before = (CaratAt == 0) ? null : Text.Substring(0, CaratAt - 1);
-                            string after = Text.Substring(CaratAt);
-                            Text = before + after;
-                            CaratAt = carat;
-                        }
-                        else
-                        {
-                            int carat = CaratAt - 1;
-                            string before = (CaratAt == 0) ? null : Text.Substring(0, CaratAt - 1);
-                            string after = Text.Substring(CaratAt);
-                            Text = before + after;
-                            CaratAt = carat;
-                        }
-                    }
+                    RemoveCharacter(CaratAt);
                     break;
                 case WinKeys.Left:
                     CaratAt -= 1;
@@ -220,6 +196,28 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             Text = text;
             CaratAt = caratAt;
+        }
+
+        void RemoveCharacter(int index)
+        {
+            int escapedLength;
+            if (EscapeCharacters.TryFindEscapeCharacterBackwards(Text, index, out escapedLength))
+            {
+                Text = Text.Substring(0, Text.Length - escapedLength);
+                int carat = index - 1;
+                string before = (index == 0) ? null : Text.Substring(0, index - 1);
+                string after = Text.Substring(index);
+                Text = before + after;
+                CaratAt = carat;
+            }
+            else
+            {
+                int carat = index - 1;
+                string before = (index == 0) ? null : Text.Substring(0, index - 1);
+                string after = Text.Substring(index);
+                Text = before + after;
+                CaratAt = carat;
+            }
         }
     }
 }

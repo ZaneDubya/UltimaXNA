@@ -27,7 +27,6 @@ namespace UltimaXNA.Ultima.UI.Controls
         bool m_IsFocused;
         bool m_CaratBlinkOn;
         float m_MSSinceLastCaratBlink;
-        HtmlDocument m_Layout;
         RenderedText m_RenderedText;
         RenderedText m_RenderedCarat;
 
