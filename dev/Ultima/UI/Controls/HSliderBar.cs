@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         private int m_sliderX;
         private HSliderBarStyle Style;
 
-        public HSliderBar(AControl parent)
+        HSliderBar(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;

@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         GumpPic m_BookBackground;
         GumpPic m_PageCornerLeft;
         GumpPic m_PageCornerRight;
-        List<TextEntry> m_TextEntries = new List<TextEntry>();
+        List<TextEntryPage> m_TextEntries = new List<TextEntryPage>();
         TextEntry m_TitleTextEntry;
         TextEntry m_AuthorTextEntry;
         int m_LastPage;
@@ -133,23 +133,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             int activePage = 1;
             for (int i = 0; i < m_Book.PageCount; i++)
             {
+                int x = isRight ? 235 : 45;
+                m_TextEntries.Add(new TextEntryPage(this, x, 32, 160, 300, 8));
+                m_TextEntries[i].MakeThisADragger();
+                m_TextEntries[i].IsEditable = m_Book.IsEditable;
+                m_TextEntries[i].LeadingHtmlTag = "<font color=#800>";
+                AddControl(m_TextEntries[i], activePage);
                 if (isRight)
                 {
-                    m_TextEntries.Add(new TextEntry(this, 235, 32, 160, 300, 1, 0, 200, m_Book.Pages[i].GetAllLines()));
-                    m_TextEntries[i].MakeThisADragger();
-                    m_TextEntries[i].IsEditable = m_Book.IsEditable;
-                    AddControl(m_TextEntries[i], activePage);
-                    isRight = false;
                     activePage++;
                 }
-                else
-                {
-                    m_TextEntries.Add(new TextEntry(this, 45, 32, 160, 300, 1, 0, 200, m_Book.Pages[i].GetAllLines()));
-                    m_TextEntries[i].MakeThisADragger();
-                    m_TextEntries[i].IsEditable = m_Book.IsEditable;
-                    AddControl(m_TextEntries[i], activePage);
-                    isRight = true;
-                }
+                isRight = !isRight;
             }
             SetActivePage(1);
             AudioService service = ServiceRegistry.GetService<AudioService>();
@@ -247,16 +241,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
         }
 
-        string[] GetTextEntryAsArray(TextEntry te)
+        string[] GetTextEntryAsArray(TextEntryPage text)
         {
             List<string> lineList = new List<string>();
             StringBuilder sb = new StringBuilder();
 
-            for (int i = 0; i < te.Text.Length; i++)
+            for (int i = 0; i < text.Text.Length; i++)
             {
-                if (!char.IsControl(te.Text[i]))
+                if (!char.IsControl(text.Text[i]))
                 {
-                    sb.Append(te.Text[i]);
+                    sb.Append(text.Text[i]);
                 }
                 else
                 {
@@ -267,7 +261,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     }
                 }
                 // Last character of text
-                if (i == te.Text.Length - 1)
+                if (i == text.Text.Length - 1)
                     lineList.Add(sb.ToString());
             }
             string[] lines = new string[lineList.Count];

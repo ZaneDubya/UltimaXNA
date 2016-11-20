@@ -250,18 +250,19 @@ namespace UltimaXNA.Core.UI
         public void Draw(double frameTime)
         {
             OrderControlsBasedOnUILayerMetaData();
-
             m_SpriteBatch.GraphicsDevice.Clear(Color.Transparent);
             m_SpriteBatch.Reset();
             foreach (AControl c in m_Controls.Reverse<AControl>())
             {
                 if (c.IsInitialized)
+                {
                     c.Draw(m_SpriteBatch, c.Position);
+                }
             }
-
             if (Cursor != null)
+            {
                 Cursor.Draw(m_SpriteBatch, m_Input.MousePosition);
-
+            }
             m_SpriteBatch.FlushSprites(false);
         }
 

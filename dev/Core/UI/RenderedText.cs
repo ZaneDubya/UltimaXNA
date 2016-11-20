@@ -28,7 +28,7 @@ namespace UltimaXNA.Core.UI
         bool m_MustRender;
         bool m_CollapseContent;
         int m_MaxWidth;
-        
+
         public string Text
         {
             get { return m_Text; }
@@ -90,7 +90,7 @@ namespace UltimaXNA.Core.UI
             get;
             set;
         }
-        
+
         public HtmlLinkList Regions
         {
             get { return m_Document.Links; }
@@ -284,16 +284,17 @@ namespace UltimaXNA.Core.UI
         {
             if (m_Document == null || m_MustRender)
             {
-                if (m_Document != null)
-                {
-                    m_Document.Dispose();
-                    m_Document = null;
-                }
-                if (Text != null)
+                if (m_Document == null)
                 {
                     m_Document = new HtmlDocument(Text, MaxWidth, m_CollapseContent);
-                    m_MustRender = false;
                 }
+                else
+                {
+                    m_Document.Reset();
+                    m_Document.SetHtml(Text, MaxWidth);
+                }
+                m_Document.Render();
+                m_MustRender = false;
             }
         }
     }

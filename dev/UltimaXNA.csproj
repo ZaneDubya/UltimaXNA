@@ -349,6 +349,7 @@
     <Compile Include="Ultima\UI\Controls\GumpPicWithWidth.cs" />
     <Compile Include="Ultima\UI\Controls\KeyPressControl.cs" />
     <Compile Include="Ultima\UI\Controls\MacroDropDownList.cs" />
+    <Compile Include="Ultima\UI\Controls\TextEntryPage.cs" />
     <Compile Include="Ultima\UI\LoginGumps\CreditsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\BookGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ContextMenuGump.cs" />

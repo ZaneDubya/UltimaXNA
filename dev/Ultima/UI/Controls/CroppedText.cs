@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public string Text = string.Empty;
         RenderedText m_Texture;
 
-        public CroppedText(AControl parent)
+        CroppedText(AControl parent)
             : base(parent)
         {
 

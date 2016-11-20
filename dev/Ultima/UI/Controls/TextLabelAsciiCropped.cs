@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public TextLabelAsciiCropped(AControl parent)
+        TextLabelAsciiCropped(AControl parent)
             : base(parent)
         {
 

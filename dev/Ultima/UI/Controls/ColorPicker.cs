@@ -55,7 +55,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public ColorPicker(AControl parent)
+        ColorPicker(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;

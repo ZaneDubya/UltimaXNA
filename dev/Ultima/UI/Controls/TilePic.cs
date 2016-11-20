@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         int Hue;
         int m_tileID;
 
-        public StaticPic(AControl parent)
+        StaticPic(AControl parent)
             : base(parent)
         {
 

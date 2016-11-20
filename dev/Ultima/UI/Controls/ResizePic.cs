@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
         Texture2D[] m_Gumps;
         int GumpID;
 
-        public ResizePic(AControl parent)
+        ResizePic(AControl parent)
             : base(parent) {
             m_Gumps = new Texture2D[9];
             MakeThisADragger();

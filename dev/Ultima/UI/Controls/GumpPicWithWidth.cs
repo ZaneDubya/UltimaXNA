@@ -6,7 +6,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class GumpPicWithWidth : AGumpPic
     {
-        private float m_PercentWidthDrawn = 1.0f;
+        float m_PercentWidthDrawn = 1.0f;
 
         /// <summary>
         /// The percent of this gump pic's width which is drawn. Clipped to 0.0f to 1.0f.

@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   TextEntry.cs
+ *   TextEntryPage.cs
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -10,7 +10,6 @@
 
 #region usings
 using Microsoft.Xna.Framework;
-using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
@@ -20,7 +19,7 @@ using UltimaXNA.Core.Windows;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    class TextEntry : AControl
+    class TextEntryPage : AControl
     {
         const float MSBetweenCaratBlinks = 500f;
         
@@ -30,17 +29,12 @@ namespace UltimaXNA.Ultima.UI.Controls
         HtmlDocument m_Layout;
         RenderedText m_RenderedText;
         RenderedText m_RenderedCarat;
-
-        public int Hue;
-        public int EntryID;
-        public int MaxCharCount;
-        public bool IsPasswordField;
-        public bool ReplaceDefaultTextOnFirstKeypress;
-        public bool NumericOnly;
+        
         public string LeadingHtmlTag;
         public string LeadingText;
         public string Text;
-        public bool LegacyCarat;
+        public int LineCount;
+        public int EntryID;
 
         public override bool HandlesMouseInput => base.HandlesMouseInput & IsEditable;
         public override bool HandlesKeyboardFocus => base.HandlesKeyboardFocus & IsEditable;
@@ -49,31 +43,13 @@ namespace UltimaXNA.Ultima.UI.Controls
         // Ctors and BuildGumpling Methods
         // ============================================================================================================
 
-        public TextEntry(AControl parent, string[] arguements, string[] lines)
+        public TextEntryPage(AControl parent, int x, int y, int width, int height, int lineCount)
             : this(parent)
         {
-            int x, y, width, height, hue, entryID, textIndex, maxCharCount = 0;
-            x = Int32.Parse(arguements[1]);
-            y = Int32.Parse(arguements[2]);
-            width = Int32.Parse(arguements[3]);
-            height = Int32.Parse(arguements[4]);
-            hue = ServerRecievedHueTransform(Int32.Parse(arguements[5]));
-            entryID = Int32.Parse(arguements[6]);
-            textIndex = Int32.Parse(arguements[7]);
-            if (arguements[0] == "textentrylimited")
-            {
-                maxCharCount = Int32.Parse(arguements[8]);
-            }
-            BuildGumpling(x, y, width, height, hue, entryID, maxCharCount, lines[textIndex]);
+            BuildGumpling(x, y, width, height, lineCount);
         }
 
-        public TextEntry(AControl parent, int x, int y, int width, int height, int hue, int entryID, int maxCharCount, string text)
-            : this(parent)
-        {
-            BuildGumpling(x, y, width, height, hue, entryID, maxCharCount, text);
-        }
-
-        TextEntry(AControl parent)
+        TextEntryPage(AControl parent)
             : base(parent)
         {
             base.HandlesMouseInput = true;
@@ -81,16 +57,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             IsEditable = true;
         }
 
-        void BuildGumpling(int x, int y, int width, int height, int hue, int entryID, int maxCharCount, string text)
+        void BuildGumpling(int x, int y, int width, int height, int lineCount)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);
-            Hue = hue;
-            EntryID = entryID;
-            Text = text;
-            MaxCharCount = maxCharCount;
+            LineCount = lineCount;
             m_CaratBlinkOn = false;
-            m_RenderedText = new RenderedText(string.Empty, 2048, true);
+            m_RenderedText = new RenderedText(string.Empty, Width, true);
             m_RenderedCarat = new RenderedText(string.Empty, 16, true);
         }
 
@@ -109,25 +82,17 @@ namespace UltimaXNA.Ultima.UI.Controls
                     m_CaratBlinkOn = true;
                     m_MSSinceLastCaratBlink = 0f;
                 }
-                // if we're using the legacy carat, keep it visible. Else blink it every x seconds.
-                if (LegacyCarat)
+                m_MSSinceLastCaratBlink += (float)frameMS;
+                if (m_MSSinceLastCaratBlink >= MSBetweenCaratBlinks)
                 {
-                    m_CaratBlinkOn = true;
-                }
-                else
-                {
-                    m_MSSinceLastCaratBlink += (float)frameMS;
-                    if (m_MSSinceLastCaratBlink >= MSBetweenCaratBlinks)
+                    m_MSSinceLastCaratBlink -= MSBetweenCaratBlinks;
+                    if (m_CaratBlinkOn == true)
                     {
-                        m_MSSinceLastCaratBlink -= MSBetweenCaratBlinks;
-                        if (m_CaratBlinkOn == true)
-                        {
-                            m_CaratBlinkOn = false;
-                        }
-                        else
-                        {
-                            m_CaratBlinkOn = true;
-                        }
+                        m_CaratBlinkOn = false;
+                    }
+                    else
+                    {
+                        m_CaratBlinkOn = true;
                     }
                 }
             }
@@ -136,9 +101,8 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_IsFocused = false;
                 m_CaratBlinkOn = false;
             }
-            string text = Text == null ? null : (IsPasswordField ? new string('*', Text.Length) : Text);
-            m_RenderedText.Text = $"{LeadingHtmlTag}{LeadingText}{text}";
-            m_RenderedCarat.Text = $"{LeadingHtmlTag}{(LegacyCarat ? "_" : "|")}";
+            m_RenderedText.Text = $"{LeadingHtmlTag}{LeadingText}{Text}";
+            m_RenderedCarat.Text = $"{LeadingHtmlTag}|";
             base.Update(totalMS, frameMS);
         }
 
@@ -149,25 +113,25 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_RenderedText.Width + m_RenderedCarat.Width <= Width)
                 {
-                    m_RenderedText.Draw(spriteBatch, position, Utility.GetHueVector(Hue));
+                    m_RenderedText.Draw(spriteBatch, position);
                     caratPosition.X += m_RenderedText.Width;
                 }
                 else
                 {
                     int textOffset = m_RenderedText.Width - (Width - m_RenderedCarat.Width);
-                    m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0, Utility.GetHueVector(Hue));
+                    m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0);
                     caratPosition.X += (Width - m_RenderedCarat.Width);
                 }
             }
             else
             {
                 caratPosition.X = 0;
-                m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0, Utility.GetHueVector(Hue));
+                m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
             }
 
             if (m_CaratBlinkOn)
             {
-                m_RenderedCarat.Draw(spriteBatch, caratPosition, Utility.GetHueVector(Hue));
+                m_RenderedCarat.Draw(spriteBatch, caratPosition);
             }
             base.Draw(spriteBatch, position);
         }
@@ -187,12 +151,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     Parent.OnKeyboardReturn(EntryID, Text);
                     break;
                 case WinKeys.Back:
-                    if (ReplaceDefaultTextOnFirstKeypress)
-                    {
-                        Text = string.Empty;
-                        ReplaceDefaultTextOnFirstKeypress = false;
-                    }
-                    else if (Text.Length > 0)
+                    if (Text.Length > 0)
                     {
                         int escapedLength;
                         if (EscapeCharacters.TryFindEscapeCharacterBackwards(Text, Text.Length - 1, out escapedLength))
@@ -206,20 +165,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                     }
                     break;
                 default:
-                    // place a char, so long as it's within the char count limit.
-                    if (MaxCharCount != 0 && Text.Length >= MaxCharCount)
-                    {
-                        return;
-                    }
-                    if (NumericOnly && !char.IsNumber(e.KeyChar))
-                    {
-                        return;
-                    }
-                    if (ReplaceDefaultTextOnFirstKeypress)
-                    {
-                        Text = string.Empty;
-                        ReplaceDefaultTextOnFirstKeypress = false;
-                    }
                     if (e.IsChar && e.KeyChar >= 32)
                     {
                         string escapedCharacter;

@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         Texture2D m_bgGump = null;
         int m_gumpID;
 
-        public GumpPicTiled(AControl parent)
+        GumpPicTiled(AControl parent)
             : base(parent)
         {
 

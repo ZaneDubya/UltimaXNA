@@ -50,7 +50,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public CheckerTrans(AControl parent)
+        CheckerTrans(AControl parent)
             : base(parent)
         {
 

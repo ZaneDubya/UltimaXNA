@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         RenderedText m_textRenderer;
 
-        public TextLabel(AControl parent)
+        TextLabel(AControl parent)
             : base(parent)
         {
 

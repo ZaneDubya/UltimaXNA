@@ -38,11 +38,10 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         IFont m_Font;
 
-        public DropDownList(AControl parent)
+        DropDownList(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;
-
             m_Font = ServiceRegistry.GetService<IResourceProvider>().GetAsciiFont(1);
         }
 

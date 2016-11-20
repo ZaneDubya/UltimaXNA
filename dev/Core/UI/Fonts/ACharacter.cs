@@ -46,8 +46,6 @@ namespace UltimaXNA.Core.UI.Fonts
             set;
         }
 
-        
-
         public unsafe void WriteToBuffer(uint* dstPtr, int dx, int dy, int linewidth, int maxHeight, int baseLine, bool isBold, bool isItalic, bool isUnderlined, bool isOutlined, uint color, uint outline)
         {
             uint inColor = color;

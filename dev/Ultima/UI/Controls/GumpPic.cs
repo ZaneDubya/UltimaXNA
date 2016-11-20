@@ -16,7 +16,7 @@ using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    internal class GumpPic : AGumpPic
+    class GumpPic : AGumpPic
     {
         public GumpPic(AControl parent, string[] arguements)
             : base(parent)

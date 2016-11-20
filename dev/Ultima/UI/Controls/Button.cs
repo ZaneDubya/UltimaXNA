@@ -58,7 +58,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
 
         RenderedText m_Texture;
 
-        public Button(AControl parent)
+        Button(AControl parent)
             : base(parent) {
             HandlesMouseInput = true;
         }

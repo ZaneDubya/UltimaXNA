@@ -23,10 +23,12 @@ namespace UltimaXNA.Core.UI.HTML
 {
     class HtmlDocument
     {
+        static HTMLparser m_Parser = new HTMLparser();
+
         HtmlImageList m_Images;
         BlockElement m_Root;
         bool m_CollapseToContent;
-        static HTMLparser m_Parser;
+        Texture2D m_Texture;
 
         public int Width => m_Root.Width;
         public int Height => m_Root.Height;
@@ -57,8 +59,11 @@ namespace UltimaXNA.Core.UI.HTML
 
         public Texture2D Texture
         {
-            get;
-            private set;
+            get
+            {
+                Render();
+                return m_Texture;
+            }
         }
 
         // ============================================================================================================
@@ -68,6 +73,12 @@ namespace UltimaXNA.Core.UI.HTML
         public HtmlDocument(string html, int width, bool collapseBlocks = false)
         {
             m_CollapseToContent = collapseBlocks;
+            SetHtml(html, width);
+        }
+
+        public void SetHtml(string html, int width)
+        {
+            Reset();
             m_Root = ParseHtmlToBlocks(html);
             GetAllImages(m_Root);
             Links = GetAllHrefRegionsInBlock(m_Root);
@@ -76,17 +87,22 @@ namespace UltimaXNA.Core.UI.HTML
             {
                 m_Root.Height -= Ascender; // ascender should always be negative.
             }
-            Texture = DoRender(m_Root);
         }
 
-        public void Dispose()
+        public void Render()
         {
-            // !!! we need to handle disposing the ImageList better, it references textures.
+            if (m_Texture == null || m_Texture.IsDisposed)
+            {
+                m_Texture = DoRender(m_Root);
+            }
+        }
+
+        public void Reset()
+        {
+            // TODO: we need to handle disposing the ImageList better, it references textures.
             Images?.Clear();
-            m_Images = null;
             Links?.Clear();
-            Links = null;
-            if (Texture != null && !Texture.IsDisposed)
+            if (m_Texture != null && !m_Texture.IsDisposed)
             {
                 Texture.Dispose();
             }
@@ -113,10 +129,6 @@ namespace UltimaXNA.Core.UI.HTML
             }
             else
             {
-                if (m_Parser == null)
-                {
-                    m_Parser = new HTMLparser();
-                }
                 m_Parser.Init(html);
                 HTMLchunk chunk;
                 while ((chunk = ParseNext(m_Parser)) != null)
