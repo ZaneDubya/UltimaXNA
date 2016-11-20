@@ -23,12 +23,10 @@ namespace UltimaXNA.Core.UI.HTML
 {
     class HtmlDocument
     {
+        HtmlImageList m_Images;
         BlockElement m_Root;
         bool m_CollapseToContent;
-
-        // ============================================================================================================
-        // Public properties
-        // ============================================================================================================
+        static HTMLparser m_Parser;
 
         public int Width => m_Root.Width;
         public int Height => m_Root.Height;
@@ -41,8 +39,14 @@ namespace UltimaXNA.Core.UI.HTML
 
         public HtmlImageList Images
         {
-            get;
-            private set;
+            get
+            {
+                if (m_Images == null)
+                {
+                    return HtmlImageList.Empty;
+                }
+                return m_Images;
+            }
         }
 
         public HtmlLinkList Links
@@ -63,10 +67,9 @@ namespace UltimaXNA.Core.UI.HTML
 
         public HtmlDocument(string html, int width, bool collapseBlocks = false)
         {
-            m_Root = ParseHtmlToBlocks(html);
             m_CollapseToContent = collapseBlocks;
-            Images = new HtmlImageList();
-            GetAllImages(Images, m_Root);
+            m_Root = ParseHtmlToBlocks(html);
+            GetAllImages(m_Root);
             Links = GetAllHrefRegionsInBlock(m_Root);
             DoLayout(m_Root, width);
             if (Ascender != 0)
@@ -79,9 +82,9 @@ namespace UltimaXNA.Core.UI.HTML
         public void Dispose()
         {
             // !!! we need to handle disposing the ImageList better, it references textures.
-            Images.Clear();
-            Images = null;
-            Links.Clear();
+            Images?.Clear();
+            m_Images = null;
+            Links?.Clear();
             Links = null;
             if (Texture != null && !Texture.IsDisposed)
             {
@@ -92,8 +95,6 @@ namespace UltimaXNA.Core.UI.HTML
         // ============================================================================================================
         // Parse and create boxes
         // ============================================================================================================
-
-        static HTMLparser m_Parser;
 
         BlockElement ParseHtmlToBlocks(string html)
         {
@@ -137,7 +138,6 @@ namespace UltimaXNA.Core.UI.HTML
                         // This is a tag. interpret the tag and edit the openTags list.
                         // It may also be an atom, in which case we should add it to the list of atoms!
                         AElement atom = null;
-
                         if (chunk.bClosure && !chunk.bEndClosure)
                         {
                             styles.CloseOneTag(chunk);
@@ -220,7 +220,6 @@ namespace UltimaXNA.Core.UI.HTML
                                 if (isBlockTag && !chunk.bEndClosure)
                                     currentBlock = (BlockElement)atom;
                             }
-
                             styles.CloseAnySoloTags();
                         }
                     }
@@ -243,8 +242,6 @@ namespace UltimaXNA.Core.UI.HTML
         /// <summary>
         /// Calculates the dimensions of the root element and the position and dimensinos of every child of that element.
         /// </summary>
-        /// <param name="root"></param>
-        /// <param name="width"></param>
         void DoLayout(BlockElement root, int width)
         {
             CalculateLayoutWidthsRecursive(root);
@@ -284,9 +281,13 @@ namespace UltimaXNA.Core.UI.HTML
                 if (child.IsThisAtomALineBreak)
                 {
                     if (widthMin + styleWidth > widthMinLongest)
+                    {
                         widthMinLongest = widthMin + styleWidth;
+                    }
                     if (widthMax + styleWidth > widthMaxLongest)
+                    {
                         widthMaxLongest = widthMax + styleWidth;
+                    }
                     widthMin = 0;
                     widthMax = 0;
                     styleWidth = 0;
@@ -295,14 +296,20 @@ namespace UltimaXNA.Core.UI.HTML
                 if (child.IsThisAtomABreakingSpace)
                 {
                     if (widthMin > widthMinLongest)
+                    {
                         widthMin = 0;
+                    }
                 }
             }
 
             if (widthMinLongest < root.Width)
+            {
                 widthMinLongest = root.Width;
+            }
             if (widthMaxLongest < root.Width)
+            {
                 widthMaxLongest = root.Width;
+            }
             root.Layout_MinWidth = (widthMin + styleWidth > widthMinLongest) ? widthMin + styleWidth : widthMinLongest;
             root.Layout_MaxWidth = (widthMax + styleWidth > widthMaxLongest) ? widthMax + styleWidth : widthMaxLongest;
         }
@@ -325,7 +332,6 @@ namespace UltimaXNA.Core.UI.HTML
                 {
                     root.Width = root.Layout_MaxWidth;
                 }
-
                 foreach (AElement element in root.Children)
                 {
                     if (element is BlockElement)
@@ -495,57 +501,61 @@ namespace UltimaXNA.Core.UI.HTML
         /// <returns></returns>
         List<AElement> LayoutElements_GetWord(List<AElement> elements, int start, out int wordWidth, out int styleWidth, out int wordHeight, out int ascender)
         {
-            List<AElement> word = new List<Elements.AElement>();
+            List<AElement> word = new List<AElement>();
             wordWidth = 0;
             wordHeight = 0;
             styleWidth = 0;
             ascender = 0;
-
             for (int i = start; i < elements.Count; i++)
             {
                 if (elements[i].IsThisAtomALineBreak)
                 {
                     return word;
                 }
-                else
+                word.Add(elements[i]);
+                wordWidth += elements[i].Width;
+                styleWidth -= elements[i].Width;
+                if (styleWidth < 0)
                 {
-                    word.Add(elements[i]);
-                    wordWidth += elements[i].Width;
-                    styleWidth -= elements[i].Width;
-                    if (styleWidth < 0)
-                        styleWidth = 0;
-                    if (wordHeight < elements[i].Height)
-                        wordHeight = elements[i].Height;
-
-                    // we may need to add additional width for special style characters.
-                    if (elements[i] is CharacterElement)
+                    styleWidth = 0;
+                }
+                if (wordHeight < elements[i].Height)
+                {
+                    wordHeight = elements[i].Height;
+                }
+                // we may need to add additional width for special style characters.
+                if (elements[i] is CharacterElement)
+                {
+                    CharacterElement atom = (CharacterElement)elements[i];
+                    IFont font = atom.Style.Font;
+                    ICharacter ch = font.GetCharacter(atom.Character);
+                    // italic characters need a little extra width if they are at the end of the line.
+                    if (atom.Style.IsItalic)
                     {
-                        CharacterElement atom = (CharacterElement)elements[i];
-                        IFont font = atom.Style.Font;
-                        ICharacter ch = font.GetCharacter(atom.Character);
-
-                        // italic characters need a little extra width if they are at the end of the line.
-                        if (atom.Style.IsItalic)
-                            styleWidth = font.Height / 2;
-                        if (atom.Style.MustDrawnOutline)
-                        {
-                            styleWidth += 2;
-                            if (-1 < ascender)
-                                ascender = -1;
-                        }
-                        if (ch.YOffset + ch.Height > wordHeight)
-                            wordHeight = ch.YOffset + ch.Height;
-                        if (ch.YOffset < 0 && ascender > ch.YOffset)
-                            ascender = ch.YOffset;
+                        styleWidth = font.Height / 2;
                     }
-
-                    if (i == elements.Count - 1 || elements[i].CanBreakAtThisAtom)
+                    if (atom.Style.MustDrawnOutline)
                     {
-                        return word;
+                        styleWidth += 2;
+                        if (-1 < ascender)
+                        {
+                            ascender = -1;
+                        }
+                    }
+                    if (ch.YOffset + ch.Height > wordHeight)
+                    {
+                        wordHeight = ch.YOffset + ch.Height;
+                    }
+                    if (ch.YOffset < 0 && ascender > ch.YOffset)
+                    {
+                        ascender = ch.YOffset;
                     }
                 }
+                if (i == elements.Count - 1 || elements[i].CanBreakAtThisAtom)
+                {
+                    return word;
+                }
             }
-
             return word;
         }
 
@@ -582,14 +592,17 @@ namespace UltimaXNA.Core.UI.HTML
             GraphicsDevice graphics = sb.GraphicsDevice;
 
             if (root.Width == 0 || root.Height == 0) // empty text string
+            {
                 return new Texture2D(graphics, 1, 1);
-
+            }
             uint[] pixels = new uint[root.Width * root.Height];
 
             if (root.Err_Cant_Fit_Children)
             {
                 for (int i = 0; i < pixels.Length; i++)
+                {
                     pixels[i] = 0xffffff00;
+                }
                 Tracer.Error("Err: Block can't fit children.");
             }
             else
@@ -604,7 +617,7 @@ namespace UltimaXNA.Core.UI.HTML
             }
 
             Texture2D texture = new Texture2D(graphics, root.Width, root.Height, false, SurfaceFormat.Color);
-            texture.SetData<uint>(pixels);
+            texture.SetData(pixels);
             return texture;
         }
 
@@ -656,33 +669,36 @@ namespace UltimaXNA.Core.UI.HTML
         // Image and href link region handling
         // ============================================================================================================
 
-        void GetAllImages(HtmlImageList images, BlockElement block)
+        void GetAllImages(BlockElement block)
         {
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-
             foreach (AElement atom in block.Children)
             {
                 if (atom is ImageElement)
                 {
+                    if (m_Images == null)
+                    {
+                        m_Images = new HtmlImageList();
+                    }
                     ImageElement img = (ImageElement)atom;
                     if (img.ImageType == ImageElement.ImageTypes.UI)
                     {
                         Texture2D standard = provider.GetUITexture(img.ImgSrc);
                         Texture2D over = provider.GetUITexture(img.ImgSrcOver);
                         Texture2D down = provider.GetUITexture(img.ImgSrcDown);
-                        images.AddImage(new Rectangle(), standard, over, down);
+                        m_Images.AddImage(new Rectangle(), standard, over, down);
                     }
                     else if (img.ImageType == ImageElement.ImageTypes.Item)
                     {
                         Texture2D standard, over, down;
                         standard = over = down = provider.GetItemTexture(img.ImgSrc);
-                        images.AddImage(new Rectangle(), standard, over, down);
+                        m_Images.AddImage(new Rectangle(), standard, over, down);
                     }
-                    img.AssociatedImage = images[images.Count - 1];
+                    img.AssociatedImage = m_Images[m_Images.Count - 1];
                 }
                 else if (atom is BlockElement)
                 {
-                    GetAllImages(images, atom as BlockElement);
+                    GetAllImages(atom as BlockElement);
                 }
             }
         }
