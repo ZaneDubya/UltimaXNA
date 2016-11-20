@@ -31,7 +31,6 @@ namespace UltimaXNA.Ultima.UI.Controls
         RenderedText m_RenderedCarat;
         
         public string LeadingHtmlTag;
-        public string LeadingText;
         public string Text;
         public int LineCount;
         public int EntryID;
@@ -65,6 +64,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_CaratBlinkOn = false;
             m_RenderedText = new RenderedText(string.Empty, Width, true);
             m_RenderedCarat = new RenderedText(string.Empty, 16, true);
+            m_Layout = new HtmlDocument(null, 160, true);
         }
 
         // ============================================================================================================
@@ -101,32 +101,20 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_IsFocused = false;
                 m_CaratBlinkOn = false;
             }
-            m_RenderedText.Text = $"{LeadingHtmlTag}{LeadingText}{Text}";
+            m_RenderedText.Text = $"{LeadingHtmlTag}{Text}";
             m_RenderedCarat.Text = $"{LeadingHtmlTag}|";
             base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
+            m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
+
             Point caratPosition = new Point(position.X, position.Y);
             if (IsEditable)
             {
-                if (m_RenderedText.Width + m_RenderedCarat.Width <= Width)
-                {
-                    m_RenderedText.Draw(spriteBatch, position);
-                    caratPosition.X += m_RenderedText.Width;
-                }
-                else
-                {
-                    int textOffset = m_RenderedText.Width - (Width - m_RenderedCarat.Width);
-                    m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0);
-                    caratPosition.X += (Width - m_RenderedCarat.Width);
-                }
-            }
-            else
-            {
-                caratPosition.X = 0;
-                m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
+                m_RenderedText.Draw(spriteBatch, position);
+                caratPosition.X += m_RenderedText.Width;
             }
 
             if (m_CaratBlinkOn)

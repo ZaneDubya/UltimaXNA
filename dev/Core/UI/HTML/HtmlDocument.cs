@@ -114,6 +114,10 @@ namespace UltimaXNA.Core.UI.HTML
 
         BlockElement ParseHtmlToBlocks(string html)
         {
+            if (html == null)
+            {
+                html = string.Empty;
+            }
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             StyleParser styles = new StyleParser(provider);
             BlockElement root, currentBlock;
@@ -524,6 +528,13 @@ namespace UltimaXNA.Core.UI.HTML
                 {
                     return word;
                 }
+                if (elements[i].CanBreakAtThisAtom)
+                {
+                    if (word.Count > 0)
+                    {
+                        return word;
+                    }
+                }
                 word.Add(elements[i]);
                 wordWidth += elements[i].Width;
                 styleWidth -= elements[i].Width;
@@ -576,7 +587,7 @@ namespace UltimaXNA.Core.UI.HTML
         /// </summary>
         void LayoutElements_BreakWordAtLineEnd(List<AElement> elements, int start, int lineWidth, List<AElement> word, int wordWidth, int styleWidth)
         {
-            CharacterElement lineend = new Elements.CharacterElement(word[0].Style, '\n');
+            CharacterElement lineend = new CharacterElement(word[0].Style, '\n');
             int width = lineend.Width + styleWidth + 2;
             for (int i = 0; i < word.Count; i++)
             {

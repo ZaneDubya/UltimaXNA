@@ -19,8 +19,8 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         public abstract int Width { get; set; }
         public abstract int Height { get; set; }
 
-        public int Layout_X = 0;
-        public int Layout_Y = 0;
+        public int Layout_X;
+        public int Layout_Y;
 
         public bool CanBreakAtThisAtom
         {
@@ -30,9 +30,10 @@ namespace UltimaXNA.Core.UI.HTML.Elements
                 {
                     CharacterElement atom = (CharacterElement)this;
                     if (atom.Character == ' ' || atom.Character == '\n')
+                    {
                         return true;
-                    else
-                        return false;
+                    }
+                    return false;
                 }
                 return true;
             }

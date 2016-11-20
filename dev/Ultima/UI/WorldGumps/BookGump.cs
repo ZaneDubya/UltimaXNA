@@ -134,7 +134,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             for (int i = 0; i < m_Book.PageCount; i++)
             {
                 int x = isRight ? 235 : 45;
-                m_TextEntries.Add(new TextEntryPage(this, x, 32, 160, 300, 8));
+                m_TextEntries.Add(new TextEntryPage(this, x, 32, 155, 300, 8));
                 m_TextEntries[i].MakeThisADragger();
                 m_TextEntries[i].IsEditable = m_Book.IsEditable;
                 m_TextEntries[i].LeadingHtmlTag = "<font color=#800>";
