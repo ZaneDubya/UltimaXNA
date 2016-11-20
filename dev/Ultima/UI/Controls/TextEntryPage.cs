@@ -26,14 +26,15 @@ namespace UltimaXNA.Ultima.UI.Controls
         bool m_IsFocused;
         bool m_CaratBlinkOn;
         float m_MSSinceLastCaratBlink;
-        HtmlDocument m_Layout;
         RenderedText m_RenderedText;
         RenderedText m_RenderedCarat;
+        int m_CaratAt;
         
         public string LeadingHtmlTag;
         public string Text;
         public int LineCount;
         public int EntryID;
+        public bool InformParentOfReturnPress;
 
         public override bool HandlesMouseInput => base.HandlesMouseInput & IsEditable;
         public override bool HandlesKeyboardFocus => base.HandlesKeyboardFocus & IsEditable;
@@ -42,10 +43,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         // Ctors and BuildGumpling Methods
         // ============================================================================================================
 
-        public TextEntryPage(AControl parent, int x, int y, int width, int height, int lineCount)
+        public TextEntryPage(AControl parent, int x, int y, int width, int height, int lineCount, int entryID)
             : this(parent)
         {
-            BuildGumpling(x, y, width, height, lineCount);
+            BuildGumpling(x, y, width, height, lineCount, entryID);
         }
 
         TextEntryPage(AControl parent)
@@ -56,15 +57,15 @@ namespace UltimaXNA.Ultima.UI.Controls
             IsEditable = true;
         }
 
-        void BuildGumpling(int x, int y, int width, int height, int lineCount)
+        void BuildGumpling(int x, int y, int width, int height, int lineCount, int entryID)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);
             LineCount = lineCount;
+            EntryID = entryID;
             m_CaratBlinkOn = false;
             m_RenderedText = new RenderedText(string.Empty, Width, true);
             m_RenderedCarat = new RenderedText(string.Empty, 16, true);
-            m_Layout = new HtmlDocument(null, 160, true);
         }
 
         // ============================================================================================================
@@ -109,8 +110,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
-
-            Point caratPosition = new Point(position.X, position.Y);
+            Point caratPosition = m_RenderedText.Document.GetCaratPosition(m_CaratAt);
             if (IsEditable)
             {
                 m_RenderedText.Draw(spriteBatch, position);
@@ -136,7 +136,14 @@ namespace UltimaXNA.Ultima.UI.Controls
                     Parent.KeyboardTabToNextFocus(this);
                     break;
                 case WinKeys.Enter:
-                    Parent.OnKeyboardReturn(EntryID, Text);
+                    if (InformParentOfReturnPress)
+                    {
+                        Parent.OnKeyboardReturn(EntryID, Text);
+                    }
+                    else
+                    {
+                        m_CaratAt += 1;
+                    }
                     break;
                 case WinKeys.Back:
                     if (Text.Length > 0)
@@ -150,6 +157,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                         {
                             Text = Text.Substring(0, Text.Length - 1);
                         }
+                        m_CaratAt -= 1;
                     }
                     break;
                 default:
@@ -164,6 +172,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                         {
                             Text += e.KeyChar;
                         }
+                        m_CaratAt += 1;
                     }
                     break;
             }

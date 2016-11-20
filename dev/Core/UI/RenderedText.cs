@@ -105,6 +105,8 @@ namespace UltimaXNA.Core.UI
             }
         }
 
+        public HtmlDocument Document => m_Document;
+
         public RenderedText(string text, int maxWidth = DefaultRenderedTextWidth, bool collapseContent = false)
         {
             Text = text;

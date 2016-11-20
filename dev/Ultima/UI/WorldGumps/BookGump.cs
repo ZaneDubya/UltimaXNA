@@ -130,18 +130,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(m_AuthorTextEntry, 1);
             // Add book pages to active pages
             bool isRight = true;
-            int activePage = 1;
+            int page = 1;
             for (int i = 0; i < m_Book.PageCount; i++)
             {
                 int x = isRight ? 235 : 45;
-                m_TextEntries.Add(new TextEntryPage(this, x, 32, 155, 300, 8));
+                m_TextEntries.Add(new TextEntryPage(this, x, 32, 155, 300, 8, (page - 1) * 2 + (isRight ? 1 : 0)));
                 m_TextEntries[i].MakeThisADragger();
                 m_TextEntries[i].IsEditable = m_Book.IsEditable;
                 m_TextEntries[i].LeadingHtmlTag = "<font color=#800>";
-                AddControl(m_TextEntries[i], activePage);
+                AddControl(m_TextEntries[i], page);
                 if (isRight)
                 {
-                    activePage++;
+                    page++;
                 }
                 isRight = !isRight;
             }

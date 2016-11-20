@@ -22,50 +22,9 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         public int Layout_X;
         public int Layout_Y;
 
-        public bool CanBreakAtThisAtom
-        {
-            get
-            {
-                if (this is CharacterElement)
-                {
-                    CharacterElement atom = (CharacterElement)this;
-                    if (atom.Character == ' ' || atom.Character == '\n')
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-                return true;
-            }
-        }
-
-        public bool IsThisAtomABreakingSpace
-        {
-            get
-            {
-                if (this is CharacterElement)
-                {
-                    CharacterElement atom = (CharacterElement)this;
-                    if (atom.Character == ' ')
-                        return true;
-                }
-                return false;
-            }
-        }
-
-        public bool IsThisAtomALineBreak
-        {
-            get
-            {
-                if (this is CharacterElement)
-                {
-                    CharacterElement atom = (CharacterElement)this;
-                    if (atom.Character == '\n')
-                        return true;
-                }
-                return false;
-            }
-        }
+        public virtual bool CanBreakAtThisAtom => true;
+        public virtual bool IsThisAtomABreakingSpace => false;
+        public virtual bool IsThisAtomALineBreak => false;
 
         public StyleState Style;
 

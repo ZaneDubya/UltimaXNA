@@ -441,7 +441,6 @@ namespace UltimaXNA.Core.UI.HTML
                 {
                     int wordWidth, styleWidth, wordHeight, ascender;
                     List<AElement> word = LayoutElements_GetWord(root.Children, i, out wordWidth, out styleWidth, out wordHeight, out ascender);
-
                     if (wordWidth + styleWidth > root.Width)
                     {
                         // Can't fit this word on even a full line. Must break it somewhere. 
@@ -455,7 +454,7 @@ namespace UltimaXNA.Core.UI.HTML
                         // This word is too long for this line. Flow it to the next line without breaking.
                         // TODO: we should introduce some heuristic that that super long words aren't flowed. Perhaps words 
                         // longer than 8 chars, where the break would be after character 3 and before 3 characters from the end?
-                        root.Children.Insert(i, new CharacterElement(e0.Style, '\n'));
+                        root.Children.Insert(i, new AutoLineBreakElement(e0.Style));
                         i--;
                     }
                     else
@@ -587,14 +586,14 @@ namespace UltimaXNA.Core.UI.HTML
         /// </summary>
         void LayoutElements_BreakWordAtLineEnd(List<AElement> elements, int start, int lineWidth, List<AElement> word, int wordWidth, int styleWidth)
         {
-            CharacterElement lineend = new CharacterElement(word[0].Style, '\n');
+            AutoLineBreakElement lineend = new AutoLineBreakElement(word[0].Style);
             int width = lineend.Width + styleWidth + 2;
             for (int i = 0; i < word.Count; i++)
             {
                 width += word[i].Width;
                 if (width >= lineWidth)
                 {
-                    elements.Insert(start + i, lineend); // start + i + 1
+                    elements.Insert(start + i, lineend);
                     return;
                 }
             }
@@ -729,6 +728,34 @@ namespace UltimaXNA.Core.UI.HTML
         HtmlLinkList GetAllHrefRegionsInBlock(BlockElement block)
         {
             return new HtmlLinkList();
+        }
+
+        // ============================================================================================================
+        // Get Carat Position, given an input index into the text.
+        // ============================================================================================================
+
+        public Point GetCaratPosition(int textIndex)
+        {
+            Point carat = Point.Zero;
+            int index = 0;
+            foreach (AElement e in m_Root.Children)
+            {
+                if (index == textIndex)
+                {
+                    return carat;
+                }
+                carat.X += e.Width;
+                index++;
+                if (e is AutoLineBreakElement)
+                {
+                    index--;
+                }
+                if (e.IsThisAtomALineBreak)
+                {
+
+                }
+            }
+            return carat;
         }
     }
 }

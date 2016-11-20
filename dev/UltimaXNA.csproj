@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
+    <Compile Include="Core\UI\HTML\Elements\AutoLineBreakElement.cs" />
     <Compile Include="Ultima\Data\AssistantFeatures.cs" />
     <Compile Include="Ultima\Network\Client\Extensions\GuildLocationQueryPacket.cs" />
     <Compile Include="Ultima\Network\Client\NegotiateFeatureResponsePacket.cs" />
