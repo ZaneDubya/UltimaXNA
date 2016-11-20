@@ -451,11 +451,19 @@ namespace UltimaXNA.Core.UI.HTML
                     }
                     else if (x0 + wordWidth + styleWidth > x1)
                     {
-                        // This word is too long for this line. Flow it to the next line without breaking.
+                        // This word is too long for this line. Flow it to the next line without breaking, unless it's a space character,
+                        // in which case we insert it before the linebreak.
                         // TODO: we should introduce some heuristic that that super long words aren't flowed. Perhaps words 
                         // longer than 8 chars, where the break would be after character 3 and before 3 characters from the end?
-                        root.Children.Insert(i, new AutoLineBreakElement(e0.Style));
-                        i--;
+                        if (word.Count == 1 && word[0].IsThisAtomABreakingSpace)
+                        {
+                            root.Children.Insert(i + 1, new AutoLineBreakElement(e0.Style));
+                        }
+                        else
+                        {
+                            root.Children.Insert(i, new AutoLineBreakElement(e0.Style));
+                            i--;
+                        }
                     }
                     else
                     {
@@ -499,7 +507,9 @@ namespace UltimaXNA.Core.UI.HTML
                     }
                 }
                 if (e0.Height > lineHeight)
+                {
                     lineHeight = e0.Height;
+                }
             }
             root.Height = height + lineHeight;
         }
@@ -645,18 +655,18 @@ namespace UltimaXNA.Core.UI.HTML
 
         unsafe void DoRenderBlock(BlockElement root, uint* ptr, int width, int height)
         {
-            foreach (AElement element in root.Children)
+            foreach (AElement e in root.Children)
             {
-                int x = element.Layout_X;
-                int y = element.Layout_Y - Ascender; // ascender is always negative.
-                if (element is CharacterElement)
+                int x = e.Layout_X;
+                int y = e.Layout_Y - Ascender; // ascender is always negative.
+                StyleState s = e.Style;
+                if (e is CharacterElement)
                 {
-                    IFont font = element.Style.Font;
-                    ICharacter character = font.GetCharacter((element as CharacterElement).Character);
+                    IFont font = s.Font;
+                    ICharacter character = font.GetCharacter((e as CharacterElement).Character);
                     // HREF links should be colored white, because we will hue them at runtime.
-                    uint color = element.Style.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(element.Style.Color);
-                    character.WriteToBuffer(ptr, x, y, width, height, font.Baseline,
-                        element.Style.IsBold, element.Style.IsItalic, element.Style.IsUnderlined, element.Style.MustDrawnOutline, color, 0xFF000008);
+                    uint color = s.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(s.Color);
+                    character.WriteToBuffer(ptr, x, y, width, height, font.Baseline, s.IsBold, s.IsItalic, s.IsUnderlined, s.MustDrawnOutline, color, 0xFF000008);
                     // offset y by ascender for links...
                     if (character.YOffset < 0)
                     {
@@ -664,25 +674,25 @@ namespace UltimaXNA.Core.UI.HTML
                         height -= character.YOffset;
                     }
                 }
-                else if (element is ImageElement)
+                else if (e is ImageElement)
                 {
-                    ImageElement image = (element as ImageElement);
+                    ImageElement image = (e as ImageElement);
                     image.AssociatedImage.Area = new Rectangle(x, y, image.Width, image.Height);
-                    if (element.Style.IsHREF)
+                    if (s.IsHREF)
                     {
-                        Links.AddLink(element.Style, new Rectangle(x, y, element.Width, element.Height));
+                        Links.AddLink(s, new Rectangle(x, y, e.Width, e.Height));
                         image.AssociatedImage.LinkIndex = Links.Count;
                     }
                 }
-                else if (element is BlockElement)
+                else if (e is BlockElement)
                 {
-                    DoRenderBlock(element as BlockElement, ptr, width, height);
+                    DoRenderBlock(e as BlockElement, ptr, width, height);
                 }
 
                 // set href link regions
-                if (element.Style.IsHREF)
+                if (s.IsHREF)
                 {
-                    Links.AddLink(element.Style, new Rectangle(x, y, element.Width, element.Height));
+                    Links.AddLink(s, new Rectangle(x, y, e.Width, e.Height));
                 }
             }
         }
@@ -738,23 +748,28 @@ namespace UltimaXNA.Core.UI.HTML
         {
             Point carat = Point.Zero;
             int index = 0;
-            foreach (AElement e in m_Root.Children)
+            for (int i = 0; i < m_Root.Children.Count; i++)
             {
-                if (index == textIndex)
-                {
-                    return carat;
-                }
-                carat.X += e.Width;
-                index++;
-                if (e is AutoLineBreakElement)
-                {
-                    index--;
-                }
+                AElement e = m_Root.Children[i];
                 if (e.IsThisAtomALineBreak)
                 {
                     carat.X = 0;
                     carat.Y += e.Height;
                 }
+                if (index == textIndex)
+                {
+                    return carat;
+                }
+                carat.X += e.Width;
+                if (e is AutoLineBreakElement)
+                {
+                    if (index == textIndex)
+                    {
+                        return carat;
+                    }
+                    index--;
+                }
+                index++;
             }
             return carat;
         }

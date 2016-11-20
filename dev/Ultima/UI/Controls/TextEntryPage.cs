@@ -36,6 +36,26 @@ namespace UltimaXNA.Ultima.UI.Controls
         public int EntryID;
         public bool InformParentOfReturnPress;
 
+        public int CaratAt
+        {
+            get
+            {
+                if (m_CaratAt < 0)
+                    m_CaratAt = 0;
+                if (Text != null && m_CaratAt > Text.Length)
+                    m_CaratAt = Text.Length;
+                return m_CaratAt;
+            }
+            set
+            {
+                m_CaratAt = value;
+                if (m_CaratAt < 0)
+                    m_CaratAt = 0;
+                if (m_CaratAt > Text.Length)
+                    m_CaratAt = Text.Length;
+            }
+        }
+
         public override bool HandlesMouseInput => base.HandlesMouseInput & IsEditable;
         public override bool HandlesKeyboardFocus => base.HandlesKeyboardFocus & IsEditable;
 
@@ -142,40 +162,64 @@ namespace UltimaXNA.Ultima.UI.Controls
                     }
                     else
                     {
-                        m_CaratAt += 1;
+                        InsertCharacter(CaratAt, '\n');
                     }
                     break;
                 case WinKeys.Back:
                     if (Text.Length > 0)
                     {
                         int escapedLength;
-                        if (EscapeCharacters.TryFindEscapeCharacterBackwards(Text, Text.Length - 1, out escapedLength))
+                        if (EscapeCharacters.TryFindEscapeCharacterBackwards(Text, CaratAt, out escapedLength))
                         {
                             Text = Text.Substring(0, Text.Length - escapedLength);
+                            int carat = CaratAt - 1;
+                            string before = (CaratAt == 0) ? null : Text.Substring(0, CaratAt - 1);
+                            string after = Text.Substring(CaratAt);
+                            Text = before + after;
+                            CaratAt = carat;
                         }
                         else
                         {
-                            Text = Text.Substring(0, Text.Length - 1);
+                            int carat = CaratAt - 1;
+                            string before = (CaratAt == 0) ? null : Text.Substring(0, CaratAt - 1);
+                            string after = Text.Substring(CaratAt);
+                            Text = before + after;
+                            CaratAt = carat;
                         }
-                        m_CaratAt -= 1;
                     }
+                    break;
+                case WinKeys.Left:
+                    CaratAt -= 1;
+                    break;
+                case WinKeys.Right:
+                    CaratAt += 1;
                     break;
                 default:
                     if (e.IsChar && e.KeyChar >= 32)
                     {
-                        string escapedCharacter;
-                        if (EscapeCharacters.TryMatchChar(e.KeyChar, out escapedCharacter))
-                        {
-                            Text += escapedCharacter;
-                        }
-                        else
-                        {
-                            Text += e.KeyChar;
-                        }
-                        m_CaratAt += 1;
+                        InsertCharacter(CaratAt, e.KeyChar);
                     }
                     break;
             }
+        }
+
+        void InsertCharacter(int index, char ch)
+        {
+            string escapedCharacter;
+            int caratAt = index;
+            string text = Text != null ? Text : string.Empty;
+            if (EscapeCharacters.TryMatchChar(ch, out escapedCharacter))
+            {
+                text = text.Insert(CaratAt, escapedCharacter);
+                caratAt += escapedCharacter.Length;
+            }
+            else
+            {
+                text = text.Insert(CaratAt, ch.ToString());
+                caratAt += 1;
+            }
+            Text = text;
+            CaratAt = caratAt;
         }
     }
 }

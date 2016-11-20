@@ -52,7 +52,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
                 {
                     return true;
                 }
-                return base.CanBreakAtThisAtom;
+                return false;
             }
         }
 
@@ -64,7 +64,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
                 {
                     return true;
                 }
-                return base.IsThisAtomABreakingSpace;
+                return false;
             }
         }
 
@@ -74,9 +74,9 @@ namespace UltimaXNA.Core.UI.HTML.Elements
             {
                 if (Character == '\n')
                 {
-                        return true;
+                    return true;
                 }
-                return base.IsThisAtomALineBreak;
+                return false;
             }
         }
 

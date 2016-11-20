@@ -12,7 +12,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         {
             get
             {
-                return Style.Font.Height;;
+                return Style.Font.Height;
             }
 
             set
@@ -38,5 +38,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         {
 
         }
+
+        public override string ToString() => "Break";
     }
 }
