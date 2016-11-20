@@ -752,7 +752,8 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 if (e.IsThisAtomALineBreak)
                 {
-
+                    carat.X = 0;
+                    carat.Y += e.Height;
                 }
             }
             return carat;

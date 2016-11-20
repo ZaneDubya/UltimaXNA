@@ -12,7 +12,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         {
             get
             {
-                return 0;
+                return Style.Font.Height;;
             }
 
             set
