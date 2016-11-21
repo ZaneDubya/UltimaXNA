@@ -24,6 +24,7 @@ namespace UltimaXNA.Ultima.UI.Controls
     {
         const float MSBetweenCaratBlinks = 500f;
         
+        string m_Text;
         bool m_IsFocused;
         bool m_CaratBlinkOn;
         float m_MSSinceLastCaratBlink;
@@ -33,7 +34,17 @@ namespace UltimaXNA.Ultima.UI.Controls
         Action<int, string> m_OnPageOverflow;
         
         public string LeadingHtmlTag;
-        public string Text;
+        public string Text
+        {
+            get
+            {
+                return (m_Text == null) ? string.Empty : m_Text;
+            }
+            set
+            {
+                m_Text = value;
+            }
+        }
         public int EntryID;
 
         public int CaratAt
@@ -88,7 +99,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             string overflowText = Text.Substring(index);
             Text = Text.Substring(0, index);
-            m_OnPageOverflow(EntryID, overflowText);
+            m_OnPageOverflow?.Invoke(EntryID, overflowText);
         }
 
         // ============================================================================================================
@@ -183,7 +194,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             string escapedCharacter;
             int caratAt = index;
-            string text = Text != null ? Text : string.Empty;
+            string text = Text;
             if (EscapeCharacters.TryMatchChar(ch, out escapedCharacter))
             {
                 text = text.Insert(CaratAt, escapedCharacter);

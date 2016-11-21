@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         GumpPic m_BookBackground;
         GumpPic m_PageCornerLeft;
         GumpPic m_PageCornerRight;
-        List<TextEntryPage> m_TextEntries = new List<TextEntryPage>();
+        List<TextEntryPage> m_Pages = new List<TextEntryPage>();
         TextEntry m_TitleTextEntry;
         TextEntry m_AuthorTextEntry;
         int m_LastPage;
@@ -134,12 +134,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             for (int i = 0; i < m_Book.PageCount; i++)
             {
                 int x = isRight ? 235 : 45;
-                m_TextEntries.Add(new TextEntryPage(this, x, 32, 155, 300, (page - 1) * 2 + (isRight ? 1 : 0)));
-                m_TextEntries[i].SetMaxLines(8, OnSplitPage);
-                m_TextEntries[i].MakeThisADragger();
-                m_TextEntries[i].IsEditable = m_Book.IsEditable;
-                m_TextEntries[i].LeadingHtmlTag = "<font color=#800>";
-                AddControl(m_TextEntries[i], page);
+                m_Pages.Add(new TextEntryPage(this, x, 32, 155, 300, (page - 1) * 2 + (isRight ? 1 : 0)));
+                m_Pages[i].SetMaxLines(8, OnOverflowPage);
+                m_Pages[i].MakeThisADragger();
+                m_Pages[i].IsEditable = m_Book.IsEditable;
+                m_Pages[i].LeadingHtmlTag = "<font color=#800>";
+                AddControl(m_Pages[i], page);
                 if (isRight)
                 {
                     page++;
@@ -149,13 +149,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             SetActivePage(1);
             AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(0x058);
+            m_Pages[0].Text = "since feeling is first who pays any attention to the syntax of things will never wholly kiss you; wholly to be a fool while Spring is in the world my blood approves and kisses are a better fate than wisdom";
+            m_Pages[0].CaratAt = m_Pages[0].Text.Length;
         }
 
         void PageCorner_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
+            {
                 return;
-            IsContentChanged();
+            }
+            CheckForContentChanges();
             if (sender.GumpLocalID == 0)
             {
                 SetActivePage(ActivePage - 1);
@@ -171,10 +175,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         void PageCorner_MouseDoubleClickEvent(AControl sender, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
+            {
                 return;
-
-            IsContentChanged();
-
+            }
+            CheckForContentChanges();
             if (sender.GumpLocalID == 0)
             {
                 SetActivePage(1);
@@ -187,7 +191,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         protected override void CloseWithRightMouseButton()
         {
-            IsContentChanged();
+            CheckForContentChanges();
             AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(0x058);
             base.CloseWithRightMouseButton();
@@ -196,18 +200,31 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         void SetActivePage(int page)
         {
             if (page < 1)
+            {
                 page = 1;
+            }
             if (page > m_LastPage)
+            {
                 page = m_LastPage;
-
+            }
             ActivePage = page;
-
             // Hide the page corners if we're at the first or final page.
             m_PageCornerLeft.Page = (page != 1) ? 0 : int.MaxValue;
             m_PageCornerRight.Page = (page != m_LastPage) ? 0 : int.MaxValue;
+            int textEntryPageIndex = (page - 1) * 2 - 1;
+            if (textEntryPageIndex == -1)
+            {
+                textEntryPageIndex = 0;
+            }
+            if (m_Pages[textEntryPageIndex] != null)
+            {
+                UserInterface.KeyboardFocusControl = m_Pages[textEntryPageIndex];
+                m_Pages[textEntryPageIndex].CaratAt = m_Pages[textEntryPageIndex].Text.Length;
+            }
+            
         }
 
-        void IsContentChanged()
+        void CheckForContentChanges()
         {
             // When ActivePage is 1, we should return leftPageIndex = 1 and rightPageIndex = 2
             // When ActivePage is 2, we should return leftPageIndex = 3 and rightPageIndex = 4
@@ -224,27 +241,40 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 {
                     m_World?.Interaction.BookHeaderNewChange(m_Book.Serial, m_TitleTextEntry.Text, m_AuthorTextEntry.Text);
                 }
-                if (rightPageIndex < m_TextEntries.Count && m_TextEntries[rightPageIndex].Text != m_Book.Pages[rightPageIndex].GetAllLines())
+                if (rightPageIndex < m_Pages.Count && m_Pages[rightPageIndex].Text != m_Book.Pages[rightPageIndex].GetAllLines())
                 {
-                    m_World?.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(m_TextEntries[rightPageIndex]));
+                    m_World?.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(m_Pages[rightPageIndex]));
                 }
             }
             else
             {
-                if (m_TextEntries[leftPageIndex].Text != m_Book.Pages[leftPageIndex].GetAllLines())
+                if (m_Pages[leftPageIndex].Text != m_Book.Pages[leftPageIndex].GetAllLines())
                 {
-                    m_World?.Interaction.BookPageChange(m_Book.Serial, leftPageIndex, GetTextEntryAsArray(m_TextEntries[leftPageIndex]));
+                    m_World?.Interaction.BookPageChange(m_Book.Serial, leftPageIndex, GetTextEntryAsArray(m_Pages[leftPageIndex]));
                 }
-                if (rightPageIndex < m_TextEntries.Count - 1 && m_TextEntries[rightPageIndex].Text != m_Book.Pages[rightPageIndex].GetAllLines())
+                if (rightPageIndex < m_Pages.Count - 1 && m_Pages[rightPageIndex].Text != m_Book.Pages[rightPageIndex].GetAllLines())
                 {
-                    m_World?.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(m_TextEntries[rightPageIndex]));
+                    m_World?.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(m_Pages[rightPageIndex]));
                 }
             }
         }
 
-        void OnSplitPage(int index, string overflow)
+        void OnOverflowPage(int index, string overflow)
         {
-
+            int overflowFrom = index - 1;
+            int overflowTo = index;
+            if (overflowTo >= m_Pages.Count)
+            {
+                // can't add text - what do we do?
+            }
+            else
+            {
+                m_Pages[overflowTo].Text = m_Pages[overflowTo].Text.Insert(0, overflow);
+                CheckForContentChanges();
+                SetActivePage((overflowTo + 1) / 2 + 1);
+                UserInterface.KeyboardFocusControl = m_Pages[overflowTo];
+                m_Pages[overflowTo].CaratAt = overflow.Length;
+            }
         }
 
         string[] GetTextEntryAsArray(TextEntryPage text)
@@ -268,7 +298,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 }
                 // Last character of text
                 if (i == text.Text.Length - 1)
+                {
                     lineList.Add(sb.ToString());
+                }
             }
             string[] lines = new string[lineList.Count];
             lineList.CopyTo(lines);
