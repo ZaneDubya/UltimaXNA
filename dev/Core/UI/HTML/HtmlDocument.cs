@@ -779,7 +779,7 @@ namespace UltimaXNA.Core.UI.HTML
         // Get Carat Position, given an input index into the text.
         // ============================================================================================================
 
-        public Point GetCaratPosition(int textIndex)
+        public Point GetCaratPositionByIndex(int textIndex)
         {
             Point carat = Point.Zero;
             int index = 0;
@@ -807,6 +807,39 @@ namespace UltimaXNA.Core.UI.HTML
                 index++;
             }
             return carat;
+        }
+
+        public int GetCaratIndexByPosition(Point pointInText)
+        {
+            Rectangle rect = new Rectangle(0,0,0,0);
+            int index = 0;
+            for (int i = 0; i < m_Root.Children.Count; i++)
+            {
+                AElement e = m_Root.Children[i];
+                rect.Width = e.Width;
+                rect.Height = e.Height;
+                if (rect.Contains(pointInText))
+                {
+                    return index;
+                }
+                if (e.IsThisAtomALineBreak)
+                {
+                    rect.Width = Width - rect.X;
+                    if (rect.Contains(pointInText))
+                    {
+                        return index - 1;
+                    }
+                    rect.X = 0;
+                    rect.Y += e.Height;
+                }
+                if (e is InternalBreakElement)
+                {
+                    index--;
+                }
+                rect.X += e.Width;
+                index++;
+            }
+            return -1;
         }
     }
 }

@@ -149,7 +149,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_RenderedText.Draw(spriteBatch, position);
                 if (m_CaratBlinkOn)
                 {
-                    Point caratPosition = m_RenderedText.Document.GetCaratPosition(m_CaratAt);
+                    Point caratPosition = m_RenderedText.Document.GetCaratPositionByIndex(m_CaratAt);
                     caratPosition.X += position.X;
                     caratPosition.Y += position.Y;
                     m_RenderedCarat.Draw(spriteBatch, caratPosition);
@@ -158,37 +158,15 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch, position);
         }
 
-        // ============================================================================================================
-        // Input
-        // ============================================================================================================
-
-        protected override void OnKeyboardInput(InputEventKeyboard e)
+        void SetBlinkOn()
         {
-            switch (e.KeyCode)
-            {
-                case WinKeys.Tab:
-                    Parent.KeyboardTabToNextFocus(this);
-                    break;
-                case WinKeys.Enter:
-                    InsertCharacter(CaratAt, '\n');
-                    break;
-                case WinKeys.Back:
-                    RemoveCharacter(CaratAt);
-                    break;
-                case WinKeys.Left:
-                    CaratAt -= 1;
-                    break;
-                case WinKeys.Right:
-                    CaratAt += 1;
-                    break;
-                default:
-                    if (e.IsChar && e.KeyChar >= 32)
-                    {
-                        InsertCharacter(CaratAt, e.KeyChar);
-                    }
-                    break;
-            }
+            m_CaratBlinkOn = true;
+            m_MSSinceLastCaratBlink = 0;
         }
+
+        // ============================================================================================================
+        // Text Editing Functions
+        // ============================================================================================================
 
         void InsertCharacter(int index, char ch)
         {
@@ -229,6 +207,54 @@ namespace UltimaXNA.Ultima.UI.Controls
                 Text = before + after;
                 CaratAt = carat;
             }
+        }
+
+        // ============================================================================================================
+        // Input
+        // ============================================================================================================
+
+        protected override void OnKeyboardInput(InputEventKeyboard e)
+        {
+            switch (e.KeyCode)
+            {
+                case WinKeys.Tab:
+                    Parent.KeyboardTabToNextFocus(this);
+                    break;
+                case WinKeys.Enter:
+                    InsertCharacter(CaratAt, '\n');
+                    break;
+                case WinKeys.Back:
+                    RemoveCharacter(CaratAt);
+                    break;
+                case WinKeys.Left:
+                    CaratAt -= 1;
+                    break;
+                case WinKeys.Right:
+                    CaratAt += 1;
+                    break;
+                default:
+                    if (e.IsChar && e.KeyChar >= 32)
+                    {
+                        InsertCharacter(CaratAt, e.KeyChar);
+                    }
+                    break;
+            }
+            SetBlinkOn();
+        }
+
+        protected override void OnMouseClick(int x, int y, MouseButton button)
+        {
+            if (button == MouseButton.Left)
+            {
+                int carat = m_RenderedText.Document.GetCaratIndexByPosition(new Point(x, y));
+                if (carat != -1)
+                {
+                    CaratAt = carat;
+                    SetBlinkOn();
+                    return;
+                }
+            }
+            base.OnMouseClick(x, y, button);
         }
     }
 }
