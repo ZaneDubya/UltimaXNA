@@ -31,7 +31,9 @@ namespace UltimaXNA.Ultima.UI.Controls
         RenderedText m_RenderedText;
         RenderedText m_RenderedCarat;
         int m_CaratAt;
+        int? m_CaratKeyUpDownX;
         Action<int, string> m_OnPageOverflow;
+        Action<int> m_OnPageUnderflow;
         
         public string LeadingHtmlTag;
         public string Text
@@ -42,7 +44,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             set
             {
-                m_Text = value;
+                if (m_Text != value)
+                {
+                    m_Text = value;
+                    m_RenderedText.Text = $"{LeadingHtmlTag}{Text}";
+                    m_RenderedText.ForceRenderIfNecessary();
+                }
             }
         }
         public int EntryID;
@@ -89,10 +96,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_RenderedCarat = new RenderedText(string.Empty, 16, true);
         }
 
-        public void SetMaxLines(int maxLines, Action<int, string> onPageOverflow)
+        public void SetMaxLines(int maxLines, Action<int, string> onPageOverflow, Action<int> onPageUnderflow)
         {
             m_RenderedText.Document.SetMaxLines(maxLines, OnDocumentSplitPage);
             m_OnPageOverflow = onPageOverflow;
+            m_OnPageUnderflow = onPageUnderflow;
         }
 
         void OnDocumentSplitPage(int index)
@@ -136,7 +144,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_IsFocused = false;
                 m_CaratBlinkOn = false;
             }
-            m_RenderedText.Text = $"{LeadingHtmlTag}{Text}";
             m_RenderedCarat.Text = $"{LeadingHtmlTag}|";
             base.Update(totalMS, frameMS);
         }
@@ -168,7 +175,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         // Text Editing Functions
         // ============================================================================================================
 
-        void InsertCharacter(int index, char ch)
+        public void InsertCharacter(int index, char ch)
         {
             string escapedCharacter;
             int caratAt = index;
@@ -187,7 +194,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             CaratAt = caratAt;
         }
 
-        void RemoveCharacter(int index)
+        public void RemoveCharacter(int index)
         {
             int escapedLength;
             if (EscapeCharacters.TryFindEscapeCharacterBackwards(Text, index, out escapedLength))
@@ -215,29 +222,49 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override void OnKeyboardInput(InputEventKeyboard e)
         {
-            switch (e.KeyCode)
+            if (e.KeyCode == WinKeys.Up || e.KeyCode == WinKeys.Down)
             {
-                case WinKeys.Tab:
-                    Parent.KeyboardTabToNextFocus(this);
-                    break;
-                case WinKeys.Enter:
-                    InsertCharacter(CaratAt, '\n');
-                    break;
-                case WinKeys.Back:
-                    RemoveCharacter(CaratAt);
-                    break;
-                case WinKeys.Left:
-                    CaratAt -= 1;
-                    break;
-                case WinKeys.Right:
-                    CaratAt += 1;
-                    break;
-                default:
-                    if (e.IsChar && e.KeyChar >= 32)
-                    {
-                        InsertCharacter(CaratAt, e.KeyChar);
-                    }
-                    break;
+                HtmlDocument doc = m_RenderedText.Document;
+                Point current = doc.GetCaratPositionByIndex(CaratAt);
+                if (m_CaratKeyUpDownX == null)
+                {
+                    m_CaratKeyUpDownX = current.X;
+                }
+                Point next = new Point(m_CaratKeyUpDownX.Value, current.Y + (e.KeyCode == WinKeys.Up ? -18 : 18));
+                CaratAt = doc.GetCaratIndexByPosition(next);
+            }
+            else
+            {
+                m_CaratKeyUpDownX = null;
+                switch (e.KeyCode)
+                {
+                    case WinKeys.Tab:
+                        Parent.KeyboardTabToNextFocus(this);
+                        break;
+                    case WinKeys.Enter:
+                        InsertCharacter(CaratAt, '\n');
+                        break;
+                    case WinKeys.Back:
+                        if (CaratAt == 0)
+                        {
+                            m_OnPageUnderflow.Invoke(EntryID);
+                        }
+                        else
+                        {
+                            RemoveCharacter(CaratAt);
+                        }
+                        break;
+                    case WinKeys.Left:
+                    case WinKeys.Right:
+                        CaratAt = CaratAt + (e.KeyCode == WinKeys.Left ? -1 : 1);
+                        break;
+                    default:
+                        if (e.IsChar && e.KeyChar >= 32)
+                        {
+                            InsertCharacter(CaratAt, e.KeyChar);
+                        }
+                        break;
+                }
             }
             SetBlinkOn();
         }

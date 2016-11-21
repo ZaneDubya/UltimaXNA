@@ -26,6 +26,7 @@ namespace UltimaXNA.Core.UI.HTML
     {
         static HTMLparser m_Parser = new HTMLparser();
 
+        int m_MaxWidth;
         HtmlImageList m_Images;
         BlockElement m_Root;
         bool m_CollapseToContent;
@@ -95,6 +96,7 @@ namespace UltimaXNA.Core.UI.HTML
 
         public void SetHtml(string html, int width)
         {
+            m_MaxWidth = width;
             Reset();
             m_Root = ParseHtmlToBlocks(html);
             GetAllImages(m_Root);
@@ -824,7 +826,7 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 if (e.IsThisAtomALineBreak)
                 {
-                    rect.Width = Width - rect.X;
+                    rect.Width = m_MaxWidth - rect.X;
                     if (rect.Contains(pointInText))
                     {
                         return index - 1;
@@ -839,7 +841,12 @@ namespace UltimaXNA.Core.UI.HTML
                 rect.X += e.Width;
                 index++;
             }
-            return -1;
+            rect.Width = m_MaxWidth - rect.X;
+            if (rect.Contains(pointInText))
+            {
+                return index; // end of the last line
+            }
+            return -1; // don't change
         }
     }
 }

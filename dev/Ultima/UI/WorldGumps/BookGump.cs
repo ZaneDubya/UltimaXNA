@@ -135,7 +135,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 int x = isRight ? 235 : 45;
                 m_Pages.Add(new TextEntryPage(this, x, 32, 155, 300, (page - 1) * 2 + (isRight ? 1 : 0)));
-                m_Pages[i].SetMaxLines(8, OnOverflowPage);
+                m_Pages[i].SetMaxLines(8, OnPageOverflow, OnPageUnderflow);
                 m_Pages[i].MakeThisADragger();
                 m_Pages[i].IsEditable = m_Book.IsEditable;
                 m_Pages[i].LeadingHtmlTag = "<font color=#800>";
@@ -226,46 +226,62 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         void CheckForContentChanges()
         {
-            // When ActivePage is 1, we should return leftPageIndex = 1 and rightPageIndex = 2
-            // When ActivePage is 2, we should return leftPageIndex = 3 and rightPageIndex = 4
-            // When ActivePage is 3, we should return leftPageIndex = 5 and rightPageIndex = 6
-            // etc.
-            int leftPageIndex = ActivePage * 2 - 3;
-            int rightPageIndex = (ActivePage * 2 - 3) + 1;
-
+            int leftIndex = ActivePage * 2 - 3;
+            int rightIndex = leftIndex + 1;
             // Check title, author, and the first page if leftPageIndex < 0
             // Else if leftPageIndex >= 0, they are all pages
-            if (leftPageIndex < 0)
+            if (leftIndex < 0)
             {
                 if (m_TitleTextEntry.Text != m_Book.Title || m_AuthorTextEntry.Text != m_Book.Author)
                 {
                     m_World?.Interaction.BookHeaderNewChange(m_Book.Serial, m_TitleTextEntry.Text, m_AuthorTextEntry.Text);
                 }
-                if (rightPageIndex < m_Pages.Count && m_Pages[rightPageIndex].Text != m_Book.Pages[rightPageIndex].GetAllLines())
+                if (rightIndex < m_Pages.Count && m_Pages[rightIndex].Text != m_Book.Pages[rightIndex].GetAllLines())
                 {
-                    m_World?.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(m_Pages[rightPageIndex]));
+                    m_World?.Interaction.BookPageChange(m_Book.Serial, rightIndex, GetTextEntryAsArray(m_Pages[rightIndex]));
                 }
             }
             else
             {
-                if (m_Pages[leftPageIndex].Text != m_Book.Pages[leftPageIndex].GetAllLines())
+                if (m_Pages[leftIndex].Text != m_Book.Pages[leftIndex].GetAllLines())
                 {
-                    m_World?.Interaction.BookPageChange(m_Book.Serial, leftPageIndex, GetTextEntryAsArray(m_Pages[leftPageIndex]));
+                    m_World?.Interaction.BookPageChange(m_Book.Serial, leftIndex, GetTextEntryAsArray(m_Pages[leftIndex]));
                 }
-                if (rightPageIndex < m_Pages.Count - 1 && m_Pages[rightPageIndex].Text != m_Book.Pages[rightPageIndex].GetAllLines())
+                if (rightIndex < m_Pages.Count - 1 && m_Pages[rightIndex].Text != m_Book.Pages[rightIndex].GetAllLines())
                 {
-                    m_World?.Interaction.BookPageChange(m_Book.Serial, rightPageIndex, GetTextEntryAsArray(m_Pages[rightPageIndex]));
+                    m_World?.Interaction.BookPageChange(m_Book.Serial, rightIndex, GetTextEntryAsArray(m_Pages[rightIndex]));
                 }
             }
         }
 
-        void OnOverflowPage(int index, string overflow)
+        /// <summary>
+        /// Called when the user hits backspace at index 0 on a page. 
+        /// </summary>
+        void OnPageUnderflow(int index)
+        {
+            if (index <= 1)
+            {
+                return;
+            }
+            int underflowFrom = index - 1;
+            int underflowTo = index - 2;
+            string text = m_Pages[underflowFrom].Text;
+            m_Pages[underflowFrom].Text = string.Empty;
+            SetActivePage((underflowTo + 1) / 2 + 1);
+            m_Pages[underflowTo].RemoveCharacter(m_Pages[underflowTo].Text.Length);
+            m_Pages[underflowTo].Text = m_Pages[underflowTo].Text + text;
+        }
+
+        /// <summary>
+        /// Called when text on a page is too large to be held in the page. The text overflows to the next page.
+        /// </summary>
+        void OnPageOverflow(int index, string overflow)
         {
             int overflowFrom = index - 1;
             int overflowTo = index;
             if (overflowTo >= m_Pages.Count)
             {
-                // can't add text - what do we do?
+                // this text has been pushed out of the book.
             }
             else
             {
