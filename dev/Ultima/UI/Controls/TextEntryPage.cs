@@ -75,7 +75,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override bool HandlesMouseInput => base.HandlesMouseInput & IsEditable;
         public override bool HandlesKeyboardFocus => base.HandlesKeyboardFocus & IsEditable;
-        public int MaxLineCount => m_RenderedText.Document.MaxLineCount;
 
         // ============================================================================================================
         // Ctors and BuildGumpling Methods

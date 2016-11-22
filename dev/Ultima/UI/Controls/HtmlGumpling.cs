@@ -69,10 +69,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             set
             {
-                if (value != base.Width)
-                {
-                    base.Width = value;
-                }
+                base.Width = value;
             }
         }
 
