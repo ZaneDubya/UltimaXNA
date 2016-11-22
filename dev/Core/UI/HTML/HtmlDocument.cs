@@ -653,8 +653,6 @@ namespace UltimaXNA.Core.UI.HTML
         /// <summary>
         /// Renders all the elements in the root branch. At the same time, also sets areas for regions and href links.
         /// </summary>
-        /// <param name="root"></param>
-        /// <returns></returns>
         Texture2D DoRender(BlockElement root)
         {
             SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
@@ -778,7 +776,7 @@ namespace UltimaXNA.Core.UI.HTML
         }
 
         // ============================================================================================================
-        // Get Carat Position, given an input index into the text.
+        // Get Carat Position, given an input index into the text or a clicked position
         // ============================================================================================================
 
         public Point GetCaratPositionByIndex(int textIndex)
