@@ -50,7 +50,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
         public bool IsItalic = false;
         public bool IsOutlined = false;
 
-        public bool MustDrawnOutline
+        public bool DrawOutline
         {
             get { return IsOutlined && !Font.HasBuiltInOutline; }
         }

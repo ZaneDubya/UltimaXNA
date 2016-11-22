@@ -48,7 +48,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                 {
                     m_Text = value;
                     m_RenderedText.Text = $"{LeadingHtmlTag}{Text}";
-                    m_RenderedText.ForceRenderIfNecessary();
                 }
             }
         }

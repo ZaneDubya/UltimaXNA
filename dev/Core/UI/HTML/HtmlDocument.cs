@@ -12,8 +12,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI.HTML.Elements;
 using UltimaXNA.Core.UI.HTML.Parsing;
@@ -25,12 +23,12 @@ namespace UltimaXNA.Core.UI.HTML
     class HtmlDocument
     {
         static HTMLparser m_Parser = new HTMLparser();
+        static HtmlRenderer m_Renderer = new HtmlRenderer();
 
         int m_MaxWidth;
         HtmlImageList m_Images;
         BlockElement m_Root;
         bool m_CollapseToContent;
-        Texture2D m_Texture;
         Action<int> m_OnPageOverflow;
 
         public int Width => m_Root.Width;
@@ -66,23 +64,15 @@ namespace UltimaXNA.Core.UI.HTML
             private set;
         }
 
-        public Texture2D Texture
-        {
-            get
-            {
-                Render();
-                return m_Texture;
-            }
-        }
+        public Texture2D Render() => m_Renderer.Render(m_Root, Ascender, Links);
 
         // ============================================================================================================
         // Ctor and Dipose
         // ============================================================================================================
 
-        public HtmlDocument(string html, int width, bool collapseBlocks = false)
+        public HtmlDocument(string html, int width, bool collapseContent = false)
         {
-            m_CollapseToContent = collapseBlocks;
-            SetHtml(html, width);
+            SetHtml(html, width, collapseContent);
         }
 
         ~HtmlDocument()
@@ -94,9 +84,10 @@ namespace UltimaXNA.Core.UI.HTML
         // SetHtml, Render, Reset
         // ============================================================================================================
 
-        public void SetHtml(string html, int width)
+        public void SetHtml(string html, int width, bool collapseContent = false)
         {
             m_MaxWidth = width;
+            m_CollapseToContent = collapseContent;
             Reset();
             m_Root = ParseHtmlToBlocks(html);
             GetAllImages(m_Root);
@@ -114,23 +105,11 @@ namespace UltimaXNA.Core.UI.HTML
             m_OnPageOverflow = onPageOverflow;
         }
 
-        public void Render()
-        {
-            if (m_Texture == null || m_Texture.IsDisposed)
-            {
-                m_Texture = DoRender(m_Root);
-            }
-        }
-
         public void Reset()
         {
             // TODO: we need to handle disposing the ImageList better, it references textures.
             Images?.Clear();
             Links?.Clear();
-            if (m_Texture != null && !m_Texture.IsDisposed)
-            {
-                Texture.Dispose();
-            }
         }
 
         // ============================================================================================================
@@ -313,7 +292,7 @@ namespace UltimaXNA.Core.UI.HTML
                     int styleWidthChild = 0;
                     if (child.Style.IsItalic)
                         styleWidthChild = child.Style.Font.Height / 2;
-                    if (child.Style.MustDrawnOutline)
+                    if (child.Style.DrawOutline)
                         styleWidthChild += 2;
                     if (styleWidthChild > styleWidth)
                         styleWidth = styleWidthChild;
@@ -603,7 +582,7 @@ namespace UltimaXNA.Core.UI.HTML
                     {
                         styleWidth = font.Height / 2;
                     }
-                    if (atom.Style.MustDrawnOutline)
+                    if (atom.Style.DrawOutline)
                     {
                         styleWidth += 2;
                         if (-1 < ascender)
@@ -642,92 +621,6 @@ namespace UltimaXNA.Core.UI.HTML
                 {
                     elements.Insert(start + i, lineend);
                     return;
-                }
-            }
-        }
-
-        // ============================================================================================================
-        // Render methods
-        // ============================================================================================================
-
-        /// <summary>
-        /// Renders all the elements in the root branch. At the same time, also sets areas for regions and href links.
-        /// </summary>
-        Texture2D DoRender(BlockElement root)
-        {
-            SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
-            GraphicsDevice graphics = sb.GraphicsDevice;
-
-            if (root.Width == 0 || root.Height == 0) // empty text string
-            {
-                return new Texture2D(graphics, 1, 1);
-            }
-            uint[] pixels = new uint[root.Width * root.Height];
-
-            if (root.Err_Cant_Fit_Children)
-            {
-                for (int i = 0; i < pixels.Length; i++)
-                {
-                    pixels[i] = 0xffffff00;
-                }
-                Tracer.Error("Err: Block can't fit children.");
-            }
-            else
-            {
-                unsafe
-                {
-                    fixed (uint* ptr = pixels)
-                    {
-                        DoRenderBlock(root, ptr, root.Width, root.Height);
-                    }
-                }
-            }
-
-            Texture2D texture = new Texture2D(graphics, root.Width, root.Height, false, SurfaceFormat.Color);
-            texture.SetData(pixels);
-            return texture;
-        }
-
-        unsafe void DoRenderBlock(BlockElement root, uint* ptr, int width, int height)
-        {
-            foreach (AElement e in root.Children)
-            {
-                int x = e.Layout_X;
-                int y = e.Layout_Y - Ascender; // ascender is always negative.
-                StyleState s = e.Style;
-                if (e is CharacterElement)
-                {
-                    IFont font = s.Font;
-                    ICharacter character = font.GetCharacter((e as CharacterElement).Character);
-                    // HREF links should be colored white, because we will hue them at runtime.
-                    uint color = s.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(s.Color);
-                    character.WriteToBuffer(ptr, x, y, width, height, font.Baseline, s.IsBold, s.IsItalic, s.IsUnderlined, s.MustDrawnOutline, color, 0xFF000008);
-                    // offset y by ascender for links...
-                    if (character.YOffset < 0)
-                    {
-                        y += character.YOffset;
-                        height -= character.YOffset;
-                    }
-                }
-                else if (e is ImageElement)
-                {
-                    ImageElement image = (e as ImageElement);
-                    image.AssociatedImage.Area = new Rectangle(x, y, image.Width, image.Height);
-                    if (s.IsHREF)
-                    {
-                        Links.AddLink(s, new Rectangle(x, y, e.Width, e.Height));
-                        image.AssociatedImage.LinkIndex = Links.Count;
-                    }
-                }
-                else if (e is BlockElement)
-                {
-                    DoRenderBlock(e as BlockElement, ptr, width, height);
-                }
-
-                // set href link regions
-                if (s.IsHREF)
-                {
-                    Links.AddLink(s, new Rectangle(x, y, e.Width, e.Height));
                 }
             }
         }
