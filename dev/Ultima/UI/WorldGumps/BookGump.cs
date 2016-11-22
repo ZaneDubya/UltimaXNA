@@ -149,7 +149,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             SetActivePage(1);
             AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(0x058);
-            m_Pages[0].Text = "since feeling is first who pays any attention to the syntax of things will never wholly kiss you; wholly to be a fool while Spring is in the world my blood approves and kisses are a better fate than wisdom";
+            m_Pages[0].Text = "since|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| feeling is first who pays any attention to the syntax of things will never wholly kiss you; wholly to be a fool while Spring is in the world my blood approves and kisses are a better fate than wisdom ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||";
             m_Pages[0].CaratAt = m_Pages[0].Text.Length;
         }
 
@@ -265,11 +265,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             int underflowFrom = index - 1;
             int underflowTo = index - 2;
-            string text = m_Pages[underflowFrom].Text;
+            string underflowFromText = m_Pages[underflowFrom].Text;
+            string underflowToText = m_Pages[underflowTo].Text.Substring(0, (m_Pages[underflowTo].Text.Length > 0 ? m_Pages[underflowTo].Text.Length - 1 : 0));
             m_Pages[underflowFrom].Text = string.Empty;
             SetActivePage((underflowTo + 1) / 2 + 1);
-            m_Pages[underflowTo].RemoveCharacter(m_Pages[underflowTo].Text.Length);
-            m_Pages[underflowTo].Text = m_Pages[underflowTo].Text + text;
+            m_Pages[underflowTo].Text = underflowToText + underflowFromText;
         }
 
         /// <summary>

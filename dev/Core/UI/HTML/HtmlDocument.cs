@@ -25,6 +25,7 @@ namespace UltimaXNA.Core.UI.HTML
         static HTMLparser m_Parser = new HTMLparser();
         static HtmlRenderer m_Renderer = new HtmlRenderer();
 
+        string m_CachedHtml;
         int m_MaxWidth;
         HtmlImageList m_Images;
         BlockElement m_Root;
@@ -86,16 +87,28 @@ namespace UltimaXNA.Core.UI.HTML
 
         public void SetHtml(string html, int width, bool collapseContent = false)
         {
+            if (html == m_CachedHtml && m_MaxWidth == width && m_CollapseToContent == collapseContent)
+            {
+                return;
+            }
+            m_CachedHtml = html;
             m_MaxWidth = width;
             m_CollapseToContent = collapseContent;
             Reset();
-            m_Root = ParseHtmlToBlocks(html);
-            GetAllImages(m_Root);
-            Links = GetAllHrefRegionsInBlock(m_Root);
-            DoLayout(m_Root, width);
-            if (Ascender != 0)
+            if (string.IsNullOrEmpty(html))
             {
-                m_Root.Height -= Ascender; // ascender should always be negative.
+                m_Root = null;
+            }
+            else
+            {
+                m_Root = ParseHtmlToBlocks(html);
+                GetAllImages(m_Root);
+                Links = GetAllHrefRegionsInBlock(m_Root);
+                DoLayout(m_Root, width);
+                if (Ascender != 0)
+                {
+                    m_Root.Height -= Ascender; // ascender should always be negative.
+                }
             }
         }
 
@@ -118,10 +131,6 @@ namespace UltimaXNA.Core.UI.HTML
 
         BlockElement ParseHtmlToBlocks(string html)
         {
-            if (html == null)
-            {
-                html = string.Empty;
-            }
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             StyleParser styles = new StyleParser(provider);
             BlockElement root, currentBlock;
@@ -285,17 +294,33 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 else
                 {
-                    // get the child width, add it to the parent width;
-                    widthMin += child.Width;
+                    if (child.IsThisAtomABreakingSpace)
+                    {
+                        if (widthMin + styleWidth > widthMinLongest)
+                        {
+                            widthMinLongest = widthMin + styleWidth;
+                        }
+                        widthMin = 0;
+                    }
+                    else
+                    {
+                        widthMin += child.Width;
+                    }
                     widthMax += child.Width;
                     // get the additional style width.
                     int styleWidthChild = 0;
                     if (child.Style.IsItalic)
+                    {
                         styleWidthChild = child.Style.Font.Height / 2;
+                    }
                     if (child.Style.DrawOutline)
+                    {
                         styleWidthChild += 2;
+                    }
                     if (styleWidthChild > styleWidth)
+                    {
                         styleWidth = styleWidthChild;
+                    }
                 }
 
                 if (child.IsThisAtomALineBreak)
@@ -311,14 +336,6 @@ namespace UltimaXNA.Core.UI.HTML
                     widthMin = 0;
                     widthMax = 0;
                     styleWidth = 0;
-                }
-
-                if (child.IsThisAtomABreakingSpace)
-                {
-                    if (widthMin > widthMinLongest)
-                    {
-                        widthMin = 0;
-                    }
                 }
             }
 
@@ -342,9 +359,11 @@ namespace UltimaXNA.Core.UI.HTML
             //      -> If yes, then place all blocks and expand the ones that want additional width until there is no more width to fill.
             //      ** root.Layout_MinWidth == root.Layout_MaxWidth accounts for one long word, but what if multiple words don't fit on one line?
             // 3. If not 2:
+            //      -> Try breaking strings.
+            // 4. If 3 does not work:
             //      -> Flow blocks to the next y line until all remaining blocks can fit on one line.
             //      -> Expand remaining blocks, and start all over again.
-            //      -> Actually, this is not yet implemented. Any takers? :(
+            //      -> Actually, this is not yet implemented. Any takers?
             int ascender = 0;
             if (root.Layout_MaxWidth <= root.Width) // 1
             {
@@ -387,15 +406,24 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y, out ascender);
             }
-            else // 3
+            else if (TryBreakingLongStrings(root)) // 3
             {
-                // just display an error message and call it a day?
+
+            }
+            else // 4
+            {
+                // At least one block cannot fit within the width.
                 root.Err_Cant_Fit_Children = true;
             }
             if (ascender < Ascender)
             {
                 Ascender = ascender;
             }
+        }
+
+        bool TryBreakingLongStrings(BlockElement root)
+        {
+            return false;
         }
 
         void LayoutElementsHorizontal(BlockElement root, int x, int y, out int ascenderDelta)

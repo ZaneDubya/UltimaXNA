@@ -135,7 +135,7 @@ namespace UltimaXNA.Core.UI
 
         public void Draw(SpriteBatchUI sb, Rectangle destRectangle, int xScroll, int yScroll, Vector3? hueVector = null)
         {
-            if (Text == null)
+            if (string.IsNullOrEmpty(Text))
             {
                 return;
             }

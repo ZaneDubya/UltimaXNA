@@ -18,7 +18,7 @@ namespace UltimaXNA.Core.UI.HTML
             SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
             GraphicsDevice graphics = sb.GraphicsDevice;
 
-            if (root.Width == 0 || root.Height == 0) // empty text string
+            if (root == null || root.Width == 0 || root.Height == 0) // empty text string
             {
                 return new Texture2D(graphics, 1, 1);
             }

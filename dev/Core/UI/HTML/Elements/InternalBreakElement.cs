@@ -5,7 +5,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
     class InternalBreakElement : AElement
     {
         public override bool CanBreakAtThisAtom => true;
-        public override bool IsThisAtomABreakingSpace => true;
+        public override bool IsThisAtomABreakingSpace => false;
         public override bool IsThisAtomALineBreak => true;
         public override bool IsThisAtomInternalOnly => true;
 

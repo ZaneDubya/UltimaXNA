@@ -191,7 +191,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                         Text = string.Empty;
                         ReplaceDefaultTextOnFirstKeypress = false;
                     }
-                    else if (Text.Length > 0)
+                    else if (!string.IsNullOrEmpty(Text))
                     {
                         int escapedLength;
                         if (EscapeCharacters.TryFindEscapeCharacterBackwards(Text, Text.Length - 1, out escapedLength))

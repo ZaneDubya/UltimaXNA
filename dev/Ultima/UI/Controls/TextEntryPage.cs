@@ -142,7 +142,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_IsFocused = false;
                 m_CaratBlinkOn = false;
             }
-            m_RenderedCarat.Text = $"{LeadingHtmlTag}|";
             base.Update(totalMS, frameMS);
         }
 
@@ -151,6 +150,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
             if (IsEditable)
             {
+                m_RenderedCarat.Text = $"{LeadingHtmlTag}|";
                 m_RenderedText.Draw(spriteBatch, position);
                 if (m_CaratBlinkOn)
                 {
