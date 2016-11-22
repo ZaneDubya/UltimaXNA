@@ -236,7 +236,7 @@ namespace UltimaXNA.Ultima.World.Input
                             y--;
 
                         ushort[] pixelData = new ushort[9];
-                        Texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
+                        Texture.GetData(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
                         if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
                             (pixelData[4] > 0) || (pixelData[5] > 0) ||
                             (pixelData[7] > 0))
@@ -248,7 +248,7 @@ namespace UltimaXNA.Ultima.World.Input
                     else
                     {
                         ushort[] pixelData = new ushort[1];
-                        Texture.GetData<ushort>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
+                        Texture.GetData(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
                         if (pixelData[0] > 0)
                         {
                             InTexturePosition = new Vector2(x, y);
@@ -265,7 +265,7 @@ namespace UltimaXNA.Ultima.World.Input
                 if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
                 {
                     ushort[] pixelData = new ushort[1];
-                    Texture.GetData<ushort>(0, pRect, pixelData, 0, 1);
+                    Texture.GetData(0, pRect, pixelData, 0, 1);
                     if (pixelData[0] > 0)
                         return true;
                 }

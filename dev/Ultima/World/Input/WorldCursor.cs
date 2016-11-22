@@ -702,7 +702,7 @@ namespace UltimaXNA.Ultima.World.Input
         private void DropHeldItemToContainer(Container container)
         {
             // get random coords and drop the item there.
-            Rectangle bounds = ContainerData.GetData(container.ItemID).Bounds;
+            Rectangle bounds = ContainerData.Get(container.ItemID).Bounds;
             int x = Utility.RandomValue(bounds.Left, bounds.Right);
             int y = Utility.RandomValue(bounds.Top, bounds.Bottom);
             DropHeldItemToContainer(container, x, y);
@@ -710,13 +710,13 @@ namespace UltimaXNA.Ultima.World.Input
 
         private void DropHeldItemToContainer(Container container, int x, int y)
         {
-            Rectangle containerBounds = ContainerData.GetData(container.ItemID).Bounds;
+            Rectangle bounds = ContainerData.Get(container.ItemID).Bounds;
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             Texture2D itemTexture = provider.GetItemTexture(HeldItem.DisplayItemID);
-            if (x < containerBounds.Left) x = containerBounds.Left;
-            if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
-            if (y < containerBounds.Top) y = containerBounds.Top;
-            if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
+            if (x < bounds.Left) x = bounds.Left;
+            if (x > bounds.Right - itemTexture.Width) x = bounds.Right - itemTexture.Width;
+            if (y < bounds.Top) y = bounds.Top;
+            if (y > bounds.Bottom - itemTexture.Height) y = bounds.Bottom - itemTexture.Height;
             m_Network.Send(new DropItemPacket(HeldItem.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
             ClearHolding();
         }

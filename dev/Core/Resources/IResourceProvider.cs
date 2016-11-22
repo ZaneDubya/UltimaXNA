@@ -8,6 +8,7 @@ namespace UltimaXNA.Core.Resources
     {
         IAnimationFrame[] GetAnimation(int body, ref int hue, int action, int direction);
         Texture2D GetUITexture(int textureID, bool replaceMask080808 = false);
+        bool IsPointWithinUITexture(int textureID, int x, int y);
         Texture2D GetItemTexture(int textureID);
         Texture2D GetLandTexture(int textureID);
         Texture2D GetTexmapTexture(int textureID);

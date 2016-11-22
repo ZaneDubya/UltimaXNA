@@ -50,7 +50,12 @@ namespace UltimaXNA.Ultima
 
         public Texture2D GetUITexture(int textureIndex, bool replaceMask080808 = false)
         {
-            return m_Gumps.GetGumpXNA(textureIndex, replaceMask080808);
+            return m_Gumps.GetGumpTexture(textureIndex, replaceMask080808);
+        }
+
+        public bool IsPointWithinUITexture(int textureID, int x, int y)
+        {
+            return m_Gumps.IsPointWithinTexture(textureID, x, y);
         }
 
         public Texture2D GetItemTexture(int itemIndex)
@@ -76,8 +81,6 @@ namespace UltimaXNA.Ultima
         /// <summary>
         /// Returns a Ultima Online Hue index that approximates the passed color.
         /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
         public ushort GetWebSafeHue(Color color)
         {
             return (ushort)HueData.GetWebSafeHue(color);

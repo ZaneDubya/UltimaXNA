@@ -139,7 +139,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 y = m_Texture.Height - 2;
 
             ushort[] pixelData = new ushort[9];
-            m_Texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
+            m_Texture.GetData(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
             if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
                 (pixelData[4] > 0) || (pixelData[5] > 0) ||
                 (pixelData[7] > 0))
