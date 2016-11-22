@@ -39,7 +39,7 @@ namespace UltimaXNA.Core.UI
                 {
                     m_MustRender = true;
                     m_Text = value;
-                    m_Document.SetHtml(m_Text, MaxWidth, m_CollapseContent);
+                    m_Document?.SetHtml(m_Text, MaxWidth, m_CollapseContent);
                 }
             }
         }
@@ -57,7 +57,7 @@ namespace UltimaXNA.Core.UI
                 {
                     m_MustRender = true;
                     m_MaxWidth = value;
-                    m_Document.SetHtml(m_Text, MaxWidth, m_CollapseContent);
+                    m_Document?.SetHtml(m_Text, MaxWidth, m_CollapseContent);
                 }
             }
         }
@@ -107,6 +107,7 @@ namespace UltimaXNA.Core.UI
                 if (m_MustRender)
                 {
                     m_Texture = m_Document.Render();
+                    m_MustRender = false;
                 }
                 return m_Texture;
             }
@@ -119,7 +120,7 @@ namespace UltimaXNA.Core.UI
             Text = text;
             MaxWidth = maxWidth;
             m_CollapseContent = collapseContent;
-            m_Document = new HtmlDocument(Text, 0, m_CollapseContent);
+            m_Document = new HtmlDocument(Text, MaxWidth, m_CollapseContent);
             m_MustRender = true;
         }
 
