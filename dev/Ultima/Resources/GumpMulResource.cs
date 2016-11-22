@@ -113,7 +113,7 @@ namespace UltimaXNA.Ultima.Resources
             return m_TextureCache[textureID];
         }
 
-        public bool IsPointWithinTexture(int textureID, int x, int y)
+        public bool IsPointInGumpTexture(int textureID, int x, int y)
         {
             return m_Picking.Get(textureID, x, y);
         }

@@ -6,7 +6,7 @@ namespace UltimaXNA.Ultima.Resources
     {
         const int InitialDataCount = 0x40000; // 256kb
         private Dictionary<int, int> m_IDs = new Dictionary<int, int>();
-        private List<byte> m_Data = new List<byte>(InitialDataCount);
+        private List<byte> m_Data = new List<byte>(InitialDataCount); // list<t> access is 10% slower than t[].
 
         public bool Get(int textureID, int x, int y)
         {
@@ -16,6 +16,15 @@ namespace UltimaXNA.Ultima.Resources
                 return false;
             }
             int width = ReadIntegerFromData(ref index);
+            if (x < 0 || x >= width)
+            {
+                return false;
+            }
+            int height = ReadIntegerFromData(ref index);
+            if (y < 0 || y >= height)
+            {
+                return false;
+            }
             int current = 0;
             int target = x + y * width;
             bool inTransparentSpan = true;
@@ -32,16 +41,22 @@ namespace UltimaXNA.Ultima.Resources
             return false;
         }
 
-        bool Has(int textureID)
+        public void GetDimensions(int textureID, out int width, out int height)
         {
-            return m_IDs.ContainsKey(textureID);
+            int index;
+            if (!m_IDs.TryGetValue(textureID, out index))
+            {
+                width = height = 0;
+            }
+            width = ReadIntegerFromData(ref index);
+            height = ReadIntegerFromData(ref index);
         }
 
         public void Set(int textureID, int width, int height, ushort[] pixels)
         {
             int begin = m_Data.Count;
             WriteIntegerToData(width);
-            // WriteIntegerToData(height);
+            WriteIntegerToData(height);
             bool countingTransparent = true;
             int count = 0;
             for (int i = 0; i < pixels.Length; i++)
@@ -57,6 +72,11 @@ namespace UltimaXNA.Ultima.Resources
             }
             WriteIntegerToData(count);
             m_IDs.Add(textureID, begin);
+        }
+
+        bool Has(int textureID)
+        {
+            return m_IDs.ContainsKey(textureID);
         }
 
         private void WriteIntegerToData(int value)

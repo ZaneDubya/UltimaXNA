@@ -66,14 +66,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         protected override bool IsPointWithinControl(int x, int y)
         {
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-            return provider.IsPointWithinUITexture(GumpID, x, y);
-            /*ushort[] pixelData;
-            pixelData = new ushort[1];
-            m_Texture.GetData(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
-            if (pixelData[0] > 0)
-                return true;
-            else
-                return false;*/
+            return provider.IsPointInUITexture(GumpID, x, y);
         }
     }
 }

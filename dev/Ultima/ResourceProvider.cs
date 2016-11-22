@@ -48,19 +48,24 @@ namespace UltimaXNA.Ultima
             return m_Anim.GetAnimation(body, ref hue, action, direction);
         }
 
-        public Texture2D GetUITexture(int textureIndex, bool replaceMask080808 = false)
+        public Texture2D GetUITexture(int textureID, bool replaceMask080808 = false)
         {
-            return m_Gumps.GetGumpTexture(textureIndex, replaceMask080808);
+            return m_Gumps.GetGumpTexture(textureID, replaceMask080808);
         }
 
-        public bool IsPointWithinUITexture(int textureID, int x, int y)
+        public bool IsPointInUITexture(int textureID, int x, int y)
         {
-            return m_Gumps.IsPointWithinTexture(textureID, x, y);
+            return m_Gumps.IsPointInGumpTexture(textureID, x, y);
         }
 
         public Texture2D GetItemTexture(int itemIndex)
         {
             return m_Art.GetStaticTexture(itemIndex);
+        }
+
+        public bool IsPointInItemTexture(int textureID, int x, int y)
+        {
+            return m_Art.IsPointInItemTexture(textureID, x, y);
         }
 
         public Texture2D GetLandTexture(int landIndex)

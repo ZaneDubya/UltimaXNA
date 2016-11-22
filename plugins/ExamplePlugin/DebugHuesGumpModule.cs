@@ -118,14 +118,8 @@ namespace UltimaXNA.Ultima.Login {
             }
 
             protected override bool IsPointWithinControl(int x, int y) {
-                if (m_Texture != null) {
-                    ushort[] pixel = new ushort[m_Texture.Width * m_Texture.Height];
-                    m_Texture.GetData(pixel);
-                    if (pixel[y * m_Texture.Width + x] != 0x00000000) {
-                        return true;
-                    }
-                }
-                return false;
+                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                return provider.IsPointInUITexture(m_StaticTextureID, x, y);
             }
         }
     }

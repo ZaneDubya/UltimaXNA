@@ -24,28 +24,30 @@ namespace UltimaXNA.Ultima.UI.Controls {
     }
 
     public class Button : AControl {
-        const int kGump_Up = 0, kGump_Down = 1, kGump_Over = 2;
-        Texture2D[] m_gumpTextures = { null, null, null };
-        int[] m_gumpID = { 0, 0, 0 }; // 0 == up, 1 == down, 2 == additional over state, not sent by the server but can be added for clientside gumps.
+        const int Gump_Up = 0, Gump_Down = 1, Gump_Over = 2;
+
+        Texture2D[] m_GumpTextures = { null, null, null };
+        int[] m_GumpID = { 0, 0, 0 }; // 0 == up, 1 == down, 2 == additional over state, not sent by the server but can be added for clientside gumps.
+        RenderedText m_Texture;
 
         public int GumpUpID {
             set {
-                m_gumpID[kGump_Up] = value;
-                m_gumpTextures[kGump_Up] = null;
+                m_GumpID[Gump_Up] = value;
+                m_GumpTextures[Gump_Up] = null;
             }
         }
 
         public int GumpDownID {
             set {
-                m_gumpID[kGump_Down] = value;
-                m_gumpTextures[kGump_Down] = null;
+                m_GumpID[Gump_Down] = value;
+                m_GumpTextures[Gump_Down] = null;
             }
         }
 
         public int GumpOverID {
             set {
-                m_gumpID[kGump_Over] = value;
-                m_gumpTextures[kGump_Over] = null;
+                m_GumpID[Gump_Over] = value;
+                m_GumpTextures[Gump_Over] = null;
             }
         }
 
@@ -54,9 +56,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
         public int ButtonID;
         public string Caption = string.Empty;
 
-        internal bool MouseDownOnThis { get { return (m_clicked); } }
-
-        RenderedText m_Texture;
+        public bool MouseDownOnThis => m_clicked;
 
         public Button(AControl parent)
             : base(parent) {
@@ -95,20 +95,20 @@ namespace UltimaXNA.Ultima.UI.Controls {
         }
 
         public override void Update(double totalMS, double frameMS) {
-            for (int i = kGump_Up; i <= kGump_Over; i++) {
-                if (m_gumpID[i] != 0 && m_gumpTextures[i] == null) {
+            for (int i = Gump_Up; i <= Gump_Over; i++) {
+                if (m_GumpID[i] != 0 && m_GumpTextures[i] == null) {
                     IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                    m_gumpTextures[i] = provider.GetUITexture(m_gumpID[i]);
+                    m_GumpTextures[i] = provider.GetUITexture(m_GumpID[i]);
                 }
             }
-            if (Width == 0 && Height == 0 && m_gumpTextures[kGump_Up] != null) {
-                Size = new Point(m_gumpTextures[kGump_Up].Width, m_gumpTextures[kGump_Up].Height);
+            if (Width == 0 && Height == 0 && m_GumpTextures[Gump_Up] != null) {
+                Size = new Point(m_GumpTextures[Gump_Up].Width, m_GumpTextures[Gump_Up].Height);
             }
             base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position) {
-            Texture2D texture = getTextureFromMouseState();
+            Texture2D texture = GetTextureFromMouseState();
             if (Caption != string.Empty) {
                 m_Texture.Text = Caption;
             }
@@ -122,24 +122,37 @@ namespace UltimaXNA.Ultima.UI.Controls {
             base.Draw(spriteBatch, position);
         }
 
-        Texture2D getTextureFromMouseState() {
-            if (MouseDownOnThis && m_gumpTextures[kGump_Down] != null) {
-                return m_gumpTextures[kGump_Down];
+        Texture2D GetTextureFromMouseState()
+        {
+            if (MouseDownOnThis && m_GumpTextures[Gump_Down] != null)
+            {
+                return m_GumpTextures[Gump_Down];
             }
-            if (UserInterface.MouseOverControl == this && m_gumpTextures[kGump_Over] != null) {
-                return m_gumpTextures[kGump_Over];
+            if (UserInterface.MouseOverControl == this && m_GumpTextures[Gump_Over] != null)
+            {
+                return m_GumpTextures[Gump_Over];
             }
-            return m_gumpTextures[kGump_Up];
+            return m_GumpTextures[Gump_Up];
         }
 
-        protected override bool IsPointWithinControl(int x, int y) {
-            ushort[] pixelData;
-            pixelData = new ushort[1];
-            getTextureFromMouseState().GetData(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
-            if (pixelData[0] > 0) {
-                return true;
+        int GetGumpIDFromMouseState()
+        {
+            if (MouseDownOnThis && m_GumpTextures[Gump_Down] != null)
+            {
+                return m_GumpID[Gump_Down];
             }
-            return false;
+            if (UserInterface.MouseOverControl == this && m_GumpTextures[Gump_Over] != null)
+            {
+                return m_GumpID[Gump_Over];
+            }
+            return m_GumpID[Gump_Up];
+        }
+
+        protected override bool IsPointWithinControl(int x, int y)
+        {
+            int gumpID = GetGumpIDFromMouseState();
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            return provider.IsPointInUITexture(gumpID, x, y);
         }
 
         bool m_clicked;
