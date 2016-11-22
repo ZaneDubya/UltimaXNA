@@ -13,7 +13,7 @@ namespace UltimaXNA.Core.Resources
         Texture2D GetTexmapTexture(int textureID);
 
         bool IsPointInUITexture(int textureID, int x, int y);
-        bool IsPointInItemTexture(int textureID, int x, int y);
+        bool IsPointInItemTexture(int textureID, int x, int y, int extraRange = 0);
         void GetItemDimensions(int textureID, out int width, out int height);
 
         ushort GetWebSafeHue(Color color);

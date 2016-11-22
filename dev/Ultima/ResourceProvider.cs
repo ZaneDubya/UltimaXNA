@@ -63,9 +63,9 @@ namespace UltimaXNA.Ultima
             return m_Art.GetStaticTexture(itemIndex);
         }
 
-        public bool IsPointInItemTexture(int textureID, int x, int y)
+        public bool IsPointInItemTexture(int textureID, int x, int y, int extraRange = 0)
         {
-            return m_Art.IsPointInItemTexture(textureID, x, y);
+            return m_Art.IsPointInItemTexture(textureID, x, y, extraRange);
         }
 
         public Texture2D GetLandTexture(int landIndex)

@@ -8,7 +8,7 @@ namespace UltimaXNA.Ultima.Resources
         private Dictionary<int, int> m_IDs = new Dictionary<int, int>();
         private List<byte> m_Data = new List<byte>(InitialDataCount); // list<t> access is 10% slower than t[].
 
-        public bool Get(int textureID, int x, int y)
+        public bool Get(int textureID, int x, int y, int extraRange = 0)
         {
             int index;
             if (!m_IDs.TryGetValue(textureID, out index))
@@ -32,9 +32,16 @@ namespace UltimaXNA.Ultima.Resources
             {
                 int spanLength = ReadIntegerFromData(ref index);
                 current += spanLength;
-                if (target < current)
+                if (extraRange == 0)
                 {
-                    return !inTransparentSpan;
+                    if (target < current)
+                    {
+                        return !inTransparentSpan;
+                    }
+                }
+                else
+                {
+
                 }
                 inTransparentSpan = !inTransparentSpan;
             }
