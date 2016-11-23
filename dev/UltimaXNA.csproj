@@ -134,6 +134,7 @@
     <Compile Include="Core\UI\HTML\Elements\InternalHyphenBreakElement.cs" />
     <Compile Include="Core\UI\HTML\HtmlRenderer.cs" />
     <Compile Include="Ultima\Data\AssistantFeatures.cs" />
+    <Compile Include="Ultima\Data\Books.cs" />
     <Compile Include="Ultima\Network\Client\Extensions\GuildLocationQueryPacket.cs" />
     <Compile Include="Ultima\Network\Client\NegotiateFeatureResponsePacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyRemoveMemberPacket.cs" />

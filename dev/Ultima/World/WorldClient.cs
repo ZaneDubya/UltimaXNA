@@ -352,7 +352,7 @@ namespace UltimaXNA.Ultima.World
                 else
                 {
                     // special case for books
-                    if (BaseBook.IsBookItem((ushort)itemID))
+                    if (Books.IsBookItem((ushort)itemID))
                     {
                         item = WorldModel.Entities.GetObject<BaseBook>(serial, true);
                     }

@@ -8,7 +8,6 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System.Linq;
 using UltimaXNA.Ultima.World.Maps;
 using System.Text;
 
@@ -20,17 +19,6 @@ namespace UltimaXNA.Ultima.World.Entities.Items
         string m_Author;
         BookPageInfo[] m_Pages;
         bool m_IsEditable;
-        static ushort[] m_BookItemIDs = {
-            0xFEF, // Brown Book
-            0xFF0, // Tan Book
-            0xFF1, // Red Book
-            0xFF2  // Blue Book
-        };
-
-        public static bool IsBookItem(ushort itemID)
-        {
-            return m_BookItemIDs.Contains(itemID);
-        }
 
         public string Title
         {
