@@ -281,6 +281,7 @@ namespace UltimaXNA.Core.UI.HTML
             int longestBlockWidth = 0, blockWidth = 0;
             int longestLineWidth = 0, lineWidth = 0;
             int styleWidth = 0;
+            int blockBegin = 0;
             for (int i = 0; i < root.Children.Count; i++)
             {
                 AElement e = root.Children[i];
@@ -302,6 +303,7 @@ namespace UltimaXNA.Core.UI.HTML
                             {
                                 i = restartAtIndex - 1;
                                 blockWidth = restartBlockWidth;
+                                lineWidth = restartBlockWidth;
                                 continue;
                             }
                         }
@@ -316,18 +318,9 @@ namespace UltimaXNA.Core.UI.HTML
                         blockWidth += e.Width;
                     }
                     lineWidth += e.Width;
-                    int styleWidthChild = 0;
-                    if (e.Style.IsItalic)
+                    if (e.Style.ExtraWidth > styleWidth)
                     {
-                        styleWidthChild = e.Style.Font.Height / 2;
-                    }
-                    if (e.Style.DrawOutline)
-                    {
-                        styleWidthChild += 2;
-                    }
-                    if (styleWidthChild > styleWidth)
-                    {
-                        styleWidth = styleWidthChild;
+                        styleWidth = e.Style.ExtraWidth;
                     }
                 }
                 if (e.IsThisAtomALineBreak)
@@ -378,16 +371,16 @@ namespace UltimaXNA.Core.UI.HTML
                         AElement hyphen = new InternalHyphenBreakElement(e.Style);
                         if (blockWidth + hyphen.Width <= root.Width)
                         {
-                            root.Children.Insert(i + 1, hyphen);
+                            root.Children.Insert(i, hyphen);
                             restartBlockWidth = blockWidth;
-                            restartAtIndex = i + 1;
+                            restartAtIndex = i;
                             return true;
                         }
                         continue;
                     }
-                    root.Children.Insert(i + 1, new InternalLineBreakElement(e.Style));
+                    root.Children.Insert(i, new InternalLineBreakElement(e.Style));
                     restartBlockWidth = blockWidth;
-                    restartAtIndex = i + 1;
+                    restartAtIndex = i;
                     return true;
                 }
             }
