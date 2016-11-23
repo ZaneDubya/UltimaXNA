@@ -62,17 +62,19 @@ namespace UltimaXNA
             }
         }
 
-        public static T GetService<T>()
+        public static T GetService<T>(bool failIfNotRegistered = true)
         {
             Type type = typeof(T);
-
             if (s_Services.ContainsKey(type))
             {
                 return (T)s_Services[type];
             }
             else
             {
-                Tracer.Critical(string.Format("Attempted to get service service of type {0}, but no service of this type is registered.", type));
+                if (failIfNotRegistered)
+                {
+                    Tracer.Critical(string.Format("Attempted to get service service of type {0}, but no service of this type is registered.", type));
+                }
                 return default(T);
             }
         }

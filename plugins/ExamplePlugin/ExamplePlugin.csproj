@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CandleObjectDebugger.cs" />
+    <Compile Include="DebugShowBookModule.cs" />
     <Compile Include="ExamplePluginModule.cs" />
     <Compile Include="ExamplePluginWithSettings.cs" />
     <Compile Include="DebugHuesGumpModule.cs" />

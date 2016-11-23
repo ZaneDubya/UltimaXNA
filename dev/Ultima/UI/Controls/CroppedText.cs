@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public string Text = string.Empty;
         RenderedText m_Texture;
 
-        public CroppedText(AControl parent)
+        CroppedText(AControl parent)
             : base(parent)
         {
 
@@ -37,16 +37,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             height = Int32.Parse(arguements[4]);
             hue = Int32.Parse(arguements[5]);
             textIndex = Int32.Parse(arguements[6]);
-            buildGumpling(x, y, width, height, hue, textIndex, lines);
+            BuildGumpling(x, y, width, height, hue, textIndex, lines);
         }
 
         public CroppedText(AControl parent, int x, int y, int width, int height, int hue, int textIndex, string[] lines)
             : this(parent)
         {
-            buildGumpling(x, y, width, height, hue, textIndex, lines);
+            BuildGumpling(x, y, width, height, hue, textIndex, lines);
         }
 
-        void buildGumpling(int x, int y, int width, int height, int hue, int textIndex, string[] lines)
+        void BuildGumpling(int x, int y, int width, int height, int hue, int textIndex, string[] lines)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);

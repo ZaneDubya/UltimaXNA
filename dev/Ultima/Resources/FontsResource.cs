@@ -21,11 +21,14 @@ namespace UltimaXNA.Ultima.Resources
 {
     public class FontsResource
     {
+        bool m_Initialized;
+        GraphicsDevice m_GraphicsDevice;
+
         public const int UniFontCount = 3;
-        private AFont[] m_UnicodeFonts = new AFont[UniFontCount];
+        AFont[] m_UnicodeFonts = new AFont[UniFontCount];
 
         public const int AsciiFontCount = 10;
-        private AFont[] m_AsciiFonts = new AFont[AsciiFontCount];
+        AFont[] m_AsciiFonts = new AFont[AsciiFontCount];
 
         internal AFont GetUniFont(int index)
         {
@@ -40,34 +43,30 @@ namespace UltimaXNA.Ultima.Resources
                 return m_AsciiFonts[9];
             return m_AsciiFonts[index];
         }
-
-        private bool m_initialized;
-        private GraphicsDevice m_GraphicsDevice;
-
+       
         public FontsResource(GraphicsDevice graphics)
         {
             m_GraphicsDevice = graphics;
             Initialize();
         }
 
-        private void Initialize()
+        void Initialize()
         {
-            if (!m_initialized)
+            if (!m_Initialized)
             {
-                m_initialized = true;
-                // unsubscribe in case this is called twice.
-                m_GraphicsDevice.DeviceReset -= graphicsDevice_DeviceReset;
-                m_GraphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
-                loadFonts();
+                m_Initialized = true;
+                m_GraphicsDevice.DeviceReset -= GraphicsDeviceReset;
+                m_GraphicsDevice.DeviceReset += GraphicsDeviceReset;
+                LoadFonts();
             }
         }
 
-        void graphicsDevice_DeviceReset(object sender, EventArgs e)
+        void GraphicsDeviceReset(object sender, EventArgs e)
         {
-            loadFonts();
+            LoadFonts();
         }
 
-        void loadFonts()
+        void LoadFonts()
         {
             // load Ascii fonts
             using (BinaryReader reader = new BinaryReader(new FileStream(FileManager.GetFilePath("fonts.mul"), FileMode.Open, FileAccess.Read)))
@@ -79,10 +78,8 @@ namespace UltimaXNA.Ultima.Resources
                     m_AsciiFonts[i].HasBuiltInOutline = true;
                 }
             }
-
             // load Unicode fonts
             int maxHeight = 0; // because all unifonts are designed to be used together, they must all share a single maxheight value.
-
             for (int i = 0; i < UniFontCount; i++)
             {
                 string path = FileManager.GetFilePath("unifont" + (i == 0 ? "" : i.ToString()) + ".mul");
@@ -91,14 +88,17 @@ namespace UltimaXNA.Ultima.Resources
                     m_UnicodeFonts[i] = new FontUnicode();
                     m_UnicodeFonts[i].Initialize(new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)));
                     if (m_UnicodeFonts[i].Height > maxHeight)
+                    {
                         maxHeight = m_UnicodeFonts[i].Height;
+                    }
                 }
             }
-
             for (int i = 0; i < UniFontCount; i++)
             {
                 if (m_UnicodeFonts[i] == null)
+                {
                     continue;
+                }
                 m_UnicodeFonts[i].Height = maxHeight;
             }
         }

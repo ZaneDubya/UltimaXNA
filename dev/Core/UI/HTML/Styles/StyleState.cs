@@ -50,7 +50,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
         public bool IsItalic = false;
         public bool IsOutlined = false;
 
-        public bool MustDrawnOutline
+        public bool DrawOutline
         {
             get { return IsOutlined && !Font.HasBuiltInOutline; }
         }
@@ -63,6 +63,23 @@ namespace UltimaXNA.Core.UI.HTML.Styles
 
         public string HREF = null;
         public bool IsHREF { get { return HREF != null; } }
+
+        public int ExtraWidth
+        {
+            get
+            {
+                int extraWidth = 0;
+                if (IsItalic)
+                {
+                    extraWidth = Font.Height / 2;
+                }
+                if (DrawOutline)
+                {
+                    extraWidth += 2;
+                }
+                return extraWidth;
+            }
+        }
 
         public StyleState(IResourceProvider provider)
         {

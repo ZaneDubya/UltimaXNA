@@ -130,7 +130,11 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
+    <Compile Include="Core\UI\HTML\Elements\InternalLineBreakElement.cs" />
+    <Compile Include="Core\UI\HTML\Elements\InternalHyphenBreakElement.cs" />
+    <Compile Include="Core\UI\HTML\HtmlRenderer.cs" />
     <Compile Include="Ultima\Data\AssistantFeatures.cs" />
+    <Compile Include="Ultima\Data\Books.cs" />
     <Compile Include="Ultima\Network\Client\Extensions\GuildLocationQueryPacket.cs" />
     <Compile Include="Ultima\Network\Client\NegotiateFeatureResponsePacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyRemoveMemberPacket.cs" />
@@ -238,7 +242,6 @@
     <Compile Include="Core\Resources\IAnimationFrame.cs" />
     <Compile Include="Core\Resources\IResource.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
-    <Compile Include="Core\UI\HTML\HtmlDocument_OldCode.cs" />
     <Compile Include="Core\UI\HTML\HtmlImage.cs" />
     <Compile Include="Core\UI\HTML\Elements\BlockElement.cs" />
     <Compile Include="Core\UI\HTML\HtmlDocument.cs" />
@@ -309,6 +312,11 @@
     <Compile Include="Ultima\Data\SpellbookData.cs" />
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
     <Compile Include="Ultima\Data\ClientVersion.cs" />
+    <Compile Include="Ultima\Network\Client\BookHeaderNewChangePacket.cs" />
+    <Compile Include="Ultima\Network\Client\BookPageChangePacket.cs" />
+    <Compile Include="Ultima\Network\Server\BookHeaderNewPacket.cs" />
+    <Compile Include="Ultima\Network\Server\BookHeaderOldPacket.cs" />
+    <Compile Include="Ultima\Network\Server\BookPagesPacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyAcceptPacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyRequestAddTargetPacket.cs" />
     <Compile Include="Ultima\Network\Client\Partying\PartyLootEnablePacket.cs" />
@@ -345,7 +353,9 @@
     <Compile Include="Ultima\UI\Controls\GumpPicWithWidth.cs" />
     <Compile Include="Ultima\UI\Controls\KeyPressControl.cs" />
     <Compile Include="Ultima\UI\Controls\MacroDropDownList.cs" />
+    <Compile Include="Ultima\UI\Controls\TextEntryPage.cs" />
     <Compile Include="Ultima\UI\LoginGumps\CreditsGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\BookGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ContextMenuGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\CrimeQueryGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\LogoutGump.cs" />
@@ -356,6 +366,7 @@
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorBuyGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\VendorSellGump.cs" />
+    <Compile Include="Ultima\World\Entities\Items\BaseBook.cs" />
     <Compile Include="Ultima\World\Data\CustomHouse.cs" />
     <Compile Include="Ultima\World\Data\CustomHousePlane.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />

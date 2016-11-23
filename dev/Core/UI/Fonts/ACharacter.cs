@@ -11,8 +11,11 @@
 
 namespace UltimaXNA.Core.UI.Fonts
 {
-    abstract internal class ACharacter : ICharacter
+    abstract class ACharacter : ICharacter
     {
+        protected bool HuePassedColor;
+        protected uint[] m_PixelData;
+
         public int Width
         {
             get;
@@ -43,10 +46,6 @@ namespace UltimaXNA.Core.UI.Fonts
             set;
         }
 
-        protected bool HuePassedColor = false;
-
-        protected uint[] m_PixelData;
-
         public unsafe void WriteToBuffer(uint* dstPtr, int dx, int dy, int linewidth, int maxHeight, int baseLine, bool isBold, bool isItalic, bool isUnderlined, bool isOutlined, uint color, uint outline)
         {
             uint inColor = color;
@@ -62,7 +61,6 @@ namespace UltimaXNA.Core.UI.Fonts
                         {
                             dest += (baseLine - YOffset - y - 1) / 2;
                         }
-
                         for (int x = 0; x < Width; x++)
                         {
                             if (*src != 0x00000000)
@@ -74,7 +72,6 @@ namespace UltimaXNA.Core.UI.Fonts
                                     uint b = (uint)((*src & 0x00ff0000) * ((float)((inColor >> 16) & 0x000000ff) / 0xff)) & 0x00ff0000;
                                     color = 0xff000000 + b + g + r;
                                 }
-
                                 if (isOutlined)
                                 {
                                     for (int iy = -1; iy <= 1; iy++)
@@ -111,8 +108,6 @@ namespace UltimaXNA.Core.UI.Fonts
                                                 *(idest + 1) = outline;
                                             }
                                         }
-
-
                                         if (*(idest + 2) == 0x00000000)
                                         {
                                             *(idest + 2) = outline;

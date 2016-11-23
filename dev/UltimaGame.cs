@@ -227,12 +227,15 @@ namespace UltimaXNA
             if(!IsMinimized)
             {
                 if (ActiveModel is WorldModel)
-                    CheckWindowSize(Settings.UserInterface.PlayWindowGumpResolution.Width, Settings.UserInterface.PlayWindowGumpResolution.Height);
+                {
+                    ResolutionProperty resolution = Settings.UserInterface.PlayWindowGumpResolution;
+                    CheckWindowSize(resolution.Width, resolution.Height);
+                }
                 else
+                {
                     CheckWindowSize(800, 600);
-                
-                ActiveModel.GetView()
-                    .Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
+                }
+                ActiveModel.GetView().Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
             }
 

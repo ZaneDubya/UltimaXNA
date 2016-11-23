@@ -16,7 +16,7 @@ using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    internal class GumpPic : AGumpPic
+    class GumpPic : AGumpPic
     {
         public GumpPic(AControl parent, string[] arguements)
             : base(parent)
@@ -31,13 +31,13 @@ namespace UltimaXNA.Ultima.UI.Controls
                 string hueArgument = arguements[4].Substring(arguements[4].IndexOf('=') + 1);
                 hue = Int32.Parse(hueArgument);
             }
-            buildGumpling(x, y, gumpID, hue);
+            BuildGumpling(x, y, gumpID, hue);
         }
 
         public GumpPic(AControl parent, int x, int y, int gumpID, int hue)
             : base(parent)
         {
-            buildGumpling(x, y, gumpID, hue);
+            BuildGumpling(x, y, gumpID, hue);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
