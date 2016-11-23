@@ -104,7 +104,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         void OnDocumentSplitPage(int index)
         {
             string overflowText = Text.Substring(index);
-            Text = Text.Substring(0, index);
+            m_Text = Text.Substring(0, index);
             m_OnPageOverflow?.Invoke(EntryID, overflowText);
         }
 

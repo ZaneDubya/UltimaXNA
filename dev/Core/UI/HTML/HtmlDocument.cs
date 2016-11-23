@@ -281,10 +281,11 @@ namespace UltimaXNA.Core.UI.HTML
             int longestBlockWidth = 0, blockWidth = 0;
             int longestLineWidth = 0, lineWidth = 0;
             int styleWidth = 0;
-            int blockBegin = 0;
+            bool isLastElement = false;
             for (int i = 0; i < root.Children.Count; i++)
             {
                 AElement e = root.Children[i];
+                isLastElement = i >= root.Children.Count - 1;
                 if (e is BlockElement)
                 {
                     e.Width = root.Width;
@@ -294,7 +295,11 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 else
                 {
-                    if (e.IsThisAtomABreakingSpace)
+                    if (!e.IsThisAtomABreakingSpace)
+                    {
+                        blockWidth += e.Width;
+                    }
+                    if (e.IsThisAtomABreakingSpace || isLastElement)
                     {
                         if (blockWidth > root.Width)
                         {
@@ -313,17 +318,13 @@ namespace UltimaXNA.Core.UI.HTML
                         }
                         blockWidth = 0;
                     }
-                    else
-                    {
-                        blockWidth += e.Width;
-                    }
                     lineWidth += e.Width;
                     if (e.Style.ExtraWidth > styleWidth)
                     {
                         styleWidth = e.Style.ExtraWidth;
                     }
                 }
-                if (e.IsThisAtomALineBreak)
+                if (e.IsThisAtomALineBreak || isLastElement)
                 {
                     if (blockWidth + styleWidth > longestBlockWidth)
                     {
@@ -338,17 +339,8 @@ namespace UltimaXNA.Core.UI.HTML
                     styleWidth = 0;
                 }
             }
-            // Issue #459 - need to check if this removal breaks any controls that use renderedtext. 
-            /*if (longestBlockWidth < root.Width)
-            {
-                longestBlockWidth = root.Width;
-            }
-            if (longestLineWidth < root.Width)
-            {
-                longestLineWidth = root.Width;
-            }*/
-            root.Layout_MinWidth = (blockWidth + styleWidth > longestBlockWidth) ? blockWidth + styleWidth : longestBlockWidth;
-            root.Layout_MaxWidth = (lineWidth + styleWidth > longestLineWidth) ? lineWidth + styleWidth : longestLineWidth;
+            root.Layout_MinWidth = longestBlockWidth;
+            root.Layout_MaxWidth = longestLineWidth;
         }
         
         bool TryReduceBlockWidth(BlockElement root, int blockEndIndex, int blockWidth, out int restartAtIndex, out int restartBlockWidth)
@@ -503,6 +495,7 @@ namespace UltimaXNA.Core.UI.HTML
                         {
                             index += root.Children[j].IsThisAtomInternalOnly ? 0 : 1;
                         }
+                        root.Children.RemoveRange(i, root.Children.Count - i);
                         m_OnPageOverflow?.Invoke(index);
                         break;
                     }
