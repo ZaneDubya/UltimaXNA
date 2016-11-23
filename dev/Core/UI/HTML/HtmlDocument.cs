@@ -722,6 +722,10 @@ namespace UltimaXNA.Core.UI.HTML
         public Point GetCaratPositionByIndex(int textIndex)
         {
             Point carat = Point.Zero;
+            if (m_Root == null)
+            {
+                return carat;
+            }
             int index = 0;
             for (int i = 0; i < m_Root.Children.Count; i++)
             {
