@@ -149,7 +149,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             SetActivePage(1);
             AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(0x058);
-            m_Pages[0].Text = "since|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| feeling is first who pays any attention to the syntax of things will never wholly kiss you; wholly to be a fool while Spring is in the world my blood approves and kisses are a better fate than wisdom ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||";
+            m_Pages[0].Text = "sincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesince feeling is first who pays any attention to the syntax of things will never wholly kiss you; wholly to be a fool while Spring is in the world my blood approves and kisses are a better fate than wisdom ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||";
             m_Pages[0].CaratAt = m_Pages[0].Text.Length;
         }
 

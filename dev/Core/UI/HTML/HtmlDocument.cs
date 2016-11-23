@@ -31,6 +31,7 @@ namespace UltimaXNA.Core.UI.HTML
         BlockElement m_Root;
         bool m_CollapseToContent;
         Action<int> m_OnPageOverflow;
+        HtmlLinkList m_Links;
 
         public int Width => m_Root.Width;
         public int Height => m_Root.Height;
@@ -59,11 +60,7 @@ namespace UltimaXNA.Core.UI.HTML
             }
         }
 
-        public HtmlLinkList Links
-        {
-            get;
-            private set;
-        }
+        public HtmlLinkList Links => m_Links == null ? HtmlLinkList.Empty : m_Links;
 
         public Texture2D Render() => m_Renderer.Render(m_Root, Ascender, Links);
 
@@ -103,7 +100,7 @@ namespace UltimaXNA.Core.UI.HTML
             {
                 m_Root = ParseHtmlToBlocks(html);
                 GetAllImages(m_Root);
-                Links = GetAllHrefRegionsInBlock(m_Root);
+                m_Links = GetAllHrefRegionsInBlock(m_Root);
                 DoLayout(m_Root, width);
                 if (Ascender != 0)
                 {
@@ -122,7 +119,7 @@ namespace UltimaXNA.Core.UI.HTML
         {
             // TODO: we need to handle disposing the ImageList better, it references textures.
             Images?.Clear();
-            Links?.Clear();
+            m_Links?.Clear();
         }
 
         // ============================================================================================================
@@ -273,47 +270,58 @@ namespace UltimaXNA.Core.UI.HTML
         /// </summary>
         void DoLayout(BlockElement root, int width)
         {
-            CalculateLayoutWidthsRecursive(root);
             root.Width = width;
+            CalculateLayoutWidthsRecursive(root);
             LayoutElements(root);
-            root.Height += 1; // for outlined chars. hack
+            root.Height += 1; // hack for outlined chars. should be checking for outlines on bottom row instead.
         }
 
         void CalculateLayoutWidthsRecursive(BlockElement root)
         {
-            int widthMinLongest = 0, widthMin = 0;
-            int widthMaxLongest = 0, widthMax = 0;
+            int longestBlockWidth = 0, blockWidth = 0;
+            int longestLineWidth = 0, lineWidth = 0;
             int styleWidth = 0;
-            foreach (AElement child in root.Children)
+            for (int i = 0; i < root.Children.Count; i++)
             {
-                if (child is BlockElement)
+                AElement e = root.Children[i];
+                if (e is BlockElement)
                 {
-                    CalculateLayoutWidthsRecursive(child as BlockElement);
-                    widthMin += (child as BlockElement).Layout_MinWidth;
-                    widthMax += (child as BlockElement).Layout_MaxWidth;
+                    e.Width = root.Width;
+                    CalculateLayoutWidthsRecursive(e as BlockElement);
+                    blockWidth += (e as BlockElement).Layout_MinWidth;
+                    lineWidth += (e as BlockElement).Layout_MaxWidth;
                 }
                 else
                 {
-                    if (child.IsThisAtomABreakingSpace)
+                    if (e.IsThisAtomABreakingSpace)
                     {
-                        if (widthMin + styleWidth > widthMinLongest)
+                        if (blockWidth > root.Width)
                         {
-                            widthMinLongest = widthMin + styleWidth;
+                            int restartAtIndex, restartBlockWidth;
+                            if (TryReduceBlockWidth(root, i - 1, blockWidth + styleWidth, out restartAtIndex, out restartBlockWidth))
+                            {
+                                i = restartAtIndex - 1;
+                                blockWidth = restartBlockWidth;
+                                continue;
+                            }
                         }
-                        widthMin = 0;
+                        if (blockWidth + styleWidth > longestBlockWidth)
+                        {
+                            longestBlockWidth = blockWidth + styleWidth;
+                        }
+                        blockWidth = 0;
                     }
                     else
                     {
-                        widthMin += child.Width;
+                        blockWidth += e.Width;
                     }
-                    widthMax += child.Width;
-                    // get the additional style width.
+                    lineWidth += e.Width;
                     int styleWidthChild = 0;
-                    if (child.Style.IsItalic)
+                    if (e.Style.IsItalic)
                     {
-                        styleWidthChild = child.Style.Font.Height / 2;
+                        styleWidthChild = e.Style.Font.Height / 2;
                     }
-                    if (child.Style.DrawOutline)
+                    if (e.Style.DrawOutline)
                     {
                         styleWidthChild += 2;
                     }
@@ -322,34 +330,70 @@ namespace UltimaXNA.Core.UI.HTML
                         styleWidth = styleWidthChild;
                     }
                 }
-
-                if (child.IsThisAtomALineBreak)
+                if (e.IsThisAtomALineBreak)
                 {
-                    if (widthMin + styleWidth > widthMinLongest)
+                    if (blockWidth + styleWidth > longestBlockWidth)
                     {
-                        widthMinLongest = widthMin + styleWidth;
+                        longestBlockWidth = blockWidth + styleWidth;
                     }
-                    if (widthMax + styleWidth > widthMaxLongest)
+                    if (lineWidth + styleWidth > longestLineWidth)
                     {
-                        widthMaxLongest = widthMax + styleWidth;
+                        longestLineWidth = lineWidth + styleWidth;
                     }
-                    widthMin = 0;
-                    widthMax = 0;
+                    blockWidth = 0;
+                    lineWidth = 0;
                     styleWidth = 0;
                 }
             }
-
-            if (widthMinLongest < root.Width)
+            // Issue #459 - need to check if this removal breaks any controls that use renderedtext. 
+            /*if (longestBlockWidth < root.Width)
             {
-                widthMinLongest = root.Width;
+                longestBlockWidth = root.Width;
             }
-            if (widthMaxLongest < root.Width)
+            if (longestLineWidth < root.Width)
             {
-                widthMaxLongest = root.Width;
-            }
-            root.Layout_MinWidth = (widthMin + styleWidth > widthMinLongest) ? widthMin + styleWidth : widthMinLongest;
-            root.Layout_MaxWidth = (widthMax + styleWidth > widthMaxLongest) ? widthMax + styleWidth : widthMaxLongest;
+                longestLineWidth = root.Width;
+            }*/
+            root.Layout_MinWidth = (blockWidth + styleWidth > longestBlockWidth) ? blockWidth + styleWidth : longestBlockWidth;
+            root.Layout_MaxWidth = (lineWidth + styleWidth > longestLineWidth) ? lineWidth + styleWidth : longestLineWidth;
         }
+        
+        bool TryReduceBlockWidth(BlockElement root, int blockEndIndex, int blockWidth, out int restartAtIndex, out int restartBlockWidth)
+        {
+            restartAtIndex = 0;
+            restartBlockWidth = 0;
+            for (int i = blockEndIndex; i >= 0; i--)
+            {
+                AElement e = root.Children[i];
+                if (e.IsThisAtomABreakingSpace)
+                {
+                    return false;
+                }
+                blockWidth -= e.Width;
+                if (blockWidth <= root.Width)
+                {
+                    // if this is text, hyphenate, otherwise just insert a line break.
+                    if (e is CharacterElement)
+                    {
+                        AElement hyphen = new InternalHyphenBreakElement(e.Style);
+                        if (blockWidth + hyphen.Width <= root.Width)
+                        {
+                            root.Children.Insert(i + 1, hyphen);
+                            restartBlockWidth = blockWidth;
+                            restartAtIndex = i + 1;
+                            return true;
+                        }
+                        continue;
+                    }
+                    root.Children.Insert(i + 1, new InternalLineBreakElement(e.Style));
+                    restartBlockWidth = blockWidth;
+                    restartAtIndex = i + 1;
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
         void LayoutElements(BlockElement root)
         {
@@ -358,9 +402,7 @@ namespace UltimaXNA.Core.UI.HTML
             // 2. If not 1, can all blocks fit on one line with min width?
             //      -> If yes, then place all blocks and expand the ones that want additional width until there is no more width to fill.
             //      ** root.Layout_MinWidth == root.Layout_MaxWidth accounts for one long word, but what if multiple words don't fit on one line?
-            // 3. If not 2:
-            //      -> Try breaking strings.
-            // 4. If 3 does not work:
+            // 3. If 2 does not work:
             //      -> Flow blocks to the next y line until all remaining blocks can fit on one line.
             //      -> Expand remaining blocks, and start all over again.
             //      -> Actually, this is not yet implemented. Any takers?
@@ -406,10 +448,6 @@ namespace UltimaXNA.Core.UI.HTML
                 }
                 LayoutElementsHorizontal(root, root.Layout_X, root.Layout_Y, out ascender);
             }
-            else if (TryBreakingLongStrings(root)) // 3
-            {
-
-            }
             else // 4
             {
                 // At least one block cannot fit within the width.
@@ -419,11 +457,6 @@ namespace UltimaXNA.Core.UI.HTML
             {
                 Ascender = ascender;
             }
-        }
-
-        bool TryBreakingLongStrings(BlockElement root)
-        {
-            return false;
         }
 
         void LayoutElementsHorizontal(BlockElement root, int x, int y, out int ascenderDelta)
@@ -484,7 +517,7 @@ namespace UltimaXNA.Core.UI.HTML
                 else
                 {
                     int wordWidth, styleWidth, wordHeight, ascender;
-                    List<AElement> word = LayoutElements_GetWord(root.Children, i, out wordWidth, out styleWidth, out wordHeight, out ascender);
+                    List<AElement> word = LayoutElementsGetWord(root.Children, i, out wordWidth, out styleWidth, out wordHeight, out ascender);
                     if (wordWidth + styleWidth > root.Width)
                     {
                         // Can't fit this word on even a full line. Must break it somewhere. 
@@ -501,11 +534,11 @@ namespace UltimaXNA.Core.UI.HTML
                         // longer than 8 chars, where the break would be after character 3 and before 3 characters from the end?
                         if (word.Count == 1 && word[0].IsThisAtomABreakingSpace)
                         {
-                            root.Children.Insert(i + 1, new InternalBreakElement(e0.Style));
+                            root.Children.Insert(i + 1, new InternalLineBreakElement(e0.Style));
                         }
                         else
                         {
-                            root.Children.Insert(i, new InternalBreakElement(e0.Style));
+                            root.Children.Insert(i, new InternalLineBreakElement(e0.Style));
                             i--;
                         }
                     }
@@ -568,7 +601,7 @@ namespace UltimaXNA.Core.UI.HTML
         /// <param name="wordHeight"></param>
         /// <param name="ascender">Additional pixels above the top of the word. Affects dimensions of the parent if word is on the first line.</param>
         /// <returns></returns>
-        List<AElement> LayoutElements_GetWord(List<AElement> elements, int start, out int wordWidth, out int styleWidth, out int wordHeight, out int ascender)
+        List<AElement> LayoutElementsGetWord(List<AElement> elements, int start, out int wordWidth, out int styleWidth, out int wordHeight, out int ascender)
         {
             List<AElement> word = new List<AElement>();
             wordWidth = 0;
@@ -640,7 +673,7 @@ namespace UltimaXNA.Core.UI.HTML
         /// </summary>
         void LayoutElements_BreakWordAtLineEnd(List<AElement> elements, int start, int lineWidth, List<AElement> word, int wordWidth, int styleWidth)
         {
-            InternalBreakElement lineend = new InternalBreakElement(word[0].Style);
+            InternalLineBreakElement lineend = new InternalLineBreakElement(word[0].Style);
             int width = lineend.Width + styleWidth + 2;
             for (int i = 0; i < word.Count; i++)
             {
@@ -717,7 +750,7 @@ namespace UltimaXNA.Core.UI.HTML
                     return carat;
                 }
                 carat.X += e.Width;
-                if (e is InternalBreakElement)
+                if (e is InternalLineBreakElement)
                 {
                     if (index == textIndex)
                     {
@@ -753,7 +786,7 @@ namespace UltimaXNA.Core.UI.HTML
                     rect.X = 0;
                     rect.Y += e.Height;
                 }
-                if (e is InternalBreakElement)
+                if (e is InternalLineBreakElement)
                 {
                     index--;
                 }

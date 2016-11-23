@@ -222,14 +222,13 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (e.KeyCode == WinKeys.Up || e.KeyCode == WinKeys.Down)
             {
-                HtmlDocument doc = m_RenderedText.Document;
-                Point current = doc.GetCaratPositionByIndex(CaratAt);
+                Point current = m_RenderedText.Document.GetCaratPositionByIndex(CaratAt);
                 if (m_CaratKeyUpDownX == null)
                 {
                     m_CaratKeyUpDownX = current.X;
                 }
                 Point next = new Point(m_CaratKeyUpDownX.Value, current.Y + (e.KeyCode == WinKeys.Up ? -18 : 18));
-                CaratAt = doc.GetCaratIndexByPosition(next);
+                CaratAt = m_RenderedText.Document.GetCaratIndexByPosition(next);
             }
             else
             {
