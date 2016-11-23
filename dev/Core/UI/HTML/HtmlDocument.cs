@@ -503,6 +503,10 @@ namespace UltimaXNA.Core.UI.HTML
                     }
                     e0.Layout_X = x0;
                     e0.Layout_Y = y;
+                    if (lineHeight < e0.Height)
+                    {
+                        lineHeight = e0.Height;
+                    }
                     y += lineHeight;
                     x0 = x;
                     x1 = x + root.Width;
