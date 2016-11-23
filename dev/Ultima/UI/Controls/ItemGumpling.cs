@@ -26,15 +26,15 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool HighlightOnMouseOver = true;
 
         protected Texture2D m_Texture = null;
-        private HtmlGumpling m_Label = null;
+        HtmlGumpling m_Label = null;
 
-        private bool m_ClickedCanDrag = false;
-        private float m_PickUpTime;
-        private Point m_ClickPoint;
-        private bool m_SendClickIfNoDoubleClick = false;
-        private float m_SingleClickTime;
+        bool m_ClickedCanDrag = false;
+        float m_PickUpTime;
+        Point m_ClickPoint;
+        bool m_SendClickIfNoDoubleClick = false;
+        float m_SingleClickTime;
 
-        private readonly WorldModel m_World;
+        readonly WorldModel m_World;
 
         public Item Item
         {
@@ -113,21 +113,20 @@ namespace UltimaXNA.Ultima.UI.Controls
             // (-1,0), (0,-1), (1,0), or (1,1). This will allow selection even when the mouse cursor is directly
             // over a transparent pixel, and will also increase the 'selection space' of an item by one pixel in
             // each dimension - thus a very thin object (2-3 pixels wide) will be increased.
-
             if (IsPointInTexture(x, y))
+            {
                 return true;
-
+            }
             if (Item.Amount > 1 && Item.ItemData.IsGeneric)
             {
                 int offset = Item.ItemData.Unknown4;
                 if (IsPointInTexture(x + offset, y + offset))
                     return true;
             }
-
             return false;
         }
 
-        private bool IsPointInTexture(int x, int y)
+        bool IsPointInTexture(int x, int y)
         {
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             return provider.IsPointInItemTexture(Item.DisplayItemID, x, y, 1);
@@ -177,7 +176,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             return offset;
         }
 
-        private void AttemptPickUp()
+        void AttemptPickUp()
         {
             if (CanPickUp)
             {
@@ -196,7 +195,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        private void UpdateLabel(bool isDisposing = false)
+        void UpdateLabel(bool isDisposing = false)
         {
             if (!isDisposing && Item.Overheads.Count > 0)
             {

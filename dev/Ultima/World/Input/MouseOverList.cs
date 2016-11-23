@@ -177,8 +177,8 @@ namespace UltimaXNA.Ultima.World.Input
                 }
 
                 if ((newPoint.X < p.X) == (p.X <= oldPoint.X)
-                    && ((long)p.Y - (long)p1.Y) * (long)(p2.X - p1.X)
-                    < ((long)p2.Y - (long)p1.Y) * (long)(p.X - p1.X))
+                    && (p.Y - (long)p1.Y) * (p2.X - p1.X)
+                    < (p2.Y - (long)p1.Y) * (p.X - p1.X))
                 {
                     inside = !inside;
                 }
@@ -190,12 +190,11 @@ namespace UltimaXNA.Ultima.World.Input
 
     public class MouseOverItem
     {
-        public Vector3[] Vertices;
         public Texture2D Texture;
         public Vector3 Position;
         public Vector2 InTexturePosition;
         public AEntity Entity;
-        public bool FlippedTexture = false;
+        public bool FlippedTexture;
 
         internal MouseOverItem(Texture2D texture, Vector3 position, AEntity entity)
         {
@@ -259,9 +258,11 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else if (Entity is Mobile)
             {
-                Rectangle pRect = !FlippedTexture ?
-                    new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1) :
-                    new Rectangle(Texture.Width - ((int)mousePosition.X - (int)Position.X), (int)mousePosition.Y - (int)Position.Y, 1, 1);
+                int px = (int)Position.X, py = (int)Position.Y;
+                int mx = mousePosition.X, my = mousePosition.Y;
+                int ix = !FlippedTexture ? mx - px : Texture.Width - (mx - px);
+                int iy = mx - py;
+                Rectangle pRect = new Rectangle(ix, iy, 1, 1);
                 if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
                 {
                     ushort[] pixelData = new ushort[1];
@@ -270,11 +271,6 @@ namespace UltimaXNA.Ultima.World.Input
                         return true;
                 }
             }
-            else
-            {
-                return false;
-            }
-
             return false;
         }
     }

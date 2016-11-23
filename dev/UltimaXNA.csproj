@@ -239,7 +239,7 @@
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\DelayedAction.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
-    <Compile Include="Core\Resources\IAnimationFrame.cs" />
+    <Compile Include="Core\Resources\AAnimationFrame.cs" />
     <Compile Include="Core\Resources\IResource.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
     <Compile Include="Core\UI\HTML\HtmlImage.cs" />

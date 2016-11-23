@@ -30,7 +30,9 @@ namespace UltimaXNA.Ultima.Resources
         public ArtMulResource(GraphicsDevice graphics)
         {
             m_Graphics = graphics;
-            m_FileIndex = ClientVersion.InstallationIsUopFormat ? FileManager.CreateFileIndex("artLegacyMUL.uop", 0x10000, false, ".tga") : FileManager.CreateFileIndex("artidx.mul", "art.mul", 0x10000, -1); // !!! must find patch file reference for artdata.
+            m_FileIndex = ClientVersion.InstallationIsUopFormat ? 
+                FileManager.CreateFileIndex("artLegacyMUL.uop", 0x10000, false, ".tga") : 
+                FileManager.CreateFileIndex("artidx.mul", "art.mul", 0x10000, -1); // !!! must find patch file reference for artdata.
             m_StaticPicking = new PixelPicking();
             m_LandTileTextureCache = new Texture2D[0x10000];
             m_StaticTileTextureCache = new Texture2D[0x10000];
@@ -81,7 +83,7 @@ namespace UltimaXNA.Ultima.Resources
             return m_StaticPicking.Get(index + 0x4000, x, y, extraRange);
         }
 
-        private unsafe Texture2D ReadLandTexture(int index)
+        unsafe Texture2D ReadLandTexture(int index)
         {
             int length, extra;
             bool is_patched;
@@ -129,7 +131,7 @@ namespace UltimaXNA.Ultima.Resources
             return texture;
         }
 
-        private unsafe void ReadStaticTexture(int index, out Texture2D texture)
+        unsafe void ReadStaticTexture(int index, out Texture2D texture)
         {
             texture = null;
             int length, extra;

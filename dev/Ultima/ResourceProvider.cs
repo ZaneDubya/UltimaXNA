@@ -23,14 +23,14 @@ namespace UltimaXNA.Ultima
 {
     class ResourceProvider : IResourceProvider
     {
-        private AnimationResource m_Anim;
-        private ArtMulResource m_Art;
-        private ClilocResource m_Cliloc;
-        private EffectDataResource m_Effects;
-        private FontsResource m_Fonts;
-        private GumpMulResource m_Gumps;
-        private TexmapResource m_Texmaps;
-        private Dictionary<Type, object> m_Resources = new Dictionary<Type, object>();
+        AnimationResource m_Anim;
+        ArtMulResource m_Art;
+        ClilocResource m_Cliloc;
+        EffectDataResource m_Effects;
+        FontsResource m_Fonts;
+        GumpMulResource m_Gumps;
+        TexmapResource m_Texmaps;
+        Dictionary<Type, object> m_Resources = new Dictionary<Type, object>();
 
         public ResourceProvider(Game game)
         {
@@ -43,7 +43,7 @@ namespace UltimaXNA.Ultima
             m_Texmaps = new TexmapResource(game.GraphicsDevice);
         }
 
-        public IAnimationFrame[] GetAnimation(int body, ref int hue, int action, int direction)
+        public AAnimationFrame[] GetAnimation(int body, ref int hue, int action, int direction)
         {
             return m_Anim.GetAnimation(body, ref hue, action, direction);
         }

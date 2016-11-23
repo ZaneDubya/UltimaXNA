@@ -5,6 +5,7 @@ namespace UltimaXNA.Ultima.Resources
     class PixelPicking
     {
         const int InitialDataCount = 0x40000; // 256kb
+
         Dictionary<int, int> m_IDs = new Dictionary<int, int>();
         List<byte> m_Data = new List<byte>(InitialDataCount); // list<t> access is 10% slower than t[].
 
@@ -90,7 +91,7 @@ namespace UltimaXNA.Ultima.Resources
                 count += 1;
             }
             WriteIntegerToData(count);
-            m_IDs.Add(textureID, begin);
+            m_IDs[textureID] = begin;
         }
 
         bool Has(int textureID)

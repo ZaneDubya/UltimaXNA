@@ -120,7 +120,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             InternalSetupLayers();
 
             if (m_MobileLayers[0].Frame == null)
-                m_MobileLayers[0].Frame = AnimationFrame.NullFrame;
+                m_MobileLayers[0].Frame = Resources.AnimationFrame.NullFrame;
             int drawCenterY = m_MobileLayers[0].Frame.Center.Y;
 
             int drawX, drawY;
@@ -193,7 +193,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         // Code to get frames for drawing
         // ============================================================================================================
 
-        IAnimationFrame getFrame(int body, ref int hue, int facing, int action, float frame, out int frameCount)
+        AAnimationFrame getFrame(int body, ref int hue, int facing, int action, float frame, out int frameCount)
         {
             // patch light source animations: candles and torches.
             if (body >= 500 && body <= 505)
@@ -202,7 +202,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             frameCount = 0;
 
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-            IAnimationFrame[] frames = provider.GetAnimation(body, ref hue, action, facing);
+            AAnimationFrame[] frames = provider.GetAnimation(body, ref hue, action, facing);
             if (frames == null)
                 return null;
             frameCount = frames.Length;
@@ -337,7 +337,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
 
             int frameCount;
-            IAnimationFrame animframe = getFrame(bodyID, ref hue, facing, animation, frame, out frameCount);
+            AAnimationFrame animframe = getFrame(bodyID, ref hue, facing, animation, frame, out frameCount);
             m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, animframe);
             m_FrameCount = frameCount;
         }
@@ -446,10 +446,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
         struct MobileViewLayer
         {
             public int Hue;
-            public IAnimationFrame Frame;
+            public AAnimationFrame Frame;
             public int BodyID;
 
-            public MobileViewLayer(int bodyID, int hue, IAnimationFrame frame)
+            public MobileViewLayer(int bodyID, int hue, AAnimationFrame frame)
             {
                 BodyID = bodyID;
                 Hue = hue;

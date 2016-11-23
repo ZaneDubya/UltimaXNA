@@ -84,7 +84,6 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 if (mouseOverList.IsMouseInObjectIsometric(m_vertexBufferAlternate))
                 {
                     MouseOverItem item = new MouseOverItem(DrawTexture, m_vertexBufferAlternate[0].Position, Entity);
-                    item.Vertices = new Vector3[4] { m_vertexBufferAlternate[0].Position, m_vertexBufferAlternate[1].Position, m_vertexBufferAlternate[2].Position, m_vertexBufferAlternate[3].Position };
                     mouseOverList.Add2DItem(item);
                 }
             }
