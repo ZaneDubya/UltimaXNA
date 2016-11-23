@@ -149,7 +149,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             SetActivePage(1);
             AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(0x058);
-            m_Pages[0].Text = "sincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesincesince feeling is first who pays any attention to the syntax of things will never wholly kiss you; wholly to be a fool while Spring is in the world my blood approves and kisses are a better fate than wisdom ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||";
+            m_Pages[0].Text = "since feeling is first who pays any attention to the syntax of things will never wholly kiss you; wholly to be a fool while Spring is in the world my blood approves and kisses are a better fate than wisdom lady don't cry i swear by all flowers the merest flutter of your eyelid is better than the best movement of my brain which says that we are for each other; and then laugh, leaning back in my arms.";
             m_Pages[0].CaratAt = m_Pages[0].Text.Length;
         }
 
@@ -159,7 +159,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 return;
             }
-            CheckForContentChanges();
             if (sender.GumpLocalID == 0)
             {
                 SetActivePage(ActivePage - 1);
@@ -178,7 +177,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 return;
             }
-            CheckForContentChanges();
             if (sender.GumpLocalID == 0)
             {
                 SetActivePage(1);
@@ -267,18 +265,30 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             int underflowTo = index - 2;
             string underflowFromText = m_Pages[underflowFrom].Text;
             string underflowToText = m_Pages[underflowTo].Text.Substring(0, (m_Pages[underflowTo].Text.Length > 0 ? m_Pages[underflowTo].Text.Length - 1 : 0));
+            int carat = underflowToText.Length - m_Pages[underflowFrom].CaratAt;
             m_Pages[underflowFrom].Text = string.Empty;
-            SetActivePage((underflowTo + 1) / 2 + 1);
-            m_Pages[underflowTo].Text = underflowToText + underflowFromText;
+            m_Pages[underflowTo].Text = $"{underflowToText}{underflowFromText}";
+            if (carat < m_Pages[underflowTo].Text.Length)
+            {
+                SetActivePage((underflowTo + 1) / 2 + 1);
+                UserInterface.KeyboardFocusControl = m_Pages[underflowTo];
+                m_Pages[underflowTo].CaratAt = carat;
+            }
+            else
+            {
+                SetActivePage((underflowFrom + 1) / 2 + 1);
+                UserInterface.KeyboardFocusControl = m_Pages[underflowFrom];
+                m_Pages[underflowFrom].CaratAt = carat - m_Pages[underflowTo].Text.Length;
+            }
         }
 
         /// <summary>
         /// Called when text on a page is too large to be held in the page. The text overflows to the next page.
         /// </summary>
-        void OnPageOverflow(int index, string overflow)
+        void OnPageOverflow(int page, string overflow)
         {
-            int overflowFrom = index - 1;
-            int overflowTo = index;
+            int overflowFrom = page - 1;
+            int overflowTo = page;
             if (overflowTo >= m_Pages.Count)
             {
                 // this text has been pushed out of the book.
@@ -286,8 +296,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             else
             {
                 m_Pages[overflowTo].Text = m_Pages[overflowTo].Text.Insert(0, overflow);
-                CheckForContentChanges();
-                SetActivePage((overflowTo + 1) / 2 + 1);
+                // SetActivePage((overflowTo + 1) / 2 + 1);
                 UserInterface.KeyboardFocusControl = m_Pages[overflowTo];
                 m_Pages[overflowTo].CaratAt = overflow.Length;
             }
