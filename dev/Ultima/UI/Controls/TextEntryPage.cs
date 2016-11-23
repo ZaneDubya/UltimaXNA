@@ -34,6 +34,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         int? m_CaratKeyUpDownX;
         Action<int, string> m_OnPageOverflow;
         Action<int> m_OnPageUnderflow;
+        Action<int> m_OnPreviousPage;
+        Action<int> m_OnNextPage;
         
         public string LeadingHtmlTag;
         public string Text
@@ -99,6 +101,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_RenderedText.Document.SetMaxLines(maxLines, OnDocumentSplitPage);
             m_OnPageOverflow = onPageOverflow;
             m_OnPageUnderflow = onPageUnderflow;
+        }
+
+        public void SetKeyboardPageControls(Action<int> onPrevious, Action<int> onNext)
+        {
+            m_OnPreviousPage = onPrevious;
+            m_OnNextPage = onNext;
         }
 
         void OnDocumentSplitPage(int index)
@@ -228,7 +236,11 @@ namespace UltimaXNA.Ultima.UI.Controls
                     m_CaratKeyUpDownX = current.X;
                 }
                 Point next = new Point(m_CaratKeyUpDownX.Value, current.Y + (e.KeyCode == WinKeys.Up ? -18 : 18));
-                CaratAt = m_RenderedText.Document.GetCaratIndexByPosition(next);
+                int carat = m_RenderedText.Document.GetCaratIndexByPosition(next);
+                if (carat != -1)
+                {
+                    CaratAt = carat;
+                }
             }
             else
             {
@@ -252,8 +264,24 @@ namespace UltimaXNA.Ultima.UI.Controls
                         }
                         break;
                     case WinKeys.Left:
+                        if (CaratAt == 0)
+                        {
+                            m_OnPreviousPage?.Invoke(PageIndex);
+                        }
+                        else
+                        {
+                            CaratAt = CaratAt - 1;
+                        }
+                        break;
                     case WinKeys.Right:
-                        CaratAt = CaratAt + (e.KeyCode == WinKeys.Left ? -1 : 1);
+                        if (CaratAt == Text.Length)
+                        {
+                            m_OnNextPage?.Invoke(PageIndex);
+                        }
+                        else
+                        {
+                            CaratAt = CaratAt + 1;
+                        }
                         break;
                     default:
                         if (e.IsChar && e.KeyChar >= 32)

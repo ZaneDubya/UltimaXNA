@@ -755,8 +755,12 @@ namespace UltimaXNA.Core.UI.HTML
 
         public int GetCaratIndexByPosition(Point pointInText)
         {
-            Rectangle rect = new Rectangle(0,0,0,0);
             int index = 0;
+            if (m_Root == null)
+            {
+                return index;
+            }
+            Rectangle rect = new Rectangle(0,0,0,0);
             for (int i = 0; i < m_Root.Children.Count; i++)
             {
                 AElement e = m_Root.Children[i];
@@ -783,7 +787,8 @@ namespace UltimaXNA.Core.UI.HTML
                 rect.X += e.Width;
                 index++;
             }
-            rect.Width = m_MaxWidth - rect.X;
+            // check for click at bottom of page
+            rect = new Rectangle(0, rect.Y, m_MaxWidth, 2000);
             if (rect.Contains(pointInText))
             {
                 return index; // end of the last line
