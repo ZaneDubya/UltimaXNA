@@ -94,21 +94,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(m_AuthorTextEntry, 1);
             // Add book pages to active pages
             bool isRight = true;
-            int page = 1;
             for (int i = 0; i < m_Book.PageCount; i++)
             {
                 int x = isRight ? 235 : 45;
-                m_Pages.Add(new TextEntryPage(this, x, 32, 155, 300, (page - 1) * 2 + (isRight ? 1 : 0)));
+                m_Pages.Add(new TextEntryPage(this, x, 32, 155, 300, i));
                 m_Pages[i].SetMaxLines(8, OnPageOverflow, OnPageUnderflow);
                 m_Pages[i].SetKeyboardPageControls(OnPreviousPage, OnNextPage);
                 m_Pages[i].MakeThisADragger();
                 m_Pages[i].IsEditable = m_Book.IsEditable;
                 m_Pages[i].LeadingHtmlTag = "<font color=#800>";
-                AddControl(m_Pages[i], page);
-                if (isRight)
-                {
-                    page++;
-                }
+                AddControl(m_Pages[i], (i + 3) / 2);
                 isRight = !isRight;
             }
             AudioService service = ServiceRegistry.GetService<AudioService>();
@@ -121,6 +116,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         void SetActivePage(int page)
         {
+            if (page == ActivePage)
+            {
+                return;
+            }
+            CheckForContentChanges();
             if (page < 1)
             {
                 page = 1;
@@ -238,18 +238,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         /// </summary>
         void OnPageUnderflow(int pageIndex)
         {
-            if (pageIndex <= 1)
+            if (pageIndex <= 0)
             {
                 return;
             }
-            int underflowFrom = pageIndex - 1;
-            int underflowTo = pageIndex - 2;
+            int underflowFrom = pageIndex;
+            int underflowTo = pageIndex - 1;
             string underflowFromText = m_Pages[underflowFrom].Text;
             string underflowToText = m_Pages[underflowTo].Text.Substring(0, (m_Pages[underflowTo].Text.Length > 0 ? m_Pages[underflowTo].Text.Length - 1 : 0));
             int carat = underflowToText.Length - m_Pages[underflowFrom].CaratAt;
             m_Pages[underflowFrom].Text = string.Empty;
             m_Pages[underflowTo].Text = $"{underflowToText}{underflowFromText}";
-            if (carat < m_Pages[underflowTo].Text.Length)
+            if (carat <= m_Pages[underflowTo].Text.Length)
             {
                 SetActivePage((underflowTo + 1) / 2 + 1);
                 UserInterface.KeyboardFocusControl = m_Pages[underflowTo];
@@ -268,8 +268,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         /// </summary>
         void OnPageOverflow(int page, string overflow)
         {
-            int overflowFrom = page - 1;
-            int overflowTo = page;
+            int overflowFrom = page;
+            int overflowTo = page + 1;
             if (overflowTo < m_Pages.Count)
             {
                 m_Pages[overflowTo].Text = m_Pages[overflowTo].Text.Insert(0, overflow);
@@ -281,6 +281,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         void CheckForContentChanges()
         {
+            if (ActivePage < 1)
+            {
+                return;
+            }
             int leftIndex = ActivePage * 2 - 3;
             int rightIndex = leftIndex + 1;
             // Check title, author, and the first page if leftPageIndex < 0
@@ -291,52 +295,24 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 {
                     m_World?.Interaction.BookHeaderNewChange(m_Book.Serial, m_TitleTextEntry.Text, m_AuthorTextEntry.Text);
                 }
-                if (rightIndex < m_Pages.Count && m_Pages[rightIndex].Text != m_Book.Pages[rightIndex].GetAllLines())
+                if (rightIndex < m_Pages.Count && m_Pages[rightIndex].TextWithLineBreaks != m_Book.Pages[rightIndex].GetAllLines())
                 {
                     m_World?.Interaction.BookPageChange(m_Book.Serial, rightIndex, GetTextEntryAsArray(m_Pages[rightIndex]));
                 }
             }
             else
             {
-                if (m_Pages[leftIndex].Text != m_Book.Pages[leftIndex].GetAllLines())
+                if (m_Pages[rightIndex].TextWithLineBreaks != m_Book.Pages[leftIndex].GetAllLines())
                 {
                     m_World?.Interaction.BookPageChange(m_Book.Serial, leftIndex, GetTextEntryAsArray(m_Pages[leftIndex]));
                 }
-                if (rightIndex < m_Pages.Count - 1 && m_Pages[rightIndex].Text != m_Book.Pages[rightIndex].GetAllLines())
+                if (rightIndex < m_Pages.Count - 1 && m_Pages[rightIndex].TextWithLineBreaks != m_Book.Pages[rightIndex].GetAllLines())
                 {
                     m_World?.Interaction.BookPageChange(m_Book.Serial, rightIndex, GetTextEntryAsArray(m_Pages[rightIndex]));
                 }
             }
         }
 
-        string[] GetTextEntryAsArray(TextEntryPage text)
-        {
-            List<string> lineList = new List<string>();
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < text.Text.Length; i++)
-            {
-                if (!char.IsControl(text.Text[i]))
-                {
-                    sb.Append(text.Text[i]);
-                }
-                else
-                {
-                    if (sb.ToString() != string.Empty)
-                    {
-                        lineList.Add(sb.ToString());
-                        sb = new StringBuilder();
-                    }
-                }
-                // Last character of text
-                if (i == text.Text.Length - 1)
-                {
-                    lineList.Add(sb.ToString());
-                }
-            }
-            string[] lines = new string[lineList.Count];
-            lineList.CopyTo(lines);
-            return lines;
-        }
+        string[] GetTextEntryAsArray(TextEntryPage text) => text.TextWithLineBreaks.Split('\n');
     }
 }

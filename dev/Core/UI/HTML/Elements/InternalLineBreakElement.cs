@@ -2,7 +2,7 @@
 
 namespace UltimaXNA.Core.UI.HTML.Elements
 {
-    class InternalLineBreakElement : AElement
+    class InternalLineBreakElement : CharacterElement
     {
         public override bool CanBreakAtThisAtom => true;
         public override bool IsThisAtomABreakingSpace => false;
@@ -33,11 +33,11 @@ namespace UltimaXNA.Core.UI.HTML.Elements
             }
         }
 
-        public InternalLineBreakElement(StyleState style) : base(style)
+        public InternalLineBreakElement(StyleState style) : base(style, '\n')
         {
 
         }
 
-        public override string ToString() => "Brk";
+        public override string ToString() => "BRK";
     }
 }

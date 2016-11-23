@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI.HTML.Elements;
 using UltimaXNA.Core.UI.HTML.Parsing;
@@ -61,6 +62,27 @@ namespace UltimaXNA.Core.UI.HTML
         }
 
         public HtmlLinkList Links => m_Links == null ? HtmlLinkList.Empty : m_Links;
+
+        public string TextWithLineBreaks
+        {
+            get
+            {
+                if (m_Root == null)
+                {
+                    return string.Empty;
+                }
+                StringBuilder text = new StringBuilder(512);
+                for (int i = 0; i < m_Root.Children.Count; i++)
+                {
+                    AElement e = m_Root.Children[i];
+                    if (e is CharacterElement)
+                    {
+                        text.Append((e as CharacterElement).Character);
+                    }
+                }
+                return text.ToString();
+            }
+        }
 
         public Texture2D Render() => m_Renderer.Render(m_Root, Ascender, Links);
 

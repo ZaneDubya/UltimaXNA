@@ -36,7 +36,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         Action<int> m_OnPageUnderflow;
         Action<int> m_OnPreviousPage;
         Action<int> m_OnNextPage;
-        
+
+        public int PageIndex;
         public string LeadingHtmlTag;
         public string Text
         {
@@ -53,7 +54,18 @@ namespace UltimaXNA.Ultima.UI.Controls
                 }
             }
         }
-        public int PageIndex;
+
+        public string TextWithLineBreaks
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_Text))
+                {
+                    return string.Empty;
+                }
+                return m_RenderedText.Document.TextWithLineBreaks;
+            }
+        }
 
         public int CaratAt
         {

@@ -27,10 +27,11 @@ namespace UltimaXNA.Ultima.Network.Client
             Stream.Write((short)1); // Page count always 1
             Stream.Write((short)(page + 1)); // Page number
             Stream.Write((short)lines.Length); // Number of lines
-
             // Send each line of the page
             for (int i = 0; i < lines.Length; i++)
+            {
                 Stream.WriteUTF8Null(lines[i]);
+            }
         }
     }
 }
