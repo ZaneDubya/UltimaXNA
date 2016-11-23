@@ -68,7 +68,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
             AddControl(new Button(this, 550, 439, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
             ((Button)LastControl).GumpOverID = 5541;
             // Version information
-            AddControl(new HtmlGumpling(this, 120, 440, 400, 20, 0, 0, $"<left>left</left><center><medium><outline><font color='#DDDDDD'>{Utility.VersionString}</center></medium></outline><right>right</right>"));
+            AddControl(new HtmlGumpling(this, 120, 440, 400, 20, 0, 0, $"<center><medium><outline><font color='#DDDDDD'>{Utility.VersionString}</center></medium></outline>"));
             // flag graphic
             AddControl(new GumpPic(this, 0, 0, 0x15A0, 0));
             // buttons on the left side
