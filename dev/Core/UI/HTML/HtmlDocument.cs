@@ -752,17 +752,17 @@ namespace UltimaXNA.Core.UI.HTML
             for (int i = 0; i < m_Root.Children.Count; i++)
             {
                 AElement e = m_Root.Children[i];
+                if (index == textIndex && !e.IsThisAtomInternalOnly)
+                {
+                    return carat;
+                }
                 if (e.IsThisAtomALineBreak)
                 {
                     carat.X = 0;
                     carat.Y += e.Height;
                 }
-                if (index == textIndex)
-                {
-                    return carat;
-                }
                 carat.X += e.Width;
-                if (e is InternalLineBreakElement)
+                if (e.IsThisAtomInternalOnly)
                 {
                     if (index == textIndex)
                     {
@@ -797,12 +797,12 @@ namespace UltimaXNA.Core.UI.HTML
                     rect.Width = m_MaxWidth - rect.X;
                     if (rect.Contains(pointInText))
                     {
-                        return index - 1;
+                        return e.IsThisAtomInternalOnly ? index - 1 : index;
                     }
                     rect.X = 0;
                     rect.Y += e.Height;
                 }
-                if (e is InternalLineBreakElement)
+                if (e.IsThisAtomInternalOnly)
                 {
                     index--;
                 }
