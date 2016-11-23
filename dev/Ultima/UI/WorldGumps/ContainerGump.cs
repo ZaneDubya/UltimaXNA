@@ -22,24 +22,22 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class ContainerGump : Gump
     {
-        private ContainerData m_data;
-        private Container m_item;
+        ContainerData m_data;
+        Container m_item;
 
         public ContainerGump(AEntity containerItem, int gumpID)
             : base(containerItem.Serial, 0)
         {
             m_data = ContainerData.Get(gumpID);
             m_item = (Container)containerItem;
-            m_item.OnContentsUpdated += OnItemContentsUpdate;
-
+            m_item.SetCallbacks(OnItemUpdated, OnItemDisposed);
             IsMoveable = true;
-
             AddControl(new GumpPicContainer(this, 0, 0, m_data.GumpID, 0, m_item));
         }
 
         public override void Dispose()
         {
-            m_item.OnContentsUpdated -= OnItemContentsUpdate;
+            m_item.ClearCallBacks(OnItemUpdated, OnItemDisposed);
             base.Dispose();
         }
 
@@ -48,7 +46,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        private void OnItemContentsUpdate()
+        void OnItemUpdated(AEntity entity)
         {
             // delete any items in our pack that are no longer in the container.
             List<AControl> ControlsToRemove = new List<AControl>();
@@ -79,6 +77,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     AddControl(new ItemGumpling(this, item));
                 }
             }
+        }
+
+        void OnItemDisposed(AEntity entity)
+        {
+            Dispose();
         }
     }
 }

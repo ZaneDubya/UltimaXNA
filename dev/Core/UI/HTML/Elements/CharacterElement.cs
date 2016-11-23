@@ -20,14 +20,16 @@ namespace UltimaXNA.Core.UI.HTML.Elements
             get
             {
                 if (Character < 32)
-                    return 0;
-                else
                 {
-                    ICharacter ch = Style.Font.GetCharacter(Character);
-                    return ch.Width + ch.ExtraWidth + (Style.IsBold ? 1 : 0);
+                    return 0;
                 }
+                ICharacter ch = Style.Font.GetCharacter(Character);
+                return ch.Width + ch.ExtraWidth + (Style.IsBold ? 1 : 0);
             }
-            set { }
+            set
+            {
+                // does nothing
+            }
         }
 
         public override int Height
@@ -36,10 +38,49 @@ namespace UltimaXNA.Core.UI.HTML.Elements
             {
                 return Style.Font.Height;
             }
-            set { }
+            set
+            {
+                // does nothing
+            }
         }
 
-        public char Character = '\0';
+        public override bool CanBreakAtThisAtom
+        {
+            get
+            {
+                if (Character == ' ' || Character == '\n')
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public override bool IsThisAtomABreakingSpace
+        {
+            get
+            {
+                if (Character == ' ')
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public override bool IsThisAtomALineBreak
+        {
+            get
+            {
+                if (Character == '\n')
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public char Character;
 
         public CharacterElement(StyleState style, char c)
             : base(style)
@@ -50,7 +91,9 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         public override string ToString()
         {
             if (IsThisAtomALineBreak)
+            {
                 return @"\n";
+            }
             return Character.ToString();
         }
     }

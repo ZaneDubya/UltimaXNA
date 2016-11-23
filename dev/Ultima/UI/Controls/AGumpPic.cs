@@ -15,7 +15,7 @@ using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    internal class AGumpPic : AControl
+    abstract class AGumpPic : AControl
     {
         protected Texture2D m_Texture = null;
         private int m_LastFrameGumpID = -1;
@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             MakeThisADragger();
         }
 
-        protected void buildGumpling(int x, int y, int gumpID, int hue)
+        protected void BuildGumpling(int x, int y, int gumpID, int hue)
         {
             Position = new Point(x, y);
             GumpID = gumpID;

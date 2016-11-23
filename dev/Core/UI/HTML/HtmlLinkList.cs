@@ -17,6 +17,8 @@ namespace UltimaXNA.Core.UI.HTML
 {
     public class HtmlLinkList
     {
+        public static HtmlLinkList Empty => new HtmlLinkList();
+
         List<HtmlLink> m_Links = new List<HtmlLink>();
 
         public HtmlLink this[int index]

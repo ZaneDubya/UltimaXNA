@@ -17,10 +17,11 @@ using UltimaXNA.Core.UI.Fonts;
 
 namespace UltimaXNA.Ultima.Resources.Fonts
 {
-    internal class FontUnicode : AFont
+    class FontUnicode : AFont
     {
-        BinaryReader m_reader = null;
-        private CharacterUnicode[] m_characters;
+        BinaryReader m_reader;
+        CharacterUnicode[] m_characters;
+        CharacterUnicode NullCharacter = new CharacterUnicode();
 
         public FontUnicode()
         {
@@ -58,25 +59,20 @@ namespace UltimaXNA.Ultima.Resources.Fonts
             }
             return m_characters[index];
         }
-
-        private CharacterUnicode NullCharacter = new CharacterUnicode();
+        
         CharacterUnicode loadCharacter(int index)
         {
             // get the lookup table - 0x10000 ints.
             m_reader.BaseStream.Position = index * 4;
             int lookup = m_reader.ReadInt32();
-
             if (lookup == 0)
             {
                 // no character - so we just return null
                 return NullCharacter;
             }
-            else
-            {
-                m_reader.BaseStream.Position = lookup;
-                CharacterUnicode character = new CharacterUnicode(m_reader);
-                return character;
-            }
+            m_reader.BaseStream.Position = lookup;
+            CharacterUnicode character = new CharacterUnicode(m_reader);
+            return character;
         }
 
         public int GetWidth(char ch)
@@ -86,15 +82,15 @@ namespace UltimaXNA.Ultima.Resources.Fonts
 
         public int GetWidth(string text)
         {
-            if (text == null || text.Length == 0) { return 0; }
-
+            if (text == null || text.Length == 0)
+            {
+                return 0;
+            }
             int width = 0;
-
             for (int i = 0; i < text.Length; ++i)
             {
                 width += GetCharacter(text[i]).Width;
             }
-
             return width;
         }
     }

@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using System.Collections.Generic;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
@@ -17,10 +18,8 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 {
     public class Container : Item
     {
-        public event OnEvent OnContentsUpdated;
-
-        private List<Item> m_Contents;
-        private bool m_ContentsUpdated = false;
+        List<Item> m_Contents;
+        bool m_ContentsUpdated;
 
         public List<Item> Contents
         {
@@ -43,8 +42,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
             base.Update(frameMS);
             if (m_ContentsUpdated)
             {
-                if (OnContentsUpdated != null)
-                    OnContentsUpdated();
+                m_OnUpdated?.Invoke(this);
                 m_ContentsUpdated = false;
             }
         }

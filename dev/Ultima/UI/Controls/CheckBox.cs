@@ -38,7 +38,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public CheckBox(AControl parent)
+        CheckBox(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;

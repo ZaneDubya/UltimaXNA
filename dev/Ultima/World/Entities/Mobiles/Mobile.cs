@@ -50,8 +50,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             base.Dispose();
             Equipment.ClearEquipment();
-            if (OnEntityUpdated != null)
-                OnEntityUpdated();
         }
 
         protected override void OnTileChanged(int x, int y)
@@ -257,8 +255,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         public void WearItem(Item i, int slot)
         {
             Equipment[slot] = i;
-            if (OnEntityUpdated != null)
-                OnEntityUpdated();
+            m_OnUpdated?.Invoke(this);
             if (slot == (int)EquipLayer.Mount)
             {
                 // Do we do something here?
@@ -268,8 +265,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         public void RemoveItem(Serial serial)
         {
             Equipment.RemoveBySerial(serial);
-            if (OnEntityUpdated != null)
-                OnEntityUpdated();
+            m_OnUpdated?.Invoke(this);
         }
 
         public Item GetItem(int slot)
@@ -304,7 +300,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         // Appearance and Hues
         // ============================================================================================================
 
-        private static int[] s_HumanoidBodyIDs = new int[] { 
+        static int[] s_HumanoidBodyIDs = new int[] {
             183, 184, 185, 186, // savages
             400, 401, 402, 403, // humans
             694, 695,
@@ -316,39 +312,36 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             666, 667 // gargoyles. 666. Clever.
         };
 
-        int m_bodyID = 0;
+        int m_BodyID = 0;
         public Body Body
         {
             get
             {
-                if (m_bodyID >= 402 && m_bodyID <= 403) // 402 == 400 and 403 == 401
-                    return m_bodyID - 2;
-                return m_bodyID;
+                if (m_BodyID >= 402 && m_BodyID <= 403) // 402 == 400 and 403 == 401
+                    return m_BodyID - 2;
+                return m_BodyID;
             }
             set
             {
-                m_bodyID = value;
-                if (OnEntityUpdated != null)
-                    OnEntityUpdated();
+                m_BodyID = value;
+                m_OnUpdated?.Invoke(this);
             }
         }
 
-        private int m_hue;
+        int m_Hue;
         public override int Hue
         {
             get {
                 if (Flags.IsHidden)
                     return 0x3E7;
-                else if (Flags.IsPoisoned)
+                if (Flags.IsPoisoned)
                     return 0x1CE;
-                else
-                    return m_hue;
+                return m_Hue;
             }
             set
             {
-                m_hue = value;
-                if (OnEntityUpdated != null)
-                    OnEntityUpdated();
+                m_Hue = value;
+                m_OnUpdated?.Invoke(this);
             }
         }
 

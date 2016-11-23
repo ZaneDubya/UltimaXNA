@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         int Hue;
         int m_tileID;
 
-        public StaticPic(AControl parent)
+        StaticPic(AControl parent)
             : base(parent)
         {
 
@@ -44,16 +44,16 @@ namespace UltimaXNA.Ultima.UI.Controls
                 // has a HUE="XXX" arguement!
                 hue = Int32.Parse(arguements[4]);
             }
-            buildGumpling(x, y, tileID, hue);
+            BuildGumpling(x, y, tileID, hue);
         }
 
         public StaticPic(AControl parent, int x, int y, int itemID, int hue)
             : this(parent)
         {
-            buildGumpling(x, y, itemID, hue);
+            BuildGumpling(x, y, itemID, hue);
         }
 
-        void buildGumpling(int x, int y, int tileID, int hue)
+        void BuildGumpling(int x, int y, int tileID, int hue)
         {
             Position = new Point(x, y);
             Hue = hue;

@@ -16,5 +16,12 @@ namespace UltimaXNA.Core.UI.HTML
             Area = area;
             Texture = image;
         }
+
+        public void Dispose()
+        {
+            Texture = null;
+            TextureOver = null;
+            TextureDown = null;
+        }
     }
 }

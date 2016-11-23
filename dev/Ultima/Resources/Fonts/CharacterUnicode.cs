@@ -16,7 +16,7 @@ using UltimaXNA.Core.UI.Fonts;
 
 namespace UltimaXNA.Ultima.Resources.Fonts
 {
-    internal class CharacterUnicode : ACharacter
+    class CharacterUnicode : ACharacter
     {
         public CharacterUnicode()
         {
