@@ -69,7 +69,7 @@ namespace UltimaXNA.Ultima.Resources
             {
                 GetStaticTexture(index);
             }
-            m_StaticPicking.GetDimensions(index, out width, out height);
+            m_StaticPicking.GetDimensions(index + 0x4000, out width, out height);
         }
 
         public bool IsPointInItemTexture(int index, int x, int y, int extraRange = 0)
@@ -78,7 +78,7 @@ namespace UltimaXNA.Ultima.Resources
             {
                 GetStaticTexture(index);
             }
-            return m_StaticPicking.Get(index, x, y, extraRange);
+            return m_StaticPicking.Get(index + 0x4000, x, y, extraRange);
         }
 
         private unsafe Texture2D ReadLandTexture(int index)

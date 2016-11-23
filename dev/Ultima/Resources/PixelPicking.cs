@@ -5,8 +5,8 @@ namespace UltimaXNA.Ultima.Resources
     class PixelPicking
     {
         const int InitialDataCount = 0x40000; // 256kb
-        private Dictionary<int, int> m_IDs = new Dictionary<int, int>();
-        private List<byte> m_Data = new List<byte>(InitialDataCount); // list<t> access is 10% slower than t[].
+        Dictionary<int, int> m_IDs = new Dictionary<int, int>();
+        List<byte> m_Data = new List<byte>(InitialDataCount); // list<t> access is 10% slower than t[].
 
         public bool Get(int textureID, int x, int y, int extraRange = 0)
         {
@@ -41,7 +41,19 @@ namespace UltimaXNA.Ultima.Resources
                 }
                 else
                 {
-
+                    if (!inTransparentSpan)
+                    {
+                        int y0 = current / width;
+                        int x1 = current % width;
+                        int x0 = x1 - spanLength;
+                        for (int range = -extraRange; range <= extraRange; range++)
+                        {
+                            if (y + range == y0 && (x + extraRange >= x0) && (x - extraRange <= x1))
+                            {
+                                return true;
+                            }
+                        }
+                    }
                 }
                 inTransparentSpan = !inTransparentSpan;
             }
@@ -86,7 +98,7 @@ namespace UltimaXNA.Ultima.Resources
             return m_IDs.ContainsKey(textureID);
         }
 
-        private void WriteIntegerToData(int value)
+        void WriteIntegerToData(int value)
         {
             while (value > 0x7f)
             {
@@ -96,7 +108,7 @@ namespace UltimaXNA.Ultima.Resources
             m_Data.Add((byte)value);
         }
 
-        private int ReadIntegerFromData(ref int index)
+        int ReadIntegerFromData(ref int index)
         {
             int value = 0;
             int shift = 0;
