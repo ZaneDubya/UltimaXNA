@@ -51,7 +51,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 }
             }
         }
-        public int EntryID;
+        public int PageIndex;
 
         public int CaratAt
         {
@@ -80,7 +80,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         // Ctors and BuildGumpling Methods
         // ============================================================================================================
 
-        public TextEntryPage(AControl parent, int x, int y, int width, int height, int entryID)
+        public TextEntryPage(AControl parent, int x, int y, int width, int height, int pageIndex)
             : base(parent)
         {
             base.HandlesMouseInput = true;
@@ -88,7 +88,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             IsEditable = true;
             Position = new Point(x, y);
             Size = new Point(width, height);
-            EntryID = entryID;
+            PageIndex = pageIndex;
             m_CaratBlinkOn = false;
             m_RenderedText = new RenderedText(string.Empty, Width, true);
             m_RenderedCarat = new RenderedText(string.Empty, 16, true);
@@ -105,7 +105,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             string overflowText = Text.Substring(index);
             m_Text = Text.Substring(0, index);
-            m_OnPageOverflow?.Invoke(EntryID, overflowText);
+            m_OnPageOverflow?.Invoke(PageIndex, overflowText);
         }
 
         // ============================================================================================================
@@ -244,7 +244,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     case WinKeys.Back:
                         if (CaratAt == 0)
                         {
-                            m_OnPageUnderflow.Invoke(EntryID);
+                            m_OnPageUnderflow.Invoke(PageIndex);
                         }
                         else
                         {
