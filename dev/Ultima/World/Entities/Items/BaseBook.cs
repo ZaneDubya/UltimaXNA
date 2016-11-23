@@ -35,7 +35,10 @@ namespace UltimaXNA.Ultima.World.Entities.Items
         public bool IsEditable
         {
             get { return m_IsEditable; }
-            set { m_IsEditable = value; }
+            set
+            {
+                m_IsEditable = value;
+            }
         }
 
         public int PageCount => m_Pages.Length;
@@ -43,7 +46,11 @@ namespace UltimaXNA.Ultima.World.Entities.Items
         public BookPageInfo[] Pages
         {
             get { return m_Pages; }
-            set { m_Pages = value; }
+            set
+            {
+                m_Pages = value;
+                m_OnUpdated?.Invoke(this);
+            }
         }
 
         public BaseBook(Serial serial, Map map) 
@@ -90,15 +97,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
                 m_Lines = lines;
             }
 
-            public string GetAllLines()
-            {
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < m_Lines.Length; i++)
-                {
-                    sb.Append($"{m_Lines[i]}\n");
-                }
-                return sb.ToString();
-            }
+            public string GetAllLines() => string.Join("\n", m_Lines);
         }
     }
 }

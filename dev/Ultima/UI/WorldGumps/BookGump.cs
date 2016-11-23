@@ -90,25 +90,28 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_AuthorTextEntry.MakeThisADragger();
             m_AuthorTextEntry.IsEditable = m_Book.IsEditable;
             AddControl(m_TitleTextEntry, 1);
-            AddControl(new HtmlGumpling(this, 45, 90, 155, 300, 0, 0, string.Format("Author:")), 1);
+            AddControl(new HtmlGumpling(this, 45, 90, 155, 300, 0, 0, "<font color=#444>By"), 1);
             AddControl(m_AuthorTextEntry, 1);
             // Add book pages to active pages
             bool isRight = true;
+            string color = m_Book.IsEditable ? "800" : "000";
             for (int i = 0; i < m_Book.PageCount; i++)
             {
+                int onGumpPage = (i + 3) / 2;
                 int x = isRight ? 235 : 45;
                 m_Pages.Add(new TextEntryPage(this, x, 32, 155, 300, i));
                 m_Pages[i].SetMaxLines(8, OnPageOverflow, OnPageUnderflow);
                 m_Pages[i].SetKeyboardPageControls(OnPreviousPage, OnNextPage);
                 m_Pages[i].MakeThisADragger();
                 m_Pages[i].IsEditable = m_Book.IsEditable;
-                m_Pages[i].LeadingHtmlTag = "<font color=#800>";
-                AddControl(m_Pages[i], (i + 3) / 2);
+                m_Pages[i].LeadingHtmlTag = $"<font color=#{color}>";
+                m_Pages[i].Text = m_Book.Pages[i].GetAllLines();
+                AddControl(m_Pages[i], onGumpPage);
+                AddControl(new HtmlGumpling(this, x, 195, 135, 20, 0, 0, $"<center><font color=#444>{i + 1}"), onGumpPage);
                 isRight = !isRight;
             }
             AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(0x058);
-            m_Pages[0].Text = "since feeling is first who pays any attention to the syntax of things will never wholly kiss you; wholly to be a fool while Spring is in the world my blood approves and kisses are a better fate than wisdom lady don't cry i swear by all flowers the merest flutter of your eyelid is better than the best movement of my brain which says that we are for each other; and then laugh, leaning back in my arms.";
             SetActivePage(1);
             UserInterface.KeyboardFocusControl = m_Pages[0];
             m_Pages[0].CaratAt = m_Pages[0].Text.Length;
@@ -302,7 +305,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             else
             {
-                if (m_Pages[rightIndex].TextWithLineBreaks != m_Book.Pages[leftIndex].GetAllLines())
+                if (m_Pages[rightIndex].TextWithLineBreaks != m_Book.Pages[rightIndex].GetAllLines())
                 {
                     m_World?.Interaction.BookPageChange(m_Book.Serial, leftIndex, GetTextEntryAsArray(m_Pages[leftIndex]));
                 }
