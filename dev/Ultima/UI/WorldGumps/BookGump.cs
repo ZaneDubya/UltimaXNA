@@ -216,9 +216,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             
         void OnNextPage(int pageIndex)
         {
-            if (pageIndex < m_Pages.Count)
+            if (pageIndex < m_Pages.Count - 1)
             {
-                int nextPage = pageIndex;
+                int nextPage = pageIndex + 1;
                 SetActivePage((nextPage + 1) / 2 + 1);
                 UserInterface.KeyboardFocusControl = m_Pages[nextPage];
                 m_Pages[nextPage].CaratAt = 0;
@@ -227,9 +227,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         void OnPreviousPage(int pageIndex)
         {
-            if (pageIndex > 1)
+            if (pageIndex > 0)
             {
-                int prevPage = pageIndex - 2;
+                int prevPage = pageIndex - 1;
                 SetActivePage((prevPage + 1) / 2 + 1);
                 UserInterface.KeyboardFocusControl = m_Pages[prevPage];
                 m_Pages[prevPage].CaratAt = m_Pages[prevPage].Text.Length;
