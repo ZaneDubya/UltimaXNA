@@ -73,7 +73,7 @@ namespace UltimaXNA.Ultima.World
             Position3D center = player.Position;
             if ((player as Mobile).IsAlive)
             {
-                AEntityView.s_Technique = Techniques.Default;
+                AEntityView.Technique = Techniques.Default;
                 m_ShowingDeathEffect = false;
                 if (m_YouAreDead != null)
                 {
@@ -97,7 +97,7 @@ namespace UltimaXNA.Ultima.World
 
                 if (m_DeathEffectTime < msFade)
                 {
-                    AEntityView.s_Technique = Techniques.Default;
+                    AEntityView.Technique = Techniques.Default;
                     Isometric.Lighting.OverallLightning = (int)(m_LightingGlobal + (0x1f - m_LightingGlobal) * ((m_DeathEffectTime / msFade)));
                     Isometric.Lighting.PersonalLightning = (int)(m_LightingPersonal * (1d - (m_DeathEffectTime / msFade)));
                 }
@@ -108,7 +108,7 @@ namespace UltimaXNA.Ultima.World
                 }
                 else
                 {
-                    AEntityView.s_Technique = Techniques.Grayscale;
+                    AEntityView.Technique = Techniques.Grayscale;
                     Isometric.Lighting.OverallLightning = (int)m_LightingGlobal;
                     Isometric.Lighting.PersonalLightning = (int)m_LightingPersonal;
                     if (m_YouAreDead != null)

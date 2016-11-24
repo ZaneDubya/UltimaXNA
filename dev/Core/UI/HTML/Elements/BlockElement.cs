@@ -64,10 +64,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
                 (atom as BlockElement).Parent = this;
         }
 
-        public override string ToString()
-        {
-            return Tag;
-        }
+        public override string ToString() => Tag;
 
         public bool Err_Cant_Fit_Children = false;
     }

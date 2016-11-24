@@ -38,21 +38,20 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         IFont m_Font;
 
-        public DropDownList(AControl parent)
+        DropDownList(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;
-
             m_Font = ServiceRegistry.GetService<IResourceProvider>().GetAsciiFont(1);
         }
 
         public DropDownList(AControl parent, int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull)
             : this(parent)
         {
-            buildGumpling(x, y, width, items, itemsVisible, index, canBeNull);
+            BuildGumpling(x, y, width, items, itemsVisible, index, canBeNull);
         }
 
-        void buildGumpling(int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull)
+        void BuildGumpling(int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull)
         {
             Position = new Point(x, y);
             m_items = new List<string>(items);

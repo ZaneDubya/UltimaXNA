@@ -12,7 +12,7 @@
 namespace UltimaXNA.Core.Graphics
 {
     // N.B. Techniques must be numbered sequentially! Any missing numbers might cause the shader to crash.
-    public enum Techniques : int
+    public enum Techniques
     {
         // drawn effects:
         Hued = 0,

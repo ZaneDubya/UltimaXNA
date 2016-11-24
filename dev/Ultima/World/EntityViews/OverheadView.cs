@@ -21,16 +21,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
 {
     class OverheadView : AEntityView
     {
-        new Overhead Entity
-        {
-            get { return (Overhead)base.Entity; }
-        }
+        new Overhead Entity => (Overhead)base.Entity;
+        RenderedText m_Text;
 
         public OverheadView(Overhead entity)
             : base(entity)
         {
-            m_Texture = new RenderedText(Entity.Text, collapseContent: true);
-            DrawTexture = m_Texture.Texture;
+            m_Text = new RenderedText(Entity.Text, collapseContent: true);
+            DrawTexture = m_Text.Texture;
         }
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
@@ -38,7 +36,5 @@ namespace UltimaXNA.Ultima.World.EntityViews
             HueVector = Utility.GetHueVector(Entity.Hue, false, false, true);
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
         }
-
-        private RenderedText m_Texture = null;
     }
 }

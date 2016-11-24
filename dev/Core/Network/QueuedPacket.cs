@@ -7,8 +7,6 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region usings
-#endregion
 
 namespace UltimaXNA.Core.Network
 {
@@ -17,11 +15,9 @@ namespace UltimaXNA.Core.Network
         public PacketHandler PacketHandler;
         public byte[] PacketBuffer;
         public int RealLength;
-        public string Name;
 
-        public QueuedPacket(string name, PacketHandler packetHandler, byte[] packetBuffer, int realLength)
+        public QueuedPacket(PacketHandler packetHandler, byte[] packetBuffer, int realLength)
         {
-            Name = name;
             PacketHandler = packetHandler;
             PacketBuffer = packetBuffer;
             RealLength = realLength;

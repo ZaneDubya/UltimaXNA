@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         private int m_sliderX;
         private HSliderBarStyle Style;
 
-        public HSliderBar(AControl parent)
+        HSliderBar(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;
@@ -69,10 +69,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         public HSliderBar(AControl parent, int x, int y, int width, int minValue, int maxValue, int value, HSliderBarStyle style)
             : this(parent)
         {
-            buildGumpling(x, y, width, minValue, maxValue, value, style);
+            BuildGumpling(x, y, width, minValue, maxValue, value, style);
         }
 
-        void buildGumpling(int x, int y, int width, int minValue, int maxValue, int value, HSliderBarStyle style)
+        void BuildGumpling(int x, int y, int width, int minValue, int maxValue, int value, HSliderBarStyle style)
         {
             Position = new Point(x, y);
             MinValue = minValue;

@@ -1,4 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿/***************************************************************************
+ *   AnimatedItemEffectView.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.Resources;
@@ -11,13 +21,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 {
     public class AnimatedItemEffectView : AEntityView
     {
-        AnimatedItemEffect Effect
-        {
-            get
-            {
-                return (AnimatedItemEffect)base.Entity;
-            }
-        }
+        AnimatedItemEffect Effect => (AnimatedItemEffect)Entity;
 
         EffectData m_AnimData;
         bool m_Animated;

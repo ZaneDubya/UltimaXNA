@@ -227,12 +227,15 @@ namespace UltimaXNA
             if(!IsMinimized)
             {
                 if (ActiveModel is WorldModel)
-                    CheckWindowSize(Settings.UserInterface.PlayWindowGumpResolution.Width, Settings.UserInterface.PlayWindowGumpResolution.Height);
+                {
+                    ResolutionProperty resolution = Settings.UserInterface.PlayWindowGumpResolution;
+                    CheckWindowSize(resolution.Width, resolution.Height);
+                }
                 else
+                {
                     CheckWindowSize(800, 600);
-                
-                ActiveModel.GetView()
-                    .Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
+                }
+                ActiveModel.GetView().Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
             }
 
@@ -244,18 +247,17 @@ namespace UltimaXNA
 
         private void UpdateWindowCaption(GameTime gameTime)
         {
-            double frame_time_drawing = Profiler.GetContext("RenderFrame").TimeSpent * 1000d;
-            double frame_time_updating = Profiler.GetContext("Update").TimeSpent * 1000d;
-            double frame_time = Profiler.TotalTimeMS;
-            double last_draw_ms = Profiler.GetContext("RenderFrame").AverageOfLast60Times * 1000d;
-            double other_time = Profiler.GetContext("OutOfContext").TimeSpent * 1000d;
+            double timeDraw = Profiler.GetContext("RenderFrame").TimeInContext;
+            double timeUpdate = Profiler.GetContext("Update").TimeInContext;
+            double timeOutOfContext = Profiler.GetContext("OutOfContext").TimeInContext;
+            double timeTotalCheck = timeOutOfContext + timeDraw + timeUpdate;
+            double timeTotal = Profiler.TrackedTime;
+            double avgDrawMs = Profiler.GetContext("RenderFrame").AverageTime;
 
-            double total_time_check = other_time + frame_time_drawing + frame_time_updating;
-
-            this.Window.Title = string.Format("UltimaXNA Draw:{0:0.00}% Update:{1:0.00}% AvgDraw:{2:0.00}ms {3}",
-                100d * (frame_time_drawing / frame_time),
-                100d * (frame_time_updating / frame_time),
-                last_draw_ms,
+            Window.Title = string.Format("UltimaXNA Draw:{0:0.0}% Update:{1:0.0}% AvgDraw:{2:0.0}ms {3}",
+                100d * (timeDraw / timeTotal),
+                100d * (timeUpdate / timeTotal),
+                avgDrawMs,
                 gameTime.IsRunningSlowly ? "*" : string.Empty);
         }
 
