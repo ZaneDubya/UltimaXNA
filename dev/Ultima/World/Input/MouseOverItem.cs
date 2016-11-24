@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   PickType.cs
+ *   MouseOverItem.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -8,18 +8,21 @@
  *
  ***************************************************************************/
 #region usings
-using System;
+using Microsoft.Xna.Framework;
+using UltimaXNA.Ultima.World.Entities;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
 {
-    [Flags]
-    public enum PickType
+    public class MouseOverItem
     {
-        PickNothing = 0,
-        PickObjects = 1,
-        PickStatics = 2,
-        PickGroundTiles = 4,
-        PickEverything = PickObjects | PickStatics | PickGroundTiles
+        public Point InTexturePoint;
+        public AEntity Entity;
+
+        internal MouseOverItem(Point inTexturePoint, AEntity entity)
+        {
+            InTexturePoint = inTexturePoint;
+            Entity = entity;
+        }
     }
 }

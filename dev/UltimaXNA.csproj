@@ -436,6 +436,7 @@
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
     <Compile Include="Ultima\Player\JournalData.cs" />
     <Compile Include="Ultima\Login\LoginClient.cs" />
+    <Compile Include="Ultima\World\Input\MouseOverItem.cs" />
     <Compile Include="Ultima\World\Input\MousePicking.cs" />
     <Compile Include="Ultima\World\Input\PickType.cs" />
     <Compile Include="Ultima\World\Managers\EffectManager.cs" />

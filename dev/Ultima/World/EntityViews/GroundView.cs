@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
@@ -23,41 +22,36 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             PickType = PickType.PickGroundTiles;
             m_NoDraw = (Entity.LandDataID < 3 || (Entity.LandDataID >= 0x1AF && Entity.LandDataID <= 0x1B5));
-             
+             DrawFlip = false;
             if (Entity.LandData.TextureID <= 0)
             {
-                DrawFlip = false;
                 m_DrawAs3DStretched = false;
-
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                DrawTexture = provider.GetLandTexture(Entity.LandDataID);
-
+                DrawTexture = Provider.GetLandTexture(Entity.LandDataID);
                 DrawArea = new Rectangle(0, Entity.Z * 4, IsometricRenderer.TILE_SIZE_INTEGER, IsometricRenderer.TILE_SIZE_INTEGER);
             }
             else
             {
-                DrawFlip = false;
                 m_DrawAs3DStretched = true;
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                DrawTexture = provider.GetTexmapTexture(Entity.LandData.TextureID);
+                DrawTexture = Provider.GetTexmapTexture(Entity.LandData.TextureID);
             }
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             if (m_NoDraw)
+            {
                 return false;
-
+            }
             if (m_MustUpdateSurroundings)
             {
                 updateSurroundingsAndNormals(Entity.Map);
                 m_MustUpdateSurroundings = false;
             }
-
             if (!m_DrawAs3DStretched)
-                return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
-            else
-                return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, map);
+            {
+                return base.Draw(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
+            }
+            return Draw3DStretched(spriteBatch, drawPosition, mouseOver, map);
         }
 
         Vector3 m_vertex0_yOffset, m_vertex1_yOffset, m_vertex2_yOffset, m_vertex3_yOffset;
@@ -68,26 +62,24 @@ namespace UltimaXNA.Ultima.World.EntityViews
             new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
         };
 
-        bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map)
         {
             // this is an isometric stretched tile and needs a specialized draw routine.
             m_vertexBufferAlternate[0].Position = drawPosition + m_vertex0_yOffset;
             m_vertexBufferAlternate[1].Position = drawPosition + m_vertex1_yOffset;
             m_vertexBufferAlternate[2].Position = drawPosition + m_vertex2_yOffset;
             m_vertexBufferAlternate[3].Position = drawPosition + m_vertex3_yOffset;
-
             if (!spriteBatch.DrawSprite(DrawTexture, m_vertexBufferAlternate, Technique))
-                return false;
-
-            if ((mouseOverList.PickType & PickType) == PickType)
             {
-                if (mouseOverList.IsMouseInObjectIsometric(m_vertexBufferAlternate))
+                return false;
+            }
+            if ((mouseOver.PickType & PickType) == PickType)
+            {
+                if (mouseOver.IsMouseInObjectIsometric(m_vertexBufferAlternate))
                 {
-                    MouseOverItem item = new MouseOverItem(DrawTexture, m_vertexBufferAlternate[0].Position, Entity);
-                    mouseOverList.Add2DItem(item);
+                    mouseOver.AddItem(Entity, m_vertexBufferAlternate[0].Position);
                 }
             }
-
             return true;
         }
 

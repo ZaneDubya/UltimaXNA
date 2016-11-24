@@ -39,14 +39,14 @@ namespace UltimaXNA.Ultima.World.Input
     class WorldCursor : UltimaCursor
     {
         // private variables
-        private Item m_MouseOverItem;
-        private int m_MouseOverItemSavedHue;
+        Item m_MouseOverItem;
+        int m_MouseOverItemSavedHue;
 
         // services
-        private INetworkClient m_Network;
-        private UserInterfaceService m_UserInterface;
-        private InputManager m_Input;
-        private WorldModel m_World;
+        INetworkClient m_Network;
+        UserInterfaceService m_UserInterface;
+        InputManager m_Input;
+        WorldModel m_World;
 
         public Item MouseOverItem
         {
@@ -57,8 +57,9 @@ namespace UltimaXNA.Ultima.World.Input
             protected set
             {
                 if (m_MouseOverItem == value)
+                {
                     return;
-
+                }
                 if (m_MouseOverItem != null)
                 {
                     m_MouseOverItem.Hue = m_MouseOverItemSavedHue;
@@ -271,8 +272,8 @@ namespace UltimaXNA.Ultima.World.Input
         // Drawing routines
         // ============================================================================================================
 
-        private HuedTexture m_ItemSprite = null;
-        private int m_ItemSpriteArtIndex = -1;
+        HuedTexture m_ItemSprite = null;
+        int m_ItemSpriteArtIndex = -1;
 
         public int ItemSpriteArtIndex
         {
@@ -480,8 +481,8 @@ namespace UltimaXNA.Ultima.World.Input
             MultiPlacement = 2
         }
 
-        private TargetType m_Targeting = TargetType.Nothing;
-        private int m_TargetID = int.MinValue;
+        TargetType m_Targeting = TargetType.Nothing;
+        int m_TargetID = int.MinValue;
         public TargetType Targeting
         {
             get { return m_Targeting; }
@@ -573,13 +574,13 @@ namespace UltimaXNA.Ultima.World.Input
         // Interaction routines
         // ============================================================================================================
 
-        private void InternalRegisterInteraction()
+        void InternalRegisterInteraction()
         {
             m_World.Interaction.OnPickupItem += PickUpItem;
             m_World.Interaction.OnClearHolding += ClearHolding;
         }
 
-        private void InternalUnregisterInteraction()
+        void InternalUnregisterInteraction()
         {
             m_World.Interaction.OnPickupItem -= PickUpItem;
             m_World.Interaction.OnClearHolding -= ClearHolding;
@@ -589,7 +590,7 @@ namespace UltimaXNA.Ultima.World.Input
         // Pickup/Drop/Hold item routines
         // ============================================================================================================
 
-        private Item m_HeldItem = null;
+        Item m_HeldItem = null;
         internal Item HeldItem
         {
             get { return m_HeldItem; }
@@ -607,7 +608,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        private Point m_HeldItemOffset = Point.Zero;
+        Point m_HeldItemOffset = Point.Zero;
 
         public bool IsHoldingItem
         {
@@ -618,7 +619,7 @@ namespace UltimaXNA.Ultima.World.Input
         /// Picks up an item. For stacks, picks up entire stack if shift is down or picking up from a corpse.
         /// Otherwise, shows "pick up how many?" gump unless amountToPickUp param is set or amount is 1. 
         /// </summary>
-        private void PickUpItem(Item item, int x, int y, int? amountToPickUp = null)
+        void PickUpItem(Item item, int x, int y, int? amountToPickUp = null)
         {
             if (!m_Input.IsShiftDown && !amountToPickUp.HasValue && !(item is Corpse) && item.Amount > 1)
             {
@@ -637,7 +638,7 @@ namespace UltimaXNA.Ultima.World.Input
         /// removes it from the containing entity. Informs server we picked up the item. Server can cancel pick up.
         /// Note: I am unsure what will happen if we can pick up an item and add to inventory before server can cancel.
         /// </summary>
-        private void PickupItemWithoutAmountCheck(Item item, int x, int y, int amount)
+        void PickupItemWithoutAmountCheck(Item item, int x, int y, int amount)
         {
             if (!item.TryPickUp())
             {
@@ -680,13 +681,13 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        private void MergeHeldItem(AEntity target)
+        void MergeHeldItem(AEntity target)
         {
             m_Network.Send(new DropItemPacket(HeldItem.Serial, 0xFFFF, 0xFFFF, 0, 0, target.Serial));
             ClearHolding();
         }
 
-        private void DropHeldItemToWorld(int X, int Y, int Z)
+        void DropHeldItemToWorld(int X, int Y, int Z)
         {
             Serial serial;
             AEntity entity = m_World.Input.MousePick.MouseOverObject;
@@ -704,7 +705,7 @@ namespace UltimaXNA.Ultima.World.Input
             ClearHolding();
         }
 
-        private void DropHeldItemToContainer(Container container)
+        void DropHeldItemToContainer(Container container)
         {
             // get random coords and drop the item there.
             Rectangle bounds = ContainerData.Get(container.ItemID).Bounds;
@@ -713,26 +714,30 @@ namespace UltimaXNA.Ultima.World.Input
             DropHeldItemToContainer(container, x, y);
         }
 
-        private void DropHeldItemToContainer(Container container, int x, int y)
+        void DropHeldItemToContainer(Container container, int x, int y)
         {
             Rectangle bounds = ContainerData.Get(container.ItemID).Bounds;
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             Texture2D itemTexture = provider.GetItemTexture(HeldItem.DisplayItemID);
-            if (x < bounds.Left) x = bounds.Left;
-            if (x > bounds.Right - itemTexture.Width) x = bounds.Right - itemTexture.Width;
-            if (y < bounds.Top) y = bounds.Top;
-            if (y > bounds.Bottom - itemTexture.Height) y = bounds.Bottom - itemTexture.Height;
+            if (x < bounds.Left)
+                x = bounds.Left;
+            if (x > bounds.Right - itemTexture.Width)
+                x = bounds.Right - itemTexture.Width;
+            if (y < bounds.Top)
+                y = bounds.Top;
+            if (y > bounds.Bottom - itemTexture.Height)
+                y = bounds.Bottom - itemTexture.Height;
             m_Network.Send(new DropItemPacket(HeldItem.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
             ClearHolding();
         }
 
-        private void WearHeldItem()
+        void WearHeldItem()
         {
             m_Network.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, WorldModel.PlayerSerial));
             ClearHolding();
         }
 
-        private void ClearHolding()
+        void ClearHolding()
         {
             HeldItem = null;
         }

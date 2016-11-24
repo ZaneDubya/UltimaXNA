@@ -10,61 +10,44 @@
 #region usings
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
 {
     public class MouseOverList
     {
-        List<MouseOverItem> m_overList;
+        List<MouseOverItem> m_Items;
 
+        public readonly Point MousePosition;
         public PickType PickType = PickType.PickNothing;
-
-        Vector3 m_mousePosition;
-        protected Point MousePosition
-        {
-            set
-            {
-                m_mousePosition = new Vector3(value.X, value.Y, 1);
-            }
-        }
 
         public MouseOverList(MousePicking mousePicking)
         {
-            m_overList = new List<MouseOverItem>();
+            m_Items = new List<MouseOverItem>();
             MousePosition = mousePicking.Position;
             PickType = mousePicking.PickOnly;
         }
 
-        internal MouseOverItem GetForemostMouseOverItem(Point mousePosition)
+        public MouseOverItem GetForemostMouseOverItem(Point mousePosition)
         {
             // Parse list backwards to find topmost mouse over object.
-            foreach (MouseOverItem item in CreateReverseIterator(m_overList))
+            foreach (MouseOverItem item in CreateReverseIterator(m_Items))
             {
-                if (item.TextureContainsPoint(mousePosition))
-                {
-                    return item;
-                }
+                return item;
             }
             return null;
         }
 
-        internal MouseOverItem GetForemostMouseOverItem<T>(Point mousePosition) where T : AEntity
+        public MouseOverItem GetForemostMouseOverItem<T>(Point mousePosition) where T : AEntity
         {
             // Parse list backwards to find topmost mouse over object.
-            foreach (MouseOverItem item in CreateReverseIterator(m_overList))
+            foreach (MouseOverItem item in CreateReverseIterator(m_Items))
             {
                 if (item.Entity.GetType() == typeof(T))
                 {
-                    if (item.TextureContainsPoint(mousePosition))
-                    {
-                        return item;
-                    }
+                    return item;
                 }
             }
             return null;
@@ -79,28 +62,18 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        public void Add2DItem(MouseOverItem item)
+        public void AddItem(AEntity e, Vector3 position)
         {
-            m_overList.Add(item);
-        }
-
-        public bool IsMouseInObject(Vector3 min, Vector3 max)
-        {
-            BoundingBox iBoundingBox = new BoundingBox(min, max);
-            // Must correct for bounding box being one pixel larger than actual texture.
-            iBoundingBox.Max.X--; iBoundingBox.Max.Y--;
-
-            Vector3 iMousePosition = new Vector3(m_mousePosition.X, m_mousePosition.Y, min.Z);
-            if (iBoundingBox.Contains(iMousePosition) == ContainmentType.Contains)
-                return true;
-            return false;
+            Point inTexturePoint = new Point(MousePosition.X - (int)position.X, MousePosition.Y - (int)position.Y);
+            m_Items.Add(new MouseOverItem(inTexturePoint, e));
         }
 
         public bool IsMouseInObjectIsometric(VertexPositionNormalTextureHue[] v)
         {
             if (v.Length != 4)
+            {
                 return false;
-
+            }
             float high = -50000, low = 50000;
             for (int i = 0; i < 4; i++)
             {
@@ -109,14 +82,13 @@ namespace UltimaXNA.Ultima.World.Input
                 if (v[i].Position.Y < low)
                     low = v[i].Position.Y;
             }
-
-            if (high < m_mousePosition.Y)
+            if (high < MousePosition.Y)
                 return false;
-            if (low > m_mousePosition.Y)
+            if (low > MousePosition.Y)
                 return false;
-            if (v[1].Position.X < m_mousePosition.X)
+            if (v[1].Position.X < MousePosition.X)
                 return false;
-            if (v[2].Position.X > m_mousePosition.X)
+            if (v[2].Position.X > MousePosition.X)
                 return false;
 
             float minX = v[0].Position.X, maxX = v[0].Position.X;
@@ -135,14 +107,14 @@ namespace UltimaXNA.Ultima.World.Input
             }
 
             BoundingBox iBoundingBox = new BoundingBox(new Vector3(minX, minY, 0), new Vector3(maxX, maxY, 10));
-            if (iBoundingBox.Contains(m_mousePosition) == ContainmentType.Contains)
+            if (iBoundingBox.Contains(new Vector3(MousePosition.X, MousePosition.Y, 1)) == ContainmentType.Contains)
             {
                 Point[] p = new Point[4];
                 p[0] = new Point((int)v[0].Position.X, (int)v[0].Position.Y);
                 p[1] = new Point((int)v[1].Position.X, (int)v[1].Position.Y);
                 p[2] = new Point((int)v[3].Position.X, (int)v[3].Position.Y);
                 p[3] = new Point((int)v[2].Position.X, (int)v[2].Position.Y);
-                if (pointInPolygon(new Point((int)m_mousePosition.X, (int)m_mousePosition.Y), p))
+                if (PointInPolygon(new Point((int)MousePosition.X, (int)MousePosition.Y), p))
                 {
                     return true;
                 }
@@ -150,7 +122,7 @@ namespace UltimaXNA.Ultima.World.Input
             return false;
         }
 
-        private bool pointInPolygon(Point p, Point[] poly)
+        bool PointInPolygon(Point p, Point[] poly)
         {
             // Taken from http://social.msdn.microsoft.com/forums/en-US/winforms/thread/95055cdc-60f8-4c22-8270-ab5f9870270a/
             Point p1, p2;
@@ -188,90 +160,5 @@ namespace UltimaXNA.Ultima.World.Input
         }
     }
 
-    public class MouseOverItem
-    {
-        public Texture2D Texture;
-        public Vector3 Position;
-        public Vector2 InTexturePosition;
-        public AEntity Entity;
-        public bool FlippedTexture;
-
-        internal MouseOverItem(Texture2D texture, Vector3 position, AEntity entity)
-        {
-            Texture = texture;
-            Position = position;
-            Entity = entity;
-        }
-
-        internal bool TextureContainsPoint(Point mousePosition)
-        {
-            if (Entity is Ground)
-            {
-                // we already know we are within this polygon
-                InTexturePosition = new Vector2(mousePosition.X - Position.X, mousePosition.Y - Position.Y);
-                return true;
-            }
-            else if (Entity is Item)
-            {
-                int x = (int)(mousePosition.X - Position.X);
-                int y = (int)(mousePosition.Y - Position.Y);
-
-                if (Texture.Bounds.Contains(new Point(x, y)))
-                {
-                    if (Texture.Width >= 3 && Texture.Height >= 3)
-                    {
-                        // Allow selection if there is a non-transparent pixel below the mouse cursor or at an offset of
-                        // (-1,0), (0,-1), (1,0), or (1,1). This will allow selection even when the mouse cursor is directly
-                        // over a transparent pixel, and will also increase the 'selection space' of an item by one pixel in
-                        // each dimension - thus a very thin object (2-3 pixels wide) will be increased.
-
-                        if (x == 0)
-                            x++;
-                        if (x == Texture.Width - 1)
-                            x--;
-                        if (y == 0)
-                            y++;
-                        if (y == Texture.Height - 1)
-                            y--;
-
-                        ushort[] pixelData = new ushort[9];
-                        Texture.GetData(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
-                        if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
-                            (pixelData[4] > 0) || (pixelData[5] > 0) ||
-                            (pixelData[7] > 0))
-                        {
-                            InTexturePosition = new Vector2(x, y);
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        ushort[] pixelData = new ushort[1];
-                        Texture.GetData(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
-                        if (pixelData[0] > 0)
-                        {
-                            InTexturePosition = new Vector2(x, y);
-                            return true;
-                        }
-                    }
-                }
-            }
-            else if (Entity is Mobile)
-            {
-                int px = (int)Position.X, py = (int)Position.Y;
-                int mx = mousePosition.X, my = mousePosition.Y;
-                int ix = !FlippedTexture ? mx - px : Texture.Width - (mx - px);
-                int iy = mx - py;
-                Rectangle pRect = new Rectangle(ix, iy, 1, 1);
-                if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
-                {
-                    ushort[] pixelData = new ushort[1];
-                    Texture.GetData(0, pRect, pixelData, 0, 1);
-                    if (pixelData[0] > 0)
-                        return true;
-                }
-            }
-            return false;
-        }
-    }
+    
 }

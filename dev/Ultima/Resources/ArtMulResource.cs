@@ -12,7 +12,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.IO;
-using UltimaXNA.Core.Data;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Data;
 #endregion

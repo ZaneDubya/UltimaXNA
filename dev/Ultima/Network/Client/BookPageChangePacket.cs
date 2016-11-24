@@ -9,11 +9,7 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
-using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Client

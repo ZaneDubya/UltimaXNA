@@ -9,9 +9,7 @@
  *
  ***************************************************************************/
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Audio;

@@ -10,7 +10,6 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities.Effects;
 using UltimaXNA.Ultima.World.Input;
@@ -31,26 +30,24 @@ namespace UltimaXNA.Ultima.World.EntityViews
             : base(effect)
         {
             m_Animated = true;
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-            m_AnimData = provider.GetResource<EffectData>(Effect.ItemID);
+            m_AnimData = Provider.GetResource<EffectData>(Effect.ItemID);
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             CheckDefer(map, drawPosition);
 
-            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
+            return DrawInternal(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
         }
 
-        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             int displayItemdID = (m_Animated) ? Effect.ItemID + ((Effect.FramesActive / m_AnimData.FrameInterval) % m_AnimData.FrameCount) : Effect.ItemID;
 
             if (displayItemdID != m_DisplayItemID)
             {
                 m_DisplayItemID = displayItemdID;
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                DrawTexture = provider.GetItemTexture(m_DisplayItemID);
+                DrawTexture = Provider.GetItemTexture(m_DisplayItemID);
                 DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;
                 DrawFlip = false;
@@ -59,7 +56,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             // Update hue vector.
             HueVector = Utility.GetHueVector(Entity.Hue);
 
-            return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
+            return base.Draw(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
         }
     }
 }
