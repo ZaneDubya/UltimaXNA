@@ -99,18 +99,18 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         void MobilePick(MouseOverList mouseOver, Vector3 drawPosition, Rectangle area, AAnimationFrame frame)
         {
-            int x = mouseOver.MousePosition.X;
-            int y = mouseOver.MousePosition.Y;
+            int x, y;
             if (DrawFlip)
             {
-                // THIS IS SO DUMB.
-               !!!! x = 2 * area.Width - (x - (int)drawPosition.X); // frame.Texture.Width -  - ;
-                x += area.X;
-                int w = frame.Texture.Width - area.X;
+                // when flipped, the upper right pixel = drawPosition.x + DrawArea.x + 44
+                // the upper left pixel = drawposition.x + drawarea.x + 44 - drawarea.width.
+                // don't forget to reverse the mouse position!
+                x = (int)drawPosition.X + area.X + IsometricRenderer.TILE_SIZE_INTEGER - mouseOver.MousePosition.X;
             }
             else
             {
-                x -= (int)drawPosition.X - area.X;
+                // ul pixel = (drawposition - drawarea.x)
+                x = mouseOver.MousePosition.X - (int)drawPosition.X + area.X;
             }
             y -= (int)drawPosition.Y - area.Y;
             if (frame.IsPointInTexture(x, y))

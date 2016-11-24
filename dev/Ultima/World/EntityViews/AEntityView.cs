@@ -93,69 +93,66 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 vertexBuffer[3].Position.X += -cosx - siny;
                 vertexBuffer[3].Position.Y += sinx + -cosy;
             }
+            else if (DrawFlip)
+            {
+                // 2   0    
+                // |\  |     
+                // |  \|     
+                // 3   1
+                vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
+                vertexBuffer[0].Position = drawPosition;
+                vertexBuffer[0].Position.X += DrawArea.X + IsometricRenderer.TILE_SIZE_FLOAT;
+                vertexBuffer[0].Position.Y -= DrawArea.Y;
+                vertexBuffer[0].TextureCoordinate.Y = 0;
+                vertexBuffer[1].Position = vertexBuffer[0].Position;
+                vertexBuffer[1].Position.Y += DrawArea.Height;
+                vertexBuffer[2].Position = vertexBuffer[0].Position;
+                vertexBuffer[2].Position.X -= DrawArea.Width;
+                vertexBuffer[2].TextureCoordinate.Y = 0;
+                vertexBuffer[3].Position = vertexBuffer[1].Position;
+                vertexBuffer[3].Position.X -= DrawArea.Width;
+
+                /*if (m_YClipLine != 0)
+                {
+                    if (m_YClipLine > vertexBuffer[3].Position.Y)
+                        return false;
+                    else if (m_YClipLine > vertexBuffer[0].Position.Y)
+                    {
+                        float uvStart = (m_YClipLine - vertexBuffer[0].Position.Y) / DrawTexture.Height;
+                        vertexBuffer[0].Position.Y = vertexBuffer[2].Position.Y = m_YClipLine;
+                        vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[2].TextureCoordinate.Y = uvStart;
+                    }
+                }*/
+            }
             else
             {
-                if (DrawFlip)
+                // 0---1    
+                //    /     
+                //  /       
+                // 2---3
+                vertexBuffer = VertexPositionNormalTextureHue.PolyBuffer;
+                vertexBuffer[0].Position = drawPosition;
+                vertexBuffer[0].Position.X -= DrawArea.X;
+                vertexBuffer[0].Position.Y -= DrawArea.Y;
+                vertexBuffer[0].TextureCoordinate.Y = 0;
+                vertexBuffer[1].Position = vertexBuffer[0].Position;
+                vertexBuffer[1].Position.X += DrawArea.Width;
+                vertexBuffer[1].TextureCoordinate.Y = 0;
+                vertexBuffer[2].Position = vertexBuffer[0].Position;
+                vertexBuffer[2].Position.Y += DrawArea.Height;
+                vertexBuffer[3].Position = vertexBuffer[1].Position;
+                vertexBuffer[3].Position.Y += DrawArea.Height;
+                /*if (m_YClipLine != 0)
                 {
-                    // 2   0    
-                    // |\  |     
-                    // |  \|     
-                    // 3   1
-                    vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
-                    vertexBuffer[0].Position = drawPosition;
-                    vertexBuffer[0].Position.X += DrawArea.X + IsometricRenderer.TILE_SIZE_FLOAT;
-                    vertexBuffer[0].Position.Y -= DrawArea.Y;
-                    vertexBuffer[0].TextureCoordinate.Y = 0;
-                    vertexBuffer[1].Position = vertexBuffer[0].Position;
-                    vertexBuffer[1].Position.Y += DrawArea.Height;
-                    vertexBuffer[2].Position = vertexBuffer[0].Position;
-                    vertexBuffer[2].Position.X -= DrawArea.Width;
-                    vertexBuffer[2].TextureCoordinate.Y = 0;
-                    vertexBuffer[3].Position = vertexBuffer[1].Position;
-                    vertexBuffer[3].Position.X -= DrawArea.Width;
-
-                    /*if (m_YClipLine != 0)
+                    if (m_YClipLine >= vertexBuffer[3].Position.Y)
+                        return false;
+                    else if (m_YClipLine > vertexBuffer[0].Position.Y)
                     {
-                        if (m_YClipLine > vertexBuffer[3].Position.Y)
-                            return false;
-                        else if (m_YClipLine > vertexBuffer[0].Position.Y)
-                        {
-                            float uvStart = (m_YClipLine - vertexBuffer[0].Position.Y) / DrawTexture.Height;
-                            vertexBuffer[0].Position.Y = vertexBuffer[2].Position.Y = m_YClipLine;
-                            vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[2].TextureCoordinate.Y = uvStart;
-                        }
-                    }*/
-                }
-                else
-                {
-                    // 0---1    
-                    //    /     
-                    //  /       
-                    // 2---3
-                    vertexBuffer = VertexPositionNormalTextureHue.PolyBuffer;
-                    vertexBuffer[0].Position = drawPosition;
-                    vertexBuffer[0].Position.X -= DrawArea.X;
-                    vertexBuffer[0].Position.Y -= DrawArea.Y;
-                    vertexBuffer[0].TextureCoordinate.Y = 0;
-                    vertexBuffer[1].Position = vertexBuffer[0].Position;
-                    vertexBuffer[1].Position.X += DrawArea.Width;
-                    vertexBuffer[1].TextureCoordinate.Y = 0;
-                    vertexBuffer[2].Position = vertexBuffer[0].Position;
-                    vertexBuffer[2].Position.Y += DrawArea.Height;
-                    vertexBuffer[3].Position = vertexBuffer[1].Position;
-                    vertexBuffer[3].Position.Y += DrawArea.Height;
-                    /*if (m_YClipLine != 0)
-                    {
-                        if (m_YClipLine >= vertexBuffer[3].Position.Y)
-                            return false;
-                        else if (m_YClipLine > vertexBuffer[0].Position.Y)
-                        {
-                            float uvStart = (m_YClipLine - vertexBuffer[0].Position.Y) / DrawTexture.Height;
-                            vertexBuffer[0].Position.Y = vertexBuffer[1].Position.Y = m_YClipLine;
-                            vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[1].TextureCoordinate.Y = uvStart;
-                        }
-                    }*/
-                }
+                        float uvStart = (m_YClipLine - vertexBuffer[0].Position.Y) / DrawTexture.Height;
+                        vertexBuffer[0].Position.Y = vertexBuffer[1].Position.Y = m_YClipLine;
+                        vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[1].TextureCoordinate.Y = uvStart;
+                    }
+                }*/
             }
             if (vertexBuffer[0].Hue != HueVector)
             {
