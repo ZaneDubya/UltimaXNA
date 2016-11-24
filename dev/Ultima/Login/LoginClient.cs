@@ -9,7 +9,6 @@
  ***************************************************************************/
 #region usings
 using System;
-using System.Collections.Generic;
 using System.Security;
 using System.Threading;
 using UltimaXNA.Core.Diagnostics.Tracing;
@@ -26,7 +25,8 @@ using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
-namespace UltimaXNA.Ultima.Login {
+namespace UltimaXNA.Ultima.Login
+{
     public class LoginClient : IDisposable {
         readonly INetworkClient m_Network;
         readonly UltimaGame m_Engine;

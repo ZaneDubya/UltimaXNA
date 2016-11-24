@@ -106,7 +106,7 @@ namespace UltimaXNA.Ultima.Resources
             set { m_Default = value; }
         }
 
-        public static ContainerData GetData(int itemID)
+        public static ContainerData Get(int itemID)
         {
             ContainerData data = null;
             m_Table.TryGetValue(itemID, out data);

@@ -239,7 +239,7 @@
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\DelayedAction.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
-    <Compile Include="Core\Resources\IAnimationFrame.cs" />
+    <Compile Include="Core\Resources\AAnimationFrame.cs" />
     <Compile Include="Core\Resources\IResource.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
     <Compile Include="Core\UI\HTML\HtmlImage.cs" />
@@ -345,6 +345,7 @@
     <Compile Include="Ultima\Network\Client\SellItemsPacket.cs" />
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\Resources\GumpDefTranslator.cs" />
+    <Compile Include="Ultima\Resources\PixelPicking.cs" />
     <Compile Include="Ultima\Resources\UOPIndex.cs" />
     <Compile Include="Ultima\UI\Controls\AGumpPic.cs" />
     <Compile Include="Ultima\UI\Controls\ButtonResizable.cs" />
@@ -435,6 +436,7 @@
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
     <Compile Include="Ultima\Player\JournalData.cs" />
     <Compile Include="Ultima\Login\LoginClient.cs" />
+    <Compile Include="Ultima\World\Input\MouseOverItem.cs" />
     <Compile Include="Ultima\World\Input\MousePicking.cs" />
     <Compile Include="Ultima\World\Input\PickType.cs" />
     <Compile Include="Ultima\World\Managers\EffectManager.cs" />

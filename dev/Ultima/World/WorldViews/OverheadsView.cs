@@ -27,13 +27,13 @@ namespace UltimaXNA.Ultima.World.WorldViews
             m_Views.Add(new ViewWithDrawInfo(view, drawPosition));
         }
 
-        public static void Render(SpriteBatch3D spriteBatch, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        public static void Render(SpriteBatch3D spriteBatch, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             if (m_Views.Count > 0)
             {
                 for (int i = 0; i < m_Views.Count; i++)
                 {
-                    m_Views[i].View.Draw(spriteBatch, m_Views[i].DrawPosition, mouseOverList, map, roofHideFlag);
+                    m_Views[i].View.Draw(spriteBatch, m_Views[i].DrawPosition, mouseOver, map, roofHideFlag);
                 }
 
                 m_Views.Clear();

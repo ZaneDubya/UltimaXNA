@@ -26,15 +26,15 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool HighlightOnMouseOver = true;
 
         protected Texture2D m_Texture = null;
-        private HtmlGumpling m_Label = null;
+        HtmlGumpling m_Label = null;
 
-        private bool m_ClickedCanDrag = false;
-        private float m_PickUpTime;
-        private Point m_ClickPoint;
-        private bool m_SendClickIfNoDoubleClick = false;
-        private float m_SingleClickTime;
+        bool m_ClickedCanDrag = false;
+        float m_PickUpTime;
+        Point m_ClickPoint;
+        bool m_SendClickIfNoDoubleClick = false;
+        float m_SingleClickTime;
 
-        private readonly WorldModel m_World;
+        readonly WorldModel m_World;
 
         public Item Item
         {
@@ -113,43 +113,23 @@ namespace UltimaXNA.Ultima.UI.Controls
             // (-1,0), (0,-1), (1,0), or (1,1). This will allow selection even when the mouse cursor is directly
             // over a transparent pixel, and will also increase the 'selection space' of an item by one pixel in
             // each dimension - thus a very thin object (2-3 pixels wide) will be increased.
-
-            if (isPointWithinControl(x, y))
+            if (IsPointInTexture(x, y))
+            {
                 return true;
-
+            }
             if (Item.Amount > 1 && Item.ItemData.IsGeneric)
             {
                 int offset = Item.ItemData.Unknown4;
-                if (isPointWithinControl(x + offset, y + offset))
+                if (IsPointInTexture(x + offset, y + offset))
                     return true;
             }
-
             return false;
         }
 
-        private bool isPointWithinControl(int x, int y)
+        bool IsPointInTexture(int x, int y)
         {
-            if (x <= 0)
-                x = 1;
-            if (x >= m_Texture.Width - 1)
-                x = m_Texture.Width - 2;
-            if (y <= 0)
-                y = 1;
-            if (y >= m_Texture.Height - 1)
-                y = m_Texture.Height - 2;
-
-            ushort[] pixelData = new ushort[9];
-            m_Texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
-            if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
-                (pixelData[4] > 0) || (pixelData[5] > 0) ||
-                (pixelData[7] > 0))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            return provider.IsPointInItemTexture(Item.DisplayItemID, x, y, 1);
         }
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
@@ -196,7 +176,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             return offset;
         }
 
-        private void AttemptPickUp()
+        void AttemptPickUp()
         {
             if (CanPickUp)
             {
@@ -215,7 +195,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        private void UpdateLabel(bool isDisposing = false)
+        void UpdateLabel(bool isDisposing = false)
         {
             if (!isDisposing && Item.Overheads.Count > 0)
             {

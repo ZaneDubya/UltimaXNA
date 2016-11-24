@@ -16,21 +16,16 @@ namespace UltimaXNA.Ultima.World.Input
 {
     public class MousePicking
     {
-        private MouseOverItem m_overObject, m_overGround;
+        MouseOverItem m_OverObject;
+        MouseOverItem m_OverGround;
 
-        public AEntity MouseOverObject
-        {
-            get { return (m_overObject == null) ? null : m_overObject.Entity; }
-        }
+        public AEntity MouseOverObject => m_OverObject?.Entity;
 
-        public AEntity MouseOverGround
-        {
-            get { return (m_overGround == null) ? null : m_overGround.Entity; }
-        }
+        public AEntity MouseOverGround => m_OverGround?.Entity;
 
-        public Vector2 MouseOverObjectPoint
+        public Point MouseOverObjectPoint
         {
-            get { return (m_overObject == null) ? new Vector2(0, 0) : m_overObject.InTexturePosition; }
+            get { return (m_OverObject == null) ? Point.Zero : m_OverObject.InTexturePoint; }
         }
 
         public const PickType DefaultPickType = PickType.PickStatics | PickType.PickObjects;
@@ -54,8 +49,8 @@ namespace UltimaXNA.Ultima.World.Input
 
         public void UpdateOverEntities(MouseOverList list, Point mousePosition)
         {
-            m_overObject = list.GetForemostMouseOverItem(mousePosition);
-            m_overGround = list.GetForemostMouseOverItem<Ground>(mousePosition);
+            m_OverObject = list.GetForemostMouseOverItem(mousePosition);
+            m_OverGround = list.GetForemostMouseOverItem<Ground>(mousePosition);
         }
     }
 }
