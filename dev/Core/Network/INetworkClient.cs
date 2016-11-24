@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using UltimaXNA.Ultima.Login;
 
 namespace UltimaXNA.Core.Network
 {

@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 using UltimaXNA.Ultima.World.Maps;
-using System.Text;
 
 namespace UltimaXNA.Ultima.World.Entities.Items
 {

@@ -41,8 +41,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         public override void Dispose()
         {
             m_sourceEntity.ClearCallBacks(OnEntityUpdated, OnEntityDisposed);
-            if (m_Backpack != null)//Backpack can be null
+            if (m_Backpack != null)
+            {
                 m_Backpack.MouseDoubleClickEvent -= On_Dblclick_Backpack;
+            }
             base.Dispose();
         }
 
@@ -58,9 +60,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void OnEntityUpdated(AEntity entity)
         {
-            // clear the existing Controls
             ClearControls();
-
             // Add the base gump - the semi-naked paper doll.
             if (true)
             {
@@ -69,7 +69,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                 paperdoll.HandlesMouseInput = true;
                 paperdoll.IsPaperdoll = true;
             }
-
             // Loop through the items on the mobile and create the gump pics.
             for (int i = 0; i < s_DrawOrder.Length; i++)
             {
@@ -126,7 +125,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                         m_sourceEntity.ClearCallBacks(OnEntityUpdated, OnEntityDisposed);
                         m_sourceEntity = null;
                     }
-
                     if (value is Mobile)
                     {
                         m_sourceEntity = value;
@@ -172,7 +170,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             // skip 24, inner legs (!!! do we really skip this?)
         }
 
-        static PaperDollEquipSlots[] s_DrawOrder = new PaperDollEquipSlots[21] {
+        static PaperDollEquipSlots[] s_DrawOrder = {
             PaperDollEquipSlots.Footwear,
             PaperDollEquipSlots.Legging,
             PaperDollEquipSlots.Shirt,

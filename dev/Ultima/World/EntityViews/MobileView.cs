@@ -67,7 +67,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         }
 
         // ============================================================================================================
-        // Public methods and properties: ctr, update, draw
+        // ctor, pick
         // ============================================================================================================
 
         public MobileView(AEntity entity)
@@ -79,7 +79,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             IsShadowCastingView = true;
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             if (Body == 0)
                 return false;
@@ -89,22 +89,48 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 int x = (Entity is Mobile) ? (Entity as Mobile).DestinationPosition.X : Entity.X;
                 int y = (Entity is Mobile) ? (Entity as Mobile).DestinationPosition.Y : Entity.Y;
                 if (CheckUnderSurface(map, x, y))
+                {
                     return false;
+                }
             }
-
             CheckDefer(map, drawPosition);
-
-            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
+            return DrawInternal(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
         }
 
-        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        void MobilePick(MouseOverList mouseOver, Vector3 drawPosition, Rectangle area, AAnimationFrame frame)
+        {
+            int x, y;
+            if (DrawFlip)
+            {
+                // when flipped, the upper right pixel = drawPosition.x + DrawArea.x + 44
+                // the upper left pixel = drawposition.x + drawarea.x + 44 - drawarea.width.
+                // don't forget to reverse the mouse position!
+                x = (int)drawPosition.X + area.X + IsometricRenderer.TILE_SIZE_INTEGER - mouseOver.MousePosition.X;
+            }
+            else
+            {
+                // ul pixel = (drawposition - drawarea.x)
+                x = mouseOver.MousePosition.X - (int)drawPosition.X + area.X;
+            }
+            y = mouseOver.MousePosition.Y - ((int)drawPosition.Y - area.Y);
+            if (frame.IsPointInTexture(x, y))
+            {
+                mouseOver.AddItem(Entity, drawPosition);
+            }
+        }
+
+        // ============================================================================================================
+        // draw
+        // ============================================================================================================
+
+        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             if (Entity.IsDisposed)
+            {
                 return false;
-            
+            }
             // get a z index underneath all this mobile's sprite layers. We will place the shadow on this z index.
             DrawShadowZDepth = spriteBatch.GetNextUniqueZ();
-            
             // get running moving and sitting booleans, which are used when drawing mobiles but not corpses.
             bool isRunning = false, isMoving = false, isSitting = false;
             if (Entity is Mobile)
@@ -113,17 +139,16 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 isMoving = (Entity as Mobile).IsMoving;
                 isSitting = (Entity as Mobile).IsSitting;
             }
-
             // flip the facing (anim directions are reversed from the client-server protocol's directions).
-            DrawFlip = (MirrorFacingForDraw(Facing) > 4) ? true : false;
-
+            DrawFlip = (MirrorFacingForDraw(Facing) > 4);
             InternalSetupLayers();
-
             if (m_MobileLayers[0].Frame == null)
+            {
                 m_MobileLayers[0].Frame = AnimationFrame.NullFrame;
+            }
             int drawCenterY = m_MobileLayers[0].Frame.Center.Y;
-
-            int drawX, drawY;
+            int drawX;
+            int drawY;
             if (DrawFlip)
             {
                 drawX = -IsometricRenderer.TILE_SIZE_INTEGER_HALF + (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
@@ -134,7 +159,6 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 drawX = -IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
                 drawY = drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - IsometricRenderer.TILE_SIZE_INTEGER_HALF - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF);
             }
-
             if (isSitting)
             {
                 drawX -= 1;
@@ -144,27 +168,24 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     drawY -= 16;
                 }
             }
-
             IsShadowCastingView = !isSitting;
-
-            // get the maximum y-extent of this object so we can correctly place overheads.
             int yOffset = 0;
-
             for (int i = 0; i < m_LayerCount; i++)
             {
                 if (m_MobileLayers[i].Frame != null)
                 {
-                    float x = (drawX + m_MobileLayers[i].Frame.Center.X);
-                    float y = -drawY - (m_MobileLayers[i].Frame.Texture.Height + m_MobileLayers[i].Frame.Center.Y) + drawCenterY;
-
+                    AAnimationFrame frame = m_MobileLayers[i].Frame;
+                    int x = (drawX + frame.Center.X);
+                    int y = -drawY - (frame.Texture.Height + frame.Center.Y) + drawCenterY;
                     if (yOffset > y)
-                        yOffset = (int)y;
-
-                    DrawTexture = m_MobileLayers[i].Frame.Texture;
-                    DrawArea = new Rectangle((int)x, (int)-y, DrawTexture.Width, DrawTexture.Height);
+                    {
+                        yOffset = y;
+                    }
+                    DrawTexture = frame.Texture;
+                    DrawArea = new Rectangle(x, -y, DrawTexture.Width, DrawTexture.Height);
                     HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
-
-                    base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
+                    base.Draw(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
+                    MobilePick(mouseOver, drawPosition, DrawArea, frame);
                 }
             }
 
@@ -184,7 +205,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             // this is where we would draw the reverse of the chair texture.
 
             bool isMounted = (Entity is Mobile) ? (Entity as Mobile).IsMounted ? true : false : false;
-            DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, isMounted ? yOffset + 16 : yOffset);
+            DrawOverheads(spriteBatch, overheadDrawPosition, mouseOver, map, isMounted ? yOffset + 16 : yOffset);
 
             return true;
         }
@@ -193,29 +214,33 @@ namespace UltimaXNA.Ultima.World.EntityViews
         // Code to get frames for drawing
         // ============================================================================================================
 
-        IAnimationFrame getFrame(int body, ref int hue, int facing, int action, float frame, out int frameCount)
+        AAnimationFrame getFrame(int body, ref int hue, int facing, int action, float frame, out int frameCount)
         {
             // patch light source animations: candles and torches.
             if (body >= 500 && body <= 505)
-                patchLightSourceAction(ref action);
-
+            {
+                PatchLightSourceAction(ref action);
+            }
             frameCount = 0;
-
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-            IAnimationFrame[] frames = provider.GetAnimation(body, ref hue, action, facing);
+            AAnimationFrame[] frames = Provider.GetAnimation(body, ref hue, action, facing);
             if (frames == null)
+            {
                 return null;
+            }
             frameCount = frames.Length;
             int iFrame = (int)frame; // frameFromSequence(frame, iFrames.Length);
             if (iFrame >= frameCount)
+            {
                 iFrame = 0;
-
+            }
             if (frames[iFrame].Texture == null)
+            {
                 return null;
+            }
             return frames[iFrame];
         }
 
-        int patchMountAction(int action)
+        int PatchMountAction(int action)
         {
             switch ((ActionIndexHumanoid)action)
             {
@@ -233,7 +258,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        void patchLightSourceAction(ref int action)
+        void PatchLightSourceAction(ref int action)
         {
             if (action == (int)ActionIndexHumanoid.Walk)
                 action = (int)ActionIndexHumanoid.Walk_Armed;
@@ -241,18 +266,15 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 action = (int)ActionIndexHumanoid.Run_Armed;
         }
 
-        int frameFromSequence(float frame, int maxFrames)
+        int GetFrameFromSequence(float frame, int maxFrames)
         {
-            return (int)(frame * (float)maxFrames);
+            return (int)(frame * maxFrames);
         }
 
         int MirrorFacingForDraw(Direction facing)
         {
             int iFacing = (int)(facing & Direction.FacingMask);
-            if (iFacing >= 3)
-                return iFacing - 3;
-            else
-                return iFacing + 5;
+            return (iFacing >= 3) ? iFacing - 3 : iFacing + 5;
         }
 
         // ============================================================================================================
@@ -327,7 +349,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             {
                 animation = (Entity as Mobile).Animation.ActionIndex;
                 if (asMount)
-                    animation = patchMountAction(animation);
+                    animation = PatchMountAction(animation);
                 frame = (Entity as Mobile).Animation.AnimationFrame;
             }
             else if (Entity is Corpse)
@@ -337,7 +359,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
 
             int frameCount;
-            IAnimationFrame animframe = getFrame(bodyID, ref hue, facing, animation, frame, out frameCount);
+            AAnimationFrame animframe = getFrame(bodyID, ref hue, facing, animation, frame, out frameCount);
             m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, animframe);
             m_FrameCount = frameCount;
         }
@@ -446,10 +468,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
         struct MobileViewLayer
         {
             public int Hue;
-            public IAnimationFrame Frame;
+            public AAnimationFrame Frame;
             public int BodyID;
 
-            public MobileViewLayer(int bodyID, int hue, IAnimationFrame frame)
+            public MobileViewLayer(int bodyID, int hue, AAnimationFrame frame)
             {
                 BodyID = bodyID;
                 Hue = hue;

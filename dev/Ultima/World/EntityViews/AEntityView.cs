@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
@@ -30,11 +31,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
     {
         public static Techniques Technique = Techniques.Default;
         public readonly AEntity Entity;
+        protected IResourceProvider Provider;
 
         public AEntityView(AEntity entity)
         {
             Entity = entity;
             SortZ = Entity.Z;
+            Provider = ServiceRegistry.GetService<IResourceProvider>();
         }
 
         public PickType PickType = PickType.PickNothing;
@@ -60,10 +63,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
         protected bool IsShadowCastingView;
         protected float DrawShadowZDepth;
 
-        public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             VertexPositionNormalTextureHue[] vertexBuffer;
-
             if (Rotation != 0)
             {
                 float w = DrawArea.Width / 2f;
@@ -71,113 +73,97 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 Vector3 center = drawPosition - new Vector3(DrawArea.X - IsometricRenderer.TILE_SIZE_INTEGER + w, DrawArea.Y + h, 0);
                 float sinx = (float)Math.Sin(Rotation) * w;
                 float cosx = (float)Math.Cos(Rotation) * w;
-                float siny = (float)Math.Sin(Rotation) * -h;
-                float cosy = (float)Math.Cos(Rotation) * -h;
+                float siny = -(float)Math.Sin(Rotation) * h;
+                float cosy = -(float)Math.Cos(Rotation) * h;
                 // 2   0    
                 // |\  |     
                 // |  \|     
                 // 3   1
                 vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
-
                 vertexBuffer[0].Position = center;
                 vertexBuffer[0].Position.X += cosx - -siny;
                 vertexBuffer[0].Position.Y -= sinx + -cosy;
-
                 vertexBuffer[1].Position = center;
                 vertexBuffer[1].Position.X += cosx - siny;
                 vertexBuffer[1].Position.Y += -sinx + -cosy;
-
                 vertexBuffer[2].Position = center;
                 vertexBuffer[2].Position.X += -cosx - -siny;
                 vertexBuffer[2].Position.Y += sinx + cosy;
-
                 vertexBuffer[3].Position = center;
                 vertexBuffer[3].Position.X += -cosx - siny;
                 vertexBuffer[3].Position.Y += sinx + -cosy;
             }
+            else if (DrawFlip)
+            {
+                // 2   0    
+                // |\  |     
+                // |  \|     
+                // 3   1
+                vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
+                vertexBuffer[0].Position = drawPosition;
+                vertexBuffer[0].Position.X += DrawArea.X + IsometricRenderer.TILE_SIZE_FLOAT;
+                vertexBuffer[0].Position.Y -= DrawArea.Y;
+                vertexBuffer[0].TextureCoordinate.Y = 0;
+                vertexBuffer[1].Position = vertexBuffer[0].Position;
+                vertexBuffer[1].Position.Y += DrawArea.Height;
+                vertexBuffer[2].Position = vertexBuffer[0].Position;
+                vertexBuffer[2].Position.X -= DrawArea.Width;
+                vertexBuffer[2].TextureCoordinate.Y = 0;
+                vertexBuffer[3].Position = vertexBuffer[1].Position;
+                vertexBuffer[3].Position.X -= DrawArea.Width;
+
+                /*if (m_YClipLine != 0)
+                {
+                    if (m_YClipLine > vertexBuffer[3].Position.Y)
+                        return false;
+                    else if (m_YClipLine > vertexBuffer[0].Position.Y)
+                    {
+                        float uvStart = (m_YClipLine - vertexBuffer[0].Position.Y) / DrawTexture.Height;
+                        vertexBuffer[0].Position.Y = vertexBuffer[2].Position.Y = m_YClipLine;
+                        vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[2].TextureCoordinate.Y = uvStart;
+                    }
+                }*/
+            }
             else
             {
-                if (DrawFlip)
+                // 0---1    
+                //    /     
+                //  /       
+                // 2---3
+                vertexBuffer = VertexPositionNormalTextureHue.PolyBuffer;
+                vertexBuffer[0].Position = drawPosition;
+                vertexBuffer[0].Position.X -= DrawArea.X;
+                vertexBuffer[0].Position.Y -= DrawArea.Y;
+                vertexBuffer[0].TextureCoordinate.Y = 0;
+                vertexBuffer[1].Position = vertexBuffer[0].Position;
+                vertexBuffer[1].Position.X += DrawArea.Width;
+                vertexBuffer[1].TextureCoordinate.Y = 0;
+                vertexBuffer[2].Position = vertexBuffer[0].Position;
+                vertexBuffer[2].Position.Y += DrawArea.Height;
+                vertexBuffer[3].Position = vertexBuffer[1].Position;
+                vertexBuffer[3].Position.Y += DrawArea.Height;
+                /*if (m_YClipLine != 0)
                 {
-                    // 2   0    
-                    // |\  |     
-                    // |  \|     
-                    // 3   1
-                    vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
-                    vertexBuffer[0].Position = drawPosition;
-                    vertexBuffer[0].Position.X += DrawArea.X + IsometricRenderer.TILE_SIZE_FLOAT;
-                    vertexBuffer[0].Position.Y -= DrawArea.Y;
-                    vertexBuffer[0].TextureCoordinate.Y = 0;
-
-                    vertexBuffer[1].Position = vertexBuffer[0].Position;
-                    vertexBuffer[1].Position.Y += DrawArea.Height;
-
-                    vertexBuffer[2].Position = vertexBuffer[0].Position;
-                    vertexBuffer[2].Position.X -= DrawArea.Width;
-                    vertexBuffer[2].TextureCoordinate.Y = 0;
-
-                    vertexBuffer[3].Position = vertexBuffer[1].Position;
-                    vertexBuffer[3].Position.X -= DrawArea.Width;
-
-                    /*if (m_YClipLine != 0)
+                    if (m_YClipLine >= vertexBuffer[3].Position.Y)
+                        return false;
+                    else if (m_YClipLine > vertexBuffer[0].Position.Y)
                     {
-                        if (m_YClipLine > vertexBuffer[3].Position.Y)
-                            return false;
-                        else if (m_YClipLine > vertexBuffer[0].Position.Y)
-                        {
-                            float uvStart = (m_YClipLine - vertexBuffer[0].Position.Y) / DrawTexture.Height;
-                            vertexBuffer[0].Position.Y = vertexBuffer[2].Position.Y = m_YClipLine;
-                            vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[2].TextureCoordinate.Y = uvStart;
-                        }
-                    }*/
-                }
-                else
-                {
-                    // 0---1    
-                    //    /     
-                    //  /       
-                    // 2---3
-                    vertexBuffer = VertexPositionNormalTextureHue.PolyBuffer;
-                    vertexBuffer[0].Position = drawPosition;
-                    vertexBuffer[0].Position.X -= DrawArea.X;
-                    vertexBuffer[0].Position.Y -= DrawArea.Y;
-                    vertexBuffer[0].TextureCoordinate.Y = 0;
-
-                    vertexBuffer[1].Position = vertexBuffer[0].Position;
-                    vertexBuffer[1].Position.X += DrawArea.Width;
-                    vertexBuffer[1].TextureCoordinate.Y = 0;
-
-                    vertexBuffer[2].Position = vertexBuffer[0].Position;
-                    vertexBuffer[2].Position.Y += DrawArea.Height;
-
-                    vertexBuffer[3].Position = vertexBuffer[1].Position;
-                    vertexBuffer[3].Position.Y += DrawArea.Height;
-
-                    /*if (m_YClipLine != 0)
-                    {
-                        if (m_YClipLine >= vertexBuffer[3].Position.Y)
-                            return false;
-                        else if (m_YClipLine > vertexBuffer[0].Position.Y)
-                        {
-                            float uvStart = (m_YClipLine - vertexBuffer[0].Position.Y) / DrawTexture.Height;
-                            vertexBuffer[0].Position.Y = vertexBuffer[1].Position.Y = m_YClipLine;
-                            vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[1].TextureCoordinate.Y = uvStart;
-                        }
-                    }*/
-                }
+                        float uvStart = (m_YClipLine - vertexBuffer[0].Position.Y) / DrawTexture.Height;
+                        vertexBuffer[0].Position.Y = vertexBuffer[1].Position.Y = m_YClipLine;
+                        vertexBuffer[0].TextureCoordinate.Y = vertexBuffer[1].TextureCoordinate.Y = uvStart;
+                    }
+                }*/
             }
-
             if (vertexBuffer[0].Hue != HueVector)
+            {
                 vertexBuffer[0].Hue = vertexBuffer[1].Hue = vertexBuffer[2].Hue = vertexBuffer[3].Hue = HueVector;
-
+            }
             if (!spriteBatch.DrawSprite(DrawTexture, vertexBuffer, Technique))
             {
                 // the vertex buffer was not on screen, return false (did not draw)
                 return false;
             }
-
-            Pick(mouseOverList, vertexBuffer);
-
+            Pick(mouseOver, vertexBuffer);
             if (IsShadowCastingView)
             {
                 spriteBatch.DrawShadow(DrawTexture, vertexBuffer, new Vector2(
@@ -185,7 +171,6 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     drawPosition.Y + (Entity.Position.Offset.X + Entity.Position.Offset.Y) * IsometricRenderer.TILE_SIZE_FLOAT_HALF - ((Entity.Position.Z_offset + Entity.Z) * 4) + IsometricRenderer.TILE_SIZE_FLOAT_HALF),
                     DrawFlip, DrawShadowZDepth);
             }
-
             return true;
         }
 
@@ -194,7 +179,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         /// Should only be implemented for those views that call CheckDefer(), Otherwise, using only
         /// Draw() will suffice. See MobileView for an example of use.
         /// </summary>
-        public virtual bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        public virtual bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             return false;
         }
@@ -203,7 +188,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         /// Draws all overheads, starting at [yOffset] pixels above the Entity's anchor point on the ground.
         /// </summary>
         /// <param name="yOffset"></param>
-        public void DrawOverheads(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, int yOffset)
+        public void DrawOverheads(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, int yOffset)
         {
             for (int i = 0; i < Entity.Overheads.Count; i++)
             {
@@ -214,28 +199,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        protected void Pick(MouseOverList mouseOverList, VertexPositionNormalTextureHue[] vertexBuffer)
+        protected virtual void Pick(MouseOverList mouseOver, VertexPositionNormalTextureHue[] vertexBuffer)
         {
-            if ((mouseOverList.PickType & PickType) == PickType)
-            {
-                if (((!DrawFlip) && mouseOverList.IsMouseInObject(vertexBuffer[0].Position, vertexBuffer[3].Position)) ||
-                    ((DrawFlip) && mouseOverList.IsMouseInObject(vertexBuffer[2].Position, vertexBuffer[1].Position)))
-                {
-                    MouseOverItem item;
-                    if (!DrawFlip)
-                    {
-                        item = new MouseOverItem(DrawTexture, vertexBuffer[0].Position, Entity);
-                        item.Vertices = new Vector3[4] { vertexBuffer[0].Position, vertexBuffer[1].Position, vertexBuffer[2].Position, vertexBuffer[3].Position };
-                    }
-                    else
-                    {
-                        item = new MouseOverItem(DrawTexture, vertexBuffer[2].Position, Entity);
-                        item.Vertices = new Vector3[4] { vertexBuffer[2].Position, vertexBuffer[0].Position, vertexBuffer[3].Position, vertexBuffer[1].Position };
-                        item.FlippedTexture = true;
-                    }
-                    mouseOverList.Add2DItem(item);
-                }
-            }
+            // override this method if the view should be pickable.
         }
 
         // ============================================================================================================

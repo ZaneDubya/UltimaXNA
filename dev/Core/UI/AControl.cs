@@ -792,7 +792,9 @@ namespace UltimaXNA.Core.UI
                 if (IsPointWithinControl((int)position.X - X - ParentX, (int)position.Y - Y - ParentY))
                 {
                     if (alwaysHandleMouseInput || HandlesMouseInput)
+                    {
                         focusedControls.Insert(0, this);
+                    }
                     for (int i = 0; i < Children.Count; i++)
                     {
                         AControl c = Children[i];

@@ -19,34 +19,22 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class ItemGumplingPaperdoll : ItemGumpling
     {
-        public int SlotIndex = 0;
-        public bool IsFemale = false;
+        public int SlotIndex;
+        public bool IsFemale;
 
-        private int m_x, m_y;
-        private bool m_isBuilt = false; // what is this doing?
-        private int m_HueOverride = 0;
+        int m_HueOverride;
+        int m_GumpIndex;
 
         public ItemGumplingPaperdoll(AControl parent, int x, int y, Item item)
             : base(parent, item)
         {
-            m_x = x;
-            m_y = y;
+            Position = new Point(x, y);
             HighlightOnMouseOver = false;
         }
 
         protected override Point InternalGetPickupOffset(Point offset)
         {
-            // fix this to be more centered on the object.
             return offset;
-        }
-
-        public override void Update(double totalMS, double frameMS)
-        {
-            base.Update(totalMS, frameMS);
-            if (!m_isBuilt)
-            {
-                Position = new Point(m_x, m_y);
-            }
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
@@ -54,35 +42,25 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (m_Texture == null)
             {
                 IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                if (IsFemale)
+                m_GumpIndex = Item.ItemData.AnimID + (IsFemale ? 60000 : 50000);
+                int indexTranslated, hueTranslated;
+                if (GumpDefTranslator.ItemHasGumpTranslation(m_GumpIndex, out indexTranslated, out hueTranslated))
                 {
-                    int index = Item.ItemData.AnimID + 60000;
-                    int indexTranslated, hueTranslated;
-                    if (GumpDefTranslator.ItemHasGumpTranslation(index, out indexTranslated, out hueTranslated))
-                    {
-                        index = indexTranslated;
-                        m_HueOverride = hueTranslated;
-                        m_Texture = provider.GetUITexture(index);
-                    }
+                    m_GumpIndex = indexTranslated;
+                    m_HueOverride = hueTranslated;
                 }
-                if (m_Texture == null)
-                {
-                    int index = Item.ItemData.AnimID + 50000;
-                    int indexTranslated, hueTranslated;
-                    if (GumpDefTranslator.ItemHasGumpTranslation(index, out indexTranslated, out hueTranslated))
-                    {
-                        index = indexTranslated;
-                        m_HueOverride = hueTranslated;
-                        m_Texture = provider.GetUITexture(index);
-                    }
-                    m_Texture = provider.GetUITexture(index);
-                }
+                m_Texture = provider.GetUITexture(m_GumpIndex);
                 Size = new Point(m_Texture.Width, m_Texture.Height);
             }
-
             int hue = (Item.Hue == 0 & m_HueOverride != 0) ? m_HueOverride : Item.Hue;
             spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue));
             base.Draw(spriteBatch, position);
+        }
+
+        protected override bool IsPointWithinControl(int x, int y)
+        {
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            return provider.IsPointInUITexture(m_GumpIndex, x, y);
         }
     }
 }

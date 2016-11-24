@@ -36,22 +36,22 @@ namespace UltimaXNA.Ultima.World.Input
     /// </summary>
     internal class WorldInput
     {
-        private const double c_PauseBeforeMouseMovementMS = 105d;
-        private const double c_PauseBeforeKeyboardFacingMS = 55d; // a little more than three frames @ 60fps.
-        private const double c_PauseBeforeKeyboardMovementMS = 125d; // a little more than seven frames @ 60fps.
-        private bool m_ContinuousMouseMovementCheck;
+        const double c_PauseBeforeMouseMovementMS = 105d;
+        const double c_PauseBeforeKeyboardFacingMS = 55d; // a little more than three frames @ 60fps.
+        const double c_PauseBeforeKeyboardMovementMS = 125d; // a little more than seven frames @ 60fps.
+        bool m_ContinuousMouseMovementCheck;
 
-        private AEntity m_DraggingEntity;
+        AEntity m_DraggingEntity;
 
-        private INetworkClient m_Network;
-        private UserInterfaceService m_UserInterface;
-        private InputManager m_Input;
+        INetworkClient m_Network;
+        UserInterfaceService m_UserInterface;
+        InputManager m_Input;
 
         // keyboard movement variables.
-        private double m_PauseBeforeKeyboardMovementMS;
+        double m_PauseBeforeKeyboardMovementMS;
 
-        private double m_TimeSinceMovementButtonPressed;
-        private Vector2 m_dragOffset;
+        double m_TimeSinceMovementButtonPressed;
+        Point m_DragOffset;
 
         protected WorldModel World
         {
@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.World.Input
             private set;
         }
 
-        private MacroEngine m_Macros;
+        MacroEngine m_Macros;
 
         public WorldInput(WorldModel world)
         {
@@ -186,7 +186,7 @@ namespace UltimaXNA.Ultima.World.Input
             m_Macros.Update(frameMS);
         }
 
-        private void doMouseMovement(double frameMS)
+        void doMouseMovement(double frameMS)
         {
             Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();
             if (player == null)
@@ -237,7 +237,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        private void doKeyboardMovement(double frameMS)
+        void doKeyboardMovement(double frameMS)
         {
             Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();
             if (player == null)
@@ -342,7 +342,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        private void onMoveButton(InputEventMouse e)
+        void onMoveButton(InputEventMouse e)
         {
             if (e.EventType == MouseEvent.Down)
             {
@@ -358,13 +358,13 @@ namespace UltimaXNA.Ultima.World.Input
             e.Handled = true;
         }
 
-        private void onInteractButton(InputEventMouse e, AEntity overEntity, Vector2 overEntityPoint)
+        void onInteractButton(InputEventMouse e, AEntity overEntity, Point overEntityPoint)
         {
             if (e.EventType == MouseEvent.Down)
             {
                 // prepare to pick this item up.
                 m_DraggingEntity = overEntity;
-                m_dragOffset = overEntityPoint;
+                m_DragOffset = overEntityPoint;
             }
             else if (e.EventType == MouseEvent.Click)
             {
@@ -435,7 +435,7 @@ namespace UltimaXNA.Ultima.World.Input
                 else if (overEntity is Item)
                 {
                     // attempt to pick up item.
-                    World.Interaction.PickupItem((Item)overEntity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
+                    World.Interaction.PickupItem((Item)overEntity, new Point((int)m_DragOffset.X, (int)m_DragOffset.Y));
                 }
                 else if (overEntity is Mobile)
                 {
@@ -453,7 +453,7 @@ namespace UltimaXNA.Ultima.World.Input
             e.Handled = true;
         }
 
-        private void InternalParseMouse(double frameMS)
+        void InternalParseMouse(double frameMS)
         {
             List<InputEventMouse> events = m_Input.GetMouseEvents();
             foreach (InputEventMouse e in events)
@@ -480,7 +480,7 @@ namespace UltimaXNA.Ultima.World.Input
             InternalCheckQueuedClick(frameMS);
         }
 
-        private void InternalParseKeyboard(double frameMS)
+        void InternalParseKeyboard(double frameMS)
         {
             // macros
             doMacroInput(m_Input.GetKeyboardEvents());
@@ -525,7 +525,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        private void doMacroInput(List<InputEventKeyboard> events)
+        void doMacroInput(List<InputEventKeyboard> events)
         {
             foreach (InputEventKeyboard e in events)
             {
@@ -549,21 +549,20 @@ namespace UltimaXNA.Ultima.World.Input
         // Legacy Client waits about 0.5 seconds before sending a click event when you click in the world.
         // This allows time for the player to potentially double-click on an object.
         // If the player does so, this will cancel the single-click event.
-        private AEntity m_QueuedEntity;
+        AEntity m_QueuedEntity;
+        Point m_QueuedEntityPosition;
+        InputEventMouse m_QueuedEvent;
+        double m_QueuedEvent_DequeueAt;
+        bool m_QueuedEvent_InQueue;
 
-        private Vector2 m_QueuedEntityPosition;
-        private InputEventMouse m_QueuedEvent;
-        private double m_QueuedEvent_DequeueAt;
-        private bool m_QueuedEvent_InQueue;
-
-        private void ClearQueuedClick()
+        void ClearQueuedClick()
         {
             m_QueuedEvent_InQueue = false;
             m_QueuedEvent = null;
             m_QueuedEntity = null;
         }
 
-        private void InternalCheckQueuedClick(double frameMS)
+        void InternalCheckQueuedClick(double frameMS)
         {
             if (m_QueuedEvent_InQueue)
             {
@@ -576,7 +575,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        private void InternalQueueSingleClick(InputEventMouse e, AEntity overEntity, Vector2 overEntityPoint)
+        void InternalQueueSingleClick(InputEventMouse e, AEntity overEntity, Point overEntityPoint)
         {
             m_QueuedEvent_InQueue = true;
             m_QueuedEntity = overEntity;
