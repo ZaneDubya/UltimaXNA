@@ -36,6 +36,12 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
+        protected override void Pick(MouseOverList mouseOver, VertexPositionNormalTextureHue[] vertexBuffer)
+        {
+            // TODO: This is called when the tile is not stretched - just drawn as a 44x44 tile.
+            // Because this is not written, no flat tiles can ever be picked.
+        }
+
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             if (m_NoDraw)

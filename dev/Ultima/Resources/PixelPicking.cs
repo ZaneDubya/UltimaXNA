@@ -67,6 +67,7 @@ namespace UltimaXNA.Ultima.Resources
             if (!m_IDs.TryGetValue(textureID, out index))
             {
                 width = height = 0;
+                return;
             }
             width = ReadIntegerFromData(ref index);
             height = ReadIntegerFromData(ref index);

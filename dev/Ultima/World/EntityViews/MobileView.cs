@@ -112,7 +112,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 // ul pixel = (drawposition - drawarea.x)
                 x = mouseOver.MousePosition.X - (int)drawPosition.X + area.X;
             }
-            y -= (int)drawPosition.Y - area.Y;
+            y = mouseOver.MousePosition.Y - ((int)drawPosition.Y - area.Y);
             if (frame.IsPointInTexture(x, y))
             {
                 mouseOver.AddItem(Entity, drawPosition);
