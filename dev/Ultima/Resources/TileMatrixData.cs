@@ -175,12 +175,34 @@ namespace UltimaXNA.Ultima.Resources
                 length = m_StaticIndexReader.ReadInt32();
                 if (lookup < 0 || length <= 0)
                 {
+<<<<<<< HEAD
                     return m_EmptyStaticsChunk;
                 }
                 m_StaticDataStream.Seek(lookup, SeekOrigin.Begin);
                 if (length > m_StaticTileLoadingBuffer.Length)
                 {
                     m_StaticTileLoadingBuffer = new byte[length];
+=======
+                    m_StaticIndexReader.BaseStream.Seek(((chunkX * ChunkHeight) + chunkY) * 12, SeekOrigin.Begin);
+
+                    int lookup = m_StaticIndexReader.ReadInt32();
+                    length = m_StaticIndexReader.ReadInt32();
+
+                    if (lookup < 0 || length <= 0)
+                    {
+                        return m_EmptyStaticsChunk;
+                    }
+                    else
+                    {
+                        m_StaticDataStream.Seek(lookup, SeekOrigin.Begin);
+
+                        if (length > m_StaticTileLoadingBuffer.Length)
+                            m_StaticTileLoadingBuffer = new byte[length];
+
+                        m_StaticDataStream.Read(m_StaticTileLoadingBuffer, 0, length);
+                        return m_StaticTileLoadingBuffer;
+                    }
+>>>>>>> cc2ddb56617f85e47942839814b2a887d38e509d
                 }
                 fixed (byte* pStaticTiles = m_StaticTileLoadingBuffer)
                 {
@@ -206,10 +228,31 @@ namespace UltimaXNA.Ultima.Resources
             {
                 return m_BufferedLandChunks[index];
             }
+<<<<<<< HEAD
             // if it was not cached in the buffer, we will be loading it.
             m_BufferedLandChunkKeys[index] = key;
             // load the map chunk from a file. Check the patch file first (mapdif#.mul), then the base file (map#.mul).
             if (m_Patch.TryGetLandPatch(MapIndex, chunkX, chunkY, ref m_BufferedLandChunks[index]))
+=======
+            else
+            {
+                var ptr = (int) ((chunkX * ChunkHeight) + chunkY) * m_SizeLandChunk + 4;
+                if (m_MapIndex != null)
+                {
+                    ptr = m_MapIndex.Lookup(ptr);
+                }
+
+                m_MapDataStream.Seek(ptr, SeekOrigin.Begin);
+                m_MapDataStream.Read(m_bufferedLandChunks[index], 0, m_SizeLandChunkData);
+                Metrics.ReportDataRead(m_SizeLandChunkData);
+                return m_bufferedLandChunks[index];
+            }
+        }
+
+        public void Dispose()
+        {
+            if (m_StaticIndexReader != null)
+>>>>>>> cc2ddb56617f85e47942839814b2a887d38e509d
             {
                 return m_BufferedLandChunks[index];
             }
