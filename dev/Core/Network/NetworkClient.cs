@@ -81,7 +81,7 @@ namespace UltimaXNA.Core.Network
         {
             get { return m_IsConnected; }
         }
-        
+
         public NetworkClient()
         {
             m_Decompression = new HuffmanDecompression();
@@ -99,22 +99,27 @@ namespace UltimaXNA.Core.Network
             }
         }
 
-        public void Register<T>(object client, int id, int length, Action<T> onReceive) where T : IRecvPacket {
+        public void Register<T>(object client, int id, int length, Action<T> onReceive) where T : IRecvPacket
+        {
             Type type = typeof(T);
             ConstructorInfo[] ctors = type.GetConstructors();
             bool valid = false;
-            for (int i = 0; i < ctors.Length && !valid; i++) {
+            for (int i = 0; i < ctors.Length && !valid; i++)
+            {
                 ParameterInfo[] parameters = ctors[i].GetParameters();
                 valid = (parameters.Length == 1 && parameters[0].ParameterType == typeof(PacketReader));
             }
-            if (!valid) {
+            if (!valid)
+            {
                 throw new NetworkException($"Unable to register packet type {type} without a public constructor with a {typeof(PacketReader)} parameter");
             }
-            if (id > byte.MaxValue) {
+            if (id > byte.MaxValue)
+            {
                 throw new NetworkException($"Unable to register packet id 0x{id:X4} because it is greater than 0xff");
             }
             PacketHandler handler = new PacketHandler<T>(id, length, type, client, onReceive);
-            if (m_TypedHandlers[id].Any()) {
+            if (m_TypedHandlers[id].Any())
+            {
                 int requiredLength = m_TypedHandlers[id][0].Length;
                 Guard.Requires(requiredLength == length,
                     "Invalid packet length.  All packet handlers for 0x{0:X2} must specify a length of {1}.", id,
@@ -123,12 +128,17 @@ namespace UltimaXNA.Core.Network
             m_TypedHandlers[id].Add(handler);
         }
 
-        public void Unregister(object client) {
-            for (int id = 0; id < byte.MaxValue; id++) {
-                if (m_TypedHandlers[id] != null) {
-                    for (int i = 0; i < m_TypedHandlers[id].Count; i++) {
+        public void Unregister(object client)
+        {
+            for (int id = 0; id < byte.MaxValue; id++)
+            {
+                if (m_TypedHandlers[id] != null)
+                {
+                    for (int i = 0; i < m_TypedHandlers[id].Count; i++)
+                    {
                         PacketHandler handler = m_TypedHandlers[id][i] as PacketHandler;
-                        if (handler.Client == client) {
+                        if (handler.Client == client)
+                        {
                             m_TypedHandlers[id].RemoveAt(i);
                             i--;
                         }
@@ -137,10 +147,13 @@ namespace UltimaXNA.Core.Network
             }
         }
 
-        public void Unregister(object client, int id) {
-            for (int i = 0; i < m_TypedHandlers[id].Count; i++) {
+        public void Unregister(object client, int id)
+        {
+            for (int i = 0; i < m_TypedHandlers[id].Count; i++)
+            {
                 PacketHandler handler = m_TypedHandlers[id][i] as PacketHandler;
-                if (handler.Client == client) {
+                if (handler.Client == client)
+                {
                     m_TypedHandlers[id].RemoveAt(i);
                     break;
                 }
@@ -200,7 +213,7 @@ namespace UltimaXNA.Core.Network
 
             m_IncompletePacket.Clear();
             m_IncompleteDecompressionPacket.Clear();
-            
+
             if (IsConnected)
             {
                 Disconnect();
@@ -248,7 +261,7 @@ namespace UltimaXNA.Core.Network
                 }
 
             }
-            catch 
+            catch
             {
                 success = false;
             }
@@ -257,13 +270,17 @@ namespace UltimaXNA.Core.Network
             return success;
         }
 
-        public void Disconnect() {
-            if (m_ServerSocket != null) {
-                try {
+        public void Disconnect()
+        {
+            if (m_ServerSocket != null)
+            {
+                try
+                {
                     m_ServerSocket.Shutdown(SocketShutdown.Both);
                     m_ServerSocket.Close();
                 }
-                catch {
+                catch
+                {
                     // empty catch.
                 }
                 m_ServerSocket = null;
@@ -291,18 +308,23 @@ namespace UltimaXNA.Core.Network
             return false;
         }
 
-        public bool Send(byte[] buffer, int offset, int length, string name) {
+        public bool Send(byte[] buffer, int offset, int length, string name)
+        {
             bool success = true;
-            if (buffer == null || buffer.Length == 0) {
+            if (buffer == null || buffer.Length == 0)
+            {
                 throw new NetworkException("Unable to send, buffer was null or empty");
             }
             LogPacket(buffer, length, false);
-            try {
-                lock (m_ServerSocket) {
+            try
+            {
+                lock (m_ServerSocket)
+                {
                     m_ServerSocket.Send(buffer, offset, length, SocketFlags.None);
                 }
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Tracer.Debug(e.ToString());
                 success = false;
             }
@@ -345,9 +367,9 @@ namespace UltimaXNA.Core.Network
                     int offset = 0;
 
                     ProcessBuffer(buffer, ref offset, length);
-                    
+
                     // Not all the data was processed, due to an incomplete packet
-                    if(offset < length)
+                    if (offset < length)
                     {
                         m_IncompletePacket.Write(buffer, offset, length - offset);
                     }
@@ -390,7 +412,7 @@ namespace UltimaXNA.Core.Network
                 processedOffset = sourceOffset;
                 offset += outSize;
             }
-                
+
             length = offset;
 
             // We've run out of data to parse, or the packet was incomplete. If the packet was incomplete,
@@ -403,7 +425,7 @@ namespace UltimaXNA.Core.Network
 
             m_IncompleteDecompressionPacket.Write(source, processedOffset, sourceLength - processedOffset);
         }
-        
+
         private void ProcessBuffer(byte[] buffer, ref int offset, int length)
         {
             int index = offset;
@@ -490,25 +512,29 @@ namespace UltimaXNA.Core.Network
                     packetHandler = ph;
                     return true;
                 }
-                
+
                 realLength = ph.Length;
                 packetHandler = ph;
                 return true;
             }
-              
-            return false; 
+
+            return false;
         }
 
-        private void LogPacket(byte[] buffer, int length, bool servertoclient = true) {
-            if (Settings.Debug.LogPackets) {
+        private void LogPacket(byte[] buffer, int length, bool servertoclient = true)
+        {
+            if (Settings.Debug.LogPackets)
+            {
                 Tracer.Debug(servertoclient ? "Server - > Client" : "Client - > Server");
                 Tracer.Debug($"Id: 0x{buffer[0]:X2} Length: {length}");
                 Tracer.Debug($"{Utility.FormatBuffer(buffer, length)}{Environment.NewLine}");
             }
         }
 
-        private void InvokeHandler(PacketHandler packetHandler, byte[] buffer, int length) {
-            if (packetHandler == null) {
+        private void InvokeHandler(PacketHandler packetHandler, byte[] buffer, int length)
+        {
+            if (packetHandler == null)
+            {
                 return;
             }
             PacketReader reader = PacketReader.CreateInstance(buffer, length, packetHandler.Length != -1);
@@ -545,7 +571,7 @@ namespace UltimaXNA.Core.Network
         public void Write(byte[] source, int offset, int length)
         {
             Buffer.BlockCopy(source, offset, m_Buffer, m_Length, length);
-            
+
             m_Length += length;
         }
 
