@@ -16,13 +16,11 @@ namespace UltimaXNA.Configuration
 {
     public sealed class LoginSettings : ASettingsSection
     {
-        public const string SectionName = "server";
-
-        private string m_ServerAddress;
-        private int m_ServerPort;
-        private string m_UserName;
-        private bool m_AutoSelectLastCharacter;
-        private string m_LastCharacterName;
+        string m_ServerAddress;
+        int m_ServerPort;
+        string m_UserName;
+        bool m_AutoSelectLastCharacter;
+        string m_LastCharacterName;
 
         public LoginSettings()
         {

@@ -19,26 +19,24 @@ namespace UltimaXNA.Configuration
 {
     public class UserInterfaceSettings : ASettingsSection
     {
-        public const string SectionName = "ui";
+        ResolutionProperty m_FullScreenResolution;
+        ResolutionProperty m_WindowResolution;
+        ResolutionProperty m_WorldGumpResolution;
+        bool m_PlayWindowPixelDoubling;
+        bool m_IsFullScreen;
+        MouseProperty m_Mouse;
+        bool m_AlwaysRun;
+        bool m_MenuBarDisabled;
 
-        private ResolutionProperty m_FullScreenResolution;
-        private ResolutionProperty m_WindowResolution;
-        private ResolutionProperty m_WorldGumpResolution;
-        private bool m_PlayWindowPixelDoubling;
-        private bool m_IsFullScreen;
-        private MouseProperty m_Mouse;
-        private bool m_AlwaysRun;
-        private bool m_MenuBarDisabled;
-
-        private int m_SpeechColor = 4 * Utility.RandomValue(0, 99) * 5;
-        private int m_EmoteColor = 646;
-        private int m_PartyMsgPrivateColor = 58;
-        private int m_PartyMsgColor = 68;
-        private int m_GuildMsgColor = 70;
-        private bool m_IgnoreGuildMsg;
-        private int m_AllianceMsgColor = 487;
-        private bool m_IgnoreAllianceMsg;
-        private bool m_CrimeQuery;
+        int m_SpeechColor = 4 * Utility.RandomValue(0, 99) * 5;
+        int m_EmoteColor = 646;
+        int m_PartyMsgPrivateColor = 58;
+        int m_PartyMsgColor = 68;
+        int m_GuildMsgColor = 70;
+        bool m_IgnoreGuildMsg;
+        int m_AllianceMsgColor = 487;
+        bool m_IgnoreAllianceMsg;
+        bool m_CrimeQuery;
 
         public UserInterfaceSettings()
         {
