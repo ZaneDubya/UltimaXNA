@@ -263,7 +263,7 @@ namespace UltimaXNA.Ultima.World
         void SaveOpenGumps()
         {
             Settings.Gumps.SavedGumps.Clear();
-            foreach (AControl gump in m_UserInterface.Controls)
+            foreach (AControl gump in m_UserInterface.OpenControls)
             {
                 if (gump is Gump)
                 {
