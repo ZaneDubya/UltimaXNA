@@ -9,17 +9,16 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.ComponentModel;
-using System.Windows.Forms;
+using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core;
-using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima;
@@ -28,33 +27,26 @@ using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World;
-using UltimaXNA.Configuration.Properties;
-using UltimaXNA.Core.Patterns.MVC;
 #endregion
 
 namespace UltimaXNA
 {
-    internal class UltimaGame : Game
+    internal class UltimaGame : CoreGame
     {
         public static double TotalMS;
 
-        GraphicsDeviceManager m_GraphicsDeviceManager;
         AudioService m_Audio;
         InputManager m_Input;
         UserInterfaceService m_UserInterface;
         INetworkClient m_Network;
         PluginManager m_Plugins;
         ModelManager m_Models;
-        Form GameForm => Control.FromHandle(Window.Handle) as Form;
         bool m_IsRunning;
 
         public ModelManager Models => m_Models;
 
         public UltimaGame()
         {
-            m_GraphicsDeviceManager = new GraphicsDeviceManager(this);
-            m_GraphicsDeviceManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
-            m_GraphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
             GameForm.FormClosing += OnFormClosing;
             SetupWindowForLogin();
         }
@@ -99,24 +91,16 @@ namespace UltimaXNA
             base.Dispose(disposing);
         }
 
-        protected override void Update(GameTime gameTime)
+        protected override void OnUpdate(double totalMS, double frameMS)
         {
-            if (Profiler.InContext("OutOfContext"))
-                Profiler.ExitContext("OutOfContext");
-            Profiler.EnterContext("Update");
-
-            IsFixedTimeStep = Settings.Engine.IsFixedTimeStep;
-
-            if(!m_IsRunning)
+            if (!m_IsRunning)
             {
                 Settings.Save();
                 Exit();
             }
             else
             {
-                base.Update(gameTime);
-                double totalMS = gameTime.TotalGameTime.TotalMilliseconds;
-                double frameMS = gameTime.ElapsedGameTime.TotalMilliseconds;
+                IsFixedTimeStep = Settings.Engine.IsFixedTimeStep;
                 TotalMS = totalMS;
                 m_Audio.Update();
                 m_Input.Update(totalMS, frameMS);
@@ -127,19 +111,11 @@ namespace UltimaXNA
                 }
                 Models.Current.Update(totalMS, frameMS);
             }
-            Profiler.ExitContext("Update");
-            Profiler.EnterContext("OutOfContext");
         }
 
-        protected override void Draw(GameTime gameTime)
+        protected override void OnDraw(double frameMS)
         {
-            Profiler.EndFrame();
-            Profiler.BeginFrame();
-            if (Profiler.InContext("OutOfContext"))
-                Profiler.ExitContext("OutOfContext");
-            Profiler.EnterContext("RenderFrame");
-
-            if(!IsMinimized)
+            if (!IsMinimized)
             {
                 if (Models.Current is WorldModel)
                 {
@@ -150,35 +126,14 @@ namespace UltimaXNA
                 {
                     CheckWindowSize(800, 600);
                 }
-                Models.Current.GetView().Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
-                m_UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
+                Models.Current.GetView().Draw(frameMS);
+                m_UserInterface.Draw(frameMS);
             }
-
-            Profiler.ExitContext("RenderFrame");
-            Profiler.EnterContext("OutOfContext");
-
-            UpdateWindowCaption(gameTime);
         }
 
         public void Quit()
         {
             m_IsRunning = false;
-        }
-
-        void UpdateWindowCaption(GameTime gameTime)
-        {
-            double timeDraw = Profiler.GetContext("RenderFrame").TimeInContext;
-            double timeUpdate = Profiler.GetContext("Update").TimeInContext;
-            double timeOutOfContext = Profiler.GetContext("OutOfContext").TimeInContext;
-            double timeTotalCheck = timeOutOfContext + timeDraw + timeUpdate;
-            double timeTotal = Profiler.TrackedTime;
-            double avgDrawMs = Profiler.GetContext("RenderFrame").AverageTime;
-
-            Window.Title = string.Format("UltimaXNA Draw:{0:0.0}% Update:{1:0.0}% AvgDraw:{2:0.0}ms {3}",
-                100d * (timeDraw / timeTotal),
-                100d * (timeUpdate / timeTotal),
-                avgDrawMs,
-                gameTime.IsRunningSlowly ? "*" : string.Empty);
         }
 
         public void SetupWindowForLogin()
@@ -206,51 +161,9 @@ namespace UltimaXNA
             }
             else
             {
-                Settings.UserInterface.WindowResolution = new ResolutionProperty(m_GraphicsDeviceManager.PreferredBackBufferWidth, m_GraphicsDeviceManager.PreferredBackBufferHeight);
+                ResolutionProperty res = new ResolutionProperty(DeviceManager.PreferredBackBufferWidth, DeviceManager.PreferredBackBufferHeight);
+                Settings.UserInterface.WindowResolution = res;
             }
-        }
-
-        bool IsMinimized => GameForm.WindowState == FormWindowState.Minimized;
-        bool IsMaximized => GameForm.WindowState == FormWindowState.Minimized;
-
-        void MaximizeWindow()
-        {
-            GameForm.WindowState = FormWindowState.Maximized;
-        }
-
-        void RestoreWindow()
-        {
-            if (GameForm.WindowState != FormWindowState.Normal)
-            {
-                GameForm.WindowState = FormWindowState.Normal;
-            }
-        }
-
-        void CheckWindowSize(int minWidth, int minHeight)
-        {
-            GameWindow window = Window; // (sender as GameWindow);
-            ResolutionProperty resolution = new ResolutionProperty(window.ClientBounds.Width, window.ClientBounds.Height);
-            // this only occurs when the world is active. Make sure that we don't reduce the window size
-            // smaller than the world gump size.
-            if (resolution.Width < minWidth)
-                resolution.Width = minWidth;
-            if (resolution.Height < minHeight)
-                resolution.Height = minHeight;
-            if (resolution.Width != window.ClientBounds.Width || resolution.Height != window.ClientBounds.Height)
-                SetGraphicsDeviceWidthHeight(resolution);
-        }
-
-        void SetGraphicsDeviceWidthHeight(ResolutionProperty resolution)
-        {
-            m_GraphicsDeviceManager.PreferredBackBufferWidth = resolution.Width;
-            m_GraphicsDeviceManager.PreferredBackBufferHeight = resolution.Height;
-            m_GraphicsDeviceManager.SynchronizeWithVerticalRetrace = Settings.Engine.IsVSyncEnabled;
-            m_GraphicsDeviceManager.ApplyChanges();
-        }
-
-        void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
-        {
-            e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }
 
         void OnFormClosing(object sender, CancelEventArgs e)
