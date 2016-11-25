@@ -78,7 +78,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         public override void OnButtonClick(int buttonID) {
             switch ((SelectServerGumpButtons)buttonID) {
                 case SelectServerGumpButtons.QuitButton:
-                    UltimaGame.IsRunning = false;
+                    ServiceRegistry.GetService<UltimaGame>().Quit();
                     break;
                 case SelectServerGumpButtons.BackButton:
                     m_OnBackToLoginScreen();

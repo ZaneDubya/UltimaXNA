@@ -102,7 +102,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         public override void OnButtonClick(int buttonID) {
             switch ((LoggingInGumpButtons)buttonID) {
                 case LoggingInGumpButtons.QuitButton:
-                    UltimaGame.IsRunning = false;
+                    ServiceRegistry.GetService<UltimaGame>().Quit();
                     break;
                 case LoggingInGumpButtons.CancelLoginButton:
                     m_OnCancelLogin();

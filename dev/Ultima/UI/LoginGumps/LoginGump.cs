@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
 
             switch ((LoginGumpButtons)buttonID) {
                 case LoginGumpButtons.QuitButton:
-                    UltimaGame.IsRunning = false;
+                    ServiceRegistry.GetService<UltimaGame>().Quit();
                     break;
                 case LoginGumpButtons.LoginButton: {
                         SecureString secureStr = new SecureString();

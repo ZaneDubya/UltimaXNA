@@ -28,7 +28,7 @@ using UltimaXNA.Configuration.Properties;
 
 namespace UltimaXNA.Ultima.World
 {
-    class WorldModel : AUltimaModel
+    class WorldModel : AModel
     {
         // ============================================================================================================
         // Private variables
@@ -153,7 +153,6 @@ namespace UltimaXNA.Ultima.World
         // Ctor, Initialization, Dispose, Update
         // ============================================================================================================
         public WorldModel()
-            : base()
         {
             ServiceRegistry.Register<WorldModel>(this);
 
@@ -244,7 +243,7 @@ namespace UltimaXNA.Ultima.World
         {
             m_Network.Disconnect(); // stops keep alive packets.
             IsInWorld = false;
-            m_Engine.ActiveModel = new LoginModel();
+            m_Engine.Models.Current = new LoginModel();
         }
 
         // ============================================================================================================

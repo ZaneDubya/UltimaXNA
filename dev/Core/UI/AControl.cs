@@ -726,8 +726,8 @@ namespace UltimaXNA.Core.UI
 
         public void MouseClick(Point position, MouseButton button)
         {
-            int x = (int)position.X - X - ParentX;
-            int y = (int)position.Y - Y - ParentY;
+            int x = position.X - X - ParentX;
+            int y = position.Y - Y - ParentY;
 
             bool doubleClick = false;
             if (m_MaxTimeForDoubleClick != 0f)
