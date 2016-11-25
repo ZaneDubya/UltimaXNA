@@ -408,7 +408,7 @@ namespace UltimaXNA.Ultima.World
             // Now create the GameObject.
             // If the iItemID < 0x4000, this is a regular game object.
             // If the iItemID >= 0x4000, then this is a multiobject.
-            if (p.ItemID <= 0x4000)
+            if (p.ItemID < 0x4000)
             {
                 Item item = CreateItem(p.Serial, p.ItemID, p.Hue, p.Amount);
                 item.Position.Set(p.X, p.Y, p.Z);
