@@ -689,8 +689,7 @@ namespace UltimaXNA.Core.UI
             int x = (int)position.X - X - ParentX;
             int y = (int)position.Y - Y - ParentY;
             OnMouseDown(x, y, button);
-            if (MouseDownEvent != null)
-                MouseDownEvent(this, x, y, button);
+            MouseDownEvent?.Invoke(this, x, y, button);
         }
 
         public void MouseUp(Point position, MouseButton button)
@@ -698,8 +697,7 @@ namespace UltimaXNA.Core.UI
             int x = (int)position.X - X - ParentX;
             int y = (int)position.Y - Y - ParentY;
             OnMouseUp(x, y, button);
-            if (MouseUpEvent != null)
-                MouseUpEvent(this, x, y, button);
+            MouseUpEvent?.Invoke(this, x, y, button);
         }
 
         public void MouseOver(Point position)
@@ -711,8 +709,7 @@ namespace UltimaXNA.Core.UI
             int x = (int)position.X - X - ParentX;
             int y = (int)position.Y - Y - ParentY;
             OnMouseOver(x, y);
-            if (MouseOverEvent != null)
-                MouseOverEvent(this, x, y);
+            MouseOverEvent?.Invoke(this, x, y);
         }
 
         public void MouseOut(Point position)
@@ -720,8 +717,7 @@ namespace UltimaXNA.Core.UI
             int x = (int)position.X - X - ParentX;
             int y = (int)position.Y - Y - ParentY;
             OnMouseOut(x, y);
-            if (MouseOutEvent != null)
-                MouseOutEvent(this, x, y);
+            MouseOutEvent?.Invoke(this, x, y);
         }
 
         public void MouseClick(Point position, MouseButton button)
@@ -752,14 +748,12 @@ namespace UltimaXNA.Core.UI
             if (doubleClick)
             {
                 OnMouseDoubleClick(x, y, button);
-                if (MouseDoubleClickEvent != null)
-                    MouseDoubleClickEvent(this, x, y, button);
+                MouseDoubleClickEvent?.Invoke(this, x, y, button);
             }
             else
             {
                 OnMouseClick(x, y, button);
-                if (MouseClickEvent != null)
-                    MouseClickEvent(this, x, y, button);
+                MouseClickEvent?.Invoke(this, x, y, button);
             }
         }
 
