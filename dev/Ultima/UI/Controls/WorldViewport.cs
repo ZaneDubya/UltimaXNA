@@ -50,7 +50,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Dispose();
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             Texture2D worldTexture = (m_Model.GetView() as WorldView).Isometric.Texture;
             if (worldTexture == null)
@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_InputMultiplier = new Vector2((float)worldTexture.Width / Width, (float)worldTexture.Height / Height);
 
             spriteBatch.Draw2D(worldTexture, new Rectangle(position.X, position.Y, Width, Height), Vector3.Zero);
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override void OnMouseOver(int x, int y)

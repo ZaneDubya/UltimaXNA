@@ -107,7 +107,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position) {
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS) {
             Texture2D texture = GetTextureFromMouseState();
             if (Caption != string.Empty) {
                 m_Texture.Text = Caption;
@@ -119,7 +119,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
                     position.X + (Width - m_Texture.Width) / 2, 
                     position.Y + yoffset + (Height - m_Texture.Height) / 2));
             }
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         Texture2D GetTextureFromMouseState()

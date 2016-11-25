@@ -71,13 +71,13 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return;
             }
 
-            if (m_ClickedCanDrag && UltimaGame.TotalMS >= m_PickUpTime)
+            if (m_ClickedCanDrag && totalMS >= m_PickUpTime)
             {
                 m_ClickedCanDrag = false;
                 AttemptPickUp();
             }
 
-            if (m_SendClickIfNoDoubleClick && UltimaGame.TotalMS >= m_SingleClickTime)
+            if (m_SendClickIfNoDoubleClick && totalMS >= m_SingleClickTime)
             {
                 m_SendClickIfNoDoubleClick = false;
                 m_World.Interaction.SingleClick(Item);
@@ -88,7 +88,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             if (m_Texture == null)
             {
@@ -104,7 +104,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), hue);
 
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override bool IsPointWithinControl(int x, int y)

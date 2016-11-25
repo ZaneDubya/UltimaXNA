@@ -165,7 +165,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
             if (IsEditable)
@@ -180,7 +180,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     m_RenderedCarat.Draw(spriteBatch, caratPosition);
                 }
             }
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         void SetBlinkOn()

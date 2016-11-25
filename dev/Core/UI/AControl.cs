@@ -29,9 +29,9 @@ namespace UltimaXNA.Core.UI
         // ============================================================================================================
         // Private variables
         // ============================================================================================================
-        private Rectangle m_Area = new Rectangle();
-        private ControlMetaData m_MetaData = null;
-        private List<AControl> m_Children = null;
+        Rectangle m_Area = new Rectangle();
+        ControlMetaData m_MetaData = null;
+        List<AControl> m_Children = null;
 
         // ============================================================================================================
         // Private services
@@ -241,7 +241,7 @@ namespace UltimaXNA.Core.UI
             set;
         }
 
-        private int m_ActivePage = 0; // we always draw m_activePage and Page 0.
+        int m_ActivePage = 0; // we always draw m_activePage and Page 0.
 
         /// <summary>
         /// This control's active page index. On Update and Draw(), this control will send update to and draw all children with Page == 0 or
@@ -341,7 +341,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private int ParentX
+        int ParentX
         {
             get
             {
@@ -352,7 +352,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private int ParentY
+        int ParentY
         {
             get
             {
@@ -401,7 +401,7 @@ namespace UltimaXNA.Core.UI
             ExpandToFitControls();
         }
 
-        virtual public void Draw(SpriteBatchUI spriteBatch, Point position)
+        public virtual void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             if (!IsInitialized)
                 return;
@@ -413,7 +413,7 @@ namespace UltimaXNA.Core.UI
                     if (c.IsInitialized && c.IsVisible)
                     {
                         Point offset = new Point(c.Position.X + position.X, c.Position.Y + position.Y);
-                        c.Draw(spriteBatch, offset);
+                        c.Draw(spriteBatch, offset, frameMS);
                     }
                 }
             }
@@ -448,7 +448,7 @@ namespace UltimaXNA.Core.UI
                     c.Dispose();
         }
 
-        private void InitializeControls()
+        void InitializeControls()
         {
             bool newlyInitializedChildReceivedKeyboardFocus = false;
 
@@ -466,7 +466,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private void UpdateControls(double totalMS, double frameMS)
+        void UpdateControls(double totalMS, double frameMS)
         {
             foreach (AControl c in Children)
             {
@@ -485,7 +485,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private bool ExpandToFitControls()
+        bool ExpandToFitControls()
         {
             bool changedDimensions = false;
             if (Children.Count > 0)
@@ -655,10 +655,9 @@ namespace UltimaXNA.Core.UI
         #region MouseInput
 
         // private variables
-        private bool m_HandlesMouseInput = false;
-
-        private float m_MaxTimeForDoubleClick = 0f;
-        private Point m_LastClickPosition;
+        bool m_HandlesMouseInput = false;
+        float m_MaxTimeForDoubleClick = 0f;
+        Point m_LastClickPosition;
 
         // public methods
         public bool IsMouseOver
@@ -822,7 +821,7 @@ namespace UltimaXNA.Core.UI
         #region KeyboardInput
 
         // private variables
-        private bool m_HandlesKeyboardFocus = false;
+        bool m_HandlesKeyboardFocus = false;
 
         // public methods
         public virtual bool HandlesKeyboardFocus
@@ -900,7 +899,7 @@ namespace UltimaXNA.Core.UI
 
         #region DebugBoundaryDrawing
 
-        private Texture2D m_BoundsTexture;
+        Texture2D m_BoundsTexture;
 
         protected void DebugDrawBounds(SpriteBatchUI spriteBatch, Point position, Color color)
         {
@@ -910,7 +909,7 @@ namespace UltimaXNA.Core.UI
             if (m_BoundsTexture == null)
             {
                 m_BoundsTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                m_BoundsTexture.SetData<Color>(new Color[] { Color.White });
+                m_BoundsTexture.SetData(new Color[] { Color.White });
             }
 
             Rectangle drawArea = new Rectangle(ScreenX, ScreenY, Width, Height);

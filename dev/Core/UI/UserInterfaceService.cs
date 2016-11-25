@@ -214,7 +214,7 @@ namespace UltimaXNA.Core.UI
             InternalHandleMouseInput();
         }
 
-        public void Draw(double frameTime)
+        public void Draw(double frameMS)
         {
             OrderControlsBasedOnUILayerMetaData();
             m_SpriteBatch.GraphicsDevice.Clear(Color.Transparent);
@@ -223,7 +223,7 @@ namespace UltimaXNA.Core.UI
             {
                 if (c.IsInitialized)
                 {
-                    c.Draw(m_SpriteBatch, c.Position);
+                    c.Draw(m_SpriteBatch, c.Position, frameMS);
                 }
             }
             if (Cursor != null)

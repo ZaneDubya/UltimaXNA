@@ -75,13 +75,13 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             if (m_Item != null)
             {
-                if (m_ClickedCanDrag && UltimaGame.TotalMS >= m_PickUpTime)
+                if (m_ClickedCanDrag && totalMS >= m_PickUpTime)
                 {
                     m_ClickedCanDrag = false;
                     AttemptPickUp();
                 }
 
-                if (m_SendClickIfNoDoubleClick && UltimaGame.TotalMS >= m_SingleClickTime)
+                if (m_SendClickIfNoDoubleClick && totalMS >= m_SingleClickTime)
                 {
                     m_SendClickIfNoDoubleClick = false;
                     m_World.Interaction.SingleClick(m_Item);

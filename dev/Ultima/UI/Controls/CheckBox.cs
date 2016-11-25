@@ -66,9 +66,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             BuildGumpling(x, y, inactiveID, activeID, initialState, switchID);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
             if (IsChecked && m_Active != null)
             {
                 spriteBatch.Draw2D(m_Active, new Vector3(position.X, position.Y, 0), Vector3.Zero);

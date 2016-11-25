@@ -96,7 +96,6 @@ namespace UltimaXNA.Core.Audio
                 m_ThisInstance.SubmitBuffer(buffer);
                 m_ThisInstance.Volume = volume;
                 m_ThisInstance.Play();
-
                 List<Tuple<DynamicSoundEffectInstance, double>> list = (asEffect) ? m_EffectInstances : m_MusicInstances;
                 double ms = m_ThisInstance.GetSampleDuration(buffer.Length).TotalMilliseconds;
                 list.Add(new Tuple<DynamicSoundEffectInstance, double>(m_ThisInstance, now + ms));
@@ -108,7 +107,7 @@ namespace UltimaXNA.Core.Audio
             AfterStop();
         }
 
-        private void CullExpiredEffects(double now )
+        private void CullExpiredEffects(double now)
         {
             // Check to see if any existing instances have stopped playing. If they have, remove the
             // reference to them so the garbage collector can collect them.

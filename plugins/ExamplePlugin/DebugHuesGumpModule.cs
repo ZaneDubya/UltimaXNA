@@ -99,14 +99,14 @@ namespace UltimaXNA.Ultima.Login {
                 m_StaticTextureID = staticID;
             }
 
-            public override void Draw(SpriteBatchUI spriteBatch, Point position) {
+            public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS) {
                 if (m_Texture == null) {
                     IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                     m_Texture = provider.GetItemTexture(m_StaticTextureID);
                     Size = new Point(m_Texture.Width, m_Texture.Height);
                 }
                 spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(Hue));
-                base.Draw(spriteBatch, position);
+                base.Draw(spriteBatch, position, frameMS);
             }
 
             protected override void OnMouseOver(int x, int y) {

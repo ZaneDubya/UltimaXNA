@@ -85,7 +85,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Position = new Point(x, y);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             EquipSlots[] slotsToDraw = new EquipSlots[6] { EquipSlots.Body, EquipSlots.Footwear, EquipSlots.Legging, EquipSlots.Shirt, EquipSlots.Hair, EquipSlots.FacialHair };
             for (int i = 0; i < slotsToDraw.Length; i++)
