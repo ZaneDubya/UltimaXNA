@@ -19,7 +19,7 @@ namespace UltimaXNA
 {
     public class Settings
     {
-        // === Instance Variables =====================================================================================
+        // === Instance ===============================================================================================
         readonly DebugSettings m_Debug;
         readonly EngineSettings m_Engine;
         readonly GumpSettings m_Gumps;

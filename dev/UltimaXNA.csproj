@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
+    <Compile Include="Core\Network\PacketChunk.cs" />
     <Compile Include="Core\UI\HTML\Elements\InternalLineBreakElement.cs" />
     <Compile Include="Core\UI\HTML\Elements\InternalHyphenBreakElement.cs" />
     <Compile Include="Core\UI\HTML\HtmlRenderer.cs" />
