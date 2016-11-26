@@ -58,8 +58,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private bool m_IsWarMode;
         private Button m_WarModeBtn;
 
-        private readonly int[] PeaceModeBtnGumps = new int[] { 0x07e5, 0x07e6, 0x07e7 };
-        private readonly int[] WarModeBtnGumps = new int[] { 0x07e8, 0x07e9, 0x07ea };
+        private readonly int[] PeaceModeBtnGumps = { 0x07e5, 0x07e6, 0x07e7 };
+        private readonly int[] WarModeBtnGumps = { 0x07e8, 0x07e9, 0x07ea };
 
         private GumpPic m_VirtueMenuButton;
 

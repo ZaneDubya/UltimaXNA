@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.IO
             get { return m_isDataPresent; }
         }
 
-        static readonly string[] m_knownRegkeys = new string[] {
+        static readonly string[] m_knownRegkeys = {
                 @"Origin Worlds Online\Ultima Online\KR Legacy Beta",
                 @"EA Games\Ultima Online: Mondain's Legacy\1.00.0000",
                 @"Origin Worlds Online\Ultima Online\1.0",

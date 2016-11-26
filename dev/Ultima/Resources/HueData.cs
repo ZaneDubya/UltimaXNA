@@ -189,8 +189,8 @@ namespace UltimaXNA.Ultima.Resources
                 }
             return m_kWebSafeHues[index];
         }
-        static int[] m_kCutOffValuesForWebSafeColors = new int[6] { 0x19, 0x4C, 0x7F, 0xB2, 0xE5, 0xFF };
-        static int[] m_kWebSafeHues = new int[216] {
+        static int[] m_kCutOffValuesForWebSafeColors = { 0x19, 0x4C, 0x7F, 0xB2, 0xE5, 0xFF };
+        static int[] m_kWebSafeHues = {
             0000, 3881, 3882, 3883, 3884, 3885, 
             3886, 3887, 3888, 3889, 3890, 3891, 
             3892, 3893, 3894, 3895, 3896, 3897, 

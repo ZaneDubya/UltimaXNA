@@ -31,8 +31,7 @@ namespace UltimaXNA.Ultima.Resources
         private static int[] m_Table4 = new int[0];
 
         // Mounts: ItemID , BodyID
-        private static int[][] m_MountIDConv = new int[][]
-	    {
+        private static int[][] m_MountIDConv = {
 		    new int[]{0x3E94, 0xF3}, // Hiryu
 		    new int[]{0x3E97, 0xC3}, // Beetle
 		    new int[]{0x3E98, 0xC2}, // Swamp Dragon

@@ -14,38 +14,18 @@ using UltimaXNA.Core.Network;
 
 namespace UltimaXNA.Ultima.Login.Data {
     public class ServerListEntry {
-        readonly ushort index;
-        readonly string name;
-        readonly byte percentFull;
-        readonly byte timezone;
-        readonly uint address;
-
-        public ushort Index {
-            get { return index; }
-        }
-
-        public string Name {
-            get { return name; }
-        }
-
-        public byte PercentFull {
-            get { return percentFull; }
-        }
-
-        public byte Timezone {
-            get { return timezone; }
-        }
-
-        public uint Address {
-            get { return address; }
-        }
+        public readonly ushort Index;
+        public readonly string Name;
+        public readonly byte PercentFull;
+        public readonly byte Timezone;
+        public readonly uint Address;
 
         public ServerListEntry(PacketReader reader) {
-            index = (ushort)reader.ReadInt16();
-            name = reader.ReadString(32);
-            percentFull = reader.ReadByte();
-            timezone = reader.ReadByte();
-            address = (uint)reader.ReadInt32();
+            Index = (ushort)reader.ReadInt16();
+            Name = reader.ReadString(32);
+            PercentFull = reader.ReadByte();
+            Timezone = reader.ReadByte();
+            Address = (uint)reader.ReadInt32();
         }
     }
 }

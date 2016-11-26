@@ -19,7 +19,7 @@ namespace UltimaXNA.Ultima.Resources
 	class MusicData
 	{
         private const string m_ConfigFilePath = @"Music\Digital\Config.txt";
-        private static char[] m_configFileDelimiters = new char[] { ' ', ',', '\t' };
+        private static char[] m_configFileDelimiters = { ' ', ',', '\t' };
 
         private static Dictionary<int, Tuple<string, bool>> m_MusicData = new Dictionary<int, Tuple<string, bool>>();
 

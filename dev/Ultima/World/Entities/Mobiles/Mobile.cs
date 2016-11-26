@@ -300,7 +300,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         // Appearance and Hues
         // ============================================================================================================
 
-        static int[] s_HumanoidBodyIDs = new int[] {
+        static int[] s_HumanoidBodyIDs = {
             183, 184, 185, 186, // savages
             400, 401, 402, 403, // humans
             694, 695,

@@ -17,7 +17,7 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class PopupMessagePacket : RecvPacket
     {
-        public static string[] Messages = new string[] {
+        public static string[] Messages = {
                 "Incorrect password", 
                 "This character does not exist any more!",
 		        "This character already exists.",

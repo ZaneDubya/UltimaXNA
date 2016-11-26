@@ -53,7 +53,7 @@ class DecoderException : MP3SharpException
         {
             if (info == null)
             {
-                throw new ArgumentNullException("info");
+                throw new ArgumentNullException(nameof(info));
             }
 
             info.AddValue("ErrorCode", m_ErrorCode);

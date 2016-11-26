@@ -42,8 +42,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_RenderedText = new RenderedText(string.Empty, width);
             IsChanged = false;
 
-            HandlesMouseInput = true;
-            HandlesKeyboardFocus = true;
+            base.HandlesMouseInput = true;
+            base.HandlesKeyboardFocus = true;
             LeadingHtmlTag = "<center><span color='#fff' style='font-family: uni2;'>";
         }
 

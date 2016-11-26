@@ -38,8 +38,7 @@ namespace UltimaXNA.Ultima.Resources
 
         // Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
         // Stairs IDs, taken from RunUO Data folder (stairs.txt)
-        private static int[] m_StairsID = new int[]
-		{
+        private static int[] m_StairsID = {
 			1006, 1007, 1008, 1009, 1010, 1012, 1014, 1016, 1017,
 			1801, 1802, 1803, 1804, 1805, 1807, 1809, 1811, 1812, 
 			1822, 1823, 1825, 1826, 1827, 1828, 1829, 1831, 1833, 

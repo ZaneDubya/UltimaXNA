@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 
-using System;
 using System.Security;
 using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.Resources;

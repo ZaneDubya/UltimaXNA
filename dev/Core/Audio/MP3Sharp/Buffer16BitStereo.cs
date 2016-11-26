@@ -66,7 +66,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
         {
             if (bufferOut == null)
             {
-                throw new ArgumentNullException("bufferOut");
+                throw new ArgumentNullException(nameof(bufferOut));
             }
             if ((count + offset) > bufferOut.Length)
             {
@@ -118,7 +118,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
             if (samples == null)
             {
                 // samples is required.
-                throw new ArgumentNullException("samples");
+                throw new ArgumentNullException(nameof(samples));
             }
             if (samples.Length < 32)
             {

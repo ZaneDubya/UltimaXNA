@@ -17,7 +17,7 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class LiftRejectionPacket : RecvPacket
     {
-        private static string[] m_reasons = new string[] {
+        private static string[] m_reasons = {
               "Cannot lift the item.",
               "Out of range.",
               "Out of sight.",
