@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.Inventory:
                     // opens the player's backpack.
                     Mobile mobile = WorldModel.Entities.GetPlayerEntity();
-                    Container backpack = mobile.Backpack;
+                    ContainerItem backpack = mobile.Backpack;
                     m_World.Interaction.DoubleClick(backpack);
                     break;
                 case Buttons.Journal:

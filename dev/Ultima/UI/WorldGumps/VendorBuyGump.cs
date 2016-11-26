@@ -47,7 +47,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
 
             // sanity checking: don't show buy gumps for empty containers.
-            if (!(vendorBackpack is Container) || ((vendorBackpack as Container).Contents.Count <= 0) || (packet.Items.Count <= 0))
+            if (!(vendorBackpack is ContainerItem) || ((vendorBackpack as ContainerItem).Contents.Count <= 0) || (packet.Items.Count <= 0))
             {
                 Dispose();
                 return;
@@ -126,13 +126,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private void BuildShopContents(AEntity vendorBackpack, VendorBuyListPacket packet)
         {
 
-            if (!(vendorBackpack is Container))
+            if (!(vendorBackpack is ContainerItem))
             {
                 m_ShopContents.AddEntry("<span color='#800'>Err: vendorBackpack is not Container.");
                 return;
             }
 
-            Container contents = (vendorBackpack as Container);
+            ContainerItem contents = (vendorBackpack as ContainerItem);
             AEntity vendor = contents.Parent;
             if (vendor == null || !(vendor is Mobile))
             {

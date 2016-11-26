@@ -103,7 +103,7 @@ namespace UltimaXNA.Ultima.Data
             }
         }
 
-        public SpellbookData(Container spellbook, ContainerContentPacket contents)
+        public SpellbookData(ContainerItem spellbook, ContainerContentPacket contents)
         {
             Serial = spellbook.Serial;
             ItemID = (ushort)spellbook.ItemID;

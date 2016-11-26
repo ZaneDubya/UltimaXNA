@@ -23,13 +23,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     class ContainerGump : Gump
     {
         ContainerData m_data;
-        Container m_item;
+        ContainerItem m_item;
 
         public ContainerGump(AEntity containerItem, int gumpID)
             : base(containerItem.Serial, 0)
         {
             m_data = ContainerData.Get(gumpID);
-            m_item = (Container)containerItem;
+            m_item = (ContainerItem)containerItem;
             m_item.SetCallbacks(OnItemUpdated, OnItemDisposed);
             IsMoveable = true;
             AddControl(new GumpPicContainer(this, 0, 0, m_data.GumpID, 0, m_item));

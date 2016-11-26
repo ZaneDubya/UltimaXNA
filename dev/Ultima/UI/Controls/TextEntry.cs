@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Size = new Point(width, height);
             Hue = hue;
             EntryID = entryID;
-            Text = text;
+            Text = text == null ? string.Empty : text;
             MaxCharCount = maxCharCount;
             m_CaratBlinkOn = false;
             m_RenderedText = new RenderedText(string.Empty, 2048, true);
