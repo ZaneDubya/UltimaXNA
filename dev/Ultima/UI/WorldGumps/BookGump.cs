@@ -303,7 +303,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             else
             {
-                if (m_Pages[rightIndex].TextWithLineBreaks != m_Book.Pages[rightIndex].GetAllLines())
+                if (m_Pages[leftIndex].TextWithLineBreaks != m_Book.Pages[leftIndex].GetAllLines())
                 {
                     m_World?.Interaction.BookPageChange(m_Book.Serial, leftIndex, GetTextEntryAsArray(m_Pages[leftIndex]));
                 }
