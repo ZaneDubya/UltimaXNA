@@ -11,6 +11,7 @@
 #region usings
 using Microsoft.Win32.SafeHandles;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 #endregion
 
@@ -20,13 +21,22 @@ namespace UltimaXNA.Core.Windows
 
     class NativeMethods
     {
+#if WINDOWS
         [DllImport("Kernel32")]
-        private unsafe static extern int _lread(SafeFileHandle hFile, void* lpBuffer, int wBytes);
-
-        internal static unsafe void ReadBuffer(SafeFileHandle ptr, void* buffer, int length)
+        unsafe static extern int _lread(SafeFileHandle hFile, void* lpBuffer, int wBytes);
+        internal static unsafe void ReadBuffer(FileStream stream, byte[] buffer, int length)
         {
-            _lread(ptr, buffer, length);
+            fixed (byte* ptrBuffer = buffer)
+            {
+                _lread(stream.SafeFileHandle, ptrBuffer, length);
+            }
         }
+#else
+        internal static void ReadBuffer(FileStream stream, byte[] buffer, int length)
+        {
+            stream.Read(buffer, 0, length);
+        }
+#endif
 
         [DllImport("Imm32.dll")]
         internal static extern IntPtr ImmGetContext(IntPtr hWnd);
