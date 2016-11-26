@@ -58,25 +58,13 @@ namespace UltimaXNA.Ultima.IO
 
                 for (int i = 0; i < count && i < length; ++i)
                 {
-                    FileIndexEntry3D entry = new FileIndexEntry3D
-                    {
-                        lookup = bin.ReadInt32(),
-                        length = bin.ReadInt32(),
-                        extra = bin.ReadInt32()
-                    };
-
+                    FileIndexEntry3D entry = new FileIndexEntry3D(bin.ReadInt32(), bin.ReadInt32(), bin.ReadInt32());
                     entries.Add(entry);
                 }
 
                 for (int i = count; i < length; ++i)
                 {
-                    FileIndexEntry3D entry = new FileIndexEntry3D
-                    {
-                        lookup = -1,
-                        length = -1,
-                        extra = -1
-                    };
-
+                    FileIndexEntry3D entry = new FileIndexEntry3D(-1, -1, -1);
                     entries.Add(entry);
                 }
             }
@@ -90,9 +78,9 @@ namespace UltimaXNA.Ultima.IO
                 if (patch.file == patchFile && patch.index >= 0 && patch.index < entries.Count)
                 {
                     FileIndexEntry3D entry = entries.ElementAt(patch.index);
-                    entry.lookup = patch.lookup;
-                    entry.length = patch.length | (1 << 31);
-                    entry.extra = patch.extra;
+                    entry.Lookup = patch.lookup;
+                    entry.Length = patch.length | (1 << 31);
+                    entry.Extra = patch.extra;
                 }
             }
 

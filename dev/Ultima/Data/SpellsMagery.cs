@@ -5,8 +5,8 @@ namespace UltimaXNA.Ultima.Data
 {
     static class SpellsMagery
     {
-        private static Dictionary<int, SpellDefinition> s_Spells;
-        private static ReadOnlyCollection<SpellDefinition> s_ReadOnlySpells;
+        static Dictionary<int, SpellDefinition> s_Spells;
+        static ReadOnlyCollection<SpellDefinition> s_ReadOnlySpells;
 
         public static ReadOnlyCollection<SpellDefinition> Spells
         {
@@ -110,7 +110,7 @@ namespace UltimaXNA.Ultima.Data
             };
         }
 
-        public static string[] CircleNames = new string[] {
+        public static string[] CircleNames = {
             "First Circle", "Second Circle", "Third Circle", "Fourth Circle",
             "Fifth Circle", "Sixth Circle", "Seventh Circle", "Eighth Circle" };
     }

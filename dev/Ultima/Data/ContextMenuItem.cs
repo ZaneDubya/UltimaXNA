@@ -7,17 +7,15 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-
-#region usings
+ 
 using UltimaXNA.Core.Resources;
-#endregion
 
 namespace UltimaXNA.Ultima.Data
 {
     public class ContextMenuItem
     {
-        private readonly string m_Caption;
-        private readonly int m_ResponseCode;
+        readonly string m_Caption;
+        readonly int m_ResponseCode;
 
         public ContextMenuItem(int responseCode, int stringID, int flags, int hue)
         {
@@ -27,15 +25,9 @@ namespace UltimaXNA.Ultima.Data
             m_ResponseCode = responseCode;
         }
 
-        public int ResponseCode
-        {
-            get { return m_ResponseCode; }
-        }
+        public int ResponseCode => m_ResponseCode;
 
-        public string Caption
-        {
-            get { return m_Caption; }
-        }
+        public string Caption => m_Caption;
 
         public override string ToString()
         {

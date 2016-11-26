@@ -67,8 +67,8 @@ namespace UltimaXNA.Ultima.Resources
 
         private static unsafe Skill LoadSkill(int index, BinaryFileReader reader)
         {
-            int nameLength = m_FileIndex.Index[index].length - 2;
-            int extra = m_FileIndex.Index[index].extra;
+            int nameLength = m_FileIndex.Index[index].Length - 2;
+            int extra = m_FileIndex.Index[index].Extra;
 
             byte[] set1 = new byte[1];
             byte[] set2 = new byte[nameLength];

@@ -7,22 +7,22 @@ namespace UltimaXNA.Core.IO
 {
     public class BinaryFileWriter : GenericWriter
     {
-        private const int LargeByteBufferSize = 256;
-        private readonly bool PrefixStrings;
+        const int BufferSize = 64 * 1024;
+        const int LargeByteBufferSize = 256;
 
-        private readonly byte[] m_Buffer;
-
-        private readonly Encoding m_Encoding;
-        private readonly Stream m_File;
-        private readonly char[] m_SingleCharBuffer = new char[1];
-        private byte[] m_CharacterBuffer;
-        private int m_Index;
-        private int m_MaxBufferChars;
-        private long m_Position;
+        readonly bool m_PrefixStrings;
+        readonly byte[] m_Buffer;
+        readonly Encoding m_Encoding;
+        readonly Stream m_File;
+        readonly char[] m_SingleCharBuffer = new char[1];
+        byte[] m_CharacterBuffer;
+        int m_Index;
+        int m_MaxBufferChars;
+        long m_Position;
 
         public BinaryFileWriter(Stream strm, bool prefixStr)
         {
-            PrefixStrings = prefixStr;
+            m_PrefixStrings = prefixStr;
             m_Encoding = Utility.UTF8;
             m_Buffer = new byte[BufferSize];
             m_File = strm;
@@ -30,21 +30,13 @@ namespace UltimaXNA.Core.IO
 
         public BinaryFileWriter(string filename, bool prefixStr)
         {
-            PrefixStrings = prefixStr;
+            m_PrefixStrings = prefixStr;
             m_Buffer = new byte[BufferSize];
             m_File = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
             m_Encoding = Utility.UTF8WithEncoding;
         }
 
-        protected virtual int BufferSize
-        {
-            get { return 64 * 1024; }
-        }
-
-        public override long Position
-        {
-            get { return m_Position + m_Index; }
-        }
+        public override long Position => m_Position + m_Index;
 
         public Stream UnderlyingStream
         {
@@ -54,7 +46,6 @@ namespace UltimaXNA.Core.IO
                 {
                     Flush();
                 }
-
                 return m_File;
             }
         }
@@ -76,30 +67,25 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_File.Close();
         }
 
         public override void WriteEncodedInt(int value)
         {
             uint v = (uint)value;
-
             while(v >= 0x80)
             {
                 if((m_Index + 1) > m_Buffer.Length)
                 {
                     Flush();
                 }
-
                 m_Buffer[m_Index++] = (byte)(v | 0x80);
                 v >>= 7;
             }
-
             if((m_Index + 1) > m_Buffer.Length)
             {
                 Flush();
             }
-
             m_Buffer[m_Index++] = (byte)v;
         }
 
@@ -110,9 +96,7 @@ namespace UltimaXNA.Core.IO
                 value = string.Empty;
             }
             int length = m_Encoding.GetByteCount(value);
-
             WriteEncodedInt(length);
-
             if(m_CharacterBuffer == null)
             {
                 m_CharacterBuffer = new byte[LargeByteBufferSize];
@@ -128,15 +112,12 @@ namespace UltimaXNA.Core.IO
                 {
                     int charCount = (charsLeft > m_MaxBufferChars) ? m_MaxBufferChars : charsLeft;
                     int byteLength = m_Encoding.GetBytes(value, current, charCount, m_CharacterBuffer, 0);
-
                     if((m_Index + byteLength) > m_Buffer.Length)
                     {
                         Flush();
                     }
-
                     Buffer.BlockCopy(m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength);
                     m_Index += byteLength;
-
                     current += charCount;
                     charsLeft -= charCount;
                 }
@@ -144,12 +125,10 @@ namespace UltimaXNA.Core.IO
             else
             {
                 int byteLength = m_Encoding.GetBytes(value, 0, value.Length, m_CharacterBuffer, 0);
-
                 if((m_Index + byteLength) > m_Buffer.Length)
                 {
                     Flush();
                 }
-
                 Buffer.BlockCopy(m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength);
                 m_Index += byteLength;
             }
@@ -157,7 +136,7 @@ namespace UltimaXNA.Core.IO
 
         public override void Write(string value)
         {
-            if(PrefixStrings)
+            if(m_PrefixStrings)
             {
                 if(value == null)
                 {
@@ -195,9 +174,7 @@ namespace UltimaXNA.Core.IO
         {
             long ticks = value.Ticks;
             long now = DateTime.Now.Ticks;
-
             TimeSpan d;
-
             try
             {
                 d = new TimeSpan(ticks - now);
@@ -213,7 +190,6 @@ namespace UltimaXNA.Core.IO
                     d = TimeSpan.MaxValue;
                 }
             }
-
             Write(d);
         }
 
@@ -230,7 +206,6 @@ namespace UltimaXNA.Core.IO
         public override void Write(decimal value)
         {
             int[] bits = Decimal.GetBits(value);
-
             for(int i = 0; i < bits.Length; ++i)
             {
                 Write(bits[i]);
@@ -243,7 +218,6 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
             m_Buffer[m_Index + 2] = (byte)(value >> 16);
@@ -261,7 +235,6 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
             m_Buffer[m_Index + 2] = (byte)(value >> 16);
@@ -279,7 +252,6 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
             m_Buffer[m_Index + 2] = (byte)(value >> 16);
@@ -293,7 +265,6 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
             m_Buffer[m_Index + 2] = (byte)(value >> 16);
@@ -307,7 +278,6 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
             m_Index += 2;
@@ -319,7 +289,6 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
             m_Index += 2;
@@ -331,12 +300,10 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             fixed(byte* pBuffer = m_Buffer)
             {
                 *((double*)(pBuffer + m_Index)) = value;
             }
-
             m_Index += 8;
         }
 
@@ -346,12 +313,10 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             fixed(byte* pBuffer = m_Buffer)
             {
                 *((float*)(pBuffer + m_Index)) = value;
             }
-
             m_Index += 4;
         }
 
@@ -361,9 +326,7 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_SingleCharBuffer[0] = value;
-
             int byteCount = m_Encoding.GetBytes(m_SingleCharBuffer, 0, 1, m_Buffer, m_Index);
             m_Index += byteCount;
         }
@@ -374,7 +337,6 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_Buffer[m_Index++] = value;
         }
 
@@ -392,7 +354,6 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_Buffer[m_Index++] = (byte)value;
         }
 
@@ -402,7 +363,6 @@ namespace UltimaXNA.Core.IO
             {
                 Flush();
             }
-
             m_Buffer[m_Index++] = (byte)(value ? 1 : 0);
         }
     }
