@@ -107,17 +107,13 @@ namespace UltimaXNA.Core.Windows
         {
             // Get the keyboard layout for the current thread.
             IntPtr keybdLayout = GetKeyboardLayout(0);
-
             // Extract the language ID from it, contained in its low-order word.
             int langID = LOWORD(keybdLayout);
-
-            // Call the GetLocaleInfo function to retrieve the default ANSI code page
-            // associated with that language ID.
+            // Call the GetLocaleInfo function to retrieve the default ANSI code page associated with that language ID.
+            int localeID = MAKELCID(langID, NativeConstants.SORT_DEFAULT);
+            int localeConstraints = NativeConstants.LOCALE_IDEFAULTANSICODEPAGE | NativeConstants.LOCALE_RETURN_NUMBER;
             uint codePage = 0;
-            GetLocaleInfo(MAKELCID(langID, NativeConstants.SORT_DEFAULT),
-                           NativeConstants.LOCALE_IDEFAULTANSICODEPAGE | NativeConstants.LOCALE_RETURN_NUMBER,
-                           out codePage,
-                           Marshal.SizeOf(codePage));
+            GetLocaleInfo(localeID, localeConstraints, out codePage, Marshal.SizeOf(codePage));
             return codePage;
         }
     }
