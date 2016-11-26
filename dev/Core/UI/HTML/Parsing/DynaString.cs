@@ -39,7 +39,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 	/// Class for fast dynamic string building - it is faster than StringBuilder
 	/// </summary>
 	///<exclude/>
-	internal class DynaString : IDisposable
+	class DynaString : IDisposable
 	{
 		/// <summary>
 		/// Finalised text will be available in this string

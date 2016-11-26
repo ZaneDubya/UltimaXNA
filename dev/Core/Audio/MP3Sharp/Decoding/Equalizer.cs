@@ -27,7 +27,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     ///     At -1.0, the input signal is attenuated by 6dB, at +1.0 the signal is
     ///     amplified by 6dB.
     /// </summary>
-    internal class Equalizer
+    class Equalizer
     {
         private const int BANDS = 32;
 

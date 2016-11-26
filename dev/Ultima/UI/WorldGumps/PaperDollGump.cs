@@ -26,7 +26,7 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    internal class PaperDollGump : Gump
+    class PaperDollGump : Gump
     {
         private enum Buttons
         {

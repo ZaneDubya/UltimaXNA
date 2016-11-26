@@ -723,11 +723,12 @@ namespace UltimaXNA.Core.UI
         {
             int x = position.X - X - ParentX;
             int y = position.Y - Y - ParentY;
+            float totalMS = (float)ServiceRegistry.GetService<UltimaGame>().TotalMS;
 
             bool doubleClick = false;
             if (m_MaxTimeForDoubleClick != 0f)
             {
-                if (UltimaGame.TotalMS <= m_MaxTimeForDoubleClick)
+                if (totalMS <= m_MaxTimeForDoubleClick)
                 {
                     m_MaxTimeForDoubleClick = 0f;
                     doubleClick = true;
@@ -735,7 +736,7 @@ namespace UltimaXNA.Core.UI
             }
             else
             {
-                m_MaxTimeForDoubleClick = (float)UltimaGame.TotalMS + Settings.UserInterface.Mouse.DoubleClickMS;
+                m_MaxTimeForDoubleClick = totalMS + Settings.UserInterface.Mouse.DoubleClickMS;
             }
 
             if (button == MouseButton.Right && !IsUncloseableWithRMB)

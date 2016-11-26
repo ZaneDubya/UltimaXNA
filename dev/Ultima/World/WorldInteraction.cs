@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.World {
     /// <summary>
     /// Hosts methods for interacting with the world.
     /// </summary>
-    internal class WorldInteraction
+    class WorldInteraction
     {
         private WorldModel m_World;
         private INetworkClient m_Network;

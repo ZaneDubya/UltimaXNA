@@ -15,7 +15,7 @@
 //  ***************************************************************************/
 namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
 {
-    internal enum OutputChannelsEnum
+    enum OutputChannelsEnum
     {
         BOTH_CHANNELS = 0,
         LEFT_CHANNEL = 1,

@@ -8,7 +8,7 @@ using UltimaXNA.Core.Windows;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    internal class KeyPressControl : AControl
+    class KeyPressControl : AControl
     {
         public string LeadingHtmlTag = string.Empty;
         public WinKeys Key = WinKeys.None;

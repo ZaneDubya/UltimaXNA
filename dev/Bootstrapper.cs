@@ -20,7 +20,7 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 
 namespace UltimaXNA
 {
-    internal sealed class Bootstrapper
+    sealed class Bootstrapper
     {
         // === Main ===================================================================================================
         [STAThread]

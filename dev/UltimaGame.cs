@@ -31,7 +31,7 @@ using UltimaXNA.Ultima.World;
 
 namespace UltimaXNA
 {
-    internal class UltimaGame : CoreGame
+    class UltimaGame : CoreGame
     {
         public static double TotalMS;
 

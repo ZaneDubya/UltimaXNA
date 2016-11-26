@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.World.Input
     /// <summary>
     /// Handles all the mouse input when the mouse is over the world.
     /// </summary>
-    internal class WorldInput
+    class WorldInput
     {
         const double c_PauseBeforeMouseMovementMS = 105d;
         const double c_PauseBeforeKeyboardFacingMS = 55d; // a little more than three frames @ 60fps.

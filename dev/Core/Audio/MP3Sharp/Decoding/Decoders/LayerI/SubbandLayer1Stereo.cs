@@ -19,7 +19,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerI
     /// <summary>
     ///     Class for layer I subbands in stereo mode.
     /// </summary>
-    internal class SubbandLayer1Stereo : SubbandLayer1
+    class SubbandLayer1Stereo : SubbandLayer1
     {
         protected internal int channel2_allocation;
         protected internal float channel2_factor, channel2_offset;
