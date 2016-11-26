@@ -69,7 +69,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             bufferp[channel] += channels;
         }
 
-        public override void AppendSamples(int channel, float[] f)
+        public override void AppendSamples(int channel, float[] samples)
         {
             int pos = bufferp[channel];
 
@@ -77,7 +77,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             float fs;
             for (int i = 0; i < 32;)
             {
-                fs = f[i++];
+                fs = samples[i++];
                 fs = (fs > 32767.0f ? 32767.0f : (fs < -32767.0f ? -32767.0f : fs));
 
                 //UPGRADE_WARNING: Narrowing conversions may produce unexpected results in C#. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1042"'

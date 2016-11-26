@@ -9,9 +9,9 @@ namespace UltimaXNA.Ultima.Input
     public class Action
     {
         public WinKeys Keystroke = WinKeys.None;
-        public bool Shift = false;
-        public bool Alt = false;
-        public bool Ctrl = false;
+        public bool Shift;
+        public bool Alt;
+        public bool Ctrl;
 
         public List<Macro> Macros = new List<Macro>();
 

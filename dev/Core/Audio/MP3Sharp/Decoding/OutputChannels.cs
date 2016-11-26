@@ -30,7 +30,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         /// <summary>
         ///     Flag to indicate output should include both channels.
         /// </summary>
-        public static int BOTH_CHANNELS = 0;
+        public static int BOTH_CHANNELS;
 
         /// <summary>
         ///     Flag to indicate output should include the left channel only.

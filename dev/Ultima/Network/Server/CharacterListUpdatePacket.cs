@@ -18,7 +18,7 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class CharacterListUpdatePacket : RecvPacket
     {
-        CharacterListEntry[] m_characters;
+        readonly CharacterListEntry[] m_characters;
         public CharacterListEntry[] Characters
         {
             get { return m_characters; }

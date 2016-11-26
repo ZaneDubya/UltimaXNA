@@ -16,8 +16,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class TextLabelAsciiCropped : AControl
     {
-        public int Hue = 0;
-        public int FontID = 0;
+        public int Hue;
+        public int FontID;
 
         private RenderedText m_Rendered;
         private string m_Text;

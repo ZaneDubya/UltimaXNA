@@ -28,7 +28,7 @@ namespace UltimaXNA.Core.Network {
     }
 
     public class PacketHandler<T> : PacketHandler where T : IRecvPacket {
-        Action<T> m_Handler;
+        readonly Action<T> m_Handler;
 
         public PacketHandler(int id, int length, Type packetType, object client, Action<T> handler)
             : base(id, length, packetType, client) {

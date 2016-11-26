@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.Resources
     public class EffectDataResource : IResource<EffectData>
     {
         const int Count = 0x0800;
-        private EffectData[][] m_AnimData;
+        private readonly EffectData[][] m_AnimData;
 
         public EffectDataResource()
         {

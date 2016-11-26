@@ -18,7 +18,7 @@ namespace UltimaXNA.Ultima.Input
         }
 
         private static List<Action> EMPTY = new List<Action>();
-        private List<Action> m_Macros = null;
+        private List<Action> m_Macros;
 
         public List<Action> All
         {
@@ -58,7 +58,7 @@ namespace UltimaXNA.Ultima.Input
 
         private const uint MAGIC = 0xF14934E0;
         private const string c_PathAppend = "_macros2d.txt";
-        private string s_Path = null;
+        private string s_Path;
 
         public void Save()
         {

@@ -18,7 +18,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class PaperdollLargeUninteractable : AControl
     {
-        public enum EquipSlots : int
+        public enum EquipSlots
         {
             Body = 0, First = Body,
             RightHand = 1,
@@ -49,14 +49,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         }
 
         int[] m_equipmentSlots = new int[(int)EquipSlots.Max];
-        int[] m_hueSlots = new int[(int)EquipSlots.Max];
+        readonly int[] m_hueSlots = new int[(int)EquipSlots.Max];
 
         bool m_isFemale;
         public int Gender { set { m_isFemale = (value == 1) ? true : false; } }
         bool m_isElf;
         public int Race { set { m_isElf = (value == 1) ? true : false; } }
 
-        public bool IsCharacterCreation = false;
+        public bool IsCharacterCreation;
 
         public void SetSlotEquipment(EquipSlots slot, int gumpID)
         {

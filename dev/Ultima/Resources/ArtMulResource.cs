@@ -20,9 +20,9 @@ namespace UltimaXNA.Ultima.Resources
 {
     class ArtMulResource
     {
-        GraphicsDevice m_Graphics;
-        AFileIndex m_FileIndex;
-        PixelPicking m_StaticPicking;
+        readonly GraphicsDevice m_Graphics;
+        readonly AFileIndex m_FileIndex;
+        readonly PixelPicking m_StaticPicking;
         Texture2D[] m_LandTileTextureCache;
         Texture2D[] m_StaticTileTextureCache;
 

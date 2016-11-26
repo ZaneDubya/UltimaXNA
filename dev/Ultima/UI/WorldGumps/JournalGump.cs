@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     {
         private ExpandableScroll m_Background;
         private RenderedTextList m_JournalEntries;
-        private IScrollBar m_ScrollBar;
+        private readonly IScrollBar m_ScrollBar;
 
         public JournalGump()
             : base(0, 0)

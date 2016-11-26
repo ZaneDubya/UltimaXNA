@@ -16,7 +16,7 @@ namespace UltimaXNA.Core.Windows
 {
     static class CultureHandler
     {
-        private static Encoding s_Encoding = null;
+        private static Encoding s_Encoding;
 
         public static void InvalidateEncoder()
         {

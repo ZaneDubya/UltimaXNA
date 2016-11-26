@@ -34,8 +34,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private RenderedTextList m_ShopContents;
 
         private MouseState m_MouseState = MouseState.None;
-        private int m_MouseDownOnIndex = 0;
-        private double m_MouseDownMS = 0;
+        private int m_MouseDownOnIndex;
+        private double m_MouseDownMS;
         private Button m_OKButton;
 
         public VendorSellGump(VendorSellListPacket packet)

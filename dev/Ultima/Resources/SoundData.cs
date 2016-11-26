@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.Resources
         //private static Stream m_Stream;
         private static Dictionary<int, int> m_Translations;
         
-        private static bool m_filesPrepared = false;
+        private static bool m_filesPrepared;
 
         public static bool TryGetSoundData(int soundID, out byte[] data, out string name)
         {

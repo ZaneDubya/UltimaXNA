@@ -236,7 +236,7 @@ namespace UltimaXNA.Ultima.World
             Client.StartKeepAlivePackets();
             
             // wait until we've received information about the entities around us before restoring saved gumps.
-            DelayedAction.Start(() => RestoreSavedGumps(), 1000);
+            DelayedAction.Start(RestoreSavedGumps, 1000);
         }
 
         public void Disconnect()

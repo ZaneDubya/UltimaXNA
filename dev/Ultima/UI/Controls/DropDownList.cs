@@ -28,15 +28,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         ResizePic m_resize;
         TextLabelAscii m_label;
 
-        bool m_listOpen = false;
+        bool m_listOpen;
         ResizePic m_openResizePic;
         ScrollBar m_openScrollBar;
         TextLabelAscii[] m_openLabels;
 
         const int hue_Text = 1107;
         const int hue_TextSelected = 588;
-
-        IFont m_Font;
+        readonly IFont m_Font;
 
         DropDownList(AControl parent)
             : base(parent)
@@ -91,7 +90,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 // the resizepic for the open list, and the scroll bar if it is loaded.
                 if (UserInterface.MouseOverControl != m_openResizePic &&
                     UserInterface.MouseOverControl != m_resize &&
-                    (m_openScrollBar == null ? false : UserInterface.MouseOverControl != m_openScrollBar))
+                    (m_openScrollBar != null && UserInterface.MouseOverControl != m_openScrollBar))
                 {
                     closeOpenList();
                 }

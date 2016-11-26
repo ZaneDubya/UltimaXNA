@@ -19,7 +19,7 @@ namespace UltimaXNA.Core.UI.HTML
     {
         public static HtmlLinkList Empty => new HtmlLinkList();
 
-        List<HtmlLink> m_Links = new List<HtmlLink>();
+        readonly List<HtmlLink> m_Links = new List<HtmlLink>();
 
         public HtmlLink this[int index]
         {

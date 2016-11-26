@@ -260,7 +260,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         /// </summary>
         internal class Params : ICloneable
         {
-            private Equalizer m_Equalizer = null;
+            private Equalizer m_Equalizer;
             private OutputChannels m_OutputChannels;
 
             public virtual OutputChannels OutputChannels

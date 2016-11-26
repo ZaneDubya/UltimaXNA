@@ -18,7 +18,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class CheckerTrans : AControl
     {
-        private static Texture2D s_CheckeredTransTexture = null;
+        private static Texture2D s_CheckeredTransTexture;
         public static Texture2D CheckeredTransTexture
         {
             get

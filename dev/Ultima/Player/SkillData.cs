@@ -17,10 +17,10 @@ namespace UltimaXNA.Ultima.Player
 {
     public class SkillData
     {
-        public Action<SkillEntry> OnSkillChanged = null;
+        public Action<SkillEntry> OnSkillChanged;
 
-        private Dictionary<int, SkillEntry> m_Skills = new Dictionary<int,SkillEntry>();
-        private bool m_SkillsLoaded = false;
+        private readonly Dictionary<int, SkillEntry> m_Skills = new Dictionary<int, SkillEntry>();
+        private bool m_SkillsLoaded;
 
         public Dictionary<int, SkillEntry> List
         {
@@ -62,7 +62,7 @@ namespace UltimaXNA.Ultima.Player
 
     public class SkillEntry
     {
-        private SkillData m_DataParent;
+        private readonly SkillData m_DataParent;
 
         private int m_id;
         private int m_index;

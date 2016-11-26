@@ -15,7 +15,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class GumpPicContainer : GumpPic
     {
-        ContainerItem m_containerItem;
+        readonly ContainerItem m_containerItem;
         public ContainerItem Item { get { return m_containerItem; } }
 
         public GumpPicContainer(AControl parent, int x, int y, int gumpID, int hue, ContainerItem containerItem)

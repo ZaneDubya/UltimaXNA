@@ -28,7 +28,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
     {
         public StyleState Style;
 
-        private IResourceProvider m_Provider;
+        private readonly IResourceProvider m_Provider;
         private List<OpenTag> m_OpenTags;
 
         public StyleParser(IResourceProvider provider)
@@ -245,18 +245,21 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                     case "activesrc":
                         if (atom is ImageElement)
                         {
-                            if (key == "src")
-                                (atom as ImageElement).ImgSrc = int.Parse(value);
-                            else if (key == "hoversrc")
-                                (atom as ImageElement).ImgSrcOver = int.Parse(value);
-                            else if (key == "activesrc")
-                                (atom as ImageElement).ImgSrcDown = int.Parse(value);
+                            switch (key)
+                            {
+                                case "src":
+                                    (atom as ImageElement).ImgSrc = int.Parse(value);
+                                    break;
+                                case "hoversrc":
+                                    (atom as ImageElement).ImgSrcOver = int.Parse(value);
+                                    break;
+                                case "activesrc":
+                                    (atom as ImageElement).ImgSrcDown = int.Parse(value);
+                                    break;
+                            }
                             break;
                         }
-                        else
-                        {
-                            Tracer.Warn("{0} param encountered within {1} tag which does not use this param.", key, tag.sTag);
-                        }
+                        Tracer.Warn("{0} param encountered within {1} tag which does not use this param.", key, tag.sTag);
                         break;
                     case "width":
                         {

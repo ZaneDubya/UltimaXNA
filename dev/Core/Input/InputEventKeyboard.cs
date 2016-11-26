@@ -53,7 +53,7 @@ namespace UltimaXNA.Core.Input
 
 
         private WinKeys m_keyCode;
-        private int m_keyDataExtra;
+        private readonly int m_keyDataExtra;
 
         public WinKeys KeyCode
         {

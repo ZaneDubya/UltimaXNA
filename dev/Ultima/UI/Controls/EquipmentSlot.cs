@@ -21,17 +21,17 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class EquipmentSlot : AControl
     {
-        private WorldModel m_World;
+        private readonly WorldModel m_World;
 
         private Mobile m_Entity;
         private EquipLayer m_EquipLayer;
         private Item m_Item;
         private StaticPic m_ItemGraphic;
 
-        private bool m_ClickedCanDrag = false;
+        private bool m_ClickedCanDrag;
         private float m_PickUpTime;
         private Point m_ClickPoint;
-        private bool m_SendClickIfNoDoubleClick = false;
+        private bool m_SendClickIfNoDoubleClick;
         private float m_SingleClickTime;
 
         public EquipmentSlot(AControl parent, int x, int y, Mobile entity, EquipLayer layer)

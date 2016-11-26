@@ -41,8 +41,8 @@ namespace UltimaXNA.Core.Audio
         virtual protected void AfterStop() { }
         virtual protected void BeforePlay() { }
 
-        static List<Tuple<DynamicSoundEffectInstance, double>> m_EffectInstances;
-        static List<Tuple<DynamicSoundEffectInstance, double>> m_MusicInstances;
+        static readonly List<Tuple<DynamicSoundEffectInstance, double>> m_EffectInstances;
+        static readonly List<Tuple<DynamicSoundEffectInstance, double>> m_MusicInstances;
         protected DynamicSoundEffectInstance m_ThisInstance;
 
         protected int Frequency = 22050;

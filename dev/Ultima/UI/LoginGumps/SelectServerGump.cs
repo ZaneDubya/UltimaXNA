@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
     class SelectServerGump : Gump {
         Action m_OnBackToLoginScreen;
         Action m_OnSelectLastServer;
-        Action<int> m_OnSelectServer;
+        readonly Action<int> m_OnSelectServer;
 
         enum SelectServerGumpButtons {
             QuitButton,

@@ -75,7 +75,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         }
     }
 
-    public enum EquipLayer : int
+    public enum EquipLayer
     {
         /// <summary>
         /// Invalid layer.

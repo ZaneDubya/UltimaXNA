@@ -24,10 +24,9 @@ namespace UltimaXNA.Core.Network.Packets
         /// Used to create the a buffered datablock to be sent
         /// </summary>
         protected PacketWriter Stream;
-
-        int m_Id;
+        readonly int m_Id;
         int m_Length;
-        string m_Name;
+        readonly string m_Name;
 
         /// <summary>
         /// Gets the name of the packet

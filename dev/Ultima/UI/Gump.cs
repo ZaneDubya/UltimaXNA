@@ -178,9 +178,9 @@ namespace UltimaXNA.Ultima.UI
         }
 
         #region Position Save and Restore
-        private bool m_WillSavePosition = false, m_WillOffsetNextPosition = false;
-        private string m_SavePositionName = null;
-        private bool m_HasRestoredPosition = false;
+        private bool m_WillSavePosition, m_WillOffsetNextPosition;
+        private string m_SavePositionName;
+        private bool m_HasRestoredPosition;
 
         private static Point s_SavePositionOffsetAmount = new Point(24, 24);
 

@@ -22,9 +22,9 @@ namespace UltimaXNA.Ultima.UI
 {
     class UltimaCursor : ICursor
     {
-        private HuedTexture m_CursorSprite = null;
+        private HuedTexture m_CursorSprite;
         private int m_CursorSpriteArtIndex = -1;
-        protected Tooltip m_Tooltip = null;
+        protected Tooltip m_Tooltip;
 
         public int CursorSpriteArtIndex
         {

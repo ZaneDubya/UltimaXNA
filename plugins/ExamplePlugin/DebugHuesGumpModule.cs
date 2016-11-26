@@ -91,7 +91,7 @@ namespace UltimaXNA.Ultima.Login {
         class HuedControl : AControl {
             public int Hue;
             Texture2D m_Texture;
-            int m_StaticTextureID;
+            readonly int m_StaticTextureID;
 
             public HuedControl(AControl parent, int staticID = 0x1bf5)
                 : base(parent) {

@@ -5,7 +5,7 @@ namespace UltimaXNA.Ultima.Player
 {
     public class JournalData
     {
-        private List<JournalEntry> m_JournalEntries = new List<JournalEntry>();
+        private readonly List<JournalEntry> m_JournalEntries = new List<JournalEntry>();
         public List<JournalEntry> JournalEntries
         {
             get { return m_JournalEntries; }

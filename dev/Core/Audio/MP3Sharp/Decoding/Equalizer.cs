@@ -215,15 +215,14 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         internal abstract class EQFunction
         {
             /// <summary>
-            ///     Returns the setting of a band in the equalizer.
+            /// Returns the setting of a band in the equalizer.
             /// </summary>
-            /// <param name="band	The">
-            ///     index of the band to retrieve the setting
-            ///     for.
+            /// <param name="band">
+            /// The index of the band to retrieve the setting for.
             /// </param>
             /// <returns>
-            ///     the setting of the specified band. This is a value between
-            ///     -1 and +1.
+            /// the setting of the specified band. This is a value between
+            /// -1 and +1.
             /// </returns>
             public virtual float getBand(int band)
             {

@@ -17,7 +17,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     abstract class AGumpPic : AControl
     {
-        protected Texture2D m_Texture = null;
+        protected Texture2D m_Texture;
         private int m_LastFrameGumpID = -1;
 
         internal int GumpID

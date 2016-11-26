@@ -23,12 +23,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     public class UseSkillButtonGump : Gump
     {
         // private variables
-        private SkillEntry m_Skill;
+        private readonly SkillEntry m_Skill;
         private ResizePic[] m_BG;
         private HtmlGumpling m_Caption;
         private bool m_IsMouseDown;
         // services
-        private WorldModel m_World;
+        private readonly WorldModel m_World;
 
         public UseSkillButtonGump(SkillEntry skill)
             : base(skill.ID, 0)

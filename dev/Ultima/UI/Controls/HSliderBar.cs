@@ -28,11 +28,11 @@ namespace UltimaXNA.Ultima.UI.Controls
 
     class HSliderBar : AControl
     {
-        Texture2D[] m_GumpSliderBackground = null;
-        Texture2D m_GumpWidget = null;
+        Texture2D[] m_GumpSliderBackground;
+        Texture2D m_GumpWidget;
 
         // we use m_newValue to (a) get delta, (b) so Value only changes once per frame.
-        int m_newValue = 0, m_value = 0;
+        int m_newValue, m_value;
         public int Value
         {
             get
@@ -132,7 +132,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return false;
         }
 
-        bool m_clicked = false;
+        bool m_clicked;
         Point m_clickPosition;
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
@@ -164,7 +164,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        List<HSliderBar> m_pairedSliders;
+        readonly List<HSliderBar> m_pairedSliders;
         public void PairSlider(HSliderBar s)
         {
             m_pairedSliders.Add(s);

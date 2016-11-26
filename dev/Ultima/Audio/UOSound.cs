@@ -16,7 +16,7 @@ namespace UltimaXNA.Ultima.Audio
 {
     class UOSound : ASound
     {
-        private byte[] m_WaveBuffer;
+        private readonly byte[] m_WaveBuffer;
 
         public UOSound(string name, byte[] buffer)
             : base(name)

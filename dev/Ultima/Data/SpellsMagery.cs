@@ -106,7 +106,7 @@ namespace UltimaXNA.Ultima.Data
                 { 61, new SpellDefinition("Summon Daemon", 61, 0x1B94, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk, Reagents.SulfurousAsh) },
                 { 62, new SpellDefinition("Earth Elemental", 62, 0x1B95, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk) },
                 { 63, new SpellDefinition("Fire Elemental", 63, 0x1B96, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk, Reagents.SulfurousAsh) },
-                { 64, new SpellDefinition("Water Elemental", 64, 0x1B97, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk) },
+                { 64, new SpellDefinition("Water Elemental", 64, 0x1B97, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk) }
             };
         }
 

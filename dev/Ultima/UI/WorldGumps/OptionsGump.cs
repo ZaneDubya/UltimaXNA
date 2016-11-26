@@ -60,9 +60,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private MacroDropDownList[] m_ActionTypeList = new MacroDropDownList[MACRO_CAPACITY];
         private TextEntry[] m_ActionText = new TextEntry[MACRO_CAPACITY];
         private MacroDropDownList[] m_ActionDropDown = new MacroDropDownList[MACRO_CAPACITY];
-        private int m_CurrentMacro = 0;
+        private int m_CurrentMacro;
 
-        private double m_NextRefreshAt = 0d;
+        private double m_NextRefreshAt;
         private const double REFRESH_INTERVAL = 0.4d;
         private TextLabelAscii[] m_Labels = new TextLabelAscii[2];
 

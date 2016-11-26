@@ -24,12 +24,12 @@ namespace UltimaXNA.Ultima.UI.Controls
         // private variables
         private IScrollBar m_Scrollbar;
         private RenderedText m_RenderedText;
-        private bool m_IsMouseDown = false;
+        private bool m_IsMouseDown;
         private int m_MouseDownHREF = -1;
         private int m_MouseOverHREF = -1;
         // public variables
-        public int ScrollX = 0;
-        public int ScrollY = 0;
+        public int ScrollX;
+        public int ScrollY;
 
         public string Text
         {

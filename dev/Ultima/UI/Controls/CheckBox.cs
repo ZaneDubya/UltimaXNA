@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.UI.Controls
     class CheckBox : AControl
     {
         Texture2D m_Inactive, m_Active;
-        bool m_ischecked = false;
+        bool m_ischecked;
 
         public bool IsChecked
         {

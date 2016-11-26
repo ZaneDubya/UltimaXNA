@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.Network.Server
               "Out of sight.",
               "Belongs to another.",
               "Already holding something.",
-              "???",
+              "???"
             };
 
         readonly byte m_errorCode;

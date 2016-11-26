@@ -17,7 +17,7 @@ namespace UltimaXNA.Core.Diagnostics
 {
     static class Metrics
     {
-        static List<NameValuePair> m_dataReadList = new List<NameValuePair>();
+        static readonly List<NameValuePair> m_dataReadList = new List<NameValuePair>();
         public static int TotalDataRead
         {
             get
@@ -77,7 +77,7 @@ namespace UltimaXNA.Core.Diagnostics
     class NameValuePair
     {
         public string Name = string.Empty;
-        public int Value = 0;
+        public int Value;
 
         public NameValuePair(string name, int value)
         {

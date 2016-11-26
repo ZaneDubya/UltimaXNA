@@ -12,7 +12,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 {
     class MobileMoveEvent
     {
-        public bool CreatedByPlayerInput = false;
+        public bool CreatedByPlayerInput;
         public readonly int X, Y, Z, Facing, Fastwalk;
 
         public MobileMoveEvent(int x, int y, int z, int facing, int fastwalk)

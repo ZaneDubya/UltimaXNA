@@ -22,8 +22,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         Button btnPrivateMsg;
         GumpPic[] m_BarBGs;
-        GumpPicWithWidth[] m_Bars;
-        TextLabel m_Name;
+        readonly GumpPicWithWidth[] m_Bars;
+        readonly TextLabel m_Name;
 
         public PartyHealthTrackerGump(PartyMember member)
             : base(member.Serial, 0)

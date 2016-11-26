@@ -59,7 +59,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 
 		Encoding oEnc=Encoding.Default;
 
-		private bool bDisposed=false;
+		private bool bDisposed;
 
 		/// <summary>
 		/// Constructor 

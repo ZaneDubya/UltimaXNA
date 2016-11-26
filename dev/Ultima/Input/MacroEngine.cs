@@ -49,8 +49,8 @@ namespace UltimaXNA.Ultima.Input
                 private set;
             }
 
-            double m_LastMacroTimestamp = 0;
-            int m_MacroIndex = 0;
+            double m_LastMacroTimestamp;
+            int m_MacroIndex;
 
             public RunningMacroAction(Action action)
             {

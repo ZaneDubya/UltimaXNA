@@ -27,7 +27,7 @@ namespace ExamplePlugin {
                  new BaseBook.BookPageInfo(),
                  new BaseBook.BookPageInfo(),
                  new BaseBook.BookPageInfo(),
-                 new BaseBook.BookPageInfo(),
+                 new BaseBook.BookPageInfo()
             };
             Services.Get<UserInterfaceService>().AddControl(new BookGump(book), 10, 10);
         }

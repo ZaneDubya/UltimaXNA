@@ -76,7 +76,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
-        double MoveSequence = 0d;
+        double MoveSequence;
 
         internal Position3D Position { get { return CurrentPosition; } }
 

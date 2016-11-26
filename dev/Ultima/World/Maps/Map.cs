@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.World.Maps
 {
     public class Map
     {
-        private MapChunk[] m_Chunks;
+        private readonly MapChunk[] m_Chunks;
         public TileMatrixData MapData
         {
             get;

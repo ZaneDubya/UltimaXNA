@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         AnimatedItemEffect Effect => (AnimatedItemEffect)Entity;
 
         EffectData m_AnimData;
-        bool m_Animated;
+        readonly bool m_Animated;
         int m_DisplayItemID = -1;
 
         public AnimatedItemEffectView(AnimatedItemEffect effect)

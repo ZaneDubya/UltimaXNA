@@ -17,8 +17,8 @@ namespace UltimaXNA.Ultima.World.Entities
 {
     public class PropertyList
     {
-        public int Hash = 0;
-        private List<string> m_PropertyList = new List<string>();
+        public int Hash;
+        private readonly List<string> m_PropertyList = new List<string>();
 
         public bool HasProperties
         {

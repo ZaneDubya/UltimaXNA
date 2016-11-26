@@ -154,9 +154,11 @@ class CircularByteBuffer
 
             // Do thin modulo (should just drop through)
             for (; ind >= m_Length; ind -= m_Length)
-                ;
+            {
+            }
             for (; ind < 0; ind += m_Length)
-                ;
+            {
+            }
             // Set value
             return m_DataArray[ind];
         }
@@ -167,9 +169,12 @@ class CircularByteBuffer
 
             // Do thin modulo (should just drop through)
             for (; ind > m_Length; ind -= m_Length)
-                ;
+            {
+            }
+
             for (; ind < 0; ind += m_Length)
-                ;
+            {
+            }
             // Set value
             m_DataArray[ind] = valueToSet;
         }

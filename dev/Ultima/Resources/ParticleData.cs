@@ -121,10 +121,10 @@ namespace UltimaXNA.Ultima.Resources
             return null;
         }
 
-        private int m_itemID;
+        private readonly int m_itemID;
         private int m_frameLength;
         private int m_speed;
-        private string m_name;
+        private readonly string m_name;
 
         public int ItemID { get { return m_itemID; } }
         public int FrameLength { get { return m_frameLength; } set { m_frameLength = value; } }

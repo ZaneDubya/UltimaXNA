@@ -178,7 +178,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         }
 
         public Chairs.ChairData ChairData = Chairs.ChairData.Null;
-        public int SittingZ = 0;
+        public int SittingZ;
 
         // ============================================================================================================
         // Properties
@@ -196,7 +196,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             set;
         }
 
-        public bool PlayerCanChangeName = false;
+        public bool PlayerCanChangeName;
 
         public int Strength, Dexterity, Intelligence, StatCap, Luck, Gold;
         public CurrentMaxValue Health, Stamina, Mana;
@@ -312,7 +312,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             666, 667 // gargoyles. 666. Clever.
         };
 
-        int m_BodyID = 0;
+        int m_BodyID;
         public Body Body
         {
             get

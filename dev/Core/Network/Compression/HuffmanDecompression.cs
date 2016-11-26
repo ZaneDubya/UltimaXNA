@@ -16,7 +16,7 @@ namespace UltimaXNA.Core.Network.Compression
     public class HuffmanDecompression
     {
         #region Decompression Tree
-        static int[,] dec_tree = {
+        static readonly int[,] dec_tree = {
             /*node*/ /*leaf0 leaf1*/
             /* 0*/ { 2, 1},
             /* 1*/ { 4, 3},

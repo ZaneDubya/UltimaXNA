@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.World
     class WorldClient : IDisposable
     {
         Timer m_KeepAliveTimer;
-        INetworkClient m_Network;
+        readonly INetworkClient m_Network;
         UserInterfaceService m_UserInterface;
         WorldModel m_World;
 
@@ -894,7 +894,6 @@ namespace UltimaXNA.Ultima.World
         bool TryParseGumplings(string gumpData, out string[] pieces)
         {
             List<string> i = new List<string>();
-            ;
             int dataIndex = 0;
             while (dataIndex < gumpData.Length)
             {

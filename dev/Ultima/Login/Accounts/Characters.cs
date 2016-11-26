@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.Login.Accounts
         static CharacterCityListPacket.StartingLocation[] m_locations;
         public static CharacterCityListPacket.StartingLocation[] StartingLocations { get { return m_locations; } }
 
-        static int m_updateValue = 0;
+        static int m_updateValue;
         public static int UpdateValue { get { return m_updateValue; } }
 
         public static int FirstEmptySlot

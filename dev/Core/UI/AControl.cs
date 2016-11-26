@@ -30,8 +30,8 @@ namespace UltimaXNA.Core.UI
         // Private variables
         // ============================================================================================================
         Rectangle m_Area = new Rectangle();
-        ControlMetaData m_MetaData = null;
-        List<AControl> m_Children = null;
+        ControlMetaData m_MetaData;
+        List<AControl> m_Children;
 
         // ============================================================================================================
         // Private services
@@ -241,7 +241,7 @@ namespace UltimaXNA.Core.UI
             set;
         }
 
-        int m_ActivePage = 0; // we always draw m_activePage and Page 0.
+        int m_ActivePage; // we always draw m_activePage and Page 0.
 
         /// <summary>
         /// This control's active page index. On Update and Draw(), this control will send update to and draw all children with Page == 0 or
@@ -368,7 +368,7 @@ namespace UltimaXNA.Core.UI
         // ============================================================================================================
         // Ctor, Init, Dispose, Update, and Draw
         // ============================================================================================================
-        public AControl(AControl parent)
+        protected AControl(AControl parent)
         {
             Parent = parent;
             Page = 0;
@@ -655,8 +655,8 @@ namespace UltimaXNA.Core.UI
         #region MouseInput
 
         // private variables
-        bool m_HandlesMouseInput = false;
-        float m_MaxTimeForDoubleClick = 0f;
+        bool m_HandlesMouseInput;
+        float m_MaxTimeForDoubleClick;
         Point m_LastClickPosition;
 
         // public methods
@@ -822,7 +822,7 @@ namespace UltimaXNA.Core.UI
         #region KeyboardInput
 
         // private variables
-        bool m_HandlesKeyboardFocus = false;
+        bool m_HandlesKeyboardFocus;
 
         // public methods
         public virtual bool HandlesKeyboardFocus

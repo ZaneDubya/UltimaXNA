@@ -18,9 +18,9 @@ using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.Resources
 {
-    public sealed class MobtypeData
+    public static class MobtypeData
     {
-        private static Dictionary<int,MobtypeEntry> m_entries = new Dictionary<int,MobtypeEntry>();
+        private static readonly Dictionary<int, MobtypeEntry> m_entries = new Dictionary<int, MobtypeEntry>();
 
         static MobtypeData()
         {

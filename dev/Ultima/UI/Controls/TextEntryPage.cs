@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         bool m_IsFocused;
         bool m_CaratBlinkOn;
         float m_MSSinceLastCaratBlink;
-        RenderedText m_RenderedText;
+        readonly RenderedText m_RenderedText;
         RenderedText m_RenderedCarat;
         int m_CaratAt;
         int? m_CaratKeyUpDownX;

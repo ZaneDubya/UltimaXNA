@@ -272,7 +272,7 @@ namespace UltimaXNA.Ultima.World.Input
         // Drawing routines
         // ============================================================================================================
 
-        HuedTexture m_ItemSprite = null;
+        HuedTexture m_ItemSprite;
         int m_ItemSpriteArtIndex = -1;
 
         public int ItemSpriteArtIndex
@@ -588,7 +588,7 @@ namespace UltimaXNA.Ultima.World.Input
         // Pickup/Drop/Hold item routines
         // ============================================================================================================
 
-        Item m_HeldItem = null;
+        Item m_HeldItem;
         internal Item HeldItem
         {
             get { return m_HeldItem; }

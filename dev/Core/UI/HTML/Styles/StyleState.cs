@@ -46,9 +46,9 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             }
         }
 
-        public bool IsBold = false;
-        public bool IsItalic = false;
-        public bool IsOutlined = false;
+        public bool IsBold;
+        public bool IsItalic;
+        public bool IsOutlined;
 
         public bool DrawOutline
         {
@@ -61,7 +61,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
         public int ActiveColorHue = 12;
         public int HoverColorHue = 24;
 
-        public string HREF = null;
+        public string HREF;
         public bool IsHREF { get { return HREF != null; } }
 
         public int ExtraWidth

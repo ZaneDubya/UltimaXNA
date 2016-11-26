@@ -17,7 +17,7 @@ namespace UltimaXNA.Configuration
 {
     public sealed class UltimaOnlineSettings : ASettingsSection
     {
-        bool m_AllowCornerMovement = false;
+        bool m_AllowCornerMovement;
         string m_DataDirectory;
         byte[] m_ClientVersion;
 

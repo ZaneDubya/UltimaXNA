@@ -18,8 +18,7 @@ namespace UltimaXNA.Core.UI.HTML
     class HtmlImageList
     {
         public static HtmlImageList Empty = new HtmlImageList();
-
-        List<HtmlImage> m_Images = new List<HtmlImage>();
+        readonly List<HtmlImage> m_Images = new List<HtmlImage>();
 
         public HtmlImage this[int index]
         {

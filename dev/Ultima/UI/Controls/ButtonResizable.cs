@@ -20,7 +20,8 @@ namespace UltimaXNA.Ultima.UI.Controls {
         ResizePic[] m_Gumps = new ResizePic[3];
         bool m_IsMouseDown;
         RenderedText m_Caption;
-        Action m_OnClickLeft, m_OnClickRight;
+        Action m_OnClickRight;
+        readonly Action m_OnClickLeft;
 
         internal bool IsMouseDownOnThis => m_IsMouseDown;
 

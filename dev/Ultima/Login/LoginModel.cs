@@ -187,6 +187,8 @@ namespace UltimaXNA.Ultima.Login
 
         public void ShowCreateCharacter() {
             m_Data = new CreateCharacterData();
+            m_Data.ShirtColor = Utility.RandomValue(600, 900);
+            m_Data.PantsColor = Utility.RandomValue(600, 900);
             openSkillsGump();
         }
 

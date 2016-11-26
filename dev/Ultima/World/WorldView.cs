@@ -125,8 +125,8 @@ namespace UltimaXNA.Ultima.World
             MiniMap.Update(Model.Map, center);
         }
 
-        private bool m_ShowingDeathEffect = false;
-        private double m_DeathEffectTime = 0d;
+        private bool m_ShowingDeathEffect;
+        private double m_DeathEffectTime;
         private double m_LightingGlobal;
         private double m_LightingPersonal;
         private YouAreDeadGump m_YouAreDead;

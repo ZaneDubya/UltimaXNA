@@ -26,18 +26,18 @@ namespace UltimaXNA.Ultima.UI.Controls
         // ============================================================================================================
         // Private variables
         // ============================================================================================================
-        private Texture2D[] m_GumpUpButton = null;
-        private Texture2D[] m_GumpDownButton = null;
-        private Texture2D[] m_GumpBackground = null;
-        private Texture2D m_GumpSlider = null;
+        private Texture2D[] m_GumpUpButton;
+        private Texture2D[] m_GumpDownButton;
+        private Texture2D[] m_GumpBackground;
+        private Texture2D m_GumpSlider;
 
         private float m_SliderPosition;
         private float m_Value;
         private int m_Max, m_Min;
 
-        private bool m_BtnUpClicked = false;
-        private bool m_BtnDownClicked = false;
-        private bool m_BtnSliderClicked = false;
+        private bool m_BtnUpClicked;
+        private bool m_BtnDownClicked;
+        private bool m_BtnSliderClicked;
         private Point m_ClickPosition;
 
         private float m_TimeUntilNextClick;

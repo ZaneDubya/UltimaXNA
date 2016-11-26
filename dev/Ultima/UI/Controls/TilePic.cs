@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.UI.Controls
     /// </summary>
     class StaticPic : AControl
     {
-        Texture2D m_texture = null;
+        Texture2D m_texture;
         int Hue;
         int m_tileID;
 

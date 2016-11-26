@@ -262,14 +262,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         class ChatLineTimed
         {
-            string m_text;
+            readonly string m_text;
             public string Text { get { return m_text; } }
             float m_createdTime = float.MinValue;
             bool m_isExpired;
             public bool IsExpired { get { return m_isExpired; } }
             float m_alpha;
             public float Alpha { get { return m_alpha; } }
-            private int m_width = 0;
+            private int m_width;
 
             const float Time_Display = 10000.0f;
             const float Time_Fadeout = 4000.0f;

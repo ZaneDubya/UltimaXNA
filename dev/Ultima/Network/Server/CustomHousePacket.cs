@@ -24,7 +24,7 @@ namespace UltimaXNA.Ultima.Network.Server {
         readonly int m_NumPlanes;
         public int PlaneCount => m_NumPlanes;
 
-        CustomHousePlane[] m_Planes;
+        readonly CustomHousePlane[] m_Planes;
         public CustomHousePlane[] Planes => m_Planes;
 
         public CustomHousePacket(PacketReader reader)

@@ -37,8 +37,8 @@ namespace UltimaXNA.Ultima.Resources
         public readonly uint ChunkHeight;
         public readonly uint ChunkWidth;
         public readonly uint MapIndex;
-        byte[][] m_BufferedLandChunks;
-        uint[] m_BufferedLandChunkKeys;
+        readonly byte[][] m_BufferedLandChunks;
+        readonly uint[] m_BufferedLandChunkKeys;
         byte[] m_StaticTileLoadingBuffer;
         readonly TileMatrixDataPatch m_Patch;
         readonly FileStream m_MapDataStream;

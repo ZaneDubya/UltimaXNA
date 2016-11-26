@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.World.Managers
         Dictionary<int, AEntity> m_Entities = new Dictionary<int, AEntity>();
         List<AEntity> m_Entities_Queued = new List<AEntity>();
         List<Serial> m_RetainedPlayerEntities = new List<Serial>();
-        bool m_EntitiesCollectionIsLocked = false;
+        bool m_EntitiesCollectionIsLocked;
         List<int> m_SerialsToRemove = new List<int>();
         List<OrphanedItem> m_OrphanedItems = new List<OrphanedItem>();
 

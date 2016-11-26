@@ -38,7 +38,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         }
 
         private Mobile m_Mobile = WorldModel.Entities.GetPlayerEntity();
-        double m_RefreshTime = 0d;
+        double m_RefreshTime;
 
         private TextLabelAscii[] m_Labels = new TextLabelAscii[(int)MobileStats.Max];
 

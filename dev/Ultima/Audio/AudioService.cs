@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.Audio
     {
         private readonly Dictionary<int, ASound> m_Sounds = new Dictionary<int, ASound>();
         private readonly Dictionary<int, ASound> m_Music = new Dictionary<int, ASound>();
-        private UOMusic m_MusicCurrentlyPlaying = null;
+        private UOMusic m_MusicCurrentlyPlaying;
 
         public void Update()
         {

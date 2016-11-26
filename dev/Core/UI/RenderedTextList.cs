@@ -25,10 +25,10 @@ namespace UltimaXNA.Core.UI
     /// </summary>
     class RenderedTextList : AControl
     {
-        private List<RenderedText> m_Entries;
+        private readonly List<RenderedText> m_Entries;
         private IScrollBar m_ScrollBar;
 
-        private bool m_IsMouseDown = false;
+        private bool m_IsMouseDown;
         private int m_MouseDownHREF = -1;
         private int m_MouseDownText = -1;
         private int m_MouseOverHREF = -1;

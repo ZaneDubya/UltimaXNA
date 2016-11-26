@@ -35,7 +35,7 @@ namespace UltimaXNA.Core.Diagnostics
         #endregion
 
         #region Member Variables
-        private long m_StartTime = 0;
+        private long m_StartTime;
         #endregion
 
         public HighPerformanceTimer()

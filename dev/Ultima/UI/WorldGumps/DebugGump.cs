@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     public class DebugGump : Gump
     {
-        WorldModel m_World;
+        readonly WorldModel m_World;
         HtmlGumpling m_Debug;
 
         public DebugGump()

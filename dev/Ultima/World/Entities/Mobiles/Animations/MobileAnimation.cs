@@ -19,9 +19,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
     /// </summary>
     public class MobileAnimation
     {
-        private Mobile Parent = null;
+        private Mobile Parent;
         private MobileAction m_action;
-        private bool m_actionCanBeInteruptedByStand = false;
+        private bool m_actionCanBeInteruptedByStand;
         
         private int m_actionIndex;
         public int ActionIndex
@@ -57,7 +57,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
             }
         }
 
-        private float m_animationFrame = 0f;
+        private float m_animationFrame;
         public float AnimationFrame
         {
             get
@@ -71,8 +71,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
 
         // We use these variables to 'hold' the last frame of an animation before 
         // switching to Stand Action.
-        private bool m_IsAnimatationPaused = false;
-        private int m_AnimationPausedMS = 0;
+        private bool m_IsAnimatationPaused;
+        private int m_AnimationPausedMS;
         private int PauseAnimationMS
         {
             get

@@ -17,7 +17,7 @@ using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls {
     public class ResizePic : AControl {
-        Texture2D[] m_Gumps;
+        readonly Texture2D[] m_Gumps;
         int GumpID;
 
         ResizePic(AControl parent)

@@ -38,8 +38,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             set;
         }
 
-        public bool IsChild = false;
-        public ColorPickerBox ParentColorPicker = null;
+        public bool IsChild;
+        public ColorPickerBox ParentColorPicker;
 
         public int HueValue
         {

@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private SpellDefinition m_Spell;
         private GumpPic m_SpellButton;
         // services
-        private WorldModel m_World;
+        private readonly WorldModel m_World;
 
         public UseSpellButtonGump(SpellDefinition spell)
             : base(spell.ID, 0)

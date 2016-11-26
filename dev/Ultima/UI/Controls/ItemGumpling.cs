@@ -25,13 +25,13 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool CanPickUp = true;
         public bool HighlightOnMouseOver = true;
 
-        protected Texture2D m_Texture = null;
-        HtmlGumpling m_Label = null;
+        protected Texture2D m_Texture;
+        HtmlGumpling m_Label;
 
-        bool m_ClickedCanDrag = false;
+        bool m_ClickedCanDrag;
         float m_PickUpTime;
         Point m_ClickPoint;
-        bool m_SendClickIfNoDoubleClick = false;
+        bool m_SendClickIfNoDoubleClick;
         float m_SingleClickTime;
 
         readonly WorldModel m_World;

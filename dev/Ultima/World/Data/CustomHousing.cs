@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace UltimaXNA.Ultima.World.Data {
     class CustomHousing {
-        static Dictionary<Serial, CustomHouse> m_CustomHouses = new Dictionary<Serial, CustomHouse>();
+        static readonly Dictionary<Serial, CustomHouse> m_CustomHouses = new Dictionary<Serial, CustomHouse>();
 
         public static bool IsHashCurrent(Serial serial, int hash) {
             if (m_CustomHouses.ContainsKey(serial)) {

@@ -29,8 +29,10 @@ namespace UltimaXNA
             new Bootstrapper(args).Initialize();
         }
 
-        // === Instance ===============================================================================================
-        GeneralExceptionHandler m_ExecptionHandler;
+        readonly
+
+                // === Instance ===============================================================================================
+                GeneralExceptionHandler m_ExecptionHandler;
 
         Bootstrapper(string[] args)
         {

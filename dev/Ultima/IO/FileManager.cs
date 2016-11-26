@@ -24,7 +24,7 @@ namespace UltimaXNA.Ultima.IO
 {
     class FileManager
     {
-        static bool m_isDataPresent = false;
+        static bool m_isDataPresent;
         static public bool IsUODataPresent {
             get { return m_isDataPresent; }
         }

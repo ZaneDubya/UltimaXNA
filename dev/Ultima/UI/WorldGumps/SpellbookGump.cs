@@ -105,8 +105,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // ============================================================================================================
         GumpPic m_PageCornerLeft;
         GumpPic m_PageCornerRight;
-        int m_MaxPage = 0;
-        List<KeyValuePair<int, int>> m_SpellList = new List<KeyValuePair<int, int>>();
+        int m_MaxPage;
+        readonly List<KeyValuePair<int, int>> m_SpellList = new List<KeyValuePair<int, int>>();
 
         void CreateMageryGumplings()
         {

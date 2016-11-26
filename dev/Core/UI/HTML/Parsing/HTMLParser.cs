@@ -61,7 +61,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 			}
 		}
 
-		bool m_bDecodeEntities=false;
+		bool m_bDecodeEntities;
 
 		/// <summary>
 		/// If false (default) then mini entity set (&nbsp;) will be decoded, but not all of them
@@ -100,7 +100,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// to abort in processing. Default behavior is to use Default encoding that should keep symbols as
 		/// is - most likely garbage looking things if encoding was not supported.
 		/// </summary>
-		public bool bThrowExceptionOnEncodingSetFailure=false;
+		public bool bThrowExceptionOnEncodingSetFailure;
 
 		/// <summary>
 		/// If true (default: false) then parsed tag chunks will contain raw HTML, otherwise only comments will have it set
@@ -110,7 +110,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// </p>
 		/// </summary>
 		/// <exclude/>
-		public bool bKeepRawHTML=false;
+		public bool bKeepRawHTML;
 
 		/// <summary>
 		/// If true (default) then HTML for comments tags themselves AND between them will be set to oHTML variable, otherwise it will be empty
@@ -176,7 +176,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// <summary>
 		/// Encoding used to convert binary data into string
 		/// </summary>
-		public Encoding oEnc=null;
+		public Encoding oEnc;
 
 		/// <summary>
 		/// Byte array with HTML will be kept here
@@ -191,13 +191,12 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// <summary>
 		/// Current position pointing to byte in bHTML
 		/// </summary>
-		/// <exclude/
-		int iCurPos=0;
+		int iCurPos;
 
 		/// <summary>
 		/// Length of bHTML -- it appears to be faster to use it than bHTML.Length
 		/// </summary>
-		int iDataLength=0;
+		int iDataLength;
 
 		/// <summary>
 		/// Whitespace lookup table - 0 is not whitespace, otherwise it is
@@ -269,7 +268,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 			oChunk.bHashMode=bHashMode;
 		}
 
-		bool bDisposed=false;
+		bool bDisposed;
 
 		public void Dispose()
 		{
@@ -468,8 +467,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 								goto case 148;
 
 							break;
-					};
-
+					}
 					if(cChar<HTMLentities.sEntityReverseLookup.Length && HTMLentities.sEntityReverseLookup[cChar]!=null)
 						return oE.ChangeToEntities(sLine,i,bChangeDangerousCharsOnly);
 				}
@@ -679,8 +677,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 						}
 
 						break;
-				};
-				
+				}				
 			}
 			
 			if(sDigits.Length==0 || iDigits==0)
@@ -989,7 +986,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		}
 
 		/// <summary>
-		/// Internally parses tag and returns it from point when '<' was found
+		/// Internally parses tag and returns it from point when open bracket (&lt;) was found
 		/// </summary>
 		/// <returns>Chunk</returns>
 		HTMLchunk GetNextTag()
@@ -1170,8 +1167,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 
 					default:
 						break;
-				};
-
+				}
 
 			}
 

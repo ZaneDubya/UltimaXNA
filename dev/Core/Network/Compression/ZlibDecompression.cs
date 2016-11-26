@@ -372,7 +372,7 @@ namespace UltimaXNA.Core.Network.Compression
         }
     }
 
-    public enum ZLibError : int
+    public enum ZLibError
     {
         VersionError = -6,
         BufferError = -5,
@@ -387,7 +387,7 @@ namespace UltimaXNA.Core.Network.Compression
         NeedDictionary = 2
     }
 
-    public enum ZLibQuality : int
+    public enum ZLibQuality
     {
         Default = -1,
 

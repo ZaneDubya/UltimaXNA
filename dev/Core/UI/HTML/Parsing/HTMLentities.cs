@@ -44,19 +44,19 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// <summary>
 		/// Supported HTML entities
 		/// </summary>
-		FastHash oEntities=null;
+		FastHash oEntities;
 
 		/// <summary>
 		/// Supported HTML entities
 		/// </summary>
-		public static FastHash oAllEntities=null;
+		public static FastHash oAllEntities;
 
 		/// <summary>
 		/// Internal heuristics for entiries: these will be set to min and max string lengths of known HTML entities
 		/// </summary>
-		int iMinEntityLen=0,iMaxEntityLen=0;
+		int iMinEntityLen=0, iMaxEntityLen;
 
-		static int iAllMinEntityLen=0,iAllMaxEntityLen=0;
+		static int iAllMinEntityLen=0, iAllMaxEntityLen;
 
 		/// <summary>
 		/// Array to provide reverse lookup for entities
@@ -67,12 +67,12 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// If true then only minimal set of entities will be parsed, everything else including numbers based
 		/// entities will be returned as is. This is useful for when HTML content needs to be extracted with subsequent parsing, in this case resolution of entities will be a problem
 		/// </summary>
-		internal bool bMiniEntities=false;
+		internal bool bMiniEntities;
 
 		/// <summary>
 		/// If false then HTML entities (like "nbsp") will not be decoded
 		/// </summary>
-		internal bool bDecodeEntities=false;
+		internal bool bDecodeEntities;
 
 		static HTMLentities()
 		{
@@ -899,8 +899,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 						}
 
 						break;
-				};
-
+				}
 				if(cChar<sEntityReverseLookup.Length)
 				{
 		
@@ -928,8 +927,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 
 									oSB.Append(cChar);
 									continue;
-							};
-						}
+							}						}
 
                         // 14/05/08 we use numeric entities above ASCII level
                         // this is safer way - PHP XML parser was dieing on proper entities
@@ -976,7 +974,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 			GC.SuppressFinalize(this);
 		}
 
-		bool bDisposed=false;
+		bool bDisposed;
 
 		private void Dispose(bool bDisposing)
 		{

@@ -17,7 +17,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class CroppedText : AControl
     {
-        public int Hue = 0;
+        public int Hue;
         public string Text = string.Empty;
         RenderedText m_Texture;
 

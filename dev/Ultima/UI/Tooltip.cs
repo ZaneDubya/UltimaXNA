@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.UI
 
         RenderedText m_RenderedText;
 
-        int m_PropertyListHash = 0;
+        int m_PropertyListHash;
         AEntity m_Entity;
 
         public Tooltip(string caption)

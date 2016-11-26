@@ -7,7 +7,7 @@ namespace UltimaXNA.Ultima.Resources
         const int InitialDataCount = 0x40000; // 256kb
 
         Dictionary<int, int> m_IDs = new Dictionary<int, int>();
-        List<byte> m_Data = new List<byte>(InitialDataCount); // list<t> access is 10% slower than t[].
+        readonly List<byte> m_Data = new List<byte>(InitialDataCount); // list<t> access is 10% slower than t[].
 
         public bool Get(int textureID, int x, int y, int extraRange = 0)
         {
