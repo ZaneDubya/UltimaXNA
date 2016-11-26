@@ -16,7 +16,7 @@
 
 namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerIII
 {
-    internal class ScaleFactorTable
+    class ScaleFactorTable
     {
         private LayerIIIDecoder enclosingInstance;
         public int[] l;

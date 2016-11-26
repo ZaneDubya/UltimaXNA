@@ -19,8 +19,6 @@ namespace UltimaXNA.Configuration
 {
     public class GumpSettings : ASettingsSection
     {
-        public const string SectionName = "gump";
-
         /// <summary>
         /// The list of last positions where a given gump type was located.
         /// </summary>

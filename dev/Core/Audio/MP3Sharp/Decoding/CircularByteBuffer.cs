@@ -19,7 +19,7 @@ using System;
 namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
 {
     [Serializable]
-    internal class CircularByteBuffer
+class CircularByteBuffer
     {
         private byte[] m_DataArray;
         private int m_Index;

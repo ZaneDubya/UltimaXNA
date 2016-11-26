@@ -23,7 +23,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     ///     Class for extracting information from a frame header.
     ///     TODO: move strings into resources.
     /// </summary>
-    internal class Header
+    class Header
     {
         /// <summary>
         ///     Constant for MPEG-2 LSF version

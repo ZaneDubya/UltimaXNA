@@ -18,7 +18,7 @@ using UltimaXNA.Ultima.Input;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    internal class MacroDropDownList : AControl
+    class MacroDropDownList : AControl
     {
         public int Index;
 

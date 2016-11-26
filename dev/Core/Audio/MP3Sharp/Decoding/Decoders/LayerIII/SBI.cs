@@ -16,7 +16,7 @@
 
 namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerIII
 {
-    internal class SBI
+    class SBI
     {
         public int[] l;
         public int[] s;

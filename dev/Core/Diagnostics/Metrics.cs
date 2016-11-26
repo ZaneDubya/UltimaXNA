@@ -74,7 +74,7 @@ namespace UltimaXNA.Core.Diagnostics
         }
     }
 
-    internal class NameValuePair
+    class NameValuePair
     {
         public string Name = string.Empty;
         public int Value = 0;

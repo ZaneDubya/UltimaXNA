@@ -80,7 +80,7 @@ namespace UltimaXNA.Ultima.UI
 
         }
 
-        protected virtual void BeforeDraw(SpriteBatchUI spritebatch, Point position)
+        protected virtual void BeforeDraw(SpriteBatchUI spriteBatch, Point position)
         {
             // Over the interface or not in world. Display a default cursor.
             int artworkIndex = 8305;
@@ -95,18 +95,17 @@ namespace UltimaXNA.Ultima.UI
             CursorOffset = new Point(-1, 1);
         }
 
-        public void Draw(SpriteBatchUI spritebatch, Point position)
+        public void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            BeforeDraw(spritebatch, position);
-
+            BeforeDraw(spriteBatch, position);
             if (m_CursorSprite != null)
             {
                 m_CursorSprite.Hue = CursorHue;
                 m_CursorSprite.Offset = CursorOffset;
-                m_CursorSprite.Draw(spritebatch, position);
+                m_CursorSprite.Draw(spriteBatch, position);
             }
 
-            DrawTooltip(spritebatch, position);
+            DrawTooltip(spriteBatch, position);
         }
 
         protected virtual void DrawTooltip(SpriteBatchUI spritebatch, Point position)

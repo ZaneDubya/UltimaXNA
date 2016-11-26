@@ -17,8 +17,6 @@ namespace UltimaXNA.Configuration
 {
     public sealed class UltimaOnlineSettings : ASettingsSection
     {
-        public const string SectionName = "ultimaOnline";
-
         bool m_AllowCornerMovement = false;
         string m_DataDirectory;
         byte[] m_ClientVersion;

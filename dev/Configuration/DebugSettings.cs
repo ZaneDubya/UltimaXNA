@@ -16,11 +16,9 @@ namespace UltimaXNA.Configuration
 {
     public sealed class DebugSettings : ASettingsSection
     {
-        public const string SectionName = "debug";
-
-        private bool m_IsConsoleEnabled;
-        private bool m_ShowFps;
-        private bool m_LogPackets;
+        bool m_IsConsoleEnabled;
+        bool m_ShowFps;
+        bool m_LogPackets;
 
         public DebugSettings()
         {

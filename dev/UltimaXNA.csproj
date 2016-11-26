@@ -130,6 +130,9 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
+    <Compile Include="Core\CoreGame.cs" />
+    <Compile Include="Core\Network\PacketChunk.cs" />
+    <Compile Include="Core\Patterns\MVC\ModelManager.cs" />
     <Compile Include="Core\UI\HTML\Elements\InternalLineBreakElement.cs" />
     <Compile Include="Core\UI\HTML\Elements\InternalHyphenBreakElement.cs" />
     <Compile Include="Core\UI\HTML\HtmlRenderer.cs" />
@@ -257,14 +260,12 @@
     <Compile Include="Core\PluginManager.cs" />
     <Compile Include="Core\UI\RenderedTextList.cs" />
     <Compile Include="Core\UI\RenderedText.cs" />
-    <Compile Include="Disposable.cs" />
     <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Core\Audio\AudioEffects.cs" />
     <Compile Include="Ultima\Audio\AudioService.cs" />
     <Compile Include="Ultima\Audio\UOMusic.cs" />
     <Compile Include="Ultima\Audio\UOSound.cs" />
     <Compile Include="Core\Audio\VolumeState.cs" />
-    <Compile Include="Ultima\AUltimaModel.cs" />
     <Compile Include="Configuration\DebugSettings.cs" />
     <Compile Include="Configuration\EngineSettings.cs" />
     <Compile Include="Configuration\LoginSettings.cs" />

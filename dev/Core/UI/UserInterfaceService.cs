@@ -21,35 +21,16 @@ namespace UltimaXNA.Core.UI
 {
     public class UserInterfaceService
     {
-        // ============================================================================================================
-        // Private variables
-        // ============================================================================================================
-        // All open controls:
-        private List<AControl> m_Controls = null;
-
-        // List of controls that the Cursor is over, with the control at index 0 being the frontmost control:
-        private AControl m_MouseOverControl = null;
-
-        // Controls that the Cursor was over when a mouse button was clicked. We allow for five buttons:
-        private AControl[] m_MouseDownControl = new AControl[5];
-
-        // private services
-        private readonly InputManager m_Input;
-
-        // ============================================================================================================
-        // Public properties
-        // ============================================================================================================
-
         /// <summary>
         /// An array of all open root controls in the user interface.
         /// </summary>
-        public AControl[] Controls
-        {
-            get
-            {
-                return m_Controls.ToArray();
-            }
-        }
+        public readonly List<AControl> OpenControls;
+        public int Width => m_SpriteBatch.GraphicsDevice.Viewport.Width;
+        public int Height => m_SpriteBatch.GraphicsDevice.Viewport.Height;
+
+        InputManager m_Input;
+        SpriteBatchUI m_SpriteBatch;
+        AControl[] m_MouseDownControl = new AControl[5];
 
         // ============================================================================================================
         // Ctor, Dispose, Update, and Draw
@@ -59,8 +40,7 @@ namespace UltimaXNA.Core.UI
         {
             m_Input = ServiceRegistry.GetService<InputManager>();
             m_SpriteBatch = ServiceRegistry.GetService<SpriteBatchUI>();
-
-            m_Controls = new List<AControl>();
+            OpenControls = new List<AControl>();
         }
 
         public void Dispose()
@@ -73,75 +53,58 @@ namespace UltimaXNA.Core.UI
         /// </summary>
         public void Reset()
         {
-            foreach (AControl c in m_Controls)
+            foreach (AControl c in OpenControls)
+            {
                 c.Dispose();
-            m_Controls.Clear();
+            }
+            OpenControls.Clear();
         }
-
-        SpriteBatchUI m_SpriteBatch;
-        internal SpriteBatchUI SpriteBatch { get { return m_SpriteBatch; } }
-
+        
         internal ICursor Cursor
         {
             get;
             set;
         }
 
-        public int Width { get { return m_SpriteBatch.GraphicsDevice.Viewport.Width; } }
-        public int Height { get { return m_SpriteBatch.GraphicsDevice.Viewport.Height; } }
-
         /// <summary>
         /// Returns the control directly under the Cursor.
         /// </summary>
         public AControl MouseOverControl
         {
-            get
-            {
-                if (m_MouseOverControl == null)
-                    return null;
-                else
-                    return m_MouseOverControl;
-            }
+            get;
+            private set;
         }
+
         /// <summary>
         /// Returns True if the Cursor is over the UserInterface.
         /// </summary>
-        public bool IsMouseOverUI
-        {
-            get
-            {
-                if (MouseOverControl == null)
-                    return false;
-                else
-                    return true;
-            }
-        }
+        public bool IsMouseOverUI => MouseOverControl != null;
 
-        private AControl m_keyboardFocusControl;
+        AControl m_KeyboardFocusControl;
         public AControl KeyboardFocusControl
         {
             get
             {
                 if (IsModalControlOpen)
                     return null;
-                if (m_keyboardFocusControl == null)
+                if (m_KeyboardFocusControl == null)
                 {
-                    foreach (AControl c in m_Controls)
+                    foreach (AControl c in OpenControls)
                     {
                         if (!c.IsDisposed && c.IsVisible && 
                             c.IsEnabled && c.HandlesKeyboardFocus)
                         {
-                            m_keyboardFocusControl = c.FindControlThatAcceptsKeyboardFocus();
-                            if (m_keyboardFocusControl != null)
+                            m_KeyboardFocusControl = c.FindControlThatAcceptsKeyboardFocus();
+                            if (m_KeyboardFocusControl != null)
                                 break;
                         }
                     }
                 }
-                return m_keyboardFocusControl;
+                return m_KeyboardFocusControl;
             }
             set
             {
-                m_keyboardFocusControl = value;
+                m_KeyboardFocusControl = value;
             }
         }
 
@@ -149,13 +112,16 @@ namespace UltimaXNA.Core.UI
         {
             get
             {
-                foreach (AControl c in m_Controls)
+                foreach (AControl c in OpenControls)
+                {
                     if (c.MetaData.IsModal)
+                    {
                         return true;
+                    }
+                }
                 return false;
             }
         }
-
         
         /// <summary>
         /// Adds or toggles the passed control to the list of active controls.
@@ -167,22 +133,23 @@ namespace UltimaXNA.Core.UI
             {
                 return null;
             }
-
             control.Position = new Point(x, y);
-            m_Controls.Insert(0, control);
+            OpenControls.Insert(0, control);
             return control;
         }
 
         public void RemoveControl<T>(int? localID = null) where T : AControl
         {
-            foreach (AControl c in m_Controls)
+            foreach (AControl c in OpenControls)
             {
                 if (typeof(T).IsAssignableFrom(c.GetType()))
                 {
                     if (!localID.HasValue || (c.GumpLocalID == localID))
                     {
                         if (!c.IsDisposed)
+                        {
                             c.Dispose();
+                        }
                     }
                 }
             }
@@ -190,7 +157,7 @@ namespace UltimaXNA.Core.UI
 
         public AControl GetControl(int localID)
         {
-            foreach (AControl c in m_Controls)
+            foreach (AControl c in OpenControls)
             {
                 if (!c.IsDisposed && c.GumpLocalID == localID)
                     return c;
@@ -200,7 +167,7 @@ namespace UltimaXNA.Core.UI
 
         public AControl GetControlByTypeID(int typeID)
         {
-            foreach (AControl c in m_Controls)
+            foreach (AControl c in OpenControls)
             {
                 if (!c.IsDisposed && c.GumpServerTypeID == typeID)
                     return c;
@@ -210,7 +177,7 @@ namespace UltimaXNA.Core.UI
 
         public T GetControl<T>(int? localID = null) where T : AControl
         {
-            foreach (AControl c in m_Controls)
+            foreach (AControl c in OpenControls)
             {
                 if (!c.IsDisposed && c.GetType() == typeof(T) && 
                     (!localID.HasValue || c.GumpLocalID == localID))
@@ -223,19 +190,19 @@ namespace UltimaXNA.Core.UI
         {
             OrderControlsBasedOnUILayerMetaData();
 
-            for (int i = 0; i < m_Controls.Count; i++)
+            for (int i = 0; i < OpenControls.Count; i++)
             {
-                AControl c = m_Controls[i];
+                AControl c = OpenControls[i];
                 if (!c.IsInitialized && !c.IsDisposed)
                     c.Initialize();
                 c.Update(totalMS, frameMS);
             }
 
-            for (int i = 0; i < m_Controls.Count; i++)
+            for (int i = 0; i < OpenControls.Count; i++)
             {
-                if (m_Controls[i].IsDisposed)
+                if (OpenControls[i].IsDisposed)
                 {
-                    m_Controls.RemoveAt(i);
+                    OpenControls.RemoveAt(i);
                     i--;
                 }     
             }
@@ -247,16 +214,16 @@ namespace UltimaXNA.Core.UI
             InternalHandleMouseInput();
         }
 
-        public void Draw(double frameTime)
+        public void Draw(double frameMS)
         {
             OrderControlsBasedOnUILayerMetaData();
             m_SpriteBatch.GraphicsDevice.Clear(Color.Transparent);
             m_SpriteBatch.Reset();
-            foreach (AControl c in m_Controls.Reverse<AControl>())
+            foreach (AControl c in OpenControls.Reverse<AControl>())
             {
                 if (c.IsInitialized)
                 {
-                    c.Draw(m_SpriteBatch, c.Position);
+                    c.Draw(m_SpriteBatch, c.Position, frameMS);
                 }
             }
             if (Cursor != null)
@@ -266,13 +233,13 @@ namespace UltimaXNA.Core.UI
             m_SpriteBatch.FlushSprites(false);
         }
 
-        private void InternalHandleKeyboardInput()
+        void InternalHandleKeyboardInput()
         {
             if (KeyboardFocusControl != null)
             {
-                if (m_keyboardFocusControl.IsDisposed)
+                if (m_KeyboardFocusControl.IsDisposed)
                 {
-                    m_keyboardFocusControl = null;
+                    m_KeyboardFocusControl = null;
                 }
                 else
                 {
@@ -280,17 +247,17 @@ namespace UltimaXNA.Core.UI
                     foreach (InputEventKeyboard e in k_events)
                     {
                         if (e.EventType == KeyboardEvent.Press)
-                            m_keyboardFocusControl.KeyboardInput(e);
+                            m_KeyboardFocusControl.KeyboardInput(e);
                     }
                 }
             }
         }
 
-        private void OrderControlsBasedOnUILayerMetaData()
+        void OrderControlsBasedOnUILayerMetaData()
         {
             List<AControl> gumps = new List<AControl>();
 
-            foreach (AControl c in m_Controls)
+            foreach (AControl c in OpenControls)
             {
                 if (c.MetaData.Layer != UILayer.Default)
                     gumps.Add(c);
@@ -300,30 +267,30 @@ namespace UltimaXNA.Core.UI
             {
                 if (c.MetaData.Layer == UILayer.Under)
                 {
-                    for (int i = 0; i < m_Controls.Count; i++)
+                    for (int i = 0; i < OpenControls.Count; i++)
                     {
-                        if (m_Controls[i] == c)
+                        if (OpenControls[i] == c)
                         {
-                            m_Controls.RemoveAt(i);
-                            m_Controls.Insert(m_Controls.Count, c);
+                            OpenControls.RemoveAt(i);
+                            OpenControls.Insert(OpenControls.Count, c);
                         }
                     }
                 }
                 else if (c.MetaData.Layer == UILayer.Over)
                 {
-                    for (int i = 0; i < m_Controls.Count; i++)
+                    for (int i = 0; i < OpenControls.Count; i++)
                     {
-                        if (m_Controls[i] == c)
+                        if (OpenControls[i] == c)
                         {
-                            m_Controls.RemoveAt(i);
-                            m_Controls.Insert(0, c);
+                            OpenControls.RemoveAt(i);
+                            OpenControls.Insert(0, c);
                         }
                     }
                 }
             }
         }
 
-        private void InternalHandleMouseInput()
+        void InternalHandleMouseInput()
         {
             // clip the mouse position
             Point clippedPosition = m_Input.MousePosition;
@@ -348,13 +315,17 @@ namespace UltimaXNA.Core.UI
             {
                 focusedControl.MouseOver(clippedPosition);
                 if (m_MouseDownControl[0] == focusedControl)
+                {
                     AttemptDragControl(focusedControl, clippedPosition);
-                if (IsDraggingControl)
+                }
+                if (m_IsDraggingControl)
+                {
                     DoDragControl(clippedPosition);
+                }
             }
 
             // Set the new MouseOverControl.
-            m_MouseOverControl = focusedControl;
+            MouseOverControl = focusedControl;
 
             // Send a MouseOver event to any control that was previously the target of a MouseDown event.
             for (int iButton = 0; iButton < 5; iButton++)
@@ -383,7 +354,7 @@ namespace UltimaXNA.Core.UI
                         MakeTopMostGump(focusedControl);
                         focusedControl.MouseDown(clippedPosition, e.Button);
                         if (focusedControl.HandlesKeyboardFocus)
-                            m_keyboardFocusControl = focusedControl;
+                            m_KeyboardFocusControl = focusedControl;
                         m_MouseDownControl[(int)e.Button] = focusedControl;
                     }
                     else
@@ -391,7 +362,7 @@ namespace UltimaXNA.Core.UI
                         // close modal controls if they can be closed with a mouse down outside their drawn area
                         if (IsModalControlOpen)
                         {
-                            foreach (AControl c in m_Controls)
+                            foreach (AControl c in OpenControls)
                                 if (c.MetaData.IsModal && c.MetaData.ModalClickOutsideAreaClosesThisControl)
                                     c.Dispose();
                         }
@@ -439,26 +410,26 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private void MakeTopMostGump(AControl control)
+        void MakeTopMostGump(AControl control)
         {
             AControl c = control;
             while (c.Parent != null)
                 c = c.Parent;
 
-            for (int i = 0; i < m_Controls.Count; i++)
+            for (int i = 0; i < OpenControls.Count; i++)
             {
-                if (m_Controls[i] == c)
+                if (OpenControls[i] == c)
                 {
-                    AControl cm = m_Controls[i];
-                    m_Controls.RemoveAt(i);
-                    m_Controls.Insert(0, cm);
+                    AControl cm = OpenControls[i];
+                    OpenControls.RemoveAt(i);
+                    OpenControls.Insert(0, cm);
                 }
             }
         }
 
-        private AControl InternalGetMouseOverControl(Point atPosition)
+        AControl InternalGetMouseOverControl(Point atPosition)
         {
-            if (IsDraggingControl)
+            if (m_IsDraggingControl)
             {
                 return m_DraggingControl;
             }
@@ -467,13 +438,13 @@ namespace UltimaXNA.Core.UI
             if (IsModalControlOpen)
             {
                 possibleControls = new List<AControl>();
-                foreach (AControl c in m_Controls)
+                foreach (AControl c in OpenControls)
                     if (c.MetaData.IsModal)
                         possibleControls.Add(c);
             }
             else
             {
-                possibleControls = m_Controls;
+                possibleControls = OpenControls;
             }
 
             AControl[] mouseOverControls = null;
@@ -512,24 +483,17 @@ namespace UltimaXNA.Core.UI
         // Input blocking objects
         // ============================================================================================================
 
-        private List<object> m_InputBlockingObjects = new List<object>();
+        List<object> m_InputBlockingObjects = new List<object>();
 
         /// <summary>
         /// Returns true if there are any active objects blocking input.
         /// </summary>
-        protected bool ObjectsBlockingInput
-        {
-            get
-            {
-                return (m_InputBlockingObjects.Count > 0);
-            }
-        }
+        bool ObjectsBlockingInput => m_InputBlockingObjects.Count > 0;
 
         /// <summary>
         /// Add an input blocking object. Until RemoveInputBlocker is called with this same parameter,
         /// GUIState will not process any MouseDown, MouseUp, or MouseClick events, or any keyboard events.
         /// </summary>
-        /// <param name="obj"></param>
         public void AddInputBlocker(object obj)
         {
             if (!m_InputBlockingObjects.Contains(obj))
@@ -540,7 +504,6 @@ namespace UltimaXNA.Core.UI
         /// Removes an input blocking object. Only when there are no input blocking objects will GUIState
         /// process MouseDown, MouseUp, MouseClick, and all keyboard events.
         /// </summary>
-        /// <param name="obj"></param>
         public void RemoveInputBlocker(object obj)
         {
             if (m_InputBlockingObjects.Contains(obj))
@@ -551,27 +514,26 @@ namespace UltimaXNA.Core.UI
         // Control dragging
         // ============================================================================================================
 
-        private AControl m_DraggingControl = null;
-        private bool m_IsDragging = false;
-        private int m_DragOriginX, m_DragOriginY;
-
-        public bool IsDraggingControl
-        {
-            get { return m_IsDragging; }
-        }
+        AControl m_DraggingControl;
+        bool m_IsDraggingControl;
+        int m_DragOriginX;
+        int m_DragOriginY;
 
         public void AttemptDragControl(AControl control, Point mousePosition, bool attemptAlwaysSuccessful = false)
         {
-            if (IsDraggingControl)
+            if (m_IsDraggingControl)
+            {
                 return;
-
+            }
             AControl dragTarget = control;
             if (!dragTarget.IsMoveable)
+            {
                 return;
-
+            }
             while (dragTarget.Parent != null)
+            {
                 dragTarget = dragTarget.Parent;
-
+            }
             if (dragTarget.IsMoveable)
             {
                 if (attemptAlwaysSuccessful)
@@ -586,7 +548,7 @@ namespace UltimaXNA.Core.UI
                     int deltaY = mousePosition.Y - m_DragOriginY;
                     if (attemptAlwaysSuccessful || Math.Abs(deltaX) + Math.Abs(deltaY) > 4)
                     {
-                        m_IsDragging = true;
+                        m_IsDraggingControl = true;
                     }
                 }
                 else
@@ -597,7 +559,7 @@ namespace UltimaXNA.Core.UI
                 }
             }
 
-            if (IsDraggingControl)
+            if (m_IsDraggingControl)
             {
 
                 for (int i = 0; i < 5; i++)
@@ -611,11 +573,12 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private void DoDragControl(Point mousePosition)
+        void DoDragControl(Point mousePosition)
         {
             if (m_DraggingControl == null)
+            {
                 return;
-
+            }
             int deltaX = mousePosition.X - m_DragOriginX;
             int deltaY = mousePosition.Y - m_DragOriginY;
             m_DraggingControl.Position = new Point(m_DraggingControl.X + deltaX, m_DraggingControl.Y + deltaY);
@@ -623,15 +586,17 @@ namespace UltimaXNA.Core.UI
             m_DragOriginY = mousePosition.Y;
         }
 
-        private void EndDragControl(Point mousePosition)
+        void EndDragControl(Point mousePosition)
         {
-            if (m_IsDragging)
+            if (m_IsDraggingControl)
+            {
                 DoDragControl(mousePosition);
+            }
             m_DraggingControl = null;
-            m_IsDragging = false;
+            m_IsDraggingControl = false;
         }
 
-        private void ClipMouse(ref Point position)
+        void ClipMouse(ref Point position)
         {
             if (position.X < -8)
                 position.X = -8;

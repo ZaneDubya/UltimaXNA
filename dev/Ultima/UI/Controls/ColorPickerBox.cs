@@ -104,7 +104,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             m_Inactive = provider.GetUITexture(210);
@@ -119,7 +119,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     (int)(position.Y + (float)(Height / m_hueHeight) * ((Index / m_hueWidth) + 0.5f) - m_selectedIndicator.Height / 2),
                     0), Vector3.Zero);
             }
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override void OnMouseClick(int x, int y, MouseButton button)

@@ -99,8 +99,7 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_value = value;
-                if (m_DataParent.OnSkillChanged != null)
-                    m_DataParent.OnSkillChanged(this);
+                m_DataParent.OnSkillChanged?.Invoke(this);
             }
         }
         public float ValueUnmodified
@@ -109,8 +108,7 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_valueUnmodified = value;
-                if (m_DataParent.OnSkillChanged != null)
-                    m_DataParent.OnSkillChanged(this);
+                m_DataParent.OnSkillChanged?.Invoke(this);
             }
         }
         public byte LockType
@@ -119,8 +117,7 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_lockType = value;
-                if (m_DataParent.OnSkillChanged != null)
-                    m_DataParent.OnSkillChanged(this);
+                m_DataParent.OnSkillChanged?.Invoke(this);
             }
         }
         public float Cap
@@ -129,8 +126,7 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_cap = value;
-                if (m_DataParent.OnSkillChanged != null)
-                    m_DataParent.OnSkillChanged(this);
+                m_DataParent.OnSkillChanged?.Invoke(this);
             }
         }
 

@@ -71,13 +71,13 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return;
             }
 
-            if (m_ClickedCanDrag && UltimaGame.TotalMS >= m_PickUpTime)
+            if (m_ClickedCanDrag && totalMS >= m_PickUpTime)
             {
                 m_ClickedCanDrag = false;
                 AttemptPickUp();
             }
 
-            if (m_SendClickIfNoDoubleClick && UltimaGame.TotalMS >= m_SingleClickTime)
+            if (m_SendClickIfNoDoubleClick && totalMS >= m_SingleClickTime)
             {
                 m_SendClickIfNoDoubleClick = false;
                 m_World.Interaction.SingleClick(Item);
@@ -88,7 +88,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             if (m_Texture == null)
             {
@@ -104,7 +104,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), hue);
 
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override bool IsPointWithinControl(int x, int y)
@@ -136,7 +136,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             m_ClickedCanDrag = true;
-            m_PickUpTime = (float)UltimaGame.TotalMS + Settings.UserInterface.Mouse.ClickAndPickupMS;
+            float totalMS = (float)ServiceRegistry.GetService<UltimaGame>().TotalMS;
+            m_PickUpTime = totalMS + Settings.UserInterface.Mouse.ClickAndPickupMS;
             m_ClickPoint = new Point(x, y);
         }
 
@@ -161,7 +162,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 m_ClickedCanDrag = false;
                 m_SendClickIfNoDoubleClick = true;
-                m_SingleClickTime = (float)UltimaGame.TotalMS + Settings.UserInterface.Mouse.DoubleClickMS;
+                float totalMS = (float)ServiceRegistry.GetService<UltimaGame>().TotalMS;
+                m_SingleClickTime = totalMS + Settings.UserInterface.Mouse.DoubleClickMS;
             }
         }
 
