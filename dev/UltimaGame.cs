@@ -33,8 +33,6 @@ namespace UltimaXNA
 {
     class UltimaGame : CoreGame
     {
-        public static double TotalMS;
-
         AudioService m_Audio;
         InputManager m_Input;
         UserInterfaceService m_UserInterface;
@@ -42,8 +40,10 @@ namespace UltimaXNA
         PluginManager m_Plugins;
         ModelManager m_Models;
         bool m_IsRunning;
+        double m_TotalMS;
 
         public ModelManager Models => m_Models;
+        public double TotalMS => m_TotalMS;
 
         public UltimaGame()
         {
@@ -101,7 +101,7 @@ namespace UltimaXNA
             else
             {
                 IsFixedTimeStep = Settings.Engine.IsFixedTimeStep;
-                TotalMS = totalMS;
+                m_TotalMS = totalMS;
                 m_Audio.Update();
                 m_Input.Update(totalMS, frameMS);
                 m_UserInterface.Update(totalMS, frameMS);

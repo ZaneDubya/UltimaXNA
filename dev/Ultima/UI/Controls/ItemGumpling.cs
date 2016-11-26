@@ -136,7 +136,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             m_ClickedCanDrag = true;
-            m_PickUpTime = (float)UltimaGame.TotalMS + Settings.UserInterface.Mouse.ClickAndPickupMS;
+            float totalMS = (float)ServiceRegistry.GetService<UltimaGame>().TotalMS;
+            m_PickUpTime = totalMS + Settings.UserInterface.Mouse.ClickAndPickupMS;
             m_ClickPoint = new Point(x, y);
         }
 
@@ -161,7 +162,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 m_ClickedCanDrag = false;
                 m_SendClickIfNoDoubleClick = true;
-                m_SingleClickTime = (float)UltimaGame.TotalMS + Settings.UserInterface.Mouse.DoubleClickMS;
+                float totalMS = (float)ServiceRegistry.GetService<UltimaGame>().TotalMS;
+                m_SingleClickTime = totalMS + Settings.UserInterface.Mouse.DoubleClickMS;
             }
         }
 

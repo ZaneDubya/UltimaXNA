@@ -65,7 +65,7 @@ namespace UltimaXNA.Core.Audio
         /// <param name="asEffect">Set to false for music, true for sound effects.</param>
         public void Play(bool asEffect, AudioEffects effect = AudioEffects.None, float volume = 1.0f, bool spamCheck = false)
         {
-            double now = UltimaGame.TotalMS;
+            double now = (float)ServiceRegistry.GetService<UltimaGame>().TotalMS;
             CullExpiredEffects(now);
 
             if (spamCheck && (LastPlayed + MinimumDelay > DateTime.Now))
