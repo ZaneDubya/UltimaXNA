@@ -22,7 +22,7 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 namespace UltimaXNA.Core
 {
     [SuppressUnmanagedCodeSecurity]
-    internal static class ConsoleManager
+static class ConsoleManager
     {
         private const string Kernel32_DllName = "kernel32.dll";
         private static readonly Stack<ConsoleColor> m_consoleColors = new Stack<ConsoleColor>();

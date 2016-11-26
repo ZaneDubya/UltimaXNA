@@ -37,11 +37,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             return offset;
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             if (m_Texture == null)
             {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 m_GumpIndex = Item.ItemData.AnimID + (IsFemale ? 60000 : 50000);
                 int indexTranslated, hueTranslated;
                 if (GumpDefTranslator.ItemHasGumpTranslation(m_GumpIndex, out indexTranslated, out hueTranslated))
@@ -54,12 +54,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             int hue = (Item.Hue == 0 & m_HueOverride != 0) ? m_HueOverride : Item.Hue;
             spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue));
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override bool IsPointWithinControl(int x, int y)
         {
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             return provider.IsPointInUITexture(m_GumpIndex, x, y);
         }
     }

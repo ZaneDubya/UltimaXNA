@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Core
 {
-    internal static class DpiManager
+    static class DpiManager
     {
         private const int LogPixelsX = 88; // Used for GetDeviceCaps().
         private const int LogPixelsY = 90; // Used for GetDeviceCaps().

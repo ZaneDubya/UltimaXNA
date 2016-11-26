@@ -40,11 +40,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             BuildGumpling(x, y, gumpID, hue);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             Vector3 hueVector = Utility.GetHueVector(Hue);
             spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), hueVector);
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
     }
 }

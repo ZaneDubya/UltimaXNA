@@ -19,7 +19,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     ///     The SampleBuffer class implements an output buffer
     ///     that provides storage for a fixed size block of samples.
     /// </summary>
-    internal class SampleBuffer : ABuffer
+    class SampleBuffer : ABuffer
     {
         private readonly short[] buffer;
         private readonly int[] bufferp;

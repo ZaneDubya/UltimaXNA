@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.World {
     /// <summary>
     /// Hosts methods for interacting with the world.
     /// </summary>
-    internal class WorldInteraction
+    class WorldInteraction
     {
         private WorldModel m_World;
         private INetworkClient m_Network;
@@ -38,8 +38,8 @@ namespace UltimaXNA.Ultima.World {
 
         public WorldInteraction(WorldModel world)
         {
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Network = Services.Get<INetworkClient>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
 
             m_World = world;
         }
@@ -157,7 +157,7 @@ namespace UltimaXNA.Ultima.World {
                 }
                 else
                 {
-                    gump = new ContainerGump(entity, ((Container)entity).ItemID);
+                    gump = new ContainerGump(entity, ((ContainerItem)entity).ItemID);
                     m_UserInterface.AddControl(gump, 64, 64);
                 }
             }
@@ -175,7 +175,7 @@ namespace UltimaXNA.Ultima.World {
         {
             m_ChatQueue.Add(new QueuedMessage(text, font, hue, asUnicode));
 
-            ChatControl chat = ServiceRegistry.GetService<ChatControl>();
+            ChatControl chat = Services.Get<ChatControl>();
             if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)

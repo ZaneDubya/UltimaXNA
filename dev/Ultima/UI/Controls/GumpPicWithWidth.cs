@@ -34,12 +34,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             PercentWidthDrawn = percentWidth;
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             Vector3 hueVector = Utility.GetHueVector(Hue);
             int width = (int)(m_PercentWidthDrawn * Width);
             spriteBatch.Draw2D(m_Texture, new Rectangle(position.X, position.Y, width, Height), new Rectangle(0, 0, width, Height), hueVector);
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
     }
 }

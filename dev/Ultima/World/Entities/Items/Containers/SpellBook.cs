@@ -4,7 +4,7 @@ using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 {
-    class SpellBook : Container
+    class SpellBook : ContainerItem
     {
         static ushort[] m_SpellBookItemIDs = {
             0xE3B, // bugged or static item spellbook? Not wearable.

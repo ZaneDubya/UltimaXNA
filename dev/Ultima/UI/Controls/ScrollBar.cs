@@ -115,7 +115,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.OnInitialize();
 
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             m_GumpUpButton = new Texture2D[2];
             m_GumpUpButton[0] = provider.GetUITexture(251);
@@ -156,7 +156,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             if (Height <= 0)
                 return;
@@ -185,7 +185,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (MaxValue > MinValue && middleHeight > 0)
                 spriteBatch.Draw2D(m_GumpSlider, new Vector3(position.X + (m_GumpBackground[0].Width - m_GumpSlider.Width) / 2, position.Y + m_GumpUpButton[0].Height + m_SliderPosition, 0), Vector3.Zero);
 
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         private float CalculateSliderYPosition()

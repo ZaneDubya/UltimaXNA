@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_GumpWidget == null)
             {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 switch (Style)
                 {
                     default:
@@ -112,7 +112,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             if (m_GumpSliderBackground != null)
             {
@@ -121,7 +121,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 spriteBatch.Draw2D(m_GumpSliderBackground[2], new Vector3(position.X + BarWidth - m_GumpSliderBackground[2].Width, position.Y, 0), Vector3.Zero);
             }
             spriteBatch.Draw2D(m_GumpWidget, new Vector3(position.X + m_sliderX, position.Y, 0), Vector3.Zero);
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override bool IsPointWithinControl(int x, int y)

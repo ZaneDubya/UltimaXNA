@@ -21,7 +21,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     /// <summary>
     /// Implements a Huffman decoder.
     /// </summary>
-    internal sealed class Huffman
+    sealed class Huffman
     {
         private const int MXOFF = 250;
         private const int HTN = 34;

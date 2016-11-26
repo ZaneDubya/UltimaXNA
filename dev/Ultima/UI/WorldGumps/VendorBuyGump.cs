@@ -47,7 +47,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
 
             // sanity checking: don't show buy gumps for empty containers.
-            if (!(vendorBackpack is Container) || ((vendorBackpack as Container).Contents.Count <= 0) || (packet.Items.Count <= 0))
+            if (!(vendorBackpack is ContainerItem) || ((vendorBackpack as ContainerItem).Contents.Count <= 0) || (packet.Items.Count <= 0))
             {
                 Dispose();
                 return;
@@ -95,7 +95,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (itemsToBuy.Count == 0)
                 return;
 
-            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            INetworkClient network = Services.Get<INetworkClient>();
             network.Send(new BuyItemsPacket(m_VendorSerial, itemsToBuy.ToArray()));
             this.Dispose();
         }
@@ -126,13 +126,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private void BuildShopContents(AEntity vendorBackpack, VendorBuyListPacket packet)
         {
 
-            if (!(vendorBackpack is Container))
+            if (!(vendorBackpack is ContainerItem))
             {
                 m_ShopContents.AddEntry("<span color='#800'>Err: vendorBackpack is not Container.");
                 return;
             }
 
-            Container contents = (vendorBackpack as Container);
+            ContainerItem contents = (vendorBackpack as ContainerItem);
             AEntity vendor = contents.Parent;
             if (vendor == null || !(vendor is Mobile))
             {
@@ -160,7 +160,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     else
                     {
                         // get the resource provider
-                        IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                        IResourceProvider provider = Services.Get<IResourceProvider>();
                         description = Utility.CapitalizeAllWords(provider.GetString(clilocDescription));
                     }
 

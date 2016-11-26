@@ -25,7 +25,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     /// <author>
     ///     Mat McGowan
     /// </author>
-    internal class OutputChannels
+    class OutputChannels
     {
         /// <summary>
         ///     Flag to indicate output should include both channels.

@@ -280,19 +280,19 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
-        public Container Backpack
+        public ContainerItem Backpack
         {
             get
             {
-                return (Container)Equipment[(int)EquipLayer.Backpack];
+                return (ContainerItem)Equipment[(int)EquipLayer.Backpack];
             }
         }
 
-        public Container VendorShopContents
+        public ContainerItem VendorShopContents
         {
             get
             {
-                return (Container)Equipment[(int)EquipLayer.ShopBuy];
+                return (ContainerItem)Equipment[(int)EquipLayer.ShopBuy];
             }
         }
 

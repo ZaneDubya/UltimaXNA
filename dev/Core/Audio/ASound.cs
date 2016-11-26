@@ -17,7 +17,22 @@ namespace UltimaXNA.Core.Audio
 {
     abstract class ASound : IDisposable
     {
-        public string Name { get; private set; }
+        string m_Name;
+        public string Name
+        {
+            get { return m_Name; }
+            private set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    m_Name = value.Replace(".mp3", "");
+                }
+                else
+                {
+                    m_Name = string.Empty;
+                }
+            }
+        }
         public DateTime LastPlayed = DateTime.MinValue;
         public static TimeSpan MinimumDelay = TimeSpan.FromSeconds(1d);
 
@@ -65,7 +80,7 @@ namespace UltimaXNA.Core.Audio
         /// <param name="asEffect">Set to false for music, true for sound effects.</param>
         public void Play(bool asEffect, AudioEffects effect = AudioEffects.None, float volume = 1.0f, bool spamCheck = false)
         {
-            double now = UltimaGame.TotalMS;
+            double now = (float)Services.Get<UltimaGame>().TotalMS;
             CullExpiredEffects(now);
 
             if (spamCheck && (LastPlayed + MinimumDelay > DateTime.Now))
@@ -96,7 +111,6 @@ namespace UltimaXNA.Core.Audio
                 m_ThisInstance.SubmitBuffer(buffer);
                 m_ThisInstance.Volume = volume;
                 m_ThisInstance.Play();
-
                 List<Tuple<DynamicSoundEffectInstance, double>> list = (asEffect) ? m_EffectInstances : m_MusicInstances;
                 double ms = m_ThisInstance.GetSampleDuration(buffer.Length).TotalMilliseconds;
                 list.Add(new Tuple<DynamicSoundEffectInstance, double>(m_ThisInstance, now + ms));
@@ -108,7 +122,7 @@ namespace UltimaXNA.Core.Audio
             AfterStop();
         }
 
-        private void CullExpiredEffects(double now )
+        private void CullExpiredEffects(double now)
         {
             // Check to see if any existing instances have stopped playing. If they have, remove the
             // reference to them so the garbage collector can collect them.

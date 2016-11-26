@@ -22,7 +22,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.IO
     /// <summary>
     ///     Class to manage RIFF files
     /// </summary>
-    internal class RiffFile
+    class RiffFile
     {
         protected const int DDC_SUCCESS = 0; // The operation succeded
         protected const int DDC_FAILURE = 1; // The operation failed for unspecified reasons

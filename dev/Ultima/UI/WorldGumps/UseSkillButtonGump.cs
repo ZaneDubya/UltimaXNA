@@ -39,7 +39,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             m_Skill = skill;
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = Services.Get<WorldModel>();
 
             IsMoveable = true;
             HandlesMouseInput = true;
@@ -69,7 +69,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Dispose();
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             bool isMouseOver = (m_BG[0].IsMouseOver || m_BG[1].IsMouseOver || m_BG[2].IsMouseOver);
             if (m_IsMouseDown)
@@ -95,7 +95,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (m_IsMouseDown)
                 m_Caption.Position = new Point(m_Caption.Position.X, m_Caption.Position.Y + 1);
 
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
 
             if (m_IsMouseDown)
                 m_Caption.Position = new Point(m_Caption.Position.X, m_Caption.Position.Y - 1);

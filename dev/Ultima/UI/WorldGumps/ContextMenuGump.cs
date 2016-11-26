@@ -39,7 +39,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             m_Data = data;
 
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             AFont font = (AFont)provider.GetUnicodeFont(1);
 
             m_Background = (ResizePic)AddControl(new ResizePic(this, 0, 0, 0x0A3C, 50, font.Height * m_Data.Count + 20));
@@ -71,7 +71,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             int contextMenuItemSelected;
             if (int.TryParse(href, out contextMenuItemSelected))
             {
-                INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+                INetworkClient network = Services.Get<INetworkClient>();
                 network.Send(new ContextMenuResponsePacket(m_Data.Serial, (short)contextMenuItemSelected));
                 this.Dispose();
             }

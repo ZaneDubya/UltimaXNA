@@ -18,7 +18,7 @@ using UltimaXNA.Ultima.Input;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    internal class MacroDropDownList : AControl
+    class MacroDropDownList : AControl
     {
         public int Index;
 
@@ -46,7 +46,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public MacroDropDownList(AControl parent, int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull, int ID, bool firstVisible)
                 : base(parent)
         {
-            m_Font = ServiceRegistry.GetService<IResourceProvider>().GetAsciiFont(1);
+            m_Font = Services.Get<IResourceProvider>().GetAsciiFont(1);
 
             GumpLocalID = ID;
             Position = new Point(x, y);

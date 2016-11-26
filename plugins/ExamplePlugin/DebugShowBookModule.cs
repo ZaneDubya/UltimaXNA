@@ -29,7 +29,7 @@ namespace ExamplePlugin {
                  new BaseBook.BookPageInfo(),
                  new BaseBook.BookPageInfo(),
             };
-            ServiceRegistry.GetService<UserInterfaceService>().AddControl(new BookGump(book), 10, 10);
+            Services.Get<UserInterfaceService>().AddControl(new BookGump(book), 10, 10);
         }
     }
 }

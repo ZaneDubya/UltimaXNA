@@ -57,8 +57,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 5, 3, 5537, 5539, 0, 1, 0), 2);
             ((Button)LastControl).GumpOverID = 5538;
 
-            m_World = ServiceRegistry.GetService<WorldModel>();
-            m_Client = ServiceRegistry.GetService<INetworkClient>();
+            m_World = Services.Get<WorldModel>();
+            m_Client = Services.Get<INetworkClient>();
 
             MetaData.Layer = UILayer.Over;
         }
@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.Inventory:
                     // opens the player's backpack.
                     Mobile mobile = WorldModel.Entities.GetPlayerEntity();
-                    Container backpack = mobile.Backpack;
+                    ContainerItem backpack = mobile.Backpack;
                     m_World.Interaction.DoubleClick(backpack);
                     break;
                 case Buttons.Journal:

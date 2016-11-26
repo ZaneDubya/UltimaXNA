@@ -9,17 +9,16 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.ComponentModel;
-using System.Windows.Forms;
+using UltimaXNA.Configuration.Properties;
 using UltimaXNA.Core;
-using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima;
@@ -28,148 +27,56 @@ using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World;
-using UltimaXNA.Configuration.Properties;
 #endregion
 
 namespace UltimaXNA
 {
-    internal class UltimaGame : Game
+    class UltimaGame : CoreGame
     {
-        public static bool IsRunning // false = engine immediately quits.
-        {
-            get;
-            set;
-        }
+        AudioService m_Audio;
+        InputManager m_Input;
+        UserInterfaceService m_UserInterface;
+        INetworkClient m_Network;
+        PluginManager m_Plugins;
+        ModelManager m_Models;
+        bool m_IsRunning;
+        double m_TotalMS;
 
-        public static double TotalMS;
+        public ModelManager Models => m_Models;
+        public double TotalMS => m_TotalMS;
 
         public UltimaGame()
         {
-            InitializeGraphicsDeviceAndWindow();
-            InitializeExitGuard();
+            GameForm.FormClosing += OnFormClosing;
             SetupWindowForLogin();
-        }
-
-        #region Active & Queued Models
-        private AUltimaModel m_Model;
-        private AUltimaModel m_QueuedModel;
-
-        public AUltimaModel QueuedModel
-        {
-            get { return m_QueuedModel; }
-            set
-            {
-                if(m_QueuedModel != null)
-                {
-                    m_QueuedModel.Dispose();
-                    m_QueuedModel = null;
-                }
-                m_QueuedModel = value;
-
-                if(m_QueuedModel != null)
-                {
-                    m_QueuedModel.Initialize();
-                }
-            }
-        }
-
-        public AUltimaModel ActiveModel
-        {
-            get { return m_Model; }
-            set
-            {
-                if(m_Model != null)
-                {
-                    m_Model.Dispose();
-                    m_Model = null;
-                }
-                m_Model = value;
-                if(m_Model != null)
-                {
-                    m_Model.Initialize();
-                }
-            }
-        }
-
-        public void ActivateQueuedModel()
-        {
-            if (m_QueuedModel != null)
-            {
-                ActiveModel = QueuedModel;
-                m_QueuedModel = null;
-            }
-        }
-        #endregion
-
-        protected GraphicsDeviceManager GraphicsDeviceManager
-        {
-            get;
-            private set;
-        }
-
-        protected AudioService Audio
-        {
-            get;
-            private set;
-        }
-
-        protected InputManager Input
-        {
-            get;
-            private set;
-        }
-
-        protected UserInterfaceService UserInterface
-        {
-            get;
-            private set;
-        }
-
-        protected INetworkClient Network
-        {
-            get;
-            private set;
-        }
-
-        protected PluginManager Plugins
-        {
-            get;
-            private set;
         }
 
         protected override void Initialize()
         {
             Content.RootDirectory = "Content";
-
-            // register this instance as a service
-            ServiceRegistry.Register<UltimaGame>(this);
-
-            // Create all the services we need.
-            ServiceRegistry.Register<SpriteBatch3D>(new SpriteBatch3D(this));
-            ServiceRegistry.Register<SpriteBatchUI>(new SpriteBatchUI(this));
-            Audio = ServiceRegistry.Register<AudioService>(new AudioService());
-            Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
-            Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
-            UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
-            Plugins = new PluginManager(AppDomain.CurrentDomain.BaseDirectory);
-
+            UltimaXNA.Services.Add(this);
+            UltimaXNA.Services.Add(new SpriteBatch3D(this));
+            UltimaXNA.Services.Add(new SpriteBatchUI(this));
+            m_Audio = UltimaXNA.Services.Add(new AudioService());
+            m_Network = UltimaXNA.Services.Add<INetworkClient>(new NetworkClient());
+            m_Input = UltimaXNA.Services.Add(new InputManager(Window.Handle));
+            m_UserInterface = UltimaXNA.Services.Add(new UserInterfaceService());
+            m_Plugins = new PluginManager(AppDomain.CurrentDomain.BaseDirectory);
+            m_Models = new ModelManager();
             // Make sure we have a UO installation before loading IO.
             if (FileManager.IsUODataPresent)
             {
                 // Initialize and load data
                 IResourceProvider provider = new ResourceProvider(this);
                 provider.RegisterResource(new EffectDataResource());
-                ServiceRegistry.Register(provider);
-
+                UltimaXNA.Services.Add(provider);
                 HueData.Initialize(GraphicsDevice);
                 SkillsData.Initialize();
                 GraphicsDevice.Textures[1] = HueData.HueTexture0;
                 GraphicsDevice.Textures[2] = HueData.HueTexture1;
-
-                IsRunning = true;
+                m_IsRunning = true;
                 WorldModel.IsInWorld = false;
-
-                ActiveModel = new LoginModel();
+                Models.Current = new LoginModel();
             }
             else
             {
@@ -179,54 +86,38 @@ namespace UltimaXNA
 
         protected override void Dispose(bool disposing)
         {
-            ServiceRegistry.Unregister<UltimaGame>();
-            UserInterface.Dispose();
+            UltimaXNA.Services.Remove<UltimaGame>();
+            m_UserInterface.Dispose();
             base.Dispose(disposing);
         }
 
-        protected override void Update(GameTime gameTime)
+        protected override void OnUpdate(double totalMS, double frameMS)
         {
-            if (Profiler.InContext("OutOfContext"))
-                Profiler.ExitContext("OutOfContext");
-            Profiler.EnterContext("Update");
-
-            IsFixedTimeStep = Settings.Engine.IsFixedTimeStep;
-
-            if(!IsRunning)
+            if (!m_IsRunning)
             {
                 Settings.Save();
                 Exit();
             }
             else
             {
-                base.Update(gameTime);
-                double totalMS = gameTime.TotalGameTime.TotalMilliseconds;
-                double frameMS = gameTime.ElapsedGameTime.TotalMilliseconds;
-
-                TotalMS = totalMS;
-                Audio.Update();
-                Input.Update(totalMS, frameMS);
-                UserInterface.Update(totalMS, frameMS);
-                if (Network.IsConnected)
-                    Network.Slice();
-                ActiveModel.Update(totalMS, frameMS);
+                IsFixedTimeStep = Settings.Engine.IsFixedTimeStep;
+                m_TotalMS = totalMS;
+                m_Audio.Update();
+                m_Input.Update(totalMS, frameMS);
+                m_UserInterface.Update(totalMS, frameMS);
+                if (m_Network.IsConnected)
+                {
+                    m_Network.Slice();
+                }
+                Models.Current.Update(totalMS, frameMS);
             }
-
-            Profiler.ExitContext("Update");
-            Profiler.EnterContext("OutOfContext");
         }
 
-        protected override void Draw(GameTime gameTime)
+        protected override void OnDraw(double frameMS)
         {
-            Profiler.EndFrame();
-            Profiler.BeginFrame();
-            if (Profiler.InContext("OutOfContext"))
-                Profiler.ExitContext("OutOfContext");
-            Profiler.EnterContext("RenderFrame");
-
-            if(!IsMinimized)
+            if (!IsMinimized)
             {
-                if (ActiveModel is WorldModel)
+                if (Models.Current is WorldModel)
                 {
                     ResolutionProperty resolution = Settings.UserInterface.PlayWindowGumpResolution;
                     CheckWindowSize(resolution.Width, resolution.Height);
@@ -235,35 +126,19 @@ namespace UltimaXNA
                 {
                     CheckWindowSize(800, 600);
                 }
-                ActiveModel.GetView().Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
-                UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
+                Models.Current.GetView().Draw(frameMS);
+                m_UserInterface.Draw(frameMS);
             }
-
-            Profiler.ExitContext("RenderFrame");
-            Profiler.EnterContext("OutOfContext");
-
-            UpdateWindowCaption(gameTime);
         }
 
-        private void UpdateWindowCaption(GameTime gameTime)
+        public void Quit()
         {
-            double timeDraw = Profiler.GetContext("RenderFrame").TimeInContext;
-            double timeUpdate = Profiler.GetContext("Update").TimeInContext;
-            double timeOutOfContext = Profiler.GetContext("OutOfContext").TimeInContext;
-            double timeTotalCheck = timeOutOfContext + timeDraw + timeUpdate;
-            double timeTotal = Profiler.TrackedTime;
-            double avgDrawMs = Profiler.GetContext("RenderFrame").AverageTime;
-
-            Window.Title = string.Format("UltimaXNA Draw:{0:0.0}% Update:{1:0.0}% AvgDraw:{2:0.0}ms {3}",
-                100d * (timeDraw / timeTotal),
-                100d * (timeUpdate / timeTotal),
-                avgDrawMs,
-                gameTime.IsRunningSlowly ? "*" : string.Empty);
+            m_IsRunning = false;
         }
 
         public void SetupWindowForLogin()
         {
-            Restore();
+            RestoreWindow();
             Window.AllowUserResizing = false;
             SetGraphicsDeviceWidthHeight(new ResolutionProperty(800, 600)); // a wee bit bigger than legacy. Looks nicer.
         }
@@ -274,7 +149,7 @@ namespace UltimaXNA
             SetGraphicsDeviceWidthHeight(Settings.UserInterface.WindowResolution);
             if (Settings.UserInterface.IsMaximized)
             {
-                Maximize();
+                MaximizeWindow();
             }
         }
 
@@ -286,99 +161,18 @@ namespace UltimaXNA
             }
             else
             {
-                Settings.UserInterface.WindowResolution = new ResolutionProperty(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
+                ResolutionProperty res = new ResolutionProperty(DeviceManager.PreferredBackBufferWidth, DeviceManager.PreferredBackBufferHeight);
+                Settings.UserInterface.WindowResolution = res;
             }
         }
 
-        private void InitializeExitGuard()
+        void OnFormClosing(object sender, CancelEventArgs e)
         {
-            Form form = (Form)Form.FromHandle(Window.Handle);
-            form.Closing += ExitGuard;
-        }
-
-        private void ExitGuard(object sender, CancelEventArgs e)
-        {
-            // we should dispose of the active model BEFORE we dispose of the window.
-            if (ActiveModel != null)
-                ActiveModel = null;
-        }
-
-        protected bool IsMinimized
-        {
-            get
+            // we must dispose of the active model BEFORE we dispose of the window.
+            if (Models.Current != null)
             {
-                //Get our top level form via the handle.
-                Control MainForm = Control.FromHandle(Window.Handle);
-                //If we are minimized don't waste time trying to draw, and avoid crash on resume.
-                if (((Form)MainForm).WindowState == FormWindowState.Minimized)
-                {
-                    return true;
-                }
-                return false;
+                Models.Current = null;
             }
-        }
-
-        protected bool IsMaximized
-        {
-            get
-            {
-                // Get our top level form via the handle.
-                Control MainForm = Control.FromHandle(Window.Handle);
-                if (((Form)MainForm).WindowState == FormWindowState.Maximized)
-                {
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        protected void Maximize()
-        {
-            // Get our top level form via the handle.
-            Control MainForm = Control.FromHandle(Window.Handle);
-            ((Form)MainForm).WindowState = FormWindowState.Maximized;
-        }
-
-        protected void Restore()
-        {
-            // Get our top level form via the handle.
-            Control MainForm = Control.FromHandle(Window.Handle);
-            if (((Form)MainForm).WindowState != FormWindowState.Normal)
-                ((Form)MainForm).WindowState = FormWindowState.Normal;
-        }
-
-        private void InitializeGraphicsDeviceAndWindow()
-        {
-            GraphicsDeviceManager = new GraphicsDeviceManager(this);
-            GraphicsDeviceManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
-            GraphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
-        }
-
-        private void CheckWindowSize(int minWidth, int minHeight)
-        {
-            GameWindow window = this.Window; // (sender as GameWindow);
-            ResolutionProperty resolution = new ResolutionProperty(window.ClientBounds.Width, window.ClientBounds.Height);
-            // this only occurs when the world is active. Make sure that we don't reduce the window size
-            // smaller than the world gump size.
-            if (resolution.Width < minWidth)
-                resolution.Width = minWidth;
-            if (resolution.Height < minHeight)
-                resolution.Height = minHeight;
-            if (resolution.Width != window.ClientBounds.Width || resolution.Height != window.ClientBounds.Height)
-                SetGraphicsDeviceWidthHeight(resolution);
-        }
-
-        private void SetGraphicsDeviceWidthHeight(ResolutionProperty resolution)
-        {
-            GraphicsDeviceManager.PreferredBackBufferWidth = resolution.Width;
-            GraphicsDeviceManager.PreferredBackBufferHeight = resolution.Height;
-            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = Settings.Engine.IsVSyncEnabled;
-            GraphicsDeviceManager.ApplyChanges();
-        }
-
-        private static void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
-        {
-            e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }
     }
 }

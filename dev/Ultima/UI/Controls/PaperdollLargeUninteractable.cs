@@ -85,7 +85,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Position = new Point(x, y);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             EquipSlots[] slotsToDraw = new EquipSlots[6] { EquipSlots.Body, EquipSlots.Footwear, EquipSlots.Legging, EquipSlots.Shirt, EquipSlots.Hair, EquipSlots.FacialHair };
             for (int i = 0; i < slotsToDraw.Length; i++)
@@ -136,7 +136,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (bodyID != 0)
                 {
                     // this is silly, we should be keeping a local copy of the body texture.
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     spriteBatch.Draw2D(provider.GetUITexture(bodyID), new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue, hueGreyPixelsOnly, false, false));
                 }
             }

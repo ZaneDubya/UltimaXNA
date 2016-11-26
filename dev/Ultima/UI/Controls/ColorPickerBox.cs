@@ -94,7 +94,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (IsChild) // is a child
                 {
                     m_huesTexture = HueData.CreateHueSwatch(m_hueWidth, m_hueHeight, m_hues);
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     m_selectedIndicator = provider.GetUITexture(6000);
                 }
                 else
@@ -104,9 +104,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             m_Inactive = provider.GetUITexture(210);
 
             spriteBatch.Draw2D(m_Inactive, new Vector3(position.X, position.Y, 0), Vector3.Zero);
@@ -119,7 +119,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     (int)(position.Y + (float)(Height / m_hueHeight) * ((Index / m_hueWidth) + 0.5f) - m_selectedIndicator.Height / 2),
                     0), Vector3.Zero);
             }
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override void OnMouseClick(int x, int y, MouseButton button)

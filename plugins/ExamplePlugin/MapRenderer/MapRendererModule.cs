@@ -38,7 +38,7 @@ namespace ExamplePlugin.MapRenderer
             Directory.CreateDirectory("Chunks");
             IsometricLighting lighting = new IsometricLighting();
             MouseOverList mouseOverNull = new MouseOverList(new MousePicking());
-            SpriteBatch3D spritebatch = ServiceRegistry.GetService<SpriteBatch3D>();
+            SpriteBatch3D spritebatch = Services.Get<SpriteBatch3D>();
             RenderTarget2D render = new RenderTarget2D(spritebatch.GraphicsDevice, Width + WidthExtra * 2, Height + HeightExtra * 2 + HeightExtra2);
             Map map = new Map(0);
             for (int chunky = 0; chunky < 10; chunky++)

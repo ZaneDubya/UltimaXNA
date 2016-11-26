@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   ServiceRegistry.cs
+ *   Services.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  * 
  *   This program is free software; you can redistribute it and/or modify
@@ -16,31 +16,31 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 
 namespace UltimaXNA
 {
-    public static class ServiceRegistry
+    public static class Services
     {
-        private static readonly Dictionary<Type, object> s_Services = new Dictionary<Type, object>();
+        static readonly Dictionary<Type, object> m_Services = new Dictionary<Type, object>();
 
-        public static T Register<T>(T service)
+        public static T Add<T>(T service)
         {
             Type type = typeof(T);
 
-            if (s_Services.ContainsKey(type))
+            if (m_Services.ContainsKey(type))
             {
                 Tracer.Critical(string.Format("Attempted to register service of type {0} twice.", type));
-                s_Services.Remove(type);
+                m_Services.Remove(type);
             }
 
-            s_Services.Add(type, service);
+            m_Services.Add(type, service);
             return service;
         }
 
-        public static void Unregister<T>()
+        public static void Remove<T>()
         {
             Type type = typeof(T);
 
-            if (s_Services.ContainsKey(type))
+            if (m_Services.ContainsKey(type))
             {
-                s_Services.Remove(type);
+                m_Services.Remove(type);
             }
             else
             {
@@ -48,35 +48,24 @@ namespace UltimaXNA
             }
         }
 
-        public static bool ServiceExists<T>()
+        public static bool Has<T>()
         {
             Type type = typeof(T);
-
-            if (s_Services.ContainsKey(type))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return m_Services.ContainsKey(type);
         }
 
-        public static T GetService<T>(bool failIfNotRegistered = true)
+        public static T Get<T>(bool failIfNotRegistered = true)
         {
             Type type = typeof(T);
-            if (s_Services.ContainsKey(type))
+            if (m_Services.ContainsKey(type))
             {
-                return (T)s_Services[type];
+                return (T)m_Services[type];
             }
-            else
+            if (failIfNotRegistered)
             {
-                if (failIfNotRegistered)
-                {
-                    Tracer.Critical(string.Format("Attempted to get service service of type {0}, but no service of this type is registered.", type));
-                }
-                return default(T);
+                Tracer.Critical(string.Format("Attempted to get service service of type {0}, but no service of this type is registered.", type));
             }
+            return default(T);
         }
     }
 }
