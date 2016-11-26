@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.Network.Server
             get
             {
                 // get the resource provider
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
 
                 switch ((DeleteResultType)m_result)
                 {

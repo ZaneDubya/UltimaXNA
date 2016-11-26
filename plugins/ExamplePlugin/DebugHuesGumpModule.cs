@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.Login {
         }
 
         void OnClickDebugGump() {
-            ServiceRegistry.GetService<UserInterfaceService>().AddControl(new DebugHuesGump(), 0, 0);
+            Services.Get<UserInterfaceService>().AddControl(new DebugHuesGump(), 0, 0);
         }
     }
 
@@ -101,7 +101,7 @@ namespace UltimaXNA.Ultima.Login {
 
             public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS) {
                 if (m_Texture == null) {
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     m_Texture = provider.GetItemTexture(m_StaticTextureID);
                     Size = new Point(m_Texture.Width, m_Texture.Height);
                 }
@@ -118,7 +118,7 @@ namespace UltimaXNA.Ultima.Login {
             }
 
             protected override bool IsPointWithinControl(int x, int y) {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 return provider.IsPointInUITexture(m_StaticTextureID, x, y);
             }
         }

@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_GumpWidget == null)
             {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 switch (Style)
                 {
                     default:

@@ -26,10 +26,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     {
         public static void Toggle(Serial serial)
         {
-            UserInterfaceService ui = ServiceRegistry.GetService<UserInterfaceService>();
+            UserInterfaceService ui = Services.Get<UserInterfaceService>();
             if (ui.GetControl<StatusGump>() == null)
             {
-                INetworkClient client = ServiceRegistry.GetService<INetworkClient>();
+                INetworkClient client = Services.Get<INetworkClient>();
                 client.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, serial));
                 ui.AddControl(new StatusGump(), 200, 400);
             }

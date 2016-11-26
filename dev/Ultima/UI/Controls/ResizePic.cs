@@ -60,7 +60,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
 
         public override void Update(double totalMS, double frameMS) {
             if (m_Gumps[0] == null) {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 for (int i = 0; i < 9; i++) {
                     m_Gumps[i] = provider.GetUITexture(GumpID + i);
                 }

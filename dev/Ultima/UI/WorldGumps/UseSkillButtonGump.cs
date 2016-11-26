@@ -39,7 +39,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             m_Skill = skill;
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = Services.Get<WorldModel>();
 
             IsMoveable = true;
             HandlesMouseInput = true;

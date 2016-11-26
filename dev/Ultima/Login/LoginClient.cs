@@ -36,9 +36,9 @@ namespace UltimaXNA.Ultima.Login
         SecureString m_Password;
 
         public LoginClient() {
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_Engine = ServiceRegistry.GetService<UltimaGame>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Network = Services.Get<INetworkClient>();
+            m_Engine = Services.Get<UltimaGame>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
             Initialize();
         }
 

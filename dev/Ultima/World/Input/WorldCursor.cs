@@ -80,9 +80,9 @@ namespace UltimaXNA.Ultima.World.Input
 
         public WorldCursor(WorldModel model)
         {
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
-            m_Input = ServiceRegistry.GetService<InputManager>();
+            m_Network = Services.Get<INetworkClient>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
+            m_Input = Services.Get<InputManager>();
 
             m_World = model;
             InternalRegisterInteraction();
@@ -284,7 +284,7 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     m_ItemSpriteArtIndex = value;
 
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     Texture2D art = provider.GetItemTexture(m_ItemSpriteArtIndex);
                     if (art == null)
                     {
@@ -715,7 +715,7 @@ namespace UltimaXNA.Ultima.World.Input
         void DropHeldItemToContainer(ContainerItem container, int x, int y)
         {
             Rectangle bounds = ContainerData.Get(container.ItemID).Bounds;
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             Texture2D itemTexture = provider.GetItemTexture(HeldItem.DisplayItemID);
             if (x < bounds.Left)
                 x = bounds.Left;

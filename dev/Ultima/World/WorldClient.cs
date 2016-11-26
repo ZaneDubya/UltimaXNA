@@ -51,8 +51,8 @@ namespace UltimaXNA.Ultima.World
         public WorldClient(WorldModel world)
         {
             m_World = world;
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Network = Services.Get<INetworkClient>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
         }
 
         public void Initialize()
@@ -670,7 +670,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveCLILOCMessage(MessageLocalizedPacket p)
         {
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             string strCliLoc = constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements);
             ReceiveTextMessage(p.MessageType, strCliLoc, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
         }
@@ -688,7 +688,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveMessageLocalizedAffix(MessageLocalizedAffixPacket p)
         {
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
                 constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements), p.Affix);
             ReceiveTextMessage(p.MessageType, localizedString, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
@@ -700,7 +700,7 @@ namespace UltimaXNA.Ultima.World
                 return string.Empty;
 
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             if (arg == null)
             {
@@ -940,7 +940,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveObjectPropertyList(ObjectPropertyListPacket p)
         {
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             AEntity entity = WorldModel.Entities.GetObject<AEntity>(p.Serial, false);
             if (entity == null)
@@ -1099,7 +1099,7 @@ namespace UltimaXNA.Ultima.World
                     break;
                 case GeneralInfoPacket.ContextMenu:
                     ContextMenuInfo menuInfo = p.Info as ContextMenuInfo;
-                    InputManager input = ServiceRegistry.GetService<InputManager>();
+                    InputManager input = Services.Get<InputManager>();
                     m_UserInterface.AddControl(new ContextMenuGump(menuInfo.Menu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
                     break;
                 case GeneralInfoPacket.MapDiff:
@@ -1232,13 +1232,13 @@ namespace UltimaXNA.Ultima.World
 
         void ReceivePlayMusic(PlayMusicPacket p)
         {
-            AudioService service = ServiceRegistry.GetService<AudioService>();
+            AudioService service = Services.Get<AudioService>();
             service.PlayMusic(p.MusicID);
         }
 
         void ReceivePlaySoundEffect(PlaySoundEffectPacket p)
         {
-            AudioService service = ServiceRegistry.GetService<AudioService>();
+            AudioService service = Services.Get<AudioService>();
             service.PlaySound(p.SoundModel, spamCheck: true);
         }
 

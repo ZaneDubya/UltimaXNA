@@ -95,8 +95,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 340, 410, 246, 244, ButtonTypes.Activate, 0, (int)Buttons.Default));
             AddControl(new Button(this, 440, 410, 249, 248, ButtonTypes.Activate, 0, (int)Buttons.Okay));
 
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
+            m_World = Services.Get<WorldModel>();
 
             // page 1 Sound and Music
             AddControl(new Button(this, 0, 40, 217, 217, ButtonTypes.SwitchPage, 1, (int)Buttons.Sound), 1);

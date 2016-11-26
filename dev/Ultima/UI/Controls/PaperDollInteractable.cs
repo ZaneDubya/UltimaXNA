@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Position = new Point(x, y);
             m_isFemale = sourceEntity.Flags.IsFemale;
             SourceEntity = sourceEntity;
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = Services.Get<WorldModel>();
         }
 
         public override void Dispose()

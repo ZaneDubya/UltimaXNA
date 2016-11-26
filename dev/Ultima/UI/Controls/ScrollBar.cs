@@ -115,7 +115,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.OnInitialize();
 
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             m_GumpUpButton = new Texture2D[2];
             m_GumpUpButton[0] = provider.GetUITexture(251);

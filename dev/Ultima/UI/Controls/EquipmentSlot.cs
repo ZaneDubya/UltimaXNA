@@ -46,7 +46,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             AddControl(new GumpPicTiled(this, 0, 0, 19, 20, 0x243A));
             AddControl(new GumpPic(this, 0, 0, 0x2344, 0));
 
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = Services.Get<WorldModel>();
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -101,7 +101,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             // if click, we wait for a moment before picking it up. This allows a single click.
             m_ClickedCanDrag = true;
-            float totalMS = (float)ServiceRegistry.GetService<UltimaGame>().TotalMS;
+            float totalMS = (float)Services.Get<UltimaGame>().TotalMS;
             m_PickUpTime = totalMS + Settings.UserInterface.Mouse.ClickAndPickupMS;
             m_ClickPoint = new Point(x, y);
         }
@@ -128,7 +128,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 m_ClickedCanDrag = false;
                 m_SendClickIfNoDoubleClick = true;
-                float totalMS = (float)ServiceRegistry.GetService<UltimaGame>().TotalMS;
+                float totalMS = (float)Services.Get<UltimaGame>().TotalMS;
                 m_SingleClickTime = totalMS + Settings.UserInterface.Mouse.DoubleClickMS;
             }
         }
@@ -145,7 +145,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         private void AttemptPickUp()
         {
             int w, h;
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             provider.GetItemDimensions(m_Item.DisplayItemID, out w, out h);
             Point clickPoint = new Point(w / 2, h / 2);
             m_World.Interaction.PickupItem(m_Item, clickPoint);

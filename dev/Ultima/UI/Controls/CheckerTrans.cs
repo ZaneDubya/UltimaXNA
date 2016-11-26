@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                             }
                         }
                     }
-                    SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
+                    SpriteBatchUI sb = Services.Get<SpriteBatchUI>();
                     s_CheckeredTransTexture = new Texture2D(sb.GraphicsDevice, 32, 32, false, SurfaceFormat.Bgra5551);
                     s_CheckeredTransTexture.SetData<ushort>(data);
                 }

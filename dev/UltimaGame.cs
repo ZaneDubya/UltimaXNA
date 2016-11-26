@@ -54,13 +54,13 @@ namespace UltimaXNA
         protected override void Initialize()
         {
             Content.RootDirectory = "Content";
-            ServiceRegistry.Register(this);
-            ServiceRegistry.Register(new SpriteBatch3D(this));
-            ServiceRegistry.Register(new SpriteBatchUI(this));
-            m_Audio = ServiceRegistry.Register(new AudioService());
-            m_Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
-            m_Input = ServiceRegistry.Register(new InputManager(Window.Handle));
-            m_UserInterface = ServiceRegistry.Register(new UserInterfaceService());
+            UltimaXNA.Services.Add(this);
+            UltimaXNA.Services.Add(new SpriteBatch3D(this));
+            UltimaXNA.Services.Add(new SpriteBatchUI(this));
+            m_Audio = UltimaXNA.Services.Add(new AudioService());
+            m_Network = UltimaXNA.Services.Add<INetworkClient>(new NetworkClient());
+            m_Input = UltimaXNA.Services.Add(new InputManager(Window.Handle));
+            m_UserInterface = UltimaXNA.Services.Add(new UserInterfaceService());
             m_Plugins = new PluginManager(AppDomain.CurrentDomain.BaseDirectory);
             m_Models = new ModelManager();
             // Make sure we have a UO installation before loading IO.
@@ -69,7 +69,7 @@ namespace UltimaXNA
                 // Initialize and load data
                 IResourceProvider provider = new ResourceProvider(this);
                 provider.RegisterResource(new EffectDataResource());
-                ServiceRegistry.Register(provider);
+                UltimaXNA.Services.Add(provider);
                 HueData.Initialize(GraphicsDevice);
                 SkillsData.Initialize();
                 GraphicsDevice.Textures[1] = HueData.HueTexture0;
@@ -86,7 +86,7 @@ namespace UltimaXNA
 
         protected override void Dispose(bool disposing)
         {
-            ServiceRegistry.Unregister<UltimaGame>();
+            UltimaXNA.Services.Remove<UltimaGame>();
             m_UserInterface.Dispose();
             base.Dispose(disposing);
         }

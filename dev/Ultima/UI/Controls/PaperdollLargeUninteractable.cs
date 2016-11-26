@@ -136,7 +136,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (bodyID != 0)
                 {
                     // this is silly, we should be keeping a local copy of the body texture.
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     spriteBatch.Draw2D(provider.GetUITexture(bodyID), new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue, hueGreyPixelsOnly, false, false));
                 }
             }

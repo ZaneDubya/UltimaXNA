@@ -67,7 +67,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
         public IsometricRenderer()
         {
-            m_SpriteBatch = ServiceRegistry.GetService<SpriteBatch3D>();
+            m_SpriteBatch = Services.Get<SpriteBatch3D>();
             Lighting = new IsometricLighting();
         }
 

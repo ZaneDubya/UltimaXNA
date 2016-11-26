@@ -36,17 +36,17 @@ namespace UltimaXNA.Ultima.UI.Controls
             Size = new Point(width, height);
 
             HandlesMouseInput = true;
-            ServiceRegistry.Register<WorldViewport>(this);
+            Services.Add<WorldViewport>(this);
         }
 
         protected override void OnInitialize()
         {
-            m_Model = ServiceRegistry.GetService<WorldModel>();
+            m_Model = Services.Get<WorldModel>();
         }
 
         public override void Dispose()
         {
-            ServiceRegistry.Unregister<WorldViewport>();
+            Services.Remove<WorldViewport>();
             base.Dispose();
         }
 

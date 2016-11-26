@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.UI
                 {
                     m_CursorSpriteArtIndex = value;
 
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     Texture2D art = provider.GetItemTexture(m_CursorSpriteArtIndex);
                     if (art == null)
                     {
@@ -67,7 +67,7 @@ namespace UltimaXNA.Ultima.UI
 
         public UltimaCursor()
         {
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
         }
 
         public virtual void Dispose()

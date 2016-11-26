@@ -38,8 +38,8 @@ namespace UltimaXNA.Core.UI
 
         public UserInterfaceService()
         {
-            m_Input = ServiceRegistry.GetService<InputManager>();
-            m_SpriteBatch = ServiceRegistry.GetService<SpriteBatchUI>();
+            m_Input = Services.Get<InputManager>();
+            m_SpriteBatch = Services.Get<SpriteBatchUI>();
             OpenControls = new List<AControl>();
         }
 
