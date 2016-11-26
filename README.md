@@ -9,7 +9,7 @@ UltimaXNA is an isometric massively multiplayer online role playing client that 
 
 **Getting started**
 
-You should use [Visual Studio 2013](https://www.visualstudio.com/en-us/products/visual-studio-express-vs.aspx) to develop and compile UltimaXNA. You will also need to install [XNA for Visual Studio 2013](https://msxna.codeplex.com/releases/view/117230).
+You should use [Visual Studio 2015](https://www.visualstudio.com/vs/community/) to develop and compile UltimaXNA. You will also need to install [XNA for Visual Studio 2015](https://blogs.msdn.microsoft.com/uk_faculty_connection/2015/11/02/installing-xna-with-visual-studio-2015/).
 
 UltimaXNA does not include the Ultima Online resource files, and will not work on a computer that does not have Ultima Online installed. UltimaXNA is compatible with any Ultima Online client prior to the introduction of the UOP resource format, including Mondain's Legacy. [Download the client files for Mondain's Legacy here](http://download.cnet.com/Ultima-Online-Mondain-s-Legacy-client/3000-7540_4-10432237.html).
 
