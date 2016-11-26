@@ -15,7 +15,7 @@ using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 {
-    public class Container : Item
+    public class ContainerItem : Item
     {
         List<Item> m_Contents;
         bool m_ContentsUpdated;
@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
             }
         }
 
-        public Container(Serial serial, Map map)
+        public ContainerItem(Serial serial, Map map)
             : base(serial, map)
         {
             m_ContentsUpdated = true;

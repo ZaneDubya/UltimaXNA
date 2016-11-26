@@ -28,7 +28,7 @@ namespace UltimaXNA.Configuration
         bool m_AlwaysRun;
         bool m_MenuBarDisabled;
 
-        int m_SpeechColor = 4 * Utility.RandomValue(0, 99) * 5;
+        int m_SpeechColor = 4 + Utility.RandomValue(0, 99) * 5;
         int m_EmoteColor = 646;
         int m_PartyMsgPrivateColor = 58;
         int m_PartyMsgColor = 68;

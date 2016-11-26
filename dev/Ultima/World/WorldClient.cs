@@ -12,6 +12,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using UltimaXNA.Core.Diagnostics.Tracing;
@@ -286,7 +287,7 @@ namespace UltimaXNA.Ultima.World
             // special handling for spellbook contents
             if (p.AllItemsInSameContainer)
             {
-                Container container = WorldModel.Entities.GetObject<Container>(p.Items[0].ContainerSerial, true);
+                ContainerItem container = WorldModel.Entities.GetObject<ContainerItem>(p.Items[0].ContainerSerial, true);
                 if (SpellbookData.GetSpellBookTypeFromItemID(container.ItemID) != SpellBookTypes.Unknown)
                 {
                     SpellbookData data = new SpellbookData(container, p);
@@ -312,18 +313,18 @@ namespace UltimaXNA.Ultima.World
         {
             // This code is necessary sanity checking: It may be possible that the server will ask us to add an item to
             // a mobile, which this codebase does not currently handle.
-            AEntity cGeneric = WorldModel.Entities.GetObject<AEntity>(cSerial, false);
-            if (cGeneric == null)
+            AEntity entity = WorldModel.Entities.GetObject<AEntity>(cSerial, false);
+            if (entity == null)
             {
-                cGeneric = WorldModel.Entities.GetObject<Container>(cSerial, true);
+                entity = WorldModel.Entities.GetObject<ContainerItem>(cSerial, true);
             }
-            if (cGeneric is Container)
+            if (entity is ContainerItem)
             {
-                (cGeneric as Container).AddItem(item);
+                (entity as ContainerItem).AddItem(item);
             }
             else
             {
-                Tracer.Warn($"Illegal PlaceItemInContainer({item}, {cSerial}): container is {cGeneric.GetType()}.");
+                Tracer.Warn($"Illegal PlaceItemInContainer({item}, {cSerial}): container is {entity.GetType()}.");
             }
         }
 
@@ -346,7 +347,7 @@ namespace UltimaXNA.Ultima.World
                     }
                     else
                     {
-                        item = WorldModel.Entities.GetObject<Container>(serial, true);
+                        item = WorldModel.Entities.GetObject<ContainerItem>(serial, true);
                     }
                 }
                 else
@@ -374,7 +375,7 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveContainer(OpenContainerPacket p)
         {
-            Container item;
+            ContainerItem item;
             // Special case for 0x30, which tells us to open a buy from vendor window.
             if (p.GumpId == 0x30)
             {
@@ -390,7 +391,7 @@ namespace UltimaXNA.Ultima.World
             }
             else
             {
-                item = WorldModel.Entities.GetObject<Container>(p.Serial, false);
+                item = WorldModel.Entities.GetObject<ContainerItem>(p.Serial, false);
                 if (item == null)
                 {
                     // log error - item does not exist
@@ -1164,22 +1165,48 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveOpenWebBrowser(OpenWebBrowserPacket p)
         {
-            if (!string.IsNullOrEmpty(p.WebsiteUrl))
+            if (!ValidateUrl(p.WebsiteUrl))
             {
-                try
+                return;
+            }
+            try
+            {
+                Process.Start(p.WebsiteUrl);
+            }
+            catch (Win32Exception noBrowser)
+            {
+                if (noBrowser.ErrorCode == unchecked((int)0x80004005))
                 {
-                    System.Diagnostics.Process.Start(p.WebsiteUrl);
-                }
-                catch (System.ComponentModel.Win32Exception noBrowser)
-                {
-                    if (noBrowser.ErrorCode == -2147467259)
-                        UI.MsgBoxGump.Show(noBrowser.Message, UI.MsgBoxTypes.OkOnly);
-                }
-                catch (System.Exception other)
-                {
-                    UI.MsgBoxGump.Show(other.Message, UI.MsgBoxTypes.OkOnly);
+                    MsgBoxGump.Show(noBrowser.Message, MsgBoxTypes.OkOnly);
                 }
             }
+            catch (Exception other)
+            {
+                MsgBoxGump.Show(other.Message, MsgBoxTypes.OkOnly);
+            }
+        }
+
+        bool ValidateUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return false;
+            }
+            if (url.IndexOf("http", StringComparison.Ordinal) != 0)
+            {
+                url = $"http://{url}";
+            }
+            Uri uri;
+            bool result = Uri.TryCreate(url, UriKind.Absolute, out uri);
+            if (!result)
+            {
+                return false;
+            }
+            if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+            {
+                return false;
+            }
+            return true;
         }
 
         void ReceiveOverallLightLevel(OverallLightLevelPacket p)

@@ -63,24 +63,24 @@ namespace UltimaXNA.Ultima.World.Managers
                 if (e != null && !e.IsDisposed)
                 {
                     retained.Add(e.Serial);
-                    if (e is Container)
+                    if (e is ContainerItem)
                     {
-                        RecursiveRetainPlayerEntities(e as Container, retained);
+                        RecursiveRetainPlayerEntities(e as ContainerItem, retained);
                     }
                 }
             }
         }
 
-        void RecursiveRetainPlayerEntities(Container container, List<Serial> retained)
+        void RecursiveRetainPlayerEntities(ContainerItem container, List<Serial> retained)
         {
             foreach (AEntity e in container.Contents)
             {
                 if (e != null && !e.IsDisposed)
                 {
                     retained.Add(e.Serial);
-                    if (e is Container)
+                    if (e is ContainerItem)
                     {
-                        RecursiveRetainPlayerEntities(e as Container, retained);
+                        RecursiveRetainPlayerEntities(e as ContainerItem, retained);
                     }
                 }
             }

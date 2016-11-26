@@ -109,7 +109,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void On_Dblclick_Backpack(AControl control, int x, int y, MouseButton button)
         {
-            Container backpack = ((Mobile)m_sourceEntity).Backpack;
+            ContainerItem backpack = ((Mobile)m_sourceEntity).Backpack;
             m_World.Interaction.DoubleClick(backpack);
         }
 

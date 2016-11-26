@@ -57,8 +57,8 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             // if is worn, let the wearer know we are disposing.
             if (Parent is Mobile)
                 ((Mobile)Parent).RemoveItem(Serial);
-            else if (Parent is Container)
-                ((Container)Parent).RemoveItem(Serial);
+            else if (Parent is ContainerItem)
+                ((ContainerItem)Parent).RemoveItem(Serial);
         }
 
         protected override AEntityView CreateView()
@@ -181,7 +181,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
         {
             if (m_lastParent != null)
             {
-                ((Container)m_lastParent).AddItem(this);
+                ((ContainerItem)m_lastParent).AddItem(this);
             }
         }
     }

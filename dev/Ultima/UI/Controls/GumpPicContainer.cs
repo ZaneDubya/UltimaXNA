@@ -15,10 +15,10 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class GumpPicContainer : GumpPic
     {
-        Container m_containerItem;
-        public Container Item { get { return m_containerItem; } }
+        ContainerItem m_containerItem;
+        public ContainerItem Item { get { return m_containerItem; } }
 
-        public GumpPicContainer(AControl parent, int x, int y, int gumpID, int hue, Container containerItem)
+        public GumpPicContainer(AControl parent, int x, int y, int gumpID, int hue, ContainerItem containerItem)
             : base(parent, x, y, gumpID, hue)
         {
             m_containerItem = containerItem;

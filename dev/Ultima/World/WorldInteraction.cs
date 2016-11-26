@@ -157,7 +157,7 @@ namespace UltimaXNA.Ultima.World {
                 }
                 else
                 {
-                    gump = new ContainerGump(entity, ((Container)entity).ItemID);
+                    gump = new ContainerGump(entity, ((ContainerItem)entity).ItemID);
                     m_UserInterface.AddControl(gump, 64, 64);
                 }
             }
