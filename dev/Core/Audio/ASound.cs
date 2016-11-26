@@ -17,16 +17,20 @@ namespace UltimaXNA.Core.Audio
 {
     abstract class ASound : IDisposable
     {
-        private string m_Name;
+        string m_Name;
         public string Name
         {
             get { return m_Name; }
             private set
             {
                 if (!string.IsNullOrEmpty(value))
+                {
                     m_Name = value.Replace(".mp3", "");
+                }
                 else
+                {
                     m_Name = string.Empty;
+                }
             }
         }
         public DateTime LastPlayed = DateTime.MinValue;
