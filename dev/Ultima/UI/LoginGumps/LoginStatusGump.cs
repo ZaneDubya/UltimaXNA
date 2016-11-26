@@ -9,31 +9,37 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Resources;
+using System;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.LoginGumps
-{
-    public delegate void CancelLoginEvent();
-
-    enum LoggingInGumpButtons
-    {
+namespace UltimaXNA.Ultima.UI.LoginGumps {
+    enum LoggingInGumpButtons {
         QuitButton,
         CancelLoginButton,
         OKNoLoginButton
     }
 
-    class LoginStatusGump : Gump
-    {
-        public event CancelLoginEvent OnCancelLogin;
+    class LoginStatusGump : Gump {
+        public const int PageConnecting = 1;
+        public const int PageCouldntConnect = 2;
+        public const int PageIncorrectUsernamePassword = 3;
+        public const int PageAccountInUse = 4;
+        public const int PageAccountBlocked = 5;
+        public const int PageCredentialsInvalid = 6;
+        public const int PageConnectionLost = 7;
+        public const int PageBadCommunication = 8;
+        public const int PageVerifyingAccount = 9;
 
-        public LoginStatusGump()
-            : base(0, 0)
-        {
+        event Action m_OnCancelLogin;
+
+        public LoginStatusGump(Action onCancelLogin)
+            : base(0, 0) {
+            m_OnCancelLogin = onCancelLogin;
+
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             int hue = 902;
             // backdrop
@@ -46,65 +52,63 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new ResizePic(this, 116, 95, 2600, 408, 288));
 
             // Page 1 - Connecting... with cancel login button
-            AddControl(new TextLabelAscii(this, 166, 143, 2, hue, provider.GetString(3000002)), 1);
-            AddControl(new Button(this, 305, 342, 1150, 1152, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.CancelLoginButton), 1);
+            AddControl(new TextLabelAscii(this, 166, 143, 2, hue, provider.GetString(3000002)), PageConnecting);
+            AddControl(new Button(this, 305, 342, 1150, 1152, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.CancelLoginButton), PageConnecting);
             ((Button)LastControl).GumpOverID = 1151;
 
             // Page 2 - Couldn't connect to server
-            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000016)), 2);
-            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), 2);
+            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000016)), PageCouldntConnect);
+            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), PageCouldntConnect);
             ((Button)LastControl).GumpOverID = 1154;
 
             // Page 3 - Incorrect username and/or password.
-            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000036)), 3);
-            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), 3);
+            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000036)), PageIncorrectUsernamePassword);
+            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), PageIncorrectUsernamePassword);
             ((Button)LastControl).GumpOverID = 1154;
 
             // Page 4 - Someone is already using this account.
-            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000034)), 4);
-            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), 4);
+            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000034)), PageAccountInUse);
+            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), PageAccountInUse);
             ((Button)LastControl).GumpOverID = 1154;
 
             // Page 5 - Your account has been blocked / banned
-            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000035)), 5);
-            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), 5);
+            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000035)), PageAccountBlocked);
+            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), PageAccountBlocked);
             ((Button)LastControl).GumpOverID = 1154;
 
             // Page 6 - Your account credentials are invalid.
-            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000036)), 6);
-            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), 6);
+            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000036)), PageCredentialsInvalid);
+            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), PageCredentialsInvalid);
             ((Button)LastControl).GumpOverID = 1154;
 
             // Page 7 - Login idle period exceeded (I use "Connection lost")
-            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000004)), 7);
-            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), 7);
+            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000004)), PageConnectionLost);
+            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), PageConnectionLost);
             ((Button)LastControl).GumpOverID = 1154;
 
             // Page 8 - Communication problem.
-            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000037)), 8);
-            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), 8);
+            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 2, hue, provider.GetString(3000037)), PageBadCommunication);
+            AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), PageBadCommunication);
             ((Button)LastControl).GumpOverID = 1154;
 
             // Page 9 - Verifying Account... with cancel login button
-            AddControl(new TextLabelAscii(this, 166, 143, 2, hue, provider.GetString(3000003)), 9);
-            AddControl(new Button(this, 305, 342, 1150, 1152, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.CancelLoginButton), 9);
+            AddControl(new TextLabelAscii(this, 166, 143, 2, hue, provider.GetString(3000003)), PageVerifyingAccount);
+            AddControl(new Button(this, 305, 342, 1150, 1152, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.CancelLoginButton), PageVerifyingAccount);
             ((Button)LastControl).GumpOverID = 1151;
 
             IsUncloseableWithRMB = true;
         }
 
-        public override void OnButtonClick(int buttonID)
-        {
-            switch ((LoggingInGumpButtons)buttonID)
-            {
+        public override void OnButtonClick(int buttonID) {
+            switch ((LoggingInGumpButtons)buttonID) {
                 case LoggingInGumpButtons.QuitButton:
-                    UltimaGame.IsRunning = false;
+                    Services.Get<UltimaGame>().Quit();
                     break;
                 case LoggingInGumpButtons.CancelLoginButton:
-                    OnCancelLogin();
+                    m_OnCancelLogin();
                     break;
                 case LoggingInGumpButtons.OKNoLoginButton:
-                    OnCancelLogin();
+                    m_OnCancelLogin();
                     break;
             }
         }

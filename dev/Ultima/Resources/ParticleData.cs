@@ -84,18 +84,18 @@ namespace UltimaXNA.Ultima.Resources
                 switch (Utility.RandomValue(0, 2))
                 {
                     case 0:
-                        return GetData(0x36B0);
+                        return Get(0x36B0);
                     case 1:
-                        return GetData(0x36BD);
+                        return Get(0x36BD);
                     case 2:
-                        return GetData(0x36CB);
+                        return Get(0x36CB);
                     default:
-                        return GetData(0x36B0);
+                        return Get(0x36B0);
                 }
             }
         }
 
-        public static ParticleData GetData(int itemID)
+        public static ParticleData Get(int itemID)
         {
             if (itemID < m_Data[0].ItemID)
                 return null;
@@ -121,10 +121,10 @@ namespace UltimaXNA.Ultima.Resources
             return null;
         }
 
-        private int m_itemID;
+        private readonly int m_itemID;
         private int m_frameLength;
         private int m_speed;
-        private string m_name;
+        private readonly string m_name;
 
         public int ItemID { get { return m_itemID; } }
         public int FrameLength { get { return m_frameLength; } set { m_frameLength = value; } }

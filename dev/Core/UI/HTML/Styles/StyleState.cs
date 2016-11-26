@@ -11,7 +11,6 @@
 
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Core.Extensions;
 
 namespace UltimaXNA.Core.UI.HTML.Styles
 {
@@ -47,11 +46,11 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             }
         }
 
-        public bool IsBold = false;
-        public bool IsItalic = false;
-        public bool IsOutlined = false;
+        public bool IsBold;
+        public bool IsItalic;
+        public bool IsOutlined;
 
-        public bool MustDrawnOutline
+        public bool DrawOutline
         {
             get { return IsOutlined && !Font.HasBuiltInOutline; }
         }
@@ -62,8 +61,25 @@ namespace UltimaXNA.Core.UI.HTML.Styles
         public int ActiveColorHue = 12;
         public int HoverColorHue = 24;
 
-        public string HREF = null;
+        public string HREF;
         public bool IsHREF { get { return HREF != null; } }
+
+        public int ExtraWidth
+        {
+            get
+            {
+                int extraWidth = 0;
+                if (IsItalic)
+                {
+                    extraWidth = Font.Height / 2;
+                }
+                if (DrawOutline)
+                {
+                    extraWidth += 2;
+                }
+                return extraWidth;
+            }
+        }
 
         public StyleState(IResourceProvider provider)
         {

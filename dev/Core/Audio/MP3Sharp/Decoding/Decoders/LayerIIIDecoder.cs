@@ -23,7 +23,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
     /// <summary>
     ///     Implements decoding of MPEG Audio Layer 3 frames.
     /// </summary>
-    internal sealed class LayerIIIDecoder : IFrameDecoder
+    sealed class LayerIIIDecoder : IFrameDecoder
     {
         private const int SSLIMIT = 18;
         private const int SBLIMIT = 32;
@@ -228,8 +228,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
         ///     Constructor.
         ///     REVIEW: these constructor arguments should be moved to the decodeFrame() method.
         /// </summary>
-        public LayerIIIDecoder(Bitstream stream0, Header header0, SynthesisFilter filtera, SynthesisFilter filterb,
-            ABuffer buffer0, int whichCh0)
+        public LayerIIIDecoder(Bitstream stream, Header header, SynthesisFilter filtera, SynthesisFilter filterb, ABuffer buffer, int whichCh)
         {
             Huffman.Initialize();
 
@@ -276,20 +275,17 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
             sfBandIndex = new SBI[9]; // SZD: MPEG2.5 +3 indices
             int[] l0 =
             {
-                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522,
-                576
+                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522, 576
             };
             int[] s0 = {0, 4, 8, 12, 18, 24, 32, 42, 56, 74, 100, 132, 174, 192};
             int[] l1 =
             {
-                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 114, 136, 162, 194, 232, 278, 330, 394, 464, 540,
-                576
+                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 114, 136, 162, 194, 232, 278, 330, 394, 464, 540, 576
             };
             int[] s1 = {0, 4, 8, 12, 18, 26, 36, 48, 62, 80, 104, 136, 180, 192};
             int[] l2 =
             {
-                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522,
-                576
+                0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522, 576
             };
             int[] s2 = {0, 4, 8, 12, 18, 26, 36, 48, 62, 80, 104, 134, 174, 192};
 
@@ -360,19 +356,19 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
             scalefac_buffer = new int[54];
             // END OF scalefac_buffer
 
-            stream = stream0;
-            header = header0;
+            this.stream = stream;
+            this.header = header;
             filter1 = filtera;
             filter2 = filterb;
-            buffer = buffer0;
-            which_channels = whichCh0;
+            this.buffer = buffer;
+            which_channels = whichCh;
 
             frame_start = 0;
-            channels = (header.mode() == Header.SINGLE_CHANNEL) ? 1 : 2;
-            max_gr = (header.version() == Header.MPEG1) ? 2 : 1;
+            channels = (this.header.mode() == Header.SINGLE_CHANNEL) ? 1 : 2;
+            max_gr = (this.header.version() == Header.MPEG1) ? 2 : 1;
 
-            sfreq = header.sample_frequency() +
-                    ((header.version() == Header.MPEG1) ? 3 : (header.version() == Header.MPEG25_LSF) ? 6 : 0); // SZD
+            sfreq = this.header.sample_frequency() +
+                    ((this.header.version() == Header.MPEG1) ? 3 : (this.header.version() == Header.MPEG25_LSF) ? 6 : 0); // SZD
 
             if (channels == 2)
             {
@@ -621,7 +617,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
 
                             if (m_SideInfo.Channels[ch].Granules[gr].BlockType == 0)
                             {
-                                //	 Side info bad: block_type == 0 in split block
+                                // Side info bad: block_type == 0 in split block
                                 return false;
                             }
                             if (m_SideInfo.Channels[ch].Granules[gr].BlockType == 2 && m_SideInfo.Channels[ch].Granules[gr].MixedBlockFlag == 0)
@@ -1246,8 +1242,8 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
                 {
                     t_index = (index - cb_begin)/cb_width;
                     /*            xr[sb][ss] *= pow(2.0, ((-2.0 * gr_info.subblock_gain[t_index])
-					-(0.5 * (1.0 + gr_info.scalefac_scale)
-					* scalefac[ch].s[t_index][cb]))); */
+                    -(0.5 * (1.0 + gr_info.scalefac_scale)
+                    * scalefac[ch].s[t_index][cb]))); */
                     int idx = scalefac[ch].s[t_index][cb] << gr_info.ScaleFacScale;
                     idx += (gr_info.SubblockGain[t_index] << 2);
 
@@ -1256,9 +1252,9 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
                 else
                 {
                     // LONG block types 0,1,3 & 1st 2 subbands of switched blocks
-                    /*				xr[sb][ss] *= pow(2.0, -0.5 * (1.0+gr_info.scalefac_scale)
-					* (scalefac[ch].l[cb]
-					+ gr_info.preflag * pretab[cb])); */
+                    /* xr[sb][ss] *= pow(2.0, -0.5 * (1.0+gr_info.scalefac_scale)
+                    * (scalefac[ch].l[cb]
+                    + gr_info.preflag * pretab[cb])); */
                     int idx = scalefac[ch].l[cb];
 
                     if (gr_info.Preflag != 0)
@@ -1711,9 +1707,9 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
                                 lr[0][sb][ss] = lr[1][sb][ss]*is_ratio[i];
                             }
                         }
-                        /*				else {
-						System.out.println("Error in stereo processing\n");
-						} */
+                        /* else {
+                        System.out.println("Error in stereo processing\n");
+                        } */
                         i++;
                     }
             }
@@ -1854,16 +1850,16 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
             if (blockType == 2)
             {
                 /*
-				*
-				*		Under MicrosoftVM 2922, This causes a GPF, or
-				*		At best, an ArrayIndexOutOfBoundsExceptin.
-				for(int p=0;p<36;p+=9)
-				{
-				out[p]   = out[p+1] = out[p+2] = out[p+3] =
-				out[p+4] = out[p+5] = out[p+6] = out[p+7] =
-				out[p+8] = 0.0f;
-				}
-				*/
+                *
+                * Under MicrosoftVM 2922, This causes a GPF, or
+                * At best, an ArrayIndexOutOfBoundsExceptin.
+                for(int p=0;p<36;p+=9)
+                {
+                out[p]   = out[p+1] = out[p+2] = out[p+3] =
+                out[p+4] = out[p+5] = out[p+6] = out[p+7] =
+                out[p+8] = 0.0f;
+                }
+                */
                 outValues[0] = 0.0f;
                 outValues[1] = 0.0f;
                 outValues[2] = 0.0f;

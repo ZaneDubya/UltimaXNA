@@ -24,7 +24,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class MiniMapGump : Gump
     {
-        bool m_useLargeMap = false;
+        const float ReticleBlinkMS = 250f;
+
+        float m_TimeMS;
+        bool m_UseLargeMap;
         WorldModel m_World;
         Texture2D m_GumpTexture;
         Texture2D m_PlayerIndicator;
@@ -37,7 +40,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public static void Toggle()
         {
-            UserInterfaceService ui = ServiceRegistry.GetService<UserInterfaceService>();
+            UserInterfaceService ui = Services.Get<UserInterfaceService>();
             if (ui.GetControl<MiniMapGump>() == null)
             {
                 ui.AddControl(new MiniMapGump(), 566, 25);
@@ -59,9 +62,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public MiniMapGump()
             : base(0, 0)
         {
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = Services.Get<WorldModel>();
 
-            m_useLargeMap = MiniMap_LargeFormat;
+            m_UseLargeMap = MiniMap_LargeFormat;
 
             IsMoveable = true;
             MakeThisADragger();
@@ -75,22 +78,22 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_GumpTexture == null || m_useLargeMap != MiniMap_LargeFormat)
+            if (m_GumpTexture == null || m_UseLargeMap != MiniMap_LargeFormat)
             {
-                m_useLargeMap = MiniMap_LargeFormat;
+                m_UseLargeMap = MiniMap_LargeFormat;
                 if (m_GumpTexture != null)
                 {
                     m_GumpTexture = null;
                 }
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                m_GumpTexture = provider.GetUITexture((m_useLargeMap ? 5011 : 5010), true);
+                IResourceProvider provider = Services.Get<IResourceProvider>();
+                m_GumpTexture = provider.GetUITexture((m_UseLargeMap ? 5011 : 5010), true);
                 Size = new Point(m_GumpTexture.Width, m_GumpTexture.Height);
             }
 
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             AEntity player = WorldModel.Entities.GetPlayerEntity();
             float x = (float)Math.Round((player.Position.X % 256) + player.Position.X_offset) / 256f;
@@ -99,7 +102,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             float minimapU = (m_GumpTexture.Width / 256f) / 2f;
             float minimapV = (m_GumpTexture.Height / 256f) / 2f;
 
-            VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[4]
+            VertexPositionNormalTextureHue[] v = 
             {
                 new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y, 0), playerPosition + new Vector3(-minimapU, -minimapV, 0), new Vector3(0, 0, 0)),
                 new VertexPositionNormalTextureHue(new Vector3(position.X + Width, position.Y, 0), playerPosition + new Vector3(minimapU, -minimapV, 0), new Vector3(1, 0, 0)),
@@ -109,14 +112,19 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             spriteBatch.DrawSprite(m_GumpTexture, v, Techniques.MiniMap);
 
-            if (UltimaGame.TotalMS % 500f < 250f)
+            m_TimeMS += (float)frameMS;
+            if (m_TimeMS >= ReticleBlinkMS)
             {
                 if (m_PlayerIndicator == null)
                 {
                     m_PlayerIndicator = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                    m_PlayerIndicator.SetData<uint>(new uint[1] { 0xFFFFFFFF });
+                    m_PlayerIndicator.SetData(new uint[1] { 0xFFFFFFFF });
                 }
                 spriteBatch.Draw2D(m_PlayerIndicator, new Vector3(position.X + Width / 2, position.Y + Height / 2 - 8, 0), Vector3.Zero);
+            }
+            if (m_TimeMS >= ReticleBlinkMS * 2)
+            {
+                m_TimeMS -= ReticleBlinkMS * 2;
             }
         }
 

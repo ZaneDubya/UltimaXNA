@@ -7,7 +7,6 @@
  *   code), please let me know!
  *
  ***************************************************************************/
-using System;
 using System.Runtime.InteropServices;
 
 namespace UltimaXNA.Core.Diagnostics
@@ -36,7 +35,7 @@ namespace UltimaXNA.Core.Diagnostics
         #endregion
 
         #region Member Variables
-        private long m_StartTime = 0;
+        private long m_StartTime;
         #endregion
 
         public HighPerformanceTimer()

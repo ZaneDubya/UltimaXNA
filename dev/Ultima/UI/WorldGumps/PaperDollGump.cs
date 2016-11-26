@@ -10,6 +10,7 @@
  ***************************************************************************/
 
 #region usings
+
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
@@ -17,15 +18,15 @@ using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-#endregion
+
+#endregion usings
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    internal class PaperDollGump : Gump
+    class PaperDollGump : Gump
     {
         private enum Buttons
         {
@@ -57,8 +58,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private bool m_IsWarMode;
         private Button m_WarModeBtn;
 
-        private readonly int[] PeaceModeBtnGumps = new int[] { 0x07e5, 0x07e6, 0x07e7 };
-        private readonly int[] WarModeBtnGumps = new int[] { 0x07e8, 0x07e9, 0x07ea };
+        private readonly int[] PeaceModeBtnGumps = { 0x07e5, 0x07e6, 0x07e7 };
+        private readonly int[] WarModeBtnGumps = { 0x07e8, 0x07e9, 0x07ea };
 
         private GumpPic m_VirtueMenuButton;
 
@@ -81,8 +82,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         private void BuildGump()
         {
-            m_World = ServiceRegistry.GetService<WorldModel>();
-            m_Client = ServiceRegistry.GetService<INetworkClient>();
+            m_World = Services.Get<WorldModel>();
+            m_Client = Services.Get<INetworkClient>();
 
             IsMoveable = true;
             SaveOnWorldStop = true;
@@ -135,6 +136,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 // AddControl(new GumpPic(this, 158, 200, 0x2B34, 0));
                 // LastControl.MouseDoubleClickEvent += SpecialMoves_MouseDoubleClickEvent;
 
+                // PARTY MANIFEST CALLER
+                AddControl(new GumpPic(this, 44, 195, 2002, 0));
+                LastControl.MouseDoubleClickEvent += PartyManifest_MouseDoubleClickEvent;
+
                 // equipment slots for hat/earrings/neck/ring/bracelet
                 AddControl(new EquipmentSlot(this, 2, 76, Mobile, EquipLayer.Helm));
                 AddControl(new EquipmentSlot(this, 2, 76 + 22 * 1, Mobile, EquipLayer.Earrings));
@@ -154,7 +159,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             // name and title
-            AddControl(new HtmlGumpling(this, 34, 259, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", Title)));
             AddControl(new HtmlGumpling(this, 35, 260, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", Title)));
         }
 
@@ -164,7 +168,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 m_VirtueMenuButton.MouseDoubleClickEvent -= VirtueMenu_MouseDoubleClickEvent;
             base.Dispose();
         }
-
+        private void PartyManifest_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)
+        {
+            if (button == MouseButton.Left)
+            {
+                if (UserInterface.GetControl<PartyGump>() == null)
+                    UserInterface.AddControl(new PartyGump(), 200, 40);
+                else
+                    UserInterface.RemoveControl<PartyGump>();
+            }
+        }
         private void SpecialMoves_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)
         {
             if (button == MouseButton.Left)
@@ -208,9 +221,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         public override void OnButtonClick(int buttonID)

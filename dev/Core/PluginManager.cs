@@ -18,56 +18,39 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Patterns;
 #endregion
 
-namespace UltimaXNA.Core
-{
-    class PluginManager
-    {
-        private List<IModule> m_Modules = new List<IModule>();
+namespace UltimaXNA.Core {
+    class PluginManager {
+        readonly List<IModule> m_Modules = new List<IModule>();
 
-        public PluginManager(string baseAppPath)
-        {
+        public PluginManager(string baseAppPath) {
             Configure(baseAppPath);
         }
 
-        private void Configure(string baseAppPath)
-        {
+        void Configure(string baseAppPath) {
             DirectoryInfo directory = new DirectoryInfo(Path.Combine(baseAppPath, "plugins"));
-
-            if (!directory.Exists)
-            {
+            if (!directory.Exists) {
                 return;
             }
-
             FileInfo[] assemblies = directory.GetFiles("*.dll");
-
-            foreach (FileInfo file in assemblies)
-            {
-                try
-                {
+            foreach (FileInfo file in assemblies) {
+                try {
                     Tracer.Info("Loading plugin {0}.", file.Name);
-
                     Assembly assembly = Assembly.LoadFile(file.FullName);
                     IEnumerable<Type> modules = assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IModule)));
-
-                    foreach (Type module in modules)
-                    {
+                    foreach (Type module in modules) {
                         Tracer.Info("Activating module {0}.", module.FullName);
-
                         IModule instance = (IModule)Activator.CreateInstance(module);
-
                         LoadModule(instance);
                     }
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     Tracer.Warn("An error occurred while trying to load plugin. [{0}]", file.FullName);
                     Tracer.Warn(e);
                 }
             }
         }
 
-        private void LoadModule(IModule module)
-        {
+        void LoadModule(IModule module) {
             m_Modules.Add(module);
             module.Load();
         }

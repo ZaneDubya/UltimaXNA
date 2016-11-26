@@ -25,12 +25,12 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     /// <author>
     ///     Mat McGowan
     /// </author>
-    internal class OutputChannels
+    class OutputChannels
     {
         /// <summary>
         ///     Flag to indicate output should include both channels.
         /// </summary>
-        public static int BOTH_CHANNELS = 0;
+        public static int BOTH_CHANNELS;
 
         /// <summary>
         ///     Flag to indicate output should include the left channel only.
@@ -98,7 +98,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         /// </summary>
         /// <param name="code">
         ///     one of the OutputChannels channel code constants.
-        ///     @throws	IllegalArgumentException if code is not a valid
+        ///     @throws IllegalArgumentException if code is not a valid
         ///     channel code.
         /// </param>
         public static OutputChannels fromInt(int code)

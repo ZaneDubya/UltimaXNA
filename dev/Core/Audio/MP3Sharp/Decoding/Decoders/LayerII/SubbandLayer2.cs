@@ -19,7 +19,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerII
     /// <summary>
     ///     Class for layer II subbands in single channel mode.
     /// </summary>
-    internal class SubbandLayer2 : ASubband
+    class SubbandLayer2 : ASubband
     {
         // this table contains 3 requantized samples for each legal codeword
         // when grouped in 5 bits, i.e. 3 quantization steps per sample
@@ -441,7 +441,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerII
         protected internal float[] c = { 0 };
         protected internal int[] codelength = { 0 };
         protected internal float[] d = { 0 };
-        //protected float[][] 		groupingtable = {{0},{0}} ;
+        //protected float[][] groupingtable = {{0},{0}} ;
         protected internal float[] factor = { 0.0f };
         protected internal float[][] groupingtable;
         protected internal int groupnumber;

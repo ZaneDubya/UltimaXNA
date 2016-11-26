@@ -8,12 +8,7 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Resources;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.World.Entities;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
@@ -24,9 +19,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
     /// </summary>
     public class MobileAnimation
     {
-        private Mobile Parent = null;
+        private Mobile Parent;
         private MobileAction m_action;
-        private bool m_actionCanBeInteruptedByStand = false;
+        private bool m_actionCanBeInteruptedByStand;
         
         private int m_actionIndex;
         public int ActionIndex
@@ -62,7 +57,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
             }
         }
 
-        private float m_animationFrame = 0f;
+        private float m_animationFrame;
         public float AnimationFrame
         {
             get
@@ -76,8 +71,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
 
         // We use these variables to 'hold' the last frame of an animation before 
         // switching to Stand Action.
-        private bool m_IsAnimatationPaused = false;
-        private int m_AnimationPausedMS = 0;
+        private bool m_IsAnimatationPaused;
+        private int m_AnimationPausedMS;
         private int PauseAnimationMS
         {
             get
@@ -239,9 +234,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles.Animations
                     m_animationFrame = 0f;
 
                     // get the frames of the base body - we need to count the number of frames in this animation.
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     int body = Parent.Body, hue = 0;
-                    IAnimationFrame[] frames = provider.GetAnimation(body, ref hue, actionIndex, (int)Parent.DrawFacing);
+                    AAnimationFrame[] frames = provider.GetAnimation(body, ref hue, actionIndex, (int)Parent.DrawFacing);
                     if (frames != null)
                     {
                         m_FrameCount = frames.Length;

@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private SpellDefinition m_Spell;
         private GumpPic m_SpellButton;
         // services
-        private WorldModel m_World;
+        private readonly WorldModel m_World;
 
         public UseSpellButtonGump(SpellDefinition spell)
             : base(spell.ID, 0)
@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             m_Spell = spell;
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = Services.Get<WorldModel>();
 
             IsMoveable = true;
             HandlesMouseInput = true;
@@ -53,9 +53,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Dispose();
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         private void EventMouseDoubleClick(AControl sender, int x, int y, MouseButton button)

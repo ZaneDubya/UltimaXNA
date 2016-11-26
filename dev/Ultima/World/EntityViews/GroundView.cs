@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
@@ -16,89 +14,86 @@ namespace UltimaXNA.Ultima.World.EntityViews
             get { return (Ground)base.Entity; }
         }
 
-        private bool m_DrawAs3DStretched = false;
-        private bool m_NoDraw = false;
+        bool m_DrawAs3DStretched;
+        bool m_NoDraw;
 
         public GroundView(Ground ground)
             : base(ground)
         {
             PickType = PickType.PickGroundTiles;
             m_NoDraw = (Entity.LandDataID < 3 || (Entity.LandDataID >= 0x1AF && Entity.LandDataID <= 0x1B5));
-             
+             DrawFlip = false;
             if (Entity.LandData.TextureID <= 0)
             {
-                DrawFlip = false;
                 m_DrawAs3DStretched = false;
-
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                DrawTexture = provider.GetLandTexture(Entity.LandDataID);
-
+                DrawTexture = Provider.GetLandTexture(Entity.LandDataID);
                 DrawArea = new Rectangle(0, Entity.Z * 4, IsometricRenderer.TILE_SIZE_INTEGER, IsometricRenderer.TILE_SIZE_INTEGER);
             }
             else
             {
-                DrawFlip = false;
                 m_DrawAs3DStretched = true;
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                DrawTexture = provider.GetTexmapTexture(Entity.LandData.TextureID);
+                DrawTexture = Provider.GetTexmapTexture(Entity.LandData.TextureID);
             }
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        protected override void Pick(MouseOverList mouseOver, VertexPositionNormalTextureHue[] vertexBuffer)
+        {
+            // TODO: This is called when the tile is not stretched - just drawn as a 44x44 tile.
+            // Because this is not written, no flat tiles can ever be picked.
+        }
+
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             if (m_NoDraw)
+            {
                 return false;
-
+            }
             if (m_MustUpdateSurroundings)
             {
                 updateSurroundingsAndNormals(Entity.Map);
                 m_MustUpdateSurroundings = false;
             }
-
             if (!m_DrawAs3DStretched)
-                return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
-            else
-                return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, map);
+            {
+                return base.Draw(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
+            }
+            return Draw3DStretched(spriteBatch, drawPosition, mouseOver, map);
         }
 
-        private Vector3 m_vertex0_yOffset, m_vertex1_yOffset, m_vertex2_yOffset, m_vertex3_yOffset;
-        private VertexPositionNormalTextureHue[] m_vertexBufferAlternate = new VertexPositionNormalTextureHue[]
-        {
-                    new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
-                    new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
-                    new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 1, 0)),
-                    new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
+        Vector3 m_vertex0_yOffset, m_vertex1_yOffset, m_vertex2_yOffset, m_vertex3_yOffset;
+        VertexPositionNormalTextureHue[] m_vertexBufferAlternate = {
+            new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
+            new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
+            new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 1, 0)),
+            new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
         };
 
-        private bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map)
         {
             // this is an isometric stretched tile and needs a specialized draw routine.
             m_vertexBufferAlternate[0].Position = drawPosition + m_vertex0_yOffset;
             m_vertexBufferAlternate[1].Position = drawPosition + m_vertex1_yOffset;
             m_vertexBufferAlternate[2].Position = drawPosition + m_vertex2_yOffset;
             m_vertexBufferAlternate[3].Position = drawPosition + m_vertex3_yOffset;
-
-            if (!spriteBatch.DrawSprite(DrawTexture, m_vertexBufferAlternate, s_Technique))
-                return false;
-
-            if ((mouseOverList.PickType & PickType) == PickType)
+            if (!spriteBatch.DrawSprite(DrawTexture, m_vertexBufferAlternate, Technique))
             {
-                if (mouseOverList.IsMouseInObjectIsometric(m_vertexBufferAlternate))
+                return false;
+            }
+            if ((mouseOver.PickType & PickType) == PickType)
+            {
+                if (mouseOver.IsMouseInObjectIsometric(m_vertexBufferAlternate))
                 {
-                    MouseOverItem item = new MouseOverItem(DrawTexture, m_vertexBufferAlternate[0].Position, Entity);
-                    item.Vertices = new Vector3[4] { m_vertexBufferAlternate[0].Position, m_vertexBufferAlternate[1].Position, m_vertexBufferAlternate[2].Position, m_vertexBufferAlternate[3].Position };
-                    mouseOverList.Add2DItem(item);
+                    mouseOver.AddItem(Entity, m_vertexBufferAlternate[0].Position);
                 }
             }
-
             return true;
         }
 
-        private bool m_MustUpdateSurroundings = true;
-        private Surroundings m_SurroundingTiles;
-        private Vector3[] m_Normals = new Vector3[4];
+        bool m_MustUpdateSurroundings = true;
+        Surroundings m_SurroundingTiles;
+        Vector3[] m_Normals = new Vector3[4];
 
-        private void updateVertexBuffer()
+        void updateVertexBuffer()
         {
             m_vertex0_yOffset = new Vector3(IsometricRenderer.TILE_SIZE_INTEGER_HALF, -(Entity.Z * 4), 0);
             m_vertex1_yOffset = new Vector3(IsometricRenderer.TILE_SIZE_FLOAT, IsometricRenderer.TILE_SIZE_INTEGER_HALF - (m_SurroundingTiles.East * 4), 0);
@@ -120,13 +115,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        static Point[] kSurroundingsIndexes = new Point[11] { 
+        static Point[] kSurroundingsIndexes = { 
             new Point(0, -1), new Point(1, -1), 
             new Point(-1, 0), new Point(1, 0), new Point(2, 0), 
             new Point(-1, 1), new Point(0, 1), new Point(1, 1), new Point(2, 1), 
             new Point(0, 2), new Point(1, 2) };
 
-        private void updateSurroundingsAndNormals(Map map)
+        void updateSurroundingsAndNormals(Map map)
         {
             Point origin = new Point(Entity.Position.X, Entity.Position.Y);
 
@@ -143,7 +138,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             if (!isFlat)
             {
                 int low = 0, high = 0, sort = 0;
-                sort = map.GetAverageZ((int)Entity.Z, (int)m_SurroundingTiles.South, (int)m_SurroundingTiles.East, (int)m_SurroundingTiles.Down, ref low, ref high);
+                sort = map.GetAverageZ(Entity.Z, (int)m_SurroundingTiles.South, (int)m_SurroundingTiles.East, (int)m_SurroundingTiles.Down, ref low, ref high);
                 if (sort != SortZ)
                 {
                     SortZ = sort;
@@ -168,7 +163,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         }
 
         public static float Y_Normal = 1f;
-        private Vector3 calculateNormal(float A, float B, float C, float D)
+        Vector3 calculateNormal(float A, float B, float C, float D)
         {
             Vector3 iVector = new Vector3(
                 (A - B),

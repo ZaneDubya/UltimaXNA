@@ -22,56 +22,55 @@ namespace UltimaXNA.Ultima.Resources
 {
     public class ClilocResource
     {
-        public Hashtable Table
-        {
-            get;
-            private set;
-        }
+        Hashtable m_Table;
 
-        public string Language
-        {
-            get;
-            private set;
-        }
+        public readonly string Language;
 
         public ClilocResource(string language)
         {
-            LoadStringList(language);
+            Language = language;
+            LoadAllClilocs(language);
         }
 
         public string GetString(int index)
         {
-            if (Table[index] == null)
+            if (m_Table[index] == null)
             {
                 Tracer.Warn("Missing cliloc with index {0}. Client version is lower than expected by Server.", index);
-                return string.Format("Err: Cliloc Entry {0} not found.", index);
+                return $"Err: Cliloc Entry {index} not found.";
             }
-            else
-                return Table[index].ToString();
+            return m_Table[index].ToString();
         }
 
-        public void LoadStringList(string language)
+        void LoadAllClilocs(string language)
         {
-            Language = language;
-            Table = new Hashtable();
+            m_Table = new Hashtable();
+            string mainClilocFile = $"Cliloc.{language}";
+            LoadCliloc(mainClilocFile);
+            // All the other Cliloc*.language files:
+            /*string[] paths = FileManager.GetFilePaths($"cliloc*.{language}");
+            foreach (string path in paths)
+            {
+                if (path != mainClilocFile)
+                {
+                    LoadCliloc(path);
+                }
+            }*/
+        }
 
-            string path = FileManager.GetFilePath(String.Format("cliloc.{0}", language));
-
+        void LoadCliloc(string path)
+        {
+            path = FileManager.GetFilePath(path);
             if (path == null)
             {
                 return;
             }
-
-            ArrayList list = new ArrayList();
-
             byte[] buffer;
-
             using (BinaryReader bin = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 buffer = bin.ReadBytes((int)bin.BaseStream.Length);
                 Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
-
             int pos = 6;
             int count = buffer.Length;
             while (pos < count)
@@ -80,15 +79,14 @@ namespace UltimaXNA.Ultima.Resources
                 int length = BitConverter.ToInt16(buffer, pos + 5);
                 string text = Encoding.UTF8.GetString(buffer, pos + 7, length);
                 pos += length + 7;
-                list.Add(new StringEntry(number, text));
-                Table[number] = text;
+                m_Table[number] = text; // auto replace with updates.
             }
         }
 
-        private class StringEntry
+        class StringEntry
         {
-            private int m_Number;
-            private string m_Text;
+            readonly int m_Number;
+            readonly string m_Text;
 
             public int Number { get { return m_Number; } }
             public string Text { get { return m_Text; } }

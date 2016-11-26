@@ -15,12 +15,10 @@ using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 {
-    public class Container : Item
+    public class ContainerItem : Item
     {
-        public event OnEvent OnContentsUpdated;
-
-        private List<Item> m_Contents;
-        private bool m_ContentsUpdated = false;
+        List<Item> m_Contents;
+        bool m_ContentsUpdated;
 
         public List<Item> Contents
         {
@@ -32,7 +30,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
             }
         }
 
-        public Container(Serial serial, Map map)
+        public ContainerItem(Serial serial, Map map)
             : base(serial, map)
         {
             m_ContentsUpdated = true;
@@ -43,8 +41,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
             base.Update(frameMS);
             if (m_ContentsUpdated)
             {
-                if (OnContentsUpdated != null)
-                    OnContentsUpdated();
+                m_OnUpdated?.Invoke(this);
                 m_ContentsUpdated = false;
             }
         }

@@ -15,9 +15,9 @@ using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    internal class AGumpPic : AControl
+    abstract class AGumpPic : AControl
     {
-        protected Texture2D m_Texture = null;
+        protected Texture2D m_Texture;
         private int m_LastFrameGumpID = -1;
 
         internal int GumpID
@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             MakeThisADragger();
         }
 
-        protected void buildGumpling(int x, int y, int gumpID, int hue)
+        protected void BuildGumpling(int x, int y, int gumpID, int hue)
         {
             Position = new Point(x, y);
             GumpID = gumpID;
@@ -56,7 +56,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (m_Texture == null || GumpID != m_LastFrameGumpID)
             {
                 m_LastFrameGumpID = GumpID;
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 m_Texture = provider.GetUITexture(GumpID);
                 Size = new Point(m_Texture.Width, m_Texture.Height);
             }
@@ -65,13 +65,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override bool IsPointWithinControl(int x, int y)
         {
-            ushort[] pixelData;
-            pixelData = new ushort[1];
-            m_Texture.GetData<ushort>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
-            if (pixelData[0] > 0)
-                return true;
-            else
-                return false;
+            IResourceProvider provider = Services.Get<IResourceProvider>();
+            return provider.IsPointInUITexture(GumpID, x, y);
         }
     }
 }

@@ -11,7 +11,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Windows;
@@ -28,6 +27,7 @@ using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Configuration.Properties;
+using UltimaXNA.Ultima.Player;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -39,14 +39,14 @@ namespace UltimaXNA.Ultima.World.Input
     class WorldCursor : UltimaCursor
     {
         // private variables
-        private Item m_MouseOverItem;
-        private int m_MouseOverItemSavedHue;
+        Item m_MouseOverItem;
+        int m_MouseOverItemSavedHue;
 
         // services
-        private INetworkClient m_Network;
-        private UserInterfaceService m_UserInterface;
-        private InputManager m_Input;
-        private WorldModel m_World;
+        INetworkClient m_Network;
+        UserInterfaceService m_UserInterface;
+        InputManager m_Input;
+        WorldModel m_World;
 
         public Item MouseOverItem
         {
@@ -57,8 +57,9 @@ namespace UltimaXNA.Ultima.World.Input
             protected set
             {
                 if (m_MouseOverItem == value)
+                {
                     return;
-
+                }
                 if (m_MouseOverItem != null)
                 {
                     m_MouseOverItem.Hue = m_MouseOverItemSavedHue;
@@ -79,9 +80,9 @@ namespace UltimaXNA.Ultima.World.Input
 
         public WorldCursor(WorldModel model)
         {
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
-            m_Input = ServiceRegistry.GetService<InputManager>();
+            m_Network = Services.Get<INetworkClient>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
+            m_Input = Services.Get<InputManager>();
 
             m_World = model;
             InternalRegisterInteraction();
@@ -112,7 +113,7 @@ namespace UltimaXNA.Ultima.World.Input
 
                         if (targetItem.ItemData.IsContainer) // 1.a.
                         {
-                            DropHeldItemToContainer((Container)targetItem);
+                            DropHeldItemToContainer((ContainerItem)targetItem);
                         }
                         else if (HeldItem.ItemID == targetItem.ItemID && HeldItem.ItemData.IsGeneric) // 1.b.
                         {
@@ -120,9 +121,9 @@ namespace UltimaXNA.Ultima.World.Input
                         }
                         else // 1.c.
                         {
-                            if (targetItem.Parent != null && targetItem.Parent is Container)
+                            if (targetItem.Parent != null && targetItem.Parent is ContainerItem)
                             {
-                                DropHeldItemToContainer(targetItem.Parent as Container,
+                                DropHeldItemToContainer(targetItem.Parent as ContainerItem,
                                     target.X + (m_Input.MousePosition.X - target.ScreenX) - m_HeldItemOffset.X,
                                     target.Y + (m_Input.MousePosition.Y - target.ScreenY) - m_HeldItemOffset.Y);
                             }
@@ -130,7 +131,7 @@ namespace UltimaXNA.Ultima.World.Input
                     }
                     else if (target is GumpPicContainer)
                     {
-                        Container targetItem = (Container)((GumpPicContainer)target).Item;
+                        ContainerItem targetItem = (ContainerItem)((GumpPicContainer)target).Item;
                         MouseOverItem = targetItem;
 
                         int x = (int)m_Input.MousePosition.X - m_HeldItemOffset.X - (target.X + target.Parent.X);
@@ -144,7 +145,7 @@ namespace UltimaXNA.Ultima.World.Input
                     }
                     else if (target is GumpPicBackpack)
                     {
-                        DropHeldItemToContainer((Container)((GumpPicBackpack)target).BackpackItem);
+                        DropHeldItemToContainer((ContainerItem)((GumpPicBackpack)target).BackpackItem);
                     }
                 }
                 else if (m_World.Input.IsMouseOverWorld)
@@ -267,12 +268,12 @@ namespace UltimaXNA.Ultima.World.Input
             base.Dispose();
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Drawing routines
-        // ======================================================================
+        // ============================================================================================================
 
-        private HuedTexture m_ItemSprite = null;
-        private int m_ItemSpriteArtIndex = -1;
+        HuedTexture m_ItemSprite;
+        int m_ItemSpriteArtIndex = -1;
 
         public int ItemSpriteArtIndex
         {
@@ -283,7 +284,7 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     m_ItemSpriteArtIndex = value;
 
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     Texture2D art = provider.GetItemTexture(m_ItemSpriteArtIndex);
                     if (art == null)
                     {
@@ -299,7 +300,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        protected override void BeforeDraw(SpriteBatchUI spritebatch, Point position)
+        protected override void BeforeDraw(SpriteBatchUI spriteBatch, Point position)
         {
             Mobile player = WorldModel.Entities.GetPlayerEntity();
 
@@ -312,7 +313,6 @@ namespace UltimaXNA.Ultima.World.Input
             if (IsHoldingItem)
             {
                 ItemSpriteArtIndex = HeldItem.DisplayItemID;
-
                 if (m_ItemSprite != null)
                 {
                     m_ItemSprite.Hue = HeldItem.Hue;
@@ -320,13 +320,12 @@ namespace UltimaXNA.Ultima.World.Input
                     if (HeldItem.Amount > 1 && HeldItem.ItemData.IsGeneric && HeldItem.DisplayItemID == HeldItem.ItemID)
                     {
                         int offset = HeldItem.ItemData.Unknown4;
-                        m_ItemSprite.Draw(spritebatch, new Point(position.X - 5, position.Y - 5));
+                        m_ItemSprite.Draw(spriteBatch, new Point(position.X - 5, position.Y - 5));
                     }
-                    m_ItemSprite.Draw(spritebatch, position);
+                    m_ItemSprite.Draw(spriteBatch, position);
                 }
-
                 // set up to draw standard cursor sprite above item art.
-                base.BeforeDraw(spritebatch, position);
+                base.BeforeDraw(spriteBatch, position);
             }
             else if (IsTargeting)
             {
@@ -403,27 +402,29 @@ namespace UltimaXNA.Ultima.World.Input
             else
             {
                 // cursor is over UI or there is a modal message box open. Set up to draw standard cursor sprite.
-                base.BeforeDraw(spritebatch, position);
+                base.BeforeDraw(spriteBatch, position);
             }
         }
 
         protected override void DrawTooltip(SpriteBatchUI spritebatch, Point position)
         {
             // Do not draw tooltips if:
-            // 1. Holding an item.
-            // Draw tooltips for items:
-            // 1. Items in the world (MouseOverItem)
-            // 2. ItemGumplings (both in paperdoll and in containers)
-            // 3. the Backpack icon (in paperdolls).
-            if (IsHoldingItem)
+            // * Client version is lower than the point at which tooltips are enabled.
+            // * Player is holding an item.
+            if (!PlayerState.ClientFeatures.TooltipsEnabled || IsHoldingItem)
             {
                 if (m_Tooltip != null)
                 {
                     m_Tooltip.Dispose();
                     m_Tooltip = null;
                 }
+                return;
             }
-            else if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
+            // Draw tooltips for items:
+            // 1. Items in the world (MouseOverItem)
+            // 2. ItemGumplings (both in paperdoll and in containers)
+            // 3. the Backpack icon (in paperdolls).
+            if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
             {
                 if (m_Tooltip == null)
                     m_Tooltip = new Tooltip(MouseOverItem);
@@ -466,9 +467,9 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Targeting enum and routines
-        // ======================================================================
+        // ============================================================================================================
 
         public enum TargetType
         {
@@ -478,8 +479,8 @@ namespace UltimaXNA.Ultima.World.Input
             MultiPlacement = 2
         }
 
-        private TargetType m_Targeting = TargetType.Nothing;
-        private int m_TargetID = int.MinValue;
+        TargetType m_Targeting = TargetType.Nothing;
+        int m_TargetID = int.MinValue;
         public TargetType Targeting
         {
             get { return m_Targeting; }
@@ -567,27 +568,27 @@ namespace UltimaXNA.Ultima.World.Input
             ClearTargetingWithoutTargetCancelPacket();
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Interaction routines
-        // ======================================================================
+        // ============================================================================================================
 
-        private void InternalRegisterInteraction()
+        void InternalRegisterInteraction()
         {
             m_World.Interaction.OnPickupItem += PickUpItem;
             m_World.Interaction.OnClearHolding += ClearHolding;
         }
 
-        private void InternalUnregisterInteraction()
+        void InternalUnregisterInteraction()
         {
             m_World.Interaction.OnPickupItem -= PickUpItem;
             m_World.Interaction.OnClearHolding -= ClearHolding;
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Pickup/Drop/Hold item routines
-        // ======================================================================
+        // ============================================================================================================
 
-        private Item m_HeldItem = null;
+        Item m_HeldItem;
         internal Item HeldItem
         {
             get { return m_HeldItem; }
@@ -605,7 +606,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        private Point m_HeldItemOffset = Point.Zero;
+        Point m_HeldItemOffset = Point.Zero;
 
         public bool IsHoldingItem
         {
@@ -613,17 +614,12 @@ namespace UltimaXNA.Ultima.World.Input
         }
 
         /// <summary>
-        /// Picks up an item.
+        /// Picks up an item. For stacks, picks up entire stack if shift is down or picking up from a corpse.
+        /// Otherwise, shows "pick up how many?" gump unless amountToPickUp param is set or amount is 1. 
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="amount">Optional, defaults to null. If null, and the item amount is greater than 1, a 'pick up how many' gump will appear?</param>
-        private void PickUpItem(Item item, int x, int y, int? amount = null)
+        void PickUpItem(Item item, int x, int y, int? amountToPickUp = null)
         {
-            // hold 'shift' to pick up an entire stack.
-            // if in a bag and is a quantity, then show the 'lift amount' prompt, else just lift it outright.
-            if (!m_Input.IsShiftDown && !amount.HasValue && !(item is Corpse) && item.Amount > 1)
+            if (!m_Input.IsShiftDown && !amountToPickUp.HasValue && !(item is Corpse) && item.Amount > 1)
             {
                 SplitItemStackGump gump = new SplitItemStackGump(item, new Point(x, y));
                 m_UserInterface.AddControl(gump, m_Input.MousePosition.X - 80, m_Input.MousePosition.Y - 40);
@@ -631,55 +627,65 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else
             {
-                PickupItemWithoutAmountCheck(item, x, y, amount.HasValue ? amount.Value : item.Amount);
+                PickupItemWithoutAmountCheck(item, x, y, amountToPickUp.HasValue ? amountToPickUp.Value : item.Amount);
             }
         }
 
-        private void PickupItemWithoutAmountCheck(Item item, int x, int y, int amount)
+        /// <summary>
+        /// Picks up item/amount from stack. If item cannot be picked up, nothing happens. If item is within container,
+        /// removes it from the containing entity. Informs server we picked up the item. Server can cancel pick up.
+        /// Note: I am unsure what will happen if we can pick up an item and add to inventory before server can cancel.
+        /// </summary>
+        void PickupItemWithoutAmountCheck(Item item, int x, int y, int amount)
         {
-            // make sure we can pick up the item before actually picking it up!
-            if (item.TryPickUp())
+            if (!item.TryPickUp())
             {
-                // if the item is within a container or worn by a mobile, remove it from that containing entity.
-                if (item.Parent != null)
+                return;
+            }
+            // Removing item from parent causes client "in range" check. Set position to parent entity position.
+            if (item.Parent != null)
+            {
+                item.Position.Set(item.Parent.Position.X, item.Parent.Position.Y, item.Parent.Position.Z);
+                if (item.Parent is Mobile)
                 {
-                    // Because we are moving the item from a parent entity into the world, the client will now be checking to see if it is out of range.
-                    // To make sure it is 'in range', we set the item's world position to the world postion of the entity it was removed from.
-                    item.Position.Set(item.Parent.Position.X, item.Parent.Position.Y, item.Parent.Position.Z);
-
-                    // remove the item from the containing entity.
-                    if (item.Parent is Mobile)
-                        (item.Parent as Mobile).RemoveItem(item.Serial);
-                    else if (item.Parent is Container)
-                    {
-                        AEntity parent = item.Parent;
-                        if (parent is Corpse)
-                            (parent as Corpse).RemoveItem(item.Serial);
-                        else
-                            (parent as Container).RemoveItem(item.Serial);
-                    }
-                    item.Parent = null;
+                    (item.Parent as Mobile).RemoveItem(item.Serial);
                 }
+                else if (item.Parent is ContainerItem)
+                {
+                    AEntity parent = item.Parent;
+                    if (parent is Corpse)
+                        (parent as Corpse).RemoveItem(item.Serial);
+                    else
+                        (parent as ContainerItem).RemoveItem(item.Serial);
+                }
+                item.Parent = null;
+            }
+            RecursivelyCloseItemGumps(item);
+            item.Amount = amount;
+            HeldItem = item;
+            m_HeldItemOffset = new Point(x, y);
+            m_Network.Send(new PickupItemPacket(item.Serial, amount));
+        }
 
-                // set the amount
-                item.Amount = amount;
-                // set our local holding item variables.
-                HeldItem = item;
-                m_HeldItemOffset = new Point(x, y);
-
-                // let the server know we're picking up the item. If the server says we can't pick it up, it will send us a cancel pick up message.
-                // TEST: what if we can pick something up and drop it in our inventory before the server has a chance to respond?
-                m_Network.Send(new PickupItemPacket(item.Serial, amount));
+        void RecursivelyCloseItemGumps(Item item)
+        {
+            m_UserInterface.RemoveControl<Gump>(item.Serial);
+            if (item is ContainerItem)
+            {
+                foreach (Item child in (item as ContainerItem).Contents)
+                {
+                    RecursivelyCloseItemGumps(child);
+                }
             }
         }
 
-        private void MergeHeldItem(AEntity target)
+        void MergeHeldItem(AEntity target)
         {
             m_Network.Send(new DropItemPacket(HeldItem.Serial, 0xFFFF, 0xFFFF, 0, 0, target.Serial));
             ClearHolding();
         }
 
-        private void DropHeldItemToWorld(int X, int Y, int Z)
+        void DropHeldItemToWorld(int X, int Y, int Z)
         {
             Serial serial;
             AEntity entity = m_World.Input.MousePick.MouseOverObject;
@@ -697,35 +703,39 @@ namespace UltimaXNA.Ultima.World.Input
             ClearHolding();
         }
 
-        private void DropHeldItemToContainer(Container container)
+        void DropHeldItemToContainer(ContainerItem container)
         {
             // get random coords and drop the item there.
-            Rectangle bounds = ContainerData.GetData(container.ItemID).Bounds;
+            Rectangle bounds = ContainerData.Get(container.ItemID).Bounds;
             int x = Utility.RandomValue(bounds.Left, bounds.Right);
             int y = Utility.RandomValue(bounds.Top, bounds.Bottom);
             DropHeldItemToContainer(container, x, y);
         }
 
-        private void DropHeldItemToContainer(Container container, int x, int y)
+        void DropHeldItemToContainer(ContainerItem container, int x, int y)
         {
-            Rectangle containerBounds = ContainerData.GetData(container.ItemID).Bounds;
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            Rectangle bounds = ContainerData.Get(container.ItemID).Bounds;
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             Texture2D itemTexture = provider.GetItemTexture(HeldItem.DisplayItemID);
-            if (x < containerBounds.Left) x = containerBounds.Left;
-            if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
-            if (y < containerBounds.Top) y = containerBounds.Top;
-            if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
+            if (x < bounds.Left)
+                x = bounds.Left;
+            if (x > bounds.Right - itemTexture.Width)
+                x = bounds.Right - itemTexture.Width;
+            if (y < bounds.Top)
+                y = bounds.Top;
+            if (y > bounds.Bottom - itemTexture.Height)
+                y = bounds.Bottom - itemTexture.Height;
             m_Network.Send(new DropItemPacket(HeldItem.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
             ClearHolding();
         }
 
-        private void WearHeldItem()
+        void WearHeldItem()
         {
             m_Network.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, WorldModel.PlayerSerial));
             ClearHolding();
         }
 
-        private void ClearHolding()
+        void ClearHolding()
         {
             HeldItem = null;
         }

@@ -1,6 +1,6 @@
 ﻿namespace UltimaXNA.Ultima.Input
 {
-    public enum MacroType : int
+    public enum MacroType
     {
         None,
         // text:
@@ -10,11 +10,11 @@
         Yell,
 
         // these types have sub values:
-        UseSkill, 
-        CastSpell, 
-        OpenGump, 
+        UseSkill,
+        CastSpell,
+        OpenGump,
         CloseGump,
-        Move, 
+        Move,
         ArmDisarm,
 
         // actions, no sub values:

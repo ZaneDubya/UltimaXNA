@@ -17,6 +17,7 @@ using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.Player;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -25,10 +26,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     {
         public static void Toggle(Serial serial)
         {
-            UserInterfaceService ui = ServiceRegistry.GetService<UserInterfaceService>();
+            UserInterfaceService ui = Services.Get<UserInterfaceService>();
             if (ui.GetControl<StatusGump>() == null)
             {
-                INetworkClient client = ServiceRegistry.GetService<INetworkClient>();
+                INetworkClient client = Services.Get<INetworkClient>();
                 client.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, serial));
                 ui.AddControl(new StatusGump(), 200, 400);
             }
@@ -37,7 +38,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         }
 
         private Mobile m_Mobile = WorldModel.Entities.GetPlayerEntity();
-        double m_RefreshTime = 0d;
+        double m_RefreshTime;
 
         private TextLabelAscii[] m_Labels = new TextLabelAscii[(int)MobileStats.Max];
 
@@ -74,7 +75,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             IsMoveable = true;
 
-            if (UltimaXNA.Ultima.Data.Features.EnableAOS)
+            if (PlayerState.ClientFeatures.AOS)
             {
                 AddControl(new GumpPic(this, 0, 0, 0x2A6C, 0));
 
@@ -139,10 +140,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (m_RefreshTime + 0.5d < totalMS) //need to update
             {
                 m_RefreshTime = totalMS;
-
                 // we can just set these without checking if they've changed.
                 // The label will only update if the value has changed.
-                if (UltimaXNA.Ultima.Data.Features.EnableAOS)
+                if (PlayerState.ClientFeatures.AOS)
                 {
                     m_Labels[(int)MobileStats.Name].Text = string.Format("<center>{0}", m_Mobile.Name);
                     m_Labels[(int)MobileStats.Strength].Text = m_Mobile.Strength.ToString();
@@ -199,9 +199,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         private string ConcatCurrentMax(int min, int max)

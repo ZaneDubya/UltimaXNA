@@ -17,14 +17,14 @@ namespace UltimaXNA.Ultima.IO
 {
     public abstract class AFileIndex
     {
-        protected FileIndexEntry3D[] m_Index;
-        protected Stream m_Stream;
+        FileIndexEntry3D[] m_Index;
+        Stream m_Stream;
 
-        public FileIndexEntry3D[] Index { get { return m_Index; } }
-        public Stream Stream { get { return m_Stream; } }
+        public FileIndexEntry3D[] Index => m_Index;
+        public Stream Stream => m_Stream;
 
         public string DataPath { get; private set; }
-        public int Length { get; set; }
+        public int Length { get; protected set; }
 
         protected abstract FileIndexEntry3D[] ReadEntries();
 
@@ -61,21 +61,21 @@ namespace UltimaXNA.Ultima.IO
 
             FileIndexEntry3D e = m_Index[index];
 
-            if (e.lookup < 0)
+            if (e.Lookup < 0)
             {
                 length = extra = 0;
                 patched = false;
                 return null;
             }
 
-            length = e.length & 0x7FFFFFFF;
-            extra = e.extra;
+            length = e.Length & 0x7FFFFFFF;
+            extra = e.Extra;
 
-            if ((e.length & 0xFF000000) != 0)
+            if ((e.Length & 0xFF000000) != 0)
             {
                 patched = true;
 
-                VerData.Stream.Seek(e.lookup, SeekOrigin.Begin);
+                VerData.Stream.Seek(e.Lookup, SeekOrigin.Begin);
                 return new BinaryFileReader(new BinaryReader(VerData.Stream));
             }
             else if (m_Stream == null)
@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.IO
 
             patched = false;
 
-            m_Stream.Position = e.lookup;
+            m_Stream.Position = e.Lookup;
             return new BinaryFileReader(new BinaryReader(m_Stream));
         }
     }

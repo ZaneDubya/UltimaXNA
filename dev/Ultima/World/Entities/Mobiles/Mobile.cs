@@ -26,9 +26,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
     /// </summary>
     public class Mobile : AEntity
     {
-        // ============================================================
+        // ============================================================================================================
         // Ctor, Dispose, Update, and CreateView()
-        // ============================================================
+        // ============================================================================================================
 
         public Mobile(Serial serial, Map map)
             : base(serial, map)
@@ -50,8 +50,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             base.Dispose();
             Equipment.ClearEquipment();
-            if (OnEntityUpdated != null)
-                OnEntityUpdated();
         }
 
         protected override void OnTileChanged(int x, int y)
@@ -123,9 +121,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         /// </summary>
         public readonly MobileAnimation Animation;
 
-        // ============================================================
+        // ============================================================================================================
         // Movement and Facing
-        // ============================================================
+        // ============================================================================================================
 
         protected MobileMovement m_movement;
 
@@ -180,11 +178,11 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         }
 
         public Chairs.ChairData ChairData = Chairs.ChairData.Null;
-        public int SittingZ = 0;
+        public int SittingZ;
 
-        // ============================================================
+        // ============================================================================================================
         // Properties
-        // ============================================================
+        // ============================================================================================================
 
         public override string Name
         {
@@ -198,7 +196,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             set;
         }
 
-        public bool PlayerCanChangeName = false;
+        public bool PlayerCanChangeName;
 
         public int Strength, Dexterity, Intelligence, StatCap, Luck, Gold;
         public CurrentMaxValue Health, Stamina, Mana;
@@ -214,9 +212,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             get { return Health.Current > 0; }
         }
 
-        // ============================================================
+        // ============================================================================================================
         // Equipment and Mount
-        // ============================================================
+        // ============================================================================================================
 
         public MobileEquipment Equipment;
         
@@ -257,8 +255,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         public void WearItem(Item i, int slot)
         {
             Equipment[slot] = i;
-            if (OnEntityUpdated != null)
-                OnEntityUpdated();
+            m_OnUpdated?.Invoke(this);
             if (slot == (int)EquipLayer.Mount)
             {
                 // Do we do something here?
@@ -268,8 +265,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         public void RemoveItem(Serial serial)
         {
             Equipment.RemoveBySerial(serial);
-            if (OnEntityUpdated != null)
-                OnEntityUpdated();
+            m_OnUpdated?.Invoke(this);
         }
 
         public Item GetItem(int slot)
@@ -284,27 +280,27 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
-        public Container Backpack
+        public ContainerItem Backpack
         {
             get
             {
-                return (Container)Equipment[(int)EquipLayer.Backpack];
+                return (ContainerItem)Equipment[(int)EquipLayer.Backpack];
             }
         }
 
-        public Container VendorShopContents
+        public ContainerItem VendorShopContents
         {
             get
             {
-                return (Container)Equipment[(int)EquipLayer.ShopBuy];
+                return (ContainerItem)Equipment[(int)EquipLayer.ShopBuy];
             }
         }
 
-        // ============================================================
+        // ============================================================================================================
         // Appearance and Hues
-        // ============================================================
+        // ============================================================================================================
 
-        private static int[] s_HumanoidBodyIDs = new int[] { 
+        static int[] s_HumanoidBodyIDs = {
             183, 184, 185, 186, // savages
             400, 401, 402, 403, // humans
             694, 695,
@@ -316,39 +312,36 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             666, 667 // gargoyles. 666. Clever.
         };
 
-        int m_bodyID = 0;
+        int m_BodyID;
         public Body Body
         {
             get
             {
-                if (m_bodyID >= 402 && m_bodyID <= 403) // 402 == 400 and 403 == 401
-                    return m_bodyID - 2;
-                return m_bodyID;
+                if (m_BodyID >= 402 && m_BodyID <= 403) // 402 == 400 and 403 == 401
+                    return m_BodyID - 2;
+                return m_BodyID;
             }
             set
             {
-                m_bodyID = value;
-                if (OnEntityUpdated != null)
-                    OnEntityUpdated();
+                m_BodyID = value;
+                m_OnUpdated?.Invoke(this);
             }
         }
 
-        private int m_hue;
+        int m_Hue;
         public override int Hue
         {
             get {
                 if (Flags.IsHidden)
                     return 0x3E7;
-                else if (Flags.IsPoisoned)
+                if (Flags.IsPoisoned)
                     return 0x1CE;
-                else
-                    return m_hue;
+                return m_Hue;
             }
             set
             {
-                m_hue = value;
-                if (OnEntityUpdated != null)
-                    OnEntityUpdated();
+                m_Hue = value;
+                m_OnUpdated?.Invoke(this);
             }
         }
 
@@ -387,9 +380,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
-        // ============================================================
+        // ============================================================================================================
         // Animation and Movement
-        // ============================================================
+        // ============================================================================================================
 
         public void Animate(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {

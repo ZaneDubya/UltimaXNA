@@ -23,7 +23,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
     ///     Internal class used to queue samples that are being obtained from an Mp3 stream. 
     ///     This class handles stereo 16-bit data! Switch it out if you want mono or something.
     /// </summary>
-    internal class Buffer16BitStereo : ABuffer
+    class Buffer16BitStereo : ABuffer
     {
         // This is stereo!
         private static readonly int CHANNELS = 2;
@@ -66,7 +66,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
         {
             if (bufferOut == null)
             {
-                throw new ArgumentNullException("bufferOut");
+                throw new ArgumentNullException(nameof(bufferOut));
             }
             if ((count + offset) > bufferOut.Length)
             {
@@ -118,7 +118,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
             if (samples == null)
             {
                 // samples is required.
-                throw new ArgumentNullException("samples");
+                throw new ArgumentNullException(nameof(samples));
             }
             if (samples.Length < 32)
             {

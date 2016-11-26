@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Core.UI.HTML
@@ -19,6 +15,13 @@ namespace UltimaXNA.Core.UI.HTML
         {
             Area = area;
             Texture = image;
+        }
+
+        public void Dispose()
+        {
+            Texture = null;
+            TextureOver = null;
+            TextureDown = null;
         }
     }
 }

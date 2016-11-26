@@ -1,6 +1,6 @@
 ﻿namespace UltimaXNA.Ultima.Input
 {
-    public enum MacroDisplay : int
+    public enum MacroDisplay
     {
         Configuration,
         Paperdoll,

@@ -18,7 +18,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class CheckerTrans : AControl
     {
-        private static Texture2D s_CheckeredTransTexture = null;
+        private static Texture2D s_CheckeredTransTexture;
         public static Texture2D CheckeredTransTexture
         {
             get
@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                             }
                         }
                     }
-                    SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
+                    SpriteBatchUI sb = Services.Get<SpriteBatchUI>();
                     s_CheckeredTransTexture = new Texture2D(sb.GraphicsDevice, 32, 32, false, SurfaceFormat.Bgra5551);
                     s_CheckeredTransTexture.SetData<ushort>(data);
                 }
@@ -50,7 +50,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public CheckerTrans(AControl parent)
+        CheckerTrans(AControl parent)
             : base(parent)
         {
 
@@ -65,16 +65,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             width = Int32.Parse(arguements[3]);
             height = Int32.Parse(arguements[4]);
 
-            buildGumpling(x, y, width, height);
+            BuildGumpling(x, y, width, height);
         }
 
         public CheckerTrans(AControl parent, int x, int y, int width, int height)
             : this(parent)
         {
-            buildGumpling(x, y, width, height);
+            BuildGumpling(x, y, width, height);
         }
 
-        void buildGumpling(int x, int y, int width, int height)
+        void BuildGumpling(int x, int y, int width, int height)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);
@@ -85,10 +85,10 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             spriteBatch.Draw2DTiled(CheckeredTransTexture, new Rectangle(position.X, position.Y, Width, Height), Vector3.Zero);
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
     }
 }

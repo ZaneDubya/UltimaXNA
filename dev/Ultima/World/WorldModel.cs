@@ -28,21 +28,20 @@ using UltimaXNA.Configuration.Properties;
 
 namespace UltimaXNA.Ultima.World
 {
-    class WorldModel : AUltimaModel
+    class WorldModel : AModel
     {
-        // ================================================================================
+        // ============================================================================================================
         // Private variables
-        // ================================================================================
-        private Map m_Map;
-        private WorldCursor m_Cursor;
-        // services
-        private readonly INetworkClient m_Network;
-        private readonly UserInterfaceService m_UserInterface;
-        private readonly UltimaGame m_Engine;
+        // ============================================================================================================
+        Map m_Map;
+        WorldCursor m_Cursor;
+        readonly INetworkClient m_Network;
+        readonly UserInterfaceService m_UserInterface;
+        readonly UltimaGame m_Engine;
 
-        // ================================================================================
+        // ============================================================================================================
         // Public Static Properties
-        // ================================================================================
+        // ============================================================================================================
         public static Serial PlayerSerial
         {
             get;
@@ -67,9 +66,9 @@ namespace UltimaXNA.Ultima.World
             private set;
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Public Properties
-        // ================================================================================
+        // ============================================================================================================
         public WorldClient Client
         {
             get;
@@ -100,12 +99,6 @@ namespace UltimaXNA.Ultima.World
                 m_Cursor = value;
             }
         }
-
-        public int MapCount
-        {
-            get;
-            set;
-        }
         
         public Map Map
         {
@@ -116,10 +109,7 @@ namespace UltimaXNA.Ultima.World
         {
             get
             {
-                if (m_Map == null)
-                    return 0xFFFFFFFF;
-                else
-                    return m_Map.Index;
+                return (m_Map == null) ? 0xFFFFFFFF : m_Map.Index;
             }
             set
             {
@@ -159,17 +149,16 @@ namespace UltimaXNA.Ultima.World
             set;
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Ctor, Initialization, Dispose, Update
-        // ================================================================================
+        // ============================================================================================================
         public WorldModel()
-            : base()
         {
-            ServiceRegistry.Register<WorldModel>(this);
+            Services.Add<WorldModel>(this);
 
-            m_Engine = ServiceRegistry.GetService<UltimaGame>();
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Engine = Services.Get<UltimaGame>();
+            m_Network = Services.Get<INetworkClient>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
 
             Entities = new EntityManager(this);
             Entities.Reset(true);
@@ -194,7 +183,7 @@ namespace UltimaXNA.Ultima.World
             SaveOpenGumps();
             m_Engine.SaveResolution();
 
-            ServiceRegistry.Unregister<WorldModel>();
+            Services.Remove<WorldModel>();
 
             m_UserInterface.Reset();
 
@@ -231,9 +220,9 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Public Methods
-        // ================================================================================
+        // ============================================================================================================
         public void LoginToWorld()
         {
             m_UserInterface.AddControl(new WorldViewGump(), 0, 0); // world gump will restore its position on load.
@@ -247,19 +236,19 @@ namespace UltimaXNA.Ultima.World
             Client.StartKeepAlivePackets();
             
             // wait until we've received information about the entities around us before restoring saved gumps.
-            DelayedAction.Start(() => RestoreSavedGumps(), 1000);
+            DelayedAction.Start(RestoreSavedGumps, 1000);
         }
 
         public void Disconnect()
         {
             m_Network.Disconnect(); // stops keep alive packets.
             IsInWorld = false;
-            m_Engine.ActiveModel = new LoginModel();
+            m_Engine.Models.Current = new LoginModel();
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Private/Protected Methods
-        // ================================================================================
+        // ============================================================================================================
         protected override AView CreateView()
         {
             return new WorldView(this);
@@ -270,10 +259,10 @@ namespace UltimaXNA.Ultima.World
             Disconnect();
         }
 
-        private void SaveOpenGumps()
+        void SaveOpenGumps()
         {
             Settings.Gumps.SavedGumps.Clear();
-            foreach (AControl gump in m_UserInterface.Controls)
+            foreach (AControl gump in m_UserInterface.OpenControls)
             {
                 if (gump is Gump)
                 {
@@ -289,7 +278,7 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void RestoreSavedGumps()
+        void RestoreSavedGumps()
         {
             foreach (SavedGumpProperty savedGump in Settings.Gumps.SavedGumps)
             {

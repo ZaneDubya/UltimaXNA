@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Input;
 using UltimaXNA.Core.IO;
 using UltimaXNA.Core.Windows;
-using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.World;
 
 namespace UltimaXNA.Ultima.Input
 {
@@ -21,7 +18,7 @@ namespace UltimaXNA.Ultima.Input
         }
 
         private static List<Action> EMPTY = new List<Action>();
-        private List<Action> m_Macros = null;
+        private List<Action> m_Macros;
 
         public List<Action> All
         {
@@ -55,13 +52,13 @@ namespace UltimaXNA.Ultima.Input
             m_Macros.Remove(action);
         }
 
-        // ==============================================================================================================
+        // ============================================================================================================
         // Load / save
-        // ==============================================================================================================
+        // ============================================================================================================
 
         private const uint MAGIC = 0xF14934E0;
         private const string c_PathAppend = "_macros2d.txt";
-        private string s_Path = null;
+        private string s_Path;
 
         public void Save()
         {
@@ -224,9 +221,9 @@ namespace UltimaXNA.Ultima.Input
             return true;
         }
 
-        // ==============================================================================================================
+        // ============================================================================================================
         // Default macro set
-        // ==============================================================================================================
+        // ============================================================================================================
 
         public void CreateDefaultMacroSet()
         {

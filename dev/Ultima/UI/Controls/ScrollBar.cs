@@ -14,7 +14,6 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -24,29 +23,29 @@ namespace UltimaXNA.Ultima.UI.Controls
     /// </summary>
     class ScrollBar : AControl, IScrollBar
     {
-        // ================================================================================
+        // ============================================================================================================
         // Private variables
-        // ================================================================================
-        private Texture2D[] m_GumpUpButton = null;
-        private Texture2D[] m_GumpDownButton = null;
-        private Texture2D[] m_GumpBackground = null;
-        private Texture2D m_GumpSlider = null;
+        // ============================================================================================================
+        private Texture2D[] m_GumpUpButton;
+        private Texture2D[] m_GumpDownButton;
+        private Texture2D[] m_GumpBackground;
+        private Texture2D m_GumpSlider;
 
         private float m_SliderPosition;
         private float m_Value;
         private int m_Max, m_Min;
 
-        private bool m_BtnUpClicked = false;
-        private bool m_BtnDownClicked = false;
-        private bool m_BtnSliderClicked = false;
+        private bool m_BtnUpClicked;
+        private bool m_BtnDownClicked;
+        private bool m_BtnSliderClicked;
         private Point m_ClickPosition;
 
         private float m_TimeUntilNextClick;
         private const float c_TimeBetweenClicks = 500f;
 
-        // ================================================================================
+        // ============================================================================================================
         // Public properties
-        // ================================================================================
+        // ============================================================================================================
         public int Value
         {
             get
@@ -93,9 +92,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Ctors, Initialize, Update, and Draw
-        // ================================================================================
+        // ============================================================================================================
         public ScrollBar(AControl parent)
             : base(parent)
         {
@@ -116,7 +115,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.OnInitialize();
 
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             m_GumpUpButton = new Texture2D[2];
             m_GumpUpButton[0] = provider.GetUITexture(251);
@@ -157,7 +156,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             if (Height <= 0)
                 return;
@@ -186,7 +185,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (MaxValue > MinValue && middleHeight > 0)
                 spriteBatch.Draw2D(m_GumpSlider, new Vector3(position.X + (m_GumpBackground[0].Width - m_GumpSlider.Width) / 2, position.Y + m_GumpUpButton[0].Height + m_SliderPosition, 0), Vector3.Zero);
 
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         private float CalculateSliderYPosition()

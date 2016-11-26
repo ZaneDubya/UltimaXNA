@@ -22,9 +22,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class PaperDollInteractable : Gump
     {
-        private bool m_isFemale;
-        private bool m_isElf;
-        private GumpPicBackpack m_Backpack;
+        bool m_isFemale;
+        bool m_isElf;
+        GumpPicBackpack m_Backpack;
 
         WorldModel m_World;
 
@@ -35,14 +35,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             Position = new Point(x, y);
             m_isFemale = sourceEntity.Flags.IsFemale;
             SourceEntity = sourceEntity;
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = Services.Get<WorldModel>();
         }
 
         public override void Dispose()
         {
-            m_sourceEntity.OnEntityUpdated -= OnEntityUpdated;
-            if (m_Backpack != null)//Backpack can be null
+            m_sourceEntity.ClearCallBacks(OnEntityUpdated, OnEntityDisposed);
+            if (m_Backpack != null)
+            {
                 m_Backpack.MouseDoubleClickEvent -= On_Dblclick_Backpack;
+            }
             base.Dispose();
         }
 
@@ -56,11 +58,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        private void OnEntityUpdated()
+        void OnEntityUpdated(AEntity entity)
         {
-            // clear the existing Controls
             ClearControls();
-
             // Add the base gump - the semi-naked paper doll.
             if (true)
             {
@@ -69,7 +69,6 @@ namespace UltimaXNA.Ultima.UI.Controls
                 paperdoll.HandlesMouseInput = true;
                 paperdoll.IsPaperdoll = true;
             }
-
             // Loop through the items on the mobile and create the gump pics.
             for (int i = 0; i < s_DrawOrder.Length; i++)
             {
@@ -103,13 +102,18 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        private void On_Dblclick_Backpack(AControl control, int x, int y, MouseButton button)
+        void OnEntityDisposed(AEntity entity)
         {
-            Container backpack = ((Mobile)m_sourceEntity).Backpack;
+            Dispose();
+        }
+
+        void On_Dblclick_Backpack(AControl control, int x, int y, MouseButton button)
+        {
+            ContainerItem backpack = ((Mobile)m_sourceEntity).Backpack;
             m_World.Interaction.DoubleClick(backpack);
         }
 
-        AEntity m_sourceEntity = null;
+        AEntity m_sourceEntity;
         public AEntity SourceEntity
         {
             set
@@ -118,18 +122,16 @@ namespace UltimaXNA.Ultima.UI.Controls
                 {
                     if (m_sourceEntity != null)
                     {
-                        m_sourceEntity.OnEntityUpdated -= OnEntityUpdated;
+                        m_sourceEntity.ClearCallBacks(OnEntityUpdated, OnEntityDisposed);
                         m_sourceEntity = null;
                     }
-
                     if (value is Mobile)
                     {
                         m_sourceEntity = value;
                         // update the gump
-                        OnEntityUpdated();
+                        OnEntityUpdated(m_sourceEntity);
                         // if the entity changes in the future, update the gump again
-                        m_sourceEntity.OnEntityUpdated -= OnEntityUpdated;
-                        m_sourceEntity.OnEntityUpdated += OnEntityUpdated;
+                        m_sourceEntity.SetCallbacks(OnEntityUpdated, OnEntityDisposed);
                     }
                 }
             }
@@ -139,7 +141,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        private enum PaperDollEquipSlots : int
+        enum PaperDollEquipSlots
         {
             Body = 0,
             RightHand = 1,
@@ -168,7 +170,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             // skip 24, inner legs (!!! do we really skip this?)
         }
 
-        private static PaperDollEquipSlots[] s_DrawOrder = new PaperDollEquipSlots[21] {
+        static PaperDollEquipSlots[] s_DrawOrder = {
             PaperDollEquipSlots.Footwear,
             PaperDollEquipSlots.Legging,
             PaperDollEquipSlots.Shirt,

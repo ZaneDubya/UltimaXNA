@@ -16,7 +16,7 @@
 
 namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerIII
 {
-    internal class GranuleInfo
+    class GranuleInfo
     {
         public int BigValues;
         public int BlockType;

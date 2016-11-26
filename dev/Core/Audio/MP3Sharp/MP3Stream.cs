@@ -32,7 +32,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
         // local variables.
         private readonly Buffer16BitStereo m_Buffer;
         private readonly Stream m_SourceStream;
-        private readonly int m_BackStreamByteCountRep = 0;
+        private readonly int m_BackStreamByteCountRep;
         private short m_ChannelCountRep = -1;
         protected SoundFormat FormatRep;
         private int m_FrequencyRep = -1;
@@ -41,13 +41,13 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
         {
             get; 
             protected set;
-		}
+        }
 
         /// <summary>
         ///     Creates a new stream instance using the provided filename, and the default chunk size of 4096 bytes.
         /// </summary>
         public MP3Stream(string fileName)
-            : this(new FileStream(fileName, FileMode.Open))
+            : this(new FileStream(fileName, FileMode.Open, FileAccess.Read))
         {
         }
 
@@ -55,7 +55,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
         ///     Creates a new stream instance using the provided filename and chunk size.
         /// </summary>
         public MP3Stream(string fileName, int chunkSize)
-            : this(new FileStream(fileName, FileMode.Open), chunkSize)
+            : this(new FileStream(fileName, FileMode.Open, FileAccess.Read), chunkSize)
         {
         }
 

@@ -5,8 +5,8 @@ namespace UltimaXNA.Ultima.Data
 {
     static class SpellsMagery
     {
-        private static Dictionary<int, SpellDefinition> s_Spells;
-        private static ReadOnlyCollection<SpellDefinition> s_ReadOnlySpells;
+        static Dictionary<int, SpellDefinition> s_Spells;
+        static ReadOnlyCollection<SpellDefinition> s_ReadOnlySpells;
 
         public static ReadOnlyCollection<SpellDefinition> Spells
         {
@@ -106,11 +106,11 @@ namespace UltimaXNA.Ultima.Data
                 { 61, new SpellDefinition("Summon Daemon", 61, 0x1B94, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk, Reagents.SulfurousAsh) },
                 { 62, new SpellDefinition("Earth Elemental", 62, 0x1B95, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk) },
                 { 63, new SpellDefinition("Fire Elemental", 63, 0x1B96, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk, Reagents.SulfurousAsh) },
-                { 64, new SpellDefinition("Water Elemental", 64, 0x1B97, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk) },
+                { 64, new SpellDefinition("Water Elemental", 64, 0x1B97, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk) }
             };
         }
 
-        public static string[] CircleNames = new string[] {
+        public static string[] CircleNames = {
             "First Circle", "Second Circle", "Third Circle", "Fourth Circle",
             "Fifth Circle", "Sixth Circle", "Seventh Circle", "Eighth Circle" };
     }

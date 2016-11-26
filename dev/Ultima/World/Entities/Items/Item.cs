@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 {
     public class Item : AEntity
     {
-        public AEntity Parent = null;
+        public AEntity Parent;
 
         public override string Name
         {
@@ -57,8 +57,8 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             // if is worn, let the wearer know we are disposing.
             if (Parent is Mobile)
                 ((Mobile)Parent).RemoveItem(Serial);
-            else if (Parent is Container)
-                ((Container)Parent).RemoveItem(Serial);
+            else if (Parent is ContainerItem)
+                ((ContainerItem)Parent).RemoveItem(Serial);
         }
 
         protected override AEntityView CreateView()
@@ -66,7 +66,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             return new ItemView(this);
         }
 
-		private int m_amount;
+        private int m_amount;
         public int Amount
         {
             get
@@ -81,21 +81,21 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 
         public ItemData ItemData;
 
-		private int m_ItemID = 0;
-        private int? m_DisplayItemID = null;
+        private int m_ItemID;
+        private int? m_DisplayItemID;
 
         public int ItemID
         {
             get { return m_ItemID; }
             set
             {
-				m_ItemID = value;
+                m_ItemID = value;
                 ItemData = TileData.ItemData[m_ItemID & 0xFFFF]; // TODO: Does this work on both legacy and UOP clients?
             }
         }
 
-		public int DisplayItemID
-		{
+        public int DisplayItemID
+        {
             get
             {
                 if (m_DisplayItemID.HasValue)
@@ -117,23 +117,23 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             {
                 m_DisplayItemID = value;
             }
-		}
+        }
 
-		public bool NoDraw
-		{
-			get { return m_ItemID <= 1 || m_DisplayItemID <= 1; } // no draw
-		}
-
-		public bool IsCoin
+        public bool NoDraw
         {
-			get { return m_ItemID >= 0xEEA && m_ItemID <= 0xEF2; }
-		}
+            get { return m_ItemID <= 1 || m_DisplayItemID <= 1; } // no draw
+        }
 
-        public int ContainerSlotIndex = 0;
+        public bool IsCoin
+        {
+            get { return m_ItemID >= 0xEEA && m_ItemID <= 0xEF2; }
+        }
+
+        public int ContainerSlotIndex;
 
         public override void Update(double frameMS)
         {
-            if (WorldView.AllLabels && !(this is StaticItem))
+            if (WorldView.AllLabels && !(this is StaticItem) && (Parent == null) && (ItemData.Weight != 255))
             {
                 AddOverhead(MessageTypes.Label, Name, 3, 0, false);
             }
@@ -146,13 +146,13 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             return base.ToString() + " | " + ItemData.Name;
         }
 
-		public bool AtWorldPoint(int x, int y)
-		{
+        public bool AtWorldPoint(int x, int y)
+        {
             if (Position.X == x && Position.Y == y)
-				return true;
-			else
-				return false;
-		}
+                return true;
+            else
+                return false;
+        }
 
         public virtual bool TryPickUp()
         {
@@ -162,9 +162,9 @@ namespace UltimaXNA.Ultima.World.Entities.Items
                 return true;
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Last Parent routines 
-        // ======================================================================
+        // ============================================================================================================
 
         private AEntity m_lastParent;
         public bool HasLastParent
@@ -181,7 +181,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
         {
             if (m_lastParent != null)
             {
-                ((Container)m_lastParent).AddItem(this);
+                ((ContainerItem)m_lastParent).AddItem(this);
             }
         }
     }

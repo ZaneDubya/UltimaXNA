@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.World
             MiniMap = new MiniMapTexture();
             MiniMap.Initialize();
 
-            m_UI = ServiceRegistry.GetService<UserInterfaceService>();
+            m_UI = Services.Get<UserInterfaceService>();
         }
 
         public override void Draw(double frameTime)
@@ -73,7 +73,7 @@ namespace UltimaXNA.Ultima.World
             Position3D center = player.Position;
             if ((player as Mobile).IsAlive)
             {
-                AEntityView.s_Technique = Techniques.Default;
+                AEntityView.Technique = Techniques.Default;
                 m_ShowingDeathEffect = false;
                 if (m_YouAreDead != null)
                 {
@@ -97,7 +97,7 @@ namespace UltimaXNA.Ultima.World
 
                 if (m_DeathEffectTime < msFade)
                 {
-                    AEntityView.s_Technique = Techniques.Default;
+                    AEntityView.Technique = Techniques.Default;
                     Isometric.Lighting.OverallLightning = (int)(m_LightingGlobal + (0x1f - m_LightingGlobal) * ((m_DeathEffectTime / msFade)));
                     Isometric.Lighting.PersonalLightning = (int)(m_LightingPersonal * (1d - (m_DeathEffectTime / msFade)));
                 }
@@ -108,7 +108,7 @@ namespace UltimaXNA.Ultima.World
                 }
                 else
                 {
-                    AEntityView.s_Technique = Techniques.Grayscale;
+                    AEntityView.Technique = Techniques.Grayscale;
                     Isometric.Lighting.OverallLightning = (int)m_LightingGlobal;
                     Isometric.Lighting.PersonalLightning = (int)m_LightingPersonal;
                     if (m_YouAreDead != null)
@@ -125,8 +125,8 @@ namespace UltimaXNA.Ultima.World
             MiniMap.Update(Model.Map, center);
         }
 
-        private bool m_ShowingDeathEffect = false;
-        private double m_DeathEffectTime = 0d;
+        private bool m_ShowingDeathEffect;
+        private double m_DeathEffectTime;
         private double m_LightingGlobal;
         private double m_LightingPersonal;
         private YouAreDeadGump m_YouAreDead;

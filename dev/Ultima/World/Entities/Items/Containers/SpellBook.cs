@@ -4,9 +4,9 @@ using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 {
-    class SpellBook : Container
+    class SpellBook : ContainerItem
     {
-        private static ushort[] m_SpellBookItemIDs = new ushort[] {
+        static ushort[] m_SpellBookItemIDs = {
             0xE3B, // bugged or static item spellbook? Not wearable.
             0xEFA, // standard, wearable spellbook
             0x2252, // paladin
@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
             private set;
         }
 
-        private ulong m_SpellsBitfield;
+        ulong m_SpellsBitfield;
         public bool HasSpell(int circle, int index)
         {
             index = ((3 - circle % 4) + (circle / 4) * 4) * 8 + (index - 1);
@@ -50,7 +50,6 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
         public void ReceiveSpellData(SpellBookTypes sbType, ulong sbBitfield)
         {
             bool entityUpdated = false;
-
             if (BookType != sbType)
             {
                 BookType = sbType;
@@ -62,9 +61,10 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
                 m_SpellsBitfield = sbBitfield;
                 entityUpdated = true;
             }
-
-            if (entityUpdated && OnEntityUpdated != null)
-                OnEntityUpdated();
+            if (entityUpdated)
+            {
+                m_OnUpdated?.Invoke(this);
+            }
         }
     }
 }

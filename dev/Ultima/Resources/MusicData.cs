@@ -16,32 +16,32 @@ using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.Resources
 {
-	class MusicData
-	{
+    class MusicData
+    {
         private const string m_ConfigFilePath = @"Music\Digital\Config.txt";
-        private static char[] m_configFileDelimiters = new char[] { ' ', ',', '\t' };
+        private static char[] m_configFileDelimiters = { ' ', ',', '\t' };
 
-        private static Dictionary<int, Tuple<string, bool>> m_MusicData = new Dictionary<int, Tuple<string, bool>>();
+        private static readonly Dictionary<int, Tuple<string, bool>> m_MusicData = new Dictionary<int, Tuple<string, bool>>();
 
-		static MusicData()
-		{
+        static MusicData()
+        {
             // open UO's music Config.txt
-		    if (!FileManager.Exists(m_ConfigFilePath))
+            if (!FileManager.Exists(m_ConfigFilePath))
                 return;
             // attempt to read out all the values from the file.
-			using (StreamReader reader = new StreamReader(FileManager.GetFile(m_ConfigFilePath)))
+            using (StreamReader reader = new StreamReader(FileManager.GetFile(m_ConfigFilePath)))
             {
                 String line;
-			    while ((line = reader.ReadLine ()) != null)
-			    {
-				    Tuple<int, string, bool> songData;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    Tuple<int, string, bool> songData;
                     if (TryParseConfigLine(line, out songData))
                     {
-                        m_MusicData.Add(songData.Item1, new Tuple<string,bool>(songData.Item2, songData.Item3));
+                        m_MusicData.Add(songData.Item1, new Tuple<string, bool>(songData.Item2, songData.Item3));
                     }
-			    }
+                }
             }
-		}
+        }
 
         /// <summary>
         /// Attempts to parse a line from UO's music Config.txt.
@@ -50,25 +50,25 @@ namespace UltimaXNA.Ultima.Resources
         /// <param name="?">If successful, contains a tuple with these fields: int songIndex, string songName, bool doesLoop</param>
         /// <returns>true if line could be parsed, false otherwise.</returns>
         private static bool TryParseConfigLine(string line, out Tuple<int, string, bool> songData)
-		{
+        {
             songData = null;
 
-			string[] splits = line.Split (m_configFileDelimiters);
-			if (splits.Length < 2 || splits.Length > 3)
+            string[] splits = line.Split(m_configFileDelimiters);
+            if (splits.Length < 2 || splits.Length > 3)
             {
-				return false;
-			}
+                return false;
+            }
 
             int index = int.Parse(splits[0]);
             string name = splits[1].Trim();
-            bool doesLoop = splits.Length == 3 ? splits[2] == "loop" : false;
+            bool doesLoop = splits.Length == 3 && splits[2] == "loop";
 
             songData = new Tuple<int, string, bool>(index, name, doesLoop);
             return true;
-		}
+        }
 
-		public static bool TryGetMusicData(int index, out string name, out bool doesLoop)
-		{
+        public static bool TryGetMusicData(int index, out string name, out bool doesLoop)
+        {
             name = null;
             doesLoop = false;
 
@@ -77,11 +77,11 @@ namespace UltimaXNA.Ultima.Resources
                 name = m_MusicData[index].Item1;
                 doesLoop = m_MusicData[index].Item2;
                 return true;
-			} 
+            }
             else
             {
-				return false;
-			}
-		}
-	}
+                return false;
+            }
+        }
+    }
 }

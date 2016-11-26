@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Windows;
@@ -17,22 +18,20 @@ using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.LoginGumps
-{
-    class CharacterListGump : Gump
-    {
-        public delegate void EventWithInt(int index);
-        public delegate void EventWithNoParams();
+namespace UltimaXNA.Ultima.UI.LoginGumps {
+    class CharacterListGump : Gump {
+        Action m_OnBackToSelectServer;
+        Action<int> m_OnDeleteCharacter;
+        Action<int> m_OnLoginWithCharacter;
+        Action m_OnNewCharacter;
 
-        public event EventWithInt OnDeleteCharacter;
-        public event EventWithNoParams OnNewCharacter;
-        public event EventWithNoParams OnBackToSelectServer;
-        public event EventWithInt OnLoginWithCharacter;
+        bool m_isWorldLoading;
+        int m_charSelected = -1;
+        int m_charListUpdate = -1;
+        HtmlGumpling[] m_characterNames;
+        GumpPicTiled m_Background;
 
-        private bool m_isWorldLoading = false;
-
-        enum Buttons
-        {
+        enum Buttons {
             QuitButton,
             BackButton,
             ForwardButton,
@@ -40,17 +39,15 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             DeleteCharacterButton
         }
 
-        int m_charSelected = -1;
-        int m_charListUpdate = -1;
-        HtmlGumpling[] m_characterNames;
+        public CharacterListGump(Action onBack, Action<int> onLogin, Action<int> onDelete, Action onNew)
+            : base(0, 0) {
+            m_OnBackToSelectServer = onBack;
+            m_OnLoginWithCharacter = onLogin;
+            m_OnDeleteCharacter = onDelete;
+            m_OnNewCharacter = onNew;
 
-        private GumpPicTiled m_Background;
-
-        public CharacterListGump()
-            : base(0, 0)
-        {
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             // backdrop
             AddControl(m_Background = new GumpPicTiled(this, 0, 0, 800, 600, 9274));
@@ -84,23 +81,18 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             IsUncloseableWithRMB = true;
         }
 
-        public override void Update(double totalMS, double frameMS)
-        {
-            SpriteBatch3D sb = ServiceRegistry.GetService<SpriteBatch3D>();
-            if (m_Background.Width != sb.GraphicsDevice.Viewport.Width || m_Background.Height != sb.GraphicsDevice.Viewport.Height)
-            {
+        public override void Update(double totalMS, double frameMS) {
+            SpriteBatch3D sb = Services.Get<SpriteBatch3D>();
+            if (m_Background.Width != sb.GraphicsDevice.Viewport.Width || m_Background.Height != sb.GraphicsDevice.Viewport.Height) {
                 m_Background.Width = sb.GraphicsDevice.Viewport.Width;
                 m_Background.Height = sb.GraphicsDevice.Viewport.Height;
             }
 
-            if (Characters.UpdateValue != m_charListUpdate)
-            {
+            if (Characters.UpdateValue != m_charListUpdate) {
                 int entryIndex = 0;
                 m_characterNames = new HtmlGumpling[Characters.Length];
-                foreach (CharacterListEntry e in Characters.List)
-                {
-                    if (e.Name != string.Empty)
-                    {
+                foreach (CharacterListEntry e in Characters.List) {
+                    if (e.Name != string.Empty) {
                         m_characterNames[entryIndex] = new HtmlGumpling(this, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (m_charSelected == entryIndex ? 431 : 1278)));
                         AddControl(new ResizePic(this, m_characterNames[entryIndex]), 1);
                         AddControl(m_characterNames[entryIndex], 1);
@@ -110,12 +102,10 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                 m_charListUpdate = Characters.UpdateValue;
             }
 
-            InputManager input = ServiceRegistry.GetService<InputManager>();
-            if (input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Enter, false, false, false) && !m_isWorldLoading)
-            {
-                if (m_characterNames.Length > 0)
-                {
-                    OnLoginWithCharacter(0);
+            InputManager input = Services.Get<InputManager>();
+            if (input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Enter, false, false, false) && !m_isWorldLoading) {
+                if (m_characterNames.Length > 0) {
+                    m_OnLoginWithCharacter(0);
                     m_isWorldLoading = true;
                 }
             }
@@ -123,40 +113,35 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void OnButtonClick(int buttonID)
-        {
-            switch ((Buttons)buttonID)
-            {
+        public override void OnButtonClick(int buttonID) {
+            switch ((Buttons)buttonID) {
                 case Buttons.QuitButton:
-                    UltimaGame.IsRunning = false;
+                    Services.Get<UltimaGame>().Quit();
                     break;
                 case Buttons.BackButton:
-                    OnBackToSelectServer();
+                    m_OnBackToSelectServer();
                     break;
                 case Buttons.ForwardButton:
-                    OnLoginWithCharacter(m_charSelected);
+                    m_OnLoginWithCharacter(m_charSelected);
                     break;
                 case Buttons.NewCharacterButton:
-                    OnNewCharacter();
+                    m_OnNewCharacter();
                     break;
                 case Buttons.DeleteCharacterButton:
-                    OnDeleteCharacter(m_charSelected);
+                    m_OnDeleteCharacter(m_charSelected);
                     break;
             }
         }
 
-        public override void OnHtmlInputEvent(string href, MouseEvent e)
-        {
+        public override void OnHtmlInputEvent(string href, MouseEvent e) {
             int charIndex;
             if (href.Length > 5 && href.StartsWith("CHAR="))
                 charIndex = int.Parse(href.Substring(5));
             else
                 return;
 
-            if (e == MouseEvent.Click)
-            {
-                if (href.Length > 5 && href.StartsWith("CHAR="))
-                {
+            if (e == MouseEvent.Click) {
+                if (href.Length > 5 && href.StartsWith("CHAR=")) {
                     if ((m_charSelected >= 0) && (m_charSelected < Characters.Length))
                         m_characterNames[m_charSelected].Text = formatHTMLCharName(m_charSelected, Characters.List[m_charSelected].Name, 1278);
                     m_charSelected = charIndex;
@@ -164,17 +149,15 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                         m_characterNames[m_charSelected].Text = formatHTMLCharName(m_charSelected, Characters.List[m_charSelected].Name, 431);
                 }
             }
-            else if (e == MouseEvent.DoubleClick)
-            {
+            else if (e == MouseEvent.DoubleClick) {
                 if (charIndex == m_charSelected)
-                    OnLoginWithCharacter(charIndex);
+                    m_OnLoginWithCharacter(charIndex);
             }
         }
 
-        string formatHTMLCharName(int index, string name, int hue)
-        {
+        string formatHTMLCharName(int index, string name, int hue) {
             // add a single char to the left so the width doesn't change.
-            return string.Format("<left> </left><center><big><a href=\"CHAR={0}\" color='#543' hovercolor='#345' activecolor='#222' style=\"text-decoration: none\">{1}</a></big></center>", 
+            return string.Format("<left> </left><center><big><a href=\"CHAR={0}\" color='#543' hovercolor='#345' activecolor='#222' style=\"text-decoration: none\">{1}</a></big></center>",
                 index, name);
         }
     }

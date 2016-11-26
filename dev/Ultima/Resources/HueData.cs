@@ -124,13 +124,13 @@ namespace UltimaXNA.Ultima.Resources
                 int hue = hues[i];
                 uint[] pixel = new uint[1];
                 if (hue < m_HueTextureHeight)
-                    HueTexture0.GetData<uint>(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 0, 1);
+                    HueTexture0.GetData(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 0, 1);
                 else
-                    HueTexture1.GetData<uint>(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 0, 1);
+                    HueTexture1.GetData(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 0, 1);
                 pixels[i] = pixel[0];
             }
             Texture2D t = new Texture2D(graphicsDevice, width, height);
-            t.SetData<uint>(pixels);
+            t.SetData(pixels);
             return t;
         }
 
@@ -189,8 +189,8 @@ namespace UltimaXNA.Ultima.Resources
                 }
             return m_kWebSafeHues[index];
         }
-        static int[] m_kCutOffValuesForWebSafeColors = new int[6] { 0x19, 0x4C, 0x7F, 0xB2, 0xE5, 0xFF };
-        static int[] m_kWebSafeHues = new int[216] {
+        static int[] m_kCutOffValuesForWebSafeColors = { 0x19, 0x4C, 0x7F, 0xB2, 0xE5, 0xFF };
+        static int[] m_kWebSafeHues = {
             0000, 3881, 3882, 3883, 3884, 3885, 
             3886, 3887, 3888, 3889, 3890, 3891, 
             3892, 3893, 3894, 3895, 3896, 3897, 
@@ -226,6 +226,6 @@ namespace UltimaXNA.Ultima.Resources
             4072, 4073, 4074, 4075, 4076, 4077, 
             4078, 4079, 4080, 4081, 4082, 4083, 
             4084, 4085, 4086, 4087, 4088, 4089, 
-            4090, 4091, 4092, 4093, 4094, 4095, };
+            4090, 4091, 4092, 4093, 4094, 4095 };
     }
 }

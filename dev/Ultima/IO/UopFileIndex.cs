@@ -31,6 +31,7 @@ namespace UltimaXNA.Ultima.IO.UOP
         {
             m_Extension = extension;
             m_HasExtra = hasExtra;
+            Open();
         }
 
         protected override FileIndexEntry3D[] ReadEntries()
@@ -43,7 +44,7 @@ namespace UltimaXNA.Ultima.IO.UOP
             // UOP does not do this, so we need to do it ourselves.
             for (int i = 0; i < entries.Length; i++)
             {
-                entries[i].lookup = -1;
+                entries[i].Lookup = -1;
             }
 
             using (FileStream index = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -110,8 +111,8 @@ namespace UltimaXNA.Ultima.IO.UOP
                                     throw new IndexOutOfRangeException("hashes dictionary and files collection have different count of entries!");
                                 }
 
-                                entries[idx].lookup = (int)(offset + headerLength);
-                                entries[idx].length = entryLength;
+                                entries[idx].Lookup = (int)(offset + headerLength);
+                                entries[idx].Length = entryLength;
 
                                 if (m_HasExtra)
                                 {
@@ -124,8 +125,8 @@ namespace UltimaXNA.Ultima.IO.UOP
                                     ushort extra1 = (ushort)((extra[3] << 24) | (extra[2] << 16) | (extra[1] << 8) | extra[0]);
                                     ushort extra2 = (ushort)((extra[7] << 24) | (extra[6] << 16) | (extra[5] << 8) | extra[4]);
 
-                                    entries[idx].lookup += 8;
-                                    entries[idx].extra = extra1 << 16 | extra2;
+                                    entries[idx].Lookup += 8;
+                                    entries[idx].Extra = extra1 << 16 | extra2;
 
                                     br.BaseStream.Seek(curPos, SeekOrigin.Begin);
                                 }

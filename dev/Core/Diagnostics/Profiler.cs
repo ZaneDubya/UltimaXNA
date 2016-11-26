@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
 
@@ -16,24 +17,26 @@ namespace UltimaXNA.Core.Diagnostics
 {
     public static class Profiler
     {
-        private static List<ContextAndTick> m_Context;
-        private static HighPerformanceTimer m_Timer;
-        private static List<ProfileData> m_ThisFrameData;
-        private static List<ProfileData> m_AllFrameData;
+        public const int ProfileTimeCount = 60;
+
+        static List<ContextAndTick> m_Context;
+        static HighPerformanceTimer m_Timer;
+        static List<Tuple<string[], double>> m_ThisFrameData;
+        static List<ProfileData> m_AllFrameData;
+        static ProfileData m_TotalTimeData;
+        static long m_BeginFrameTicks;
+        public static double LastFrameTimeMS { get; private set; }
+        public static double TrackedTime => m_TotalTimeData.TimeInContext;
 
         static Profiler()
         {
             m_Context = new List<ContextAndTick>();
-            m_ThisFrameData = new List<ProfileData>();
+            m_ThisFrameData = new List<Tuple<string[], double>>();
             m_AllFrameData = new List<ProfileData>();
-
+            m_TotalTimeData = new ProfileData(null, 0d);
             m_Timer = new HighPerformanceTimer();
             m_Timer.Start();
         }
-
-        private static long m_BeginFrameTicks;
-        public static double LastFrameTimeMS;
-        public static double TotalTimeMS;
 
         public static void BeginFrame()
         {
@@ -44,15 +47,17 @@ namespace UltimaXNA.Core.Diagnostics
                     bool added = false;
                     for (int j = 0; j < m_AllFrameData.Count; j++)
                     {
-                        if (m_AllFrameData[j].MatchesContext(m_ThisFrameData[i].Context))
+                        if (m_AllFrameData[j].MatchesContext(m_ThisFrameData[i].Item1))
                         {
-                            m_AllFrameData[j].AddNewHitLength(m_ThisFrameData[i].TimeSpent);
+                            m_AllFrameData[j].AddNewHitLength(m_ThisFrameData[i].Item2);
                             added = true;
                             break;
                         }
                     }
                     if (!added)
-                        m_AllFrameData.Add(new ProfileData(m_ThisFrameData[i].Context, m_ThisFrameData[i].TimeSpent));
+                    {
+                        m_AllFrameData.Add(new ProfileData(m_ThisFrameData[i].Item1, m_ThisFrameData[i].Item2));
+                    }
                 }
                 m_ThisFrameData.Clear();
             }
@@ -63,7 +68,7 @@ namespace UltimaXNA.Core.Diagnostics
         public static void EndFrame()
         {
             LastFrameTimeMS = HighPerformanceTimer.SecondsFromTicks(m_Timer.ElapsedTicks - m_BeginFrameTicks) * 1000d;
-            TotalTimeMS += LastFrameTimeMS;
+            m_TotalTimeData.AddNewHitLength(LastFrameTimeMS);
         }
 
         public static void EnterContext(string context_name)
@@ -79,7 +84,8 @@ namespace UltimaXNA.Core.Diagnostics
             for (int i = 0; i < m_Context.Count; i++)
                 context[i] = m_Context[i].Name;
 
-            m_ThisFrameData.Add(new ProfileData(context, HighPerformanceTimer.SecondsFromTicks(m_Timer.ElapsedTicks - m_Context[m_Context.Count - 1].Tick)));
+            double ms = HighPerformanceTimer.SecondsFromTicks(m_Timer.ElapsedTicks - m_Context[m_Context.Count - 1].Tick) * 1000d;
+            m_ThisFrameData.Add(new Tuple<string[], double>(context, ms));
             m_Context.RemoveAt(m_Context.Count - 1);
         }
 
@@ -101,40 +107,31 @@ namespace UltimaXNA.Core.Diagnostics
         public class ProfileData
         {
             public string[] Context;
-            public int HitCount;
-            public double TimeSpent;
+            double[] m_LastTimes = new double[ProfileTimeCount];
+            uint m_LastIndex;
 
-            private double[] m_Last60Times = new double[60];
+            public double LastTime => m_LastTimes[m_LastIndex % ProfileTimeCount];
 
-            public double LastTime
-            {
-                get { return m_Last60Times[HitCount % 60]; }
-            }
-
-            public double AverageOfLast60Times
+            public double TimeInContext
             {
                 get
                 {
-                    double value = 0;
-                    for (int i = 0; i < 60; i++)
-                        value += m_Last60Times[i];
-                    return value / 60d;
+                    double time = 0;
+                    for (int i = 0; i < ProfileTimeCount; i++)
+                    {
+                        time += m_LastTimes[i];
+                    }
+                    return time;
                 }
             }
 
-            public double AverageTime
-            {
-                get
-                {
-                    return (TimeSpent / HitCount);
-                }
-            }
+            public double AverageTime => TimeInContext / ProfileTimeCount;
 
-            public ProfileData(string[] context, double time_spent)
+            public ProfileData(string[] context, double time)
             {
                 Context = context;
-                HitCount = 1;
-                TimeSpent = time_spent;
+                m_LastIndex = 0;
+                AddNewHitLength(time);
             }
 
             public bool MatchesContext(string[] context)
@@ -147,11 +144,10 @@ namespace UltimaXNA.Core.Diagnostics
                 return true;
             }
 
-            public void AddNewHitLength(double time_spent)
+            public void AddNewHitLength(double time)
             {
-                TimeSpent = TimeSpent + time_spent;
-                m_Last60Times[HitCount % 60] = time_spent;
-                HitCount = HitCount + 1;
+                m_LastTimes[m_LastIndex % ProfileTimeCount] = time;
+                m_LastIndex++;
             }
 
             public override string ToString()
@@ -163,7 +159,7 @@ namespace UltimaXNA.Core.Diagnostics
                         name += ":";
                     name += Context[i];
                 }
-                return string.Format("{0} [{1} hits, {2:0.0000} seconds]", name, HitCount, TimeSpent);
+                return $"{name} - {TimeInContext:0.0}ms";
             }
 
             public static ProfileData Empty = new ProfileData(null, 0d);

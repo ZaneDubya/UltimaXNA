@@ -9,9 +9,7 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
@@ -19,7 +17,7 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 {
-    class Corpse : Container
+    class Corpse : ContainerItem
     {
         public Serial MobileSerial = 0;
 
@@ -66,8 +64,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
         {
             base.RemoveItem(serial);
             Equipment.RemoveBySerial(serial);
-            if (OnEntityUpdated != null)
-                OnEntityUpdated();
+            m_OnUpdated?.Invoke(this);
         }
     }
 }

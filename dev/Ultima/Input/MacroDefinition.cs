@@ -2,9 +2,9 @@
 {
     public class MacroDefinition
     {
-        public string Name;
-        public MacroType Type;
-        public int Index;
+        public readonly string Name;
+        public readonly MacroType Type;
+        public readonly int Index;
 
         public MacroDefinition(string name, MacroType type)
         {

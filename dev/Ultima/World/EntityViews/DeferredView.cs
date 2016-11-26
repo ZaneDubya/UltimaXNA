@@ -13,15 +13,14 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.World.WorldViews;
 using UltimaXNA.Ultima.World.Entities;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
     public class DeferredView : AEntityView
     {
-        Vector3 m_DrawPosition;
-        AEntityView m_BaseView;
+        readonly Vector3 m_DrawPosition;
+        readonly AEntityView m_BaseView;
 
         public DeferredView(DeferredEntity entity, Vector3 drawPosition, AEntityView baseView)
             : base(entity)
@@ -30,7 +29,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             m_BaseView = baseView;
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             if (m_BaseView.Entity is Mobile)
             { 
@@ -41,11 +40,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     return false;
                 }
             }
-
             /*m_BaseView.SetYClipLine(m_DrawPosition.Y - 22 -
                 ((m_BaseView.Entity.Position.Z + m_BaseView.Entity.Position.Z_offset) * 4) +
                 ((m_BaseView.Entity.Position.X_offset + m_BaseView.Entity.Position.Y_offset) * IsometricRenderer.TILE_SIZE_INTEGER_HALF));*/
-            bool success = m_BaseView.DrawInternal(spriteBatch, m_DrawPosition, mouseOverList, map, roofHideFlag);
+            bool success = m_BaseView.DrawInternal(spriteBatch, m_DrawPosition, mouseOver, map, roofHideFlag);
             /*m_BaseView.ClearYClipLine();*/
             return success;
         }

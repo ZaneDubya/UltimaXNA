@@ -19,25 +19,24 @@ namespace UltimaXNA.Configuration
 {
     public class UserInterfaceSettings : ASettingsSection
     {
-        public const string SectionName = "ui";
+        ResolutionProperty m_FullScreenResolution;
+        ResolutionProperty m_WindowResolution;
+        ResolutionProperty m_WorldGumpResolution;
+        bool m_PlayWindowPixelDoubling;
+        bool m_IsFullScreen;
+        MouseProperty m_Mouse;
+        bool m_AlwaysRun;
+        bool m_MenuBarDisabled;
 
-        private ResolutionProperty m_FullScreenResolution;
-        private ResolutionProperty m_WindowResolution;
-        private ResolutionProperty m_WorldGumpResolution;
-        private bool m_PlayWindowPixelDoubling;
-        private bool m_IsFullScreen;
-        private MouseProperty m_Mouse;
-        private bool m_AlwaysRun;
-        private bool m_MenuBarDisabled;
-
-        private int m_SpeechColor;
-        private int m_EmoteColor;
-        private int m_PartyMsgColor;
-        private int m_GuildMsgColor;
-        private bool m_IgnoreGuildMsg;
-        private int m_AllianceMsgColor;
-        private bool m_IgnoreAllianceMsg;
-        private bool m_CrimeQuery;
+        int m_SpeechColor = 4 + Utility.RandomValue(0, 99) * 5;
+        int m_EmoteColor = 646;
+        int m_PartyMsgPrivateColor = 58;
+        int m_PartyMsgColor = 68;
+        int m_GuildMsgColor = 70;
+        bool m_IgnoreGuildMsg;
+        int m_AllianceMsgColor = 487;
+        bool m_IgnoreAllianceMsg;
+        bool m_CrimeQuery;
 
         public UserInterfaceSettings()
         {
@@ -120,6 +119,12 @@ namespace UltimaXNA.Configuration
         {
             get { return m_EmoteColor; }
             set { SetProperty(ref m_EmoteColor, Clamp(value, 0, HueData.HueCount - 1)); }
+        }
+
+        public int PartyPrivateMsgColor
+        {
+            get { return m_PartyMsgPrivateColor; }
+            set { SetProperty(ref m_PartyMsgPrivateColor, Clamp(value, 0, HueData.HueCount - 1)); }
         }
 
         public int PartyMsgColor

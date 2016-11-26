@@ -23,14 +23,14 @@ namespace UltimaXNA.Ultima
 {
     class ResourceProvider : IResourceProvider
     {
-        private AnimationResource m_Anim;
-        private ArtMulResource m_Art;
-        private ClilocResource m_Cliloc;
-        private EffectDataResource m_Effects;
-        private FontsResource m_Fonts;
-        private GumpMulResource m_Gumps;
-        private TexmapResource m_Texmaps;
-        private Dictionary<Type, object> m_Resources = new Dictionary<Type, object>();
+        AnimationResource m_Anim;
+        ArtMulResource m_Art;
+        ClilocResource m_Cliloc;
+        EffectDataResource m_Effects;
+        FontsResource m_Fonts;
+        GumpMulResource m_Gumps;
+        TexmapResource m_Texmaps;
+        readonly Dictionary<Type, object> m_Resources = new Dictionary<Type, object>();
 
         public ResourceProvider(Game game)
         {
@@ -43,19 +43,29 @@ namespace UltimaXNA.Ultima
             m_Texmaps = new TexmapResource(game.GraphicsDevice);
         }
 
-        public IAnimationFrame[] GetAnimation(int body, ref int hue, int action, int direction)
+        public AAnimationFrame[] GetAnimation(int body, ref int hue, int action, int direction)
         {
             return m_Anim.GetAnimation(body, ref hue, action, direction);
         }
 
-        public Texture2D GetUITexture(int textureIndex, bool replaceMask080808 = false)
+        public Texture2D GetUITexture(int textureID, bool replaceMask080808 = false)
         {
-            return m_Gumps.GetGumpXNA(textureIndex, replaceMask080808);
+            return m_Gumps.GetGumpTexture(textureID, replaceMask080808);
+        }
+
+        public bool IsPointInUITexture(int textureID, int x, int y)
+        {
+            return m_Gumps.IsPointInGumpTexture(textureID, x, y);
         }
 
         public Texture2D GetItemTexture(int itemIndex)
         {
             return m_Art.GetStaticTexture(itemIndex);
+        }
+
+        public bool IsPointInItemTexture(int textureID, int x, int y, int extraRange = 0)
+        {
+            return m_Art.IsPointInItemTexture(textureID, x, y, extraRange);
         }
 
         public Texture2D GetLandTexture(int landIndex)
@@ -76,8 +86,6 @@ namespace UltimaXNA.Ultima
         /// <summary>
         /// Returns a Ultima Online Hue index that approximates the passed color.
         /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
         public ushort GetWebSafeHue(Color color)
         {
             return (ushort)HueData.GetWebSafeHue(color);

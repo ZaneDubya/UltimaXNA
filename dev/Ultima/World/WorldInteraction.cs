@@ -8,6 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,6 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
@@ -26,12 +26,11 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.UI;
 #endregion
 
-namespace UltimaXNA.Ultima.World
-{
+namespace UltimaXNA.Ultima.World {
     /// <summary>
     /// Hosts methods for interacting with the world.
     /// </summary>
-    internal class WorldInteraction
+    class WorldInteraction
     {
         private WorldModel m_World;
         private INetworkClient m_Network;
@@ -39,8 +38,8 @@ namespace UltimaXNA.Ultima.World
 
         public WorldInteraction(WorldModel world)
         {
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Network = Services.Get<INetworkClient>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
 
             m_World = world;
         }
@@ -54,42 +53,6 @@ namespace UltimaXNA.Ultima.World
                 m_lastTarget = value;
                 m_Network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, m_lastTarget));
             }
-        }
-
-        public void SendSpeech(string text, ChatMode mode) // used by chatwindow.
-        {
-            MessageTypes speechType = MessageTypes.Normal;
-            int hue = 0;
-
-            switch (mode)
-            {
-                case ChatMode.Default:
-                    speechType = MessageTypes.Normal;
-                    hue = Settings.UserInterface.SpeechColor;
-                    break;
-                case ChatMode.Whisper:
-                    speechType = MessageTypes.Whisper;
-                    hue = Settings.UserInterface.SpeechColor;
-                    break;
-                case ChatMode.Emote:
-                    speechType = MessageTypes.Emote;
-                    hue = Settings.UserInterface.EmoteColor;
-                    break;
-                case ChatMode.Party:
-                    // not yet implemented
-                    speechType = MessageTypes.Normal;
-                    hue = Settings.UserInterface.SpeechColor;
-                    break;
-                case ChatMode.Guild:
-                    speechType = MessageTypes.Guild;
-                    hue = Settings.UserInterface.GuildMsgColor;
-                    break;
-                case ChatMode.Alliance:
-                    speechType = MessageTypes.Alliance;
-                    hue = Settings.UserInterface.AllianceMsgColor;
-                    break;
-            }
-            m_Network.Send(new AsciiSpeechPacket(speechType, 0, hue + 2, "ENU", text));
         }
 
         /// <summary>
@@ -156,6 +119,22 @@ namespace UltimaXNA.Ultima.World
             skill.LockType = nextLockState;
         }
 
+        public void BookHeaderNewChange(Serial serial, string title, string author)
+        {
+            m_Network.Send(new BookHeaderNewChangePacket(serial, title, author));
+        }
+
+        public void BookHeaderOldChange(Serial serial, string title, string author)
+        {
+            // Not yet implemented
+            // m_Network.Send(new BookHeaderOldChangePacket(serial, title, author));
+        }
+
+        public void BookPageChange(Serial serial, int page, string[] lines)
+        {
+            m_Network.Send(new BookPageChangePacket(serial, page, lines));
+        }
+
         public Gump OpenContainerGump(AEntity entity) // used by ultimaclient.
         {
             Gump gump;
@@ -173,12 +152,12 @@ namespace UltimaXNA.Ultima.World
                 }
                 else if (entity is SpellBook)
                 {
-                    gump = new SpellbookGump((SpellBook)entity, ((Container)entity).ItemID);
+                    gump = new SpellbookGump((SpellBook)entity);
                     m_UserInterface.AddControl(gump, 96, 96);
                 }
                 else
                 {
-                    gump = new ContainerGump(entity, ((Container)entity).ItemID);
+                    gump = new ContainerGump(entity, ((ContainerItem)entity).ItemID);
                     m_UserInterface.AddControl(gump, 64, 64);
                 }
             }
@@ -196,7 +175,7 @@ namespace UltimaXNA.Ultima.World
         {
             m_ChatQueue.Add(new QueuedMessage(text, font, hue, asUnicode));
 
-            ChatControl chat = ServiceRegistry.GetService<ChatControl>();
+            ChatControl chat = Services.Get<ChatControl>();
             if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)
@@ -231,13 +210,13 @@ namespace UltimaXNA.Ultima.World
             }
             else
             {
-                ChatMessage("[LABEL] " + text, font, hue, asUnicode);
+                ChatMessage(text, font, hue, asUnicode);
             }
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Cursor handling routines.
-        // ======================================================================
+        // ============================================================================================================
 
         public Action<Item, int, int, int?> OnPickupItem;
         public Action OnClearHolding;

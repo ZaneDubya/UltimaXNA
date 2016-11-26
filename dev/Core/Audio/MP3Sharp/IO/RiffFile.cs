@@ -22,7 +22,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.IO
     /// <summary>
     ///     Class to manage RIFF files
     /// </summary>
-    internal class RiffFile
+    class RiffFile
     {
         protected const int DDC_SUCCESS = 0; // The operation succeded
         protected const int DDC_FAILURE = 1; // The operation failed for unspecified reasons
@@ -122,7 +122,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.IO
                             m_File = RandomAccessFileStream.CreateRandomAccessFile(filename, "r");
                             try
                             {
-                                // Try to read the RIFF header...   				   
+                                // Try to read the RIFF header...
                                 sbyte[] br = new sbyte[8];
                                 SupportClass.ReadInput(m_File, ref br, 0, 8);
                                 Fmode = RFM_READ;
@@ -219,7 +219,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.IO
                             //file = SupportClass.RandomAccessFileSupport.CreateRandomAccessFile(Filename, "r");
                             try
                             {
-                                // Try to read the RIFF header...   				   
+                                // Try to read the RIFF header... 
                                 sbyte[] br = new sbyte[8];
                                 SupportClass.ReadInput(m_File, ref br, 0, 8);
                                 Fmode = RFM_READ;

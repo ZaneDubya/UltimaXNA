@@ -19,7 +19,7 @@ using System.IO;
 
 namespace UltimaXNA.Core.Audio.MP3Sharp.Support
 {
-    internal class SupportClass
+    class SupportClass
     {
         public static int URShift(int number, int bits)
         {

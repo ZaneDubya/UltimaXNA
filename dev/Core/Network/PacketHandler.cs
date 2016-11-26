@@ -7,87 +7,37 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region usings
+
 using System;
-#endregion
 
-namespace UltimaXNA.Core.Network
-{
-    public delegate void PacketReceiveHandler(PacketReader reader);
-    public delegate void TypedPacketReceiveHandler(IRecvPacket packet);
+namespace UltimaXNA.Core.Network {
+    public abstract class PacketHandler {
+        public readonly int ID;
+        public readonly int Length;
+        public readonly Type PacketType;
+        public readonly object Client;
 
-    public class PacketHandler
-    {
-        int m_ID;
-        int m_Length;
-        string m_Name;
-        PacketReceiveHandler m_Handler;
-
-        public int Id
-        {
-            get { return m_ID; }
-            set { m_ID = value; }
+        public PacketHandler(int id, int length, Type packetType, object client) {
+            ID = id;
+            Length = length;
+            PacketType = packetType;
+            Client = client;
         }
 
-        public int Length
-        {
-            get { return m_Length; }
-            set { m_Length = value; }
-        }
-
-        public string Name
-        {
-            get { return m_Name; }
-            set { m_Name = value; }
-        }
-
-        public PacketReceiveHandler Handler
-        {
-            get { return m_Handler; }
-            set { m_Handler = value; }
-        }
-
-        public PacketHandler(int id, string name, int length, PacketReceiveHandler handler)
-        {
-            m_ID = id;
-            m_Name = name;
-            m_Length = length;
-            m_Handler = handler;
-        }
+        public abstract void Invoke(PacketReader reader);
     }
 
-    public class TypedPacketHandler : PacketHandler
-    {
-        Type m_Type;
-        TypedPacketReceiveHandler m_Handler;
+    public class PacketHandler<T> : PacketHandler where T : IRecvPacket {
+        readonly Action<T> m_Handler;
 
-        public Type Type
-        {
-            get { return m_Type; }
-        }
-
-        public TypedPacketReceiveHandler TypeHandler
-        {
-            get { return m_Handler; }
-            set { m_Handler = value; }
-        }
-
-        private new PacketReceiveHandler Handler
-        {
-            get { return base.Handler; }
-            set { base.Handler = value; }
-        }
-
-        public TypedPacketHandler(int id, string name, Type type, int length, TypedPacketReceiveHandler handler)
-            : base(id, name, length, null)
-        {
-            m_Type = type;
+        public PacketHandler(int id, int length, Type packetType, object client, Action<T> handler)
+            : base(id, length, packetType, client) {
             m_Handler = handler;
         }
-
-        public IRecvPacket CreatePacket(PacketReader reader)
-        {
-                return (IRecvPacket)Activator.CreateInstance(m_Type, new object[] { reader });
+        
+        public override void Invoke(PacketReader reader) {
+            T packet = (T)Activator.CreateInstance(PacketType, new object[] { reader });
+            m_Handler(packet);
         }
     }
 }

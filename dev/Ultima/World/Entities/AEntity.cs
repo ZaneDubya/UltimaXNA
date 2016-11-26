@@ -14,9 +14,9 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
+using System;
+using System.Linq;
 #endregion
-
-public delegate void OnEvent();
 
 namespace UltimaXNA.Ultima.World.Entities
 {
@@ -25,19 +25,17 @@ namespace UltimaXNA.Ultima.World.Entities
     /// </summary>
     public abstract class AEntity
     {
-        public OnEvent OnEntityUpdated;
-
-        // ============================================================
+        // ============================================================================================================
         // Properties
-        // ============================================================
+        // ============================================================================================================
 
-        public Serial Serial;
+        public readonly Serial Serial;
 
         public PropertyList PropertyList = new PropertyList();
 
-        public bool IsDisposed = false;
+        public bool IsDisposed;
 
-        public bool IsClientEntity = false;
+        public bool IsClientEntity;
 
         public virtual int Hue
         {
@@ -53,13 +51,13 @@ namespace UltimaXNA.Ultima.World.Entities
             }
             set
             {
-                // do nothing. This exists so that inheriting classes can override the set accessor.
+                // do nothing - exists only to allow inheriting class to override.
             }
         }
 
-        // ============================================================
+        // ============================================================================================================
         // Position
-        // ============================================================
+        // ============================================================================================================
 
         public Map Map
         {
@@ -76,7 +74,7 @@ namespace UltimaXNA.Ultima.World.Entities
             }
         }
 
-        private MapTile m_Tile;
+        MapTile m_Tile;
         protected MapTile Tile
         {
             set
@@ -133,9 +131,9 @@ namespace UltimaXNA.Ultima.World.Entities
         private Position3D m_Position;
         public virtual Position3D Position { get { return m_Position; } }
 
-        // ============================================================
+        // ============================================================================================================
         // Methods
-        // ============================================================
+        // ============================================================================================================
 
         public AEntity(Serial serial, Map map)
         {
@@ -154,6 +152,9 @@ namespace UltimaXNA.Ultima.World.Entities
 
         public virtual void Dispose()
         {
+            m_OnDisposed?.Invoke(this);
+            m_OnDisposed = null;
+            m_OnUpdated = null;
             IsDisposed = true;
             Tile = null;
         }
@@ -163,11 +164,34 @@ namespace UltimaXNA.Ultima.World.Entities
             return Serial.ToString();
         }
 
-        // ============================================================
-        // Draw and View handling code
-        // ============================================================
+        // ============================================================================================================
+        // Callbacks
+        // ============================================================================================================
 
-        private AEntityView m_View = null;
+        protected Action<AEntity> m_OnUpdated;
+        protected Action<AEntity> m_OnDisposed;
+
+        public void SetCallbacks(Action<AEntity> onUpdate, Action<AEntity> onDispose)
+        {
+            if (onUpdate != null)
+                m_OnUpdated += onUpdate;
+            if (onDispose != null)
+                m_OnDisposed += onDispose;
+        }
+
+        public void ClearCallBacks(Action<AEntity> onUpdate, Action<AEntity> onDispose)
+        {
+            if (m_OnUpdated.GetInvocationList().Contains(onUpdate))
+                m_OnUpdated -= onUpdate;
+            if (m_OnDisposed.GetInvocationList().Contains(onDispose))
+                m_OnDisposed -= onDispose;
+        }
+
+        // ============================================================================================================
+        // Draw and View handling code
+        // ============================================================================================================
+
+        AEntityView m_View;
 
         protected virtual AEntityView CreateView()
         {
@@ -186,11 +210,11 @@ namespace UltimaXNA.Ultima.World.Entities
 
         }
 
-        // ============================================================
+        // ============================================================================================================
         // Overhead handling code (labels, chat, etc.)
-        // ============================================================
+        // ============================================================================================================
 
-        private List<Overhead> m_Overheads = new List<Overhead>();
+        List<Overhead> m_Overheads = new List<Overhead>();
         public List<Overhead> Overheads
         {
             get { return m_Overheads; }
@@ -224,7 +248,7 @@ namespace UltimaXNA.Ultima.World.Entities
             return overhead;
         }
 
-        private void InternalInsertOverhead(Overhead overhead)
+        void InternalInsertOverhead(Overhead overhead)
         {
             if (m_Overheads.Count == 0 || (m_Overheads[0].MessageType != MessageTypes.Label))
                 m_Overheads.Insert(0, overhead);
@@ -242,7 +266,7 @@ namespace UltimaXNA.Ultima.World.Entities
             }
         }
 
-        private void InternalUpdateOverheads(double frameMS)
+        void InternalUpdateOverheads(double frameMS)
         {
             // update overheads
             foreach (Overhead overhead in m_Overheads)

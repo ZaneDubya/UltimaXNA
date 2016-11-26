@@ -14,7 +14,7 @@ using System;
 namespace UltimaXNA.Ultima.World.Input
 {
     [Flags]
-    public enum PickType : int
+    public enum PickType
     {
         PickNothing = 0,
         PickObjects = 1,

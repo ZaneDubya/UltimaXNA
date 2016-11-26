@@ -19,9 +19,9 @@ using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.Resources
 {
-    public sealed class BodyDef
+    public static class BodyDef
     {
-        private static Dictionary<int, BodyTableEntry> m_Entries;
+        static Dictionary<int, BodyTableEntry> m_Entries;
 
         static BodyDef()
         {

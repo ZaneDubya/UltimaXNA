@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.UI.HTML.Elements;
 using UltimaXNA.Core.UI.HTML.Styles;
 #endregion
 
@@ -20,52 +19,13 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         public abstract int Width { get; set; }
         public abstract int Height { get; set; }
 
-        public int Layout_X = 0;
-        public int Layout_Y = 0;
+        public int Layout_X;
+        public int Layout_Y;
 
-        public bool CanBreakAtThisAtom
-        {
-            get
-            {
-                if (this is CharacterElement)
-                {
-                    CharacterElement atom = (CharacterElement)this;
-                    if (atom.Character == ' ' || atom.Character == '\n')
-                        return true;
-                    else
-                        return false;
-                }
-                return true;
-            }
-        }
-
-        public bool IsThisAtomABreakingSpace
-        {
-            get
-            {
-                if (this is CharacterElement)
-                {
-                    CharacterElement atom = (CharacterElement)this;
-                    if (atom.Character == ' ')
-                        return true;
-                }
-                return false;
-            }
-        }
-
-        public bool IsThisAtomALineBreak
-        {
-            get
-            {
-                if (this is CharacterElement)
-                {
-                    CharacterElement atom = (CharacterElement)this;
-                    if (atom.Character == '\n')
-                        return true;
-                }
-                return false;
-            }
-        }
+        public virtual bool CanBreakAtThisAtom => true;
+        public virtual bool IsThisAtomABreakingSpace => false;
+        public virtual bool IsThisAtomALineBreak => false;
+        public virtual bool IsThisAtomInternalOnly => false;
 
         public StyleState Style;
 

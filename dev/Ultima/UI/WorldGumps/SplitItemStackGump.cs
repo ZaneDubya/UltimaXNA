@@ -27,12 +27,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             private set;
         }
 
-        private Point m_PickupOffset;
+        private readonly Point m_PickupOffset;
 
-        private HSliderBar m_Slider;
+        private readonly HSliderBar m_Slider;
         private TextEntry m_AmountEntry;
         private Button m_OKButton;
-        private int m_LastValue = 0;
+        private int m_LastValue;
 
         public SplitItemStackGump(Item item, Point pickupOffset)
             : base(0, 0)
@@ -111,7 +111,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (m_Slider.Value > 0)
             {
-                WorldModel world = ServiceRegistry.GetService<WorldModel>();
+                WorldModel world = Services.Get<WorldModel>();
                 world.Interaction.PickupItem(Item, m_PickupOffset, m_Slider.Value);
             }
             Dispose();
@@ -121,7 +121,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (m_Slider.Value > 0)
             {
-                WorldModel world = ServiceRegistry.GetService<WorldModel>();
+                WorldModel world = Services.Get<WorldModel>();
                 world.Interaction.PickupItem(Item, m_PickupOffset, m_Slider.Value);
             }
             Dispose();

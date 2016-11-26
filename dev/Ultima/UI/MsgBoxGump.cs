@@ -86,12 +86,10 @@ namespace UltimaXNA.Ultima.UI
             switch (buttonID)
             {
                 case 0:
-                    if (OnClose != null)
-                        OnClose();
+                    OnClose?.Invoke();
                     break;
                 case 1:
-                    if (OnCancel != null)
-                        OnCancel();
+                    OnCancel?.Invoke();
                     break;
             }
             Dispose();

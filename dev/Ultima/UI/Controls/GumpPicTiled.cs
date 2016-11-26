@@ -19,10 +19,10 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class GumpPicTiled : AControl
     {
-        Texture2D m_bgGump = null;
+        Texture2D m_bgGump;
         int m_gumpID;
 
-        public GumpPicTiled(AControl parent)
+        GumpPicTiled(AControl parent)
             : base(parent)
         {
 
@@ -37,16 +37,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             width = Int32.Parse(arguements[3]);
             height = Int32.Parse(arguements[4]);
             gumpID = Int32.Parse(arguements[5]);
-            buildGumpling(x, y, width, height, gumpID);
+            BuildGumpling(x, y, width, height, gumpID);
         }
 
         public GumpPicTiled(AControl parent, int x, int y, int width, int height, int gumpID)
             : this(parent)
         {
-            buildGumpling(x, y, width, height, gumpID);
+            BuildGumpling(x, y, width, height, gumpID);
         }
 
-        void buildGumpling(int x, int y, int width, int height, int gumpID)
+        void BuildGumpling(int x, int y, int width, int height, int gumpID)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);
@@ -57,16 +57,16 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_bgGump == null)
             {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 m_bgGump = provider.GetUITexture(m_gumpID);
             }
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             spriteBatch.Draw2DTiled(m_bgGump, new Rectangle(position.X, position.Y, Width, Height), Vector3.Zero);
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
     }
 }

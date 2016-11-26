@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 
 namespace UltimaXNA.Core.Network
 {
@@ -25,13 +26,15 @@ namespace UltimaXNA.Core.Network
             set;
         }
 
-        void Register<T>(int id, string name, int length, TypedPacketReceiveHandler onReceive) where T : IRecvPacket;
-        void RegisterExtended<T>(int extendedId, int subId, string name, int length, TypedPacketReceiveHandler onReceive) where T : IRecvPacket;
-        void Unregister(int id, TypedPacketReceiveHandler onRecieve);
         bool Connect(string ipAddressOrHostName, int port);
         void Disconnect();
         bool Send(ISendPacket packet);
         bool Send(byte[] buffer, int offset, int length, string name);
         void Slice();
+
+        void Register<T>(object client, int id, int length, Action<T> onReceive) where T : IRecvPacket;
+        void RegisterExtended<T>(object client, int extendedId, int subId, int length, Action<T> onReceive) where T : IRecvPacket;
+        void Unregister(object client);
+        void Unregister(object client, int id);
     }
 }

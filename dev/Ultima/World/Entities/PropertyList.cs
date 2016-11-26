@@ -9,16 +9,16 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using System.Collections.Generic;
+using System.Text;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities
 {
     public class PropertyList
     {
-        public int Hash = 0;
-        private List<string> m_PropertyList = new List<string>();
+        public int Hash;
+        private readonly List<string> m_PropertyList = new List<string>();
 
         public bool HasProperties
         {
@@ -35,16 +35,16 @@ namespace UltimaXNA.Ultima.World.Entities
         {
             get
             {
-                string iPropertyConcat = string.Empty;
+                StringBuilder concat = new StringBuilder();
                 for (int i = 0; i < m_PropertyList.Count; i++)
                 {
-                    iPropertyConcat += m_PropertyList[i];
+                    concat.Append(m_PropertyList[i]);
                     if (i < m_PropertyList.Count - 1)
                     {
-                        iPropertyConcat += '\n';
+                        concat.Append('\n');
                     }
                 }
-                return iPropertyConcat;
+                return concat.ToString();
             }
         }
 

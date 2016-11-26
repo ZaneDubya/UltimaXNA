@@ -22,11 +22,11 @@ namespace UltimaXNA.Ultima.UI.Controls
     /// </summary>
     class StaticPic : AControl
     {
-        Texture2D m_texture = null;
+        Texture2D m_texture;
         int Hue;
         int m_tileID;
 
-        public StaticPic(AControl parent)
+        StaticPic(AControl parent)
             : base(parent)
         {
 
@@ -44,16 +44,16 @@ namespace UltimaXNA.Ultima.UI.Controls
                 // has a HUE="XXX" arguement!
                 hue = Int32.Parse(arguements[4]);
             }
-            buildGumpling(x, y, tileID, hue);
+            BuildGumpling(x, y, tileID, hue);
         }
 
         public StaticPic(AControl parent, int x, int y, int itemID, int hue)
             : this(parent)
         {
-            buildGumpling(x, y, itemID, hue);
+            BuildGumpling(x, y, itemID, hue);
         }
 
-        void buildGumpling(int x, int y, int tileID, int hue)
+        void BuildGumpling(int x, int y, int tileID, int hue)
         {
             Position = new Point(x, y);
             Hue = hue;
@@ -64,17 +64,17 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_texture == null)
             {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 m_texture = provider.GetItemTexture(m_tileID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(0, false, false, true));
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
     }
 }

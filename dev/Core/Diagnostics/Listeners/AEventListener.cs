@@ -19,7 +19,14 @@ namespace UltimaXNA.Core.Diagnostics.Listeners
 
         public void OnEventWritten(EventLevels level, string message, params object[] args)
         {
-            OnEventWritten(level, string.Format(message, args));
+            if (args == null || args.Length == 0)
+            {
+                OnEventWritten(level, message);
+            }
+            else
+            {
+                OnEventWritten(level, string.Format(message, args));
+            }
         }
 
         public void OnEventWritten(EventLevels level, Exception ex)

@@ -25,7 +25,7 @@ namespace UltimaXNA.Core.UI.HTML.Elements
         public int ImgSrcOver = -1;
         public int ImgSrcDown = -1;
 
-        private int m_Width = 0, m_Height = 0;
+        private int m_Width, m_Height;
 
         public override int Width
         {

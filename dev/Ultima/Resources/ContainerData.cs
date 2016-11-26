@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.Resources
         {
             m_Table = new Dictionary<int, ContainerData>();
 
-            string path = @"data\containers.cfg";
+            string path = @"data/containers.cfg";
 
             if (!File.Exists(path))
             {
@@ -106,7 +106,7 @@ namespace UltimaXNA.Ultima.Resources
             set { m_Default = value; }
         }
 
-        public static ContainerData GetData(int itemID)
+        public static ContainerData Get(int itemID)
         {
             ContainerData data = null;
             m_Table.TryGetValue(itemID, out data);
@@ -117,9 +117,9 @@ namespace UltimaXNA.Ultima.Resources
                 return m_Default;
         }
 
-        private int m_GumpID;
-        private Rectangle m_Bounds;
-        private int m_DropSound;
+        private readonly int m_GumpID;
+        private readonly Rectangle m_Bounds;
+        private readonly int m_DropSound;
 
         public int GumpID { get { return m_GumpID; } }
         public Rectangle Bounds { get { return m_Bounds; } }

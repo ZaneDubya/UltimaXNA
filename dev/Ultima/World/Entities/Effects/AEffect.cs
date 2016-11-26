@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
         protected int m_xSource, m_ySource, m_zSource;
         protected int m_xTarget, m_yTarget, m_zTarget;
 
-        private double m_TimeActiveMS = 0;
+        private double m_TimeActiveMS;
         public int FramesActive
         {
             get
@@ -52,7 +52,7 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
             }
         }
 
-        public int BlendMode = 0;
+        public int BlendMode;
 
         public AEffect(Map map)
             : base(Serial.Null, map)

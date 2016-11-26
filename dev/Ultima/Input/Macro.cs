@@ -7,9 +7,9 @@
     {
         public readonly MacroType Type;
 
-        private ValueTypes m_ValueType =  ValueTypes.None;
-        private int m_ValueInteger = -1;
-        private string m_ValueString = null;
+        ValueTypes m_ValueType =  ValueTypes.None;
+        int m_ValueInteger = -1;
+        string m_ValueString;
 
         public Macro(MacroType type)
         {
@@ -41,8 +41,7 @@
             {
                 if (m_ValueType == ValueTypes.Integer)
                     return m_ValueInteger;
-                else
-                    return 0;
+                return 0;
             }
         }
 

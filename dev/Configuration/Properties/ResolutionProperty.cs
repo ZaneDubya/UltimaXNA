@@ -19,8 +19,8 @@ namespace UltimaXNA.Configuration.Properties
     /// </summary>
     public class ResolutionProperty : NotifyPropertyChangedBase
     {
-        private int m_Height;
-        private int m_Width;
+        int m_Height;
+        int m_Width;
 
         public ResolutionProperty()
         {

@@ -23,7 +23,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     ///     Class for extracting information from a frame header.
     ///     TODO: move strings into resources.
     /// </summary>
-    internal class Header
+    class Header
     {
         /// <summary>
         ///     Constant for MPEG-2 LSF version
@@ -187,7 +187,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             }
         };
 
-        private int _headerstring = -1;
+        private int h_headerstring = -1;
         public short checksum;
         private Crc16 crc;
         public int framesize;
@@ -212,7 +212,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         public virtual int SyncHeader
         {
             // E.B
-            get { return _headerstring; }
+            get { return h_headerstring; }
         }
 
         private void InitBlock()
@@ -255,7 +255,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             do
             {
                 headerstring = stream.syncHeader(syncmode);
-                _headerstring = headerstring; // E.B
+                h_headerstring = headerstring; // E.B
 
                 if (syncmode == Bitstream.INITIAL_SYNC)
                 {
@@ -351,24 +351,24 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             if (h_sample_frequency == FOURTYFOUR_POINT_ONE)
             {
                 /*
-				if (offset == null)
-				{
-				int max = max_number_of_frames(stream);
-				offset = new int[max];
-				for(int i=0; i<max; i++) offset[i] = 0;
-				}
-				// Bizarre, y avait ici une acollade ouvrante
-				int cf = stream.current_frame();
-				int lf = stream.last_frame();
-				if ((cf > 0) && (cf == lf))
-				{
-				offset[cf] = offset[cf-1] + h_padding_bit;
-				}
-				else
-				{
-				offset[0] = h_padding_bit;
-				}
-				*/
+                if (offset == null)
+                {
+                int max = max_number_of_frames(stream);
+                offset = new int[max];
+                for(int i=0; i<max; i++) offset[i] = 0;
+                }
+                // Bizarre, y avait ici une acollade ouvrante
+                int cf = stream.current_frame();
+                int lf = stream.last_frame();
+                if ((cf > 0) && (cf == lf))
+                {
+                offset[cf] = offset[cf-1] + h_padding_bit;
+                }
+                else
+                {
+                offset[0] = h_padding_bit;
+                }
+                */
             }
         }
 
@@ -416,10 +416,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         /// <summary>
         ///     Returns Mode.
         /// </summary>
-        public int mode()
-        {
-            return h_mode;
-        }
+        public int mode() => h_mode;
 
         /// <summary>
         ///     Returns Protection bit.

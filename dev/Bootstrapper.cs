@@ -20,42 +20,30 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 
 namespace UltimaXNA
 {
-    internal sealed class Bootstrapper
+    sealed class Bootstrapper
     {
+        // === Main ===================================================================================================
         [STAThread]
-        private static void Main(string[] args)
+        static void Main(string[] args)
         {
             new Bootstrapper(args).Initialize();
         }
 
-        private bool m_IsInitialized;
+        // === Instance ===============================================================================================
+        readonly GeneralExceptionHandler m_ExecptionHandler;
 
-        public string BaseApplicationPath
+        Bootstrapper(string[] args)
         {
-            get { return AppDomain.CurrentDomain.BaseDirectory; }
+            m_ExecptionHandler = new GeneralExceptionHandler();
         }
 
-        public Bootstrapper(string[] args)
+        void Initialize()
         {
-            GeneralExceptionHandler.Instance = new GeneralExceptionHandler();
-        }
-
-        public void Initialize()
-        {
-            if (m_IsInitialized)
-            {
-                return;
-            }
-
-            m_IsInitialized = true;
-
             ConfigureTraceListeners();
-
             if (Settings.Debug.IsConsoleEnabled && !ConsoleManager.HasConsole)
             {
                 ConsoleManager.Show();
             }
-
             try
             {
                 StartEngine();
@@ -69,56 +57,51 @@ namespace UltimaXNA
             }
         }
 
-        private void StartEngine()
+        void StartEngine()
         {
             SetExceptionHandlers();
-
             using (UltimaGame engine = new UltimaGame())
             {
                 Resolutions.SetWindowSize(engine.Window);
                 engine.Run();
             }
-
             ClearExceptionHandlers();
         }
 
-        private void ConfigureTraceListeners()
+        void ConfigureTraceListeners()
         {
             if (Debugger.IsAttached)
             {
                 Tracer.RegisterListener(new DebugOutputEventListener());
             }
-
             Tracer.RegisterListener(new FileLogEventListener("debug.log"));
-
             if (Settings.Debug.IsConsoleEnabled)
             {
                 Tracer.RegisterListener(new ConsoleOutputEventListener());
             }
-
             Tracer.RegisterListener(new MsgBoxOnCriticalListener());
         }
 
-        private void SetExceptionHandlers()
+        void SetExceptionHandlers()
         {
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
         }
 
-        private void ClearExceptionHandlers()
+        void ClearExceptionHandlers()
         {
             AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
             TaskScheduler.UnobservedTaskException -= OnUnobservedTaskException;
         }
 
-        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            GeneralExceptionHandler.Instance.OnError((Exception) e.ExceptionObject);
+            m_ExecptionHandler.OnError((Exception) e.ExceptionObject);
         }
 
-        private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
-            GeneralExceptionHandler.Instance.OnError(e.Exception);
+            m_ExecptionHandler.OnError(e.Exception);
         }
     }
 }

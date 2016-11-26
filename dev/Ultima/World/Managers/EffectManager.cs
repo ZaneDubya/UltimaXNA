@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.World.Managers
     class EffectManager
     {
         WorldModel m_Model;
-        List<AEffect> m_Effects;
+        readonly List<AEffect> m_Effects;
 
         public EffectManager(WorldModel model)
         {

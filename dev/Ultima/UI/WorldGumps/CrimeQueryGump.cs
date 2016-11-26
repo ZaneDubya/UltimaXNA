@@ -12,7 +12,6 @@
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
@@ -51,7 +50,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     Dispose();
                     break;
                 case 1:
-                    INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
+                    INetworkClient m_Network = Services.Get<INetworkClient>();
                     m_Network.Send(new AttackRequestPacket(Mobile.Serial));
                     Dispose();
                     break;

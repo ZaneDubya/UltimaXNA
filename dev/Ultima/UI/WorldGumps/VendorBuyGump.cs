@@ -29,27 +29,26 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class VendorBuyGump : Gump
     {
-        private ExpandableScroll m_Background;
-        private IScrollBar m_ScrollBar;
-        private HtmlGumpling m_TotalCost;
-        private Button m_OKButton;
+        ExpandableScroll m_Background;
+        IScrollBar m_ScrollBar;
+        HtmlGumpling m_TotalCost;
+        Button m_OKButton;
+        int m_VendorSerial;
+        VendorItemInfo[] m_Items;
+        RenderedTextList m_ShopContents;
 
-        private int m_VendorSerial;
-        private VendorItemInfo[] m_Items;
-        private RenderedTextList m_ShopContents;
-
-        private MouseState m_MouseState = MouseState.None;
-        private int m_MouseDownOnIndex = 0;
-        private double m_MouseDownMS = 0;
+        MouseState m_MouseState = MouseState.None;
+        int m_MouseDownOnIndex;
+        double m_MouseDownMS;
 
         public VendorBuyGump(AEntity vendorBackpack, VendorBuyListPacket packet)
             : base(0, 0)
         {
 
             // sanity checking: don't show buy gumps for empty containers.
-            if (!(vendorBackpack is Container) || ((vendorBackpack as Container).Contents.Count <= 0) || (packet.Items.Count <= 0))
+            if (!(vendorBackpack is ContainerItem) || ((vendorBackpack as ContainerItem).Contents.Count <= 0) || (packet.Items.Count <= 0))
             {
-                Dispose();
+                base.Dispose();
                 return;
             }
 
@@ -78,7 +77,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Dispose();
         }
 
-        private void okButton_MouseClickEvent(AControl control, int x, int y, MouseButton button)
+        void okButton_MouseClickEvent(AControl control, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
                 return;
@@ -95,7 +94,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (itemsToBuy.Count == 0)
                 return;
 
-            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            INetworkClient network = Services.Get<INetworkClient>();
             network.Send(new BuyItemsPacket(m_VendorSerial, itemsToBuy.ToArray()));
             this.Dispose();
         }
@@ -123,16 +122,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
         }
 
-        private void BuildShopContents(AEntity vendorBackpack, VendorBuyListPacket packet)
+        void BuildShopContents(AEntity vendorBackpack, VendorBuyListPacket packet)
         {
 
-            if (!(vendorBackpack is Container))
+            if (!(vendorBackpack is ContainerItem))
             {
                 m_ShopContents.AddEntry("<span color='#800'>Err: vendorBackpack is not Container.");
                 return;
             }
 
-            Container contents = (vendorBackpack as Container);
+            ContainerItem contents = (vendorBackpack as ContainerItem);
             AEntity vendor = contents.Parent;
             if (vendor == null || !(vendor is Mobile))
             {
@@ -160,7 +159,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     else
                     {
                         // get the resource provider
-                        IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                        IResourceProvider provider = Services.Get<IResourceProvider>();
                         description = Utility.CapitalizeAllWords(provider.GetString(clilocDescription));
                     }
 
@@ -175,7 +174,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_ScrollBar.Value = 0;
         }
 
-        private const string c_Format =
+        const string c_Format =
             "<right><a href='add={4}'><gumpimg src='0x9CF'/></a><div width='4'/><a href='remove={4}'><gumpimg src='0x9CE'/></a></right>" +
             "<left><itemimg src='{2}'  width='52' height='44'/></left><left><span color='#400'>{0}<br/>{1}gp, {3} available.</span></left>";
 
@@ -229,21 +228,21 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             UpdateEntryAndCost(index);
         }
 
-        private void AddItem(int index)
+        void AddItem(int index)
         {
             if (m_Items[index].AmountToBuy < m_Items[index].AmountTotal)
                 m_Items[index].AmountToBuy++;
             UpdateEntryAndCost(index);
         }
 
-        private void RemoveItem(int index)
+        void RemoveItem(int index)
         {
             if (m_Items[index].AmountToBuy > 0)
                 m_Items[index].AmountToBuy--;
             UpdateEntryAndCost(index);
         }
 
-        private void UpdateEntryAndCost(int index = -1)
+        void UpdateEntryAndCost(int index = -1)
         {
             if (index >= 0)
             {
@@ -265,7 +264,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_TotalCost.Text = string.Format("<span style='font-family:uni0;' color='#008'>Total: </span><span color='#400'>{0}gp</span>", totalCost);
         }
 
-        private class VendorItemInfo
+        class VendorItemInfo
         {
             public readonly Item Item;
             public readonly string Description;

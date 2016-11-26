@@ -384,7 +384,7 @@ namespace UltimaXNA
         public static int RandomValue(int low, int high)
         {
             if (s_Random == null)
-                s_Random = new Random();
+                s_Random = new Random(DateTime.Now.Millisecond);
             int rnd = s_Random.Next(low, high + 1);
             return rnd; 
         }
@@ -440,28 +440,6 @@ namespace UltimaXNA
         public static int DistanceBetweenTwoPoints(Point p1, Point p2)
         {
             return Convert.ToInt32(Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y)));
-        }
-
-        // Maintain an accurate count of frames per second.
-        static readonly List<float> FPSHistory = new List<float>();
-        internal static int UpdateFPS(double frameMS)
-        {
-            if (frameMS > 0)
-            {
-                while (FPSHistory.Count > 19)
-                    FPSHistory.RemoveAt(0);
-                FPSHistory.Add(1000.0f / (float)frameMS);
-            }
-
-            float count = 0.0f;
-            for (int i = 0; i < FPSHistory.Count; i++)
-            {
-                count += FPSHistory[i];
-            }
-
-            count /= FPSHistory.Count;
-
-            return (int)Math.Ceiling(count);
         }
 
         public static void SaveTexture(Texture2D texture, string path)

@@ -28,7 +28,7 @@ namespace UltimaXNA.Core.Diagnostics.Tracing
                 m_Listeners.Remove(listener);
         }
 
-        private static List<AEventListener> m_Listeners = new List<AEventListener>();
+        private static readonly List<AEventListener> m_Listeners = new List<AEventListener>();
 
         public static void Critical(string message)
         {

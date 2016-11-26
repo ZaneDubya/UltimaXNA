@@ -21,7 +21,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerI
     ///     Used for single channel mode
     ///     and in derived class for intensity stereo mode
     /// </summary>
-    internal class SubbandLayer1 : ASubband
+    class SubbandLayer1 : ASubband
     {
         // Factors and offsets for sample requantization
         public static readonly float[] TableFactor =
@@ -69,7 +69,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerI
             if ((allocation = stream.GetBitsFromBuffer(4)) == 15)
             {
             }
-            //	 cerr << "WARNING: stream contains an illegal allocation!\n";
+            // cerr << "WARNING: stream contains an illegal allocation!\n";
             // MPEG-stream is corrupted!
             if (crc != null)
                 crc.add_bits(allocation, 4);

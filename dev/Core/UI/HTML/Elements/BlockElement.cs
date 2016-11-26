@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Core.UI.HTML.Elements;
 using UltimaXNA.Core.UI.HTML.Styles;
 
 namespace UltimaXNA.Core.UI.HTML.Elements
@@ -52,8 +48,8 @@ namespace UltimaXNA.Core.UI.HTML.Elements
 
         public Alignments Alignment = Alignments.Default;
 
-        public int Layout_MinWidth = 0;
-        public int Layout_MaxWidth = 0;
+        public int Layout_MinWidth;
+        public int Layout_MaxWidth;
 
         public BlockElement(string tag, StyleState style)
             : base(style)
@@ -68,11 +64,8 @@ namespace UltimaXNA.Core.UI.HTML.Elements
                 (atom as BlockElement).Parent = this;
         }
 
-        public override string ToString()
-        {
-            return Tag;
-        }
+        public override string ToString() => Tag;
 
-        public bool Err_Cant_Fit_Children = false;
+        public bool Err_Cant_Fit_Children;
     }
 }

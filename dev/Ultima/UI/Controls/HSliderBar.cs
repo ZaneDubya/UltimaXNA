@@ -16,7 +16,6 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -29,11 +28,11 @@ namespace UltimaXNA.Ultima.UI.Controls
 
     class HSliderBar : AControl
     {
-        Texture2D[] m_GumpSliderBackground = null;
-        Texture2D m_GumpWidget = null;
+        Texture2D[] m_GumpSliderBackground;
+        Texture2D m_GumpWidget;
 
         // we use m_newValue to (a) get delta, (b) so Value only changes once per frame.
-        int m_newValue = 0, m_value = 0;
+        int m_newValue, m_value;
         public int Value
         {
             get
@@ -60,7 +59,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         private int m_sliderX;
         private HSliderBarStyle Style;
 
-        public HSliderBar(AControl parent)
+        HSliderBar(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;
@@ -70,10 +69,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         public HSliderBar(AControl parent, int x, int y, int width, int minValue, int maxValue, int value, HSliderBarStyle style)
             : this(parent)
         {
-            buildGumpling(x, y, width, minValue, maxValue, value, style);
+            BuildGumpling(x, y, width, minValue, maxValue, value, style);
         }
 
-        void buildGumpling(int x, int y, int width, int minValue, int maxValue, int value, HSliderBarStyle style)
+        void BuildGumpling(int x, int y, int width, int minValue, int maxValue, int value, HSliderBarStyle style)
         {
             Position = new Point(x, y);
             MinValue = minValue;
@@ -87,7 +86,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_GumpWidget == null)
             {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 switch (Style)
                 {
                     default:
@@ -113,7 +112,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             if (m_GumpSliderBackground != null)
             {
@@ -122,7 +121,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 spriteBatch.Draw2D(m_GumpSliderBackground[2], new Vector3(position.X + BarWidth - m_GumpSliderBackground[2].Width, position.Y, 0), Vector3.Zero);
             }
             spriteBatch.Draw2D(m_GumpWidget, new Vector3(position.X + m_sliderX, position.Y, 0), Vector3.Zero);
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override bool IsPointWithinControl(int x, int y)
@@ -133,7 +132,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return false;
         }
 
-        bool m_clicked = false;
+        bool m_clicked;
         Point m_clickPosition;
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
@@ -165,7 +164,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        List<HSliderBar> m_pairedSliders;
+        readonly List<HSliderBar> m_pairedSliders;
         public void PairSlider(HSliderBar s)
         {
             m_pairedSliders.Add(s);

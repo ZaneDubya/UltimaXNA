@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Input;
@@ -11,7 +13,7 @@ namespace UltimaXNA.Ultima.Input
 {
     class MacroEngine
     {
-        private List<RunningMacroAction> m_RunningMacros = new List<RunningMacroAction>();
+        List<RunningMacroAction> m_RunningMacros = new List<RunningMacroAction>();
 
         public void Run(Action action)
         {
@@ -28,7 +30,7 @@ namespace UltimaXNA.Ultima.Input
             });
         }
 
-        private class RunningMacroAction
+        class RunningMacroAction
         {
             public Action Action
             {
@@ -65,30 +67,30 @@ namespace UltimaXNA.Ultima.Input
             }
         }
 
-        private static void RunMacro(RunningMacroAction raction)
+        static void RunMacro(RunningMacroAction action)
         {
-            WorldModel world = ServiceRegistry.GetService<WorldModel>();
+            WorldModel world = Services.Get<WorldModel>();
 
-            switch (raction.Action.Macros[raction.m_MacroIndex].Type)
+            switch (action.Action.Macros[action.m_MacroIndex].Type)
             {
                 case MacroType.Say:
-                    world.Interaction.SendSpeech(raction.Action.Macros[raction.m_MacroIndex].ValueString, ChatMode.Default);
+                    MacroSay(action.Action.Macros[action.m_MacroIndex].ValueString);
                     break;
                 case MacroType.Delay:
-                    if (raction.m_MacroDelayer == null) //delay starts
+                    if (action.m_MacroDelayer == null) //delay starts
                     {
-                        raction.m_MacroDelayer = DateTime.Now;
+                        action.m_MacroDelayer = DateTime.Now;
                         return;
                     }
 
                     int delayMs = 0;
-                    bool result = int.TryParse(raction.Action.Macros[raction.m_MacroIndex].ValueString, out delayMs);
+                    bool result = int.TryParse(action.Action.Macros[action.m_MacroIndex].ValueString, out delayMs);
                     if (result)
                     {
-                        TimeSpan ts = DateTime.Now - raction.m_MacroDelayer.Value;
+                        TimeSpan ts = DateTime.Now - action.m_MacroDelayer.Value;
                         if ((int)ts.TotalMilliseconds >= delayMs) //delay ends
                         {
-                            raction.m_MacroDelayer = null;
+                            action.m_MacroDelayer = null;
                         }
                         else
                         {
@@ -97,10 +99,10 @@ namespace UltimaXNA.Ultima.Input
                     }
                     break;
                 case MacroType.UseSkill:
-                    world.Interaction.UseSkill(raction.Action.Macros[raction.m_MacroIndex].ValueInteger);
+                    world.Interaction.UseSkill(action.Action.Macros[action.m_MacroIndex].ValueInteger);
                     break;
                 case MacroType.CastSpell:
-                    world.Interaction.CastSpell(raction.Action.Macros[raction.m_MacroIndex].ValueInteger);
+                    world.Interaction.CastSpell(action.Action.Macros[action.m_MacroIndex].ValueInteger);
                     break;
                 case MacroType.LastTarget:
                     var source = WorldModel.Entities.GetObject<AEntity>(world.Interaction.LastTarget, false);
@@ -112,10 +114,18 @@ namespace UltimaXNA.Ultima.Input
                     }
                     break;
             }
-            raction.m_MacroIndex++;
+            action.m_MacroIndex++;
         }
 
-        private static void RunMacroAction(Action action)//old method
+        static void MacroSay(string text)
+        {
+            INetworkClient network = Services.Get<INetworkClient>();
+            MessageTypes speechType = MessageTypes.Normal;
+            ushort hue = (ushort)Settings.UserInterface.SpeechColor;
+            network.Send(new AsciiSpeechPacket(speechType, 0, hue , "ENU", text));
+        }
+
+        static void RunMacroAction(Action action)//old method
         {
             /*WorldModel world = ServiceRegistry.GetService<WorldModel>();
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();

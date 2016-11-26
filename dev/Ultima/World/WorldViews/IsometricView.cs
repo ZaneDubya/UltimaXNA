@@ -61,13 +61,13 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
         private SpriteBatch3D m_SpriteBatch;
         private bool m_DrawTerrain = true;
-        private bool m_UnderSurface = false;
+        private bool m_UnderSurface;
         private int m_DrawMaxItemAltitude;
         private Vector2 m_DrawOffset;
 
         public IsometricRenderer()
         {
-            m_SpriteBatch = ServiceRegistry.GetService<SpriteBatch3D>();
+            m_SpriteBatch = Services.Get<SpriteBatch3D>();
             Lighting = new IsometricLighting();
         }
 

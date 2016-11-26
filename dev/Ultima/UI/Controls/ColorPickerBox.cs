@@ -38,8 +38,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             set;
         }
 
-        public bool IsChild = false;
-        public ColorPickerBox ParentColorPicker = null;
+        public bool IsChild;
+        public ColorPickerBox ParentColorPicker;
 
         public int HueValue
         {
@@ -57,7 +57,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public ColorPickerBox(AControl parent)
+        ColorPickerBox(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;
@@ -66,7 +66,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public ColorPickerBox(AControl parent, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
             : this(parent)
         {
-            buildGumpling(area, swatchWidth, swatchHeight, hues);
+            BuildGumpling(area, swatchWidth, swatchHeight, hues);
         }
 
         public ColorPickerBox(AControl parent, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues, int index)
@@ -74,10 +74,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             m_openArea = openArea;
             m_Index = index;
-            buildGumpling(closedArea, swatchWidth, swatchHeight, hues);
+            BuildGumpling(closedArea, swatchWidth, swatchHeight, hues);
         }
 
-        void buildGumpling(Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
+        void BuildGumpling(Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
         {
             m_hueWidth = swatchWidth;
             m_hueHeight = swatchHeight;
@@ -94,7 +94,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (IsChild) // is a child
                 {
                     m_huesTexture = HueData.CreateHueSwatch(m_hueWidth, m_hueHeight, m_hues);
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     m_selectedIndicator = provider.GetUITexture(6000);
                 }
                 else
@@ -104,9 +104,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             m_Inactive = provider.GetUITexture(210);
 
             spriteBatch.Draw2D(m_Inactive, new Vector3(position.X, position.Y, 0), Vector3.Zero);
@@ -119,7 +119,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     (int)(position.Y + (float)(Height / m_hueHeight) * ((Index / m_hueWidth) + 0.5f) - m_selectedIndicator.Height / 2),
                     0), Vector3.Zero);
             }
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override void OnMouseClick(int x, int y, MouseButton button)

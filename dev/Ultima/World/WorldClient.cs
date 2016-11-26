@@ -12,6 +12,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using UltimaXNA.Core.Diagnostics.Tracing;
@@ -23,10 +24,13 @@ using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.Network.Server.GeneralInfo;
 using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.Player.Partying;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World.Data;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
@@ -39,119 +43,112 @@ namespace UltimaXNA.Ultima.World
 {
     class WorldClient : IDisposable
     {
-        private Timer m_KeepAliveTimer;
-        private INetworkClient m_Network;
-        private UserInterfaceService m_UserInterface;
-        private readonly Version m_OldAddItemToContainerVersion = new Version("6.0.1.7");
-        private WorldModel m_World;
-        private List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
-        
+        Timer m_KeepAliveTimer;
+        readonly INetworkClient m_Network;
+        UserInterfaceService m_UserInterface;
+        WorldModel m_World;
+
         public WorldClient(WorldModel world)
         {
             m_World = world;
-
-            m_RegisteredHandlers = new List<Tuple<int, TypedPacketReceiveHandler>>();
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Network = Services.Get<INetworkClient>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
         }
 
         public void Initialize()
         {
-            Register<DamagePacket>(0x0B, "Damage", 0x07, new TypedPacketReceiveHandler(ReceiveDamage));
-            Register<StatusInfoPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(ReceiveStatusInfo));
-            Register<ObjectInfoPacket>(0x1A, "World Item", -1, new TypedPacketReceiveHandler(ReceiveWorldItem));
-            Register<AsciiMessagePacket>(0x1C, "Ascii Meessage", -1, new TypedPacketReceiveHandler(ReceiveAsciiMessage));
-            Register<RemoveEntityPacket>(0x1D, "Remove Entity", 5, new TypedPacketReceiveHandler(ReceiveDeleteObject));
-            Register<MobileUpdatePacket>(0x20, "Mobile Update", 19, new TypedPacketReceiveHandler(ReceiveMobileUpdate));
-            Register<MovementRejectPacket>(0x21, "Movement Rejection", 8, new TypedPacketReceiveHandler(ReceiveMoveRej));
-            Register<MoveAcknowledgePacket>(0x22, "Move Acknowledged", 3, new TypedPacketReceiveHandler(ReceiveMoveAck));
-            Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
-            Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
-
-            if (ClientVersion.Version < m_OldAddItemToContainerVersion)
-            {
-                Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 20, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
-            }
-            else
-            {
-                Register<AddSingleItemToContainerPacket>(0x25, "Container Content Update", 21, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
-            }
-
-            Register<LiftRejectionPacket>(0x27, "Lift Rejection", 2, new TypedPacketReceiveHandler(ReceiveRejectMoveItemRequest));
-            Register<ResurrectionMenuPacket>(0x2C, "Resurect menu", 2, new TypedPacketReceiveHandler(ReceiveResurrectionMenu));
-            Register<MobileAttributesPacket>(0x2D, "Mob Attributes", 17, new TypedPacketReceiveHandler(ReceiveMobileAttributes));
-            Register<WornItemPacket>(0x2E, "Worn Item", 15, new TypedPacketReceiveHandler(ReceiveWornItem));
-            Register<SwingPacket>(0x2F, "Swing", 10, new TypedPacketReceiveHandler(ReceiveOnSwing));
-            Register<SendSkillsPacket>(0x3A, "Skills list", -1, new TypedPacketReceiveHandler(ReceiveSkillsList));
-            Register<ContainerContentPacket>(0x3C, "Container Content", -1, new TypedPacketReceiveHandler(ReceiveAddMultipleItemsToContainer));
-            Register<PersonalLightLevelPacket>(0x4E, "Personal Light Level", 6, new TypedPacketReceiveHandler(ReceivePersonalLightLevel));
-            Register<OverallLightLevelPacket>(0x4F, "Overall Light Level", 2, new TypedPacketReceiveHandler(ReceiveOverallLightLevel));
-            Register<PopupMessagePacket>(0x53, "Popup Message", 2, new TypedPacketReceiveHandler(ReceivePopupMessage));
-            Register<PlaySoundEffectPacket>(0x54, "Play Sound Effect", 12, new TypedPacketReceiveHandler(ReceivePlaySoundEffect));
-            Register<TimePacket>(0x5B, "Time", 4, new TypedPacketReceiveHandler(ReceiveTime));
-            Register<WeatherPacket>(0x65, "Set Weather", 4, new TypedPacketReceiveHandler(ReceiveSetWeather));
-            Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(ReceiveTargetCursor));
-            Register<PlayMusicPacket>(0x6D, "Play Music", 3, new TypedPacketReceiveHandler(ReceivePlayMusic));
-            Register<MobileAnimationPacket>(0x6E, "Character Animation", 14, new TypedPacketReceiveHandler(ReceiveMobileAnimation));
-            Register<GraphicEffectPacket>(0x70, "Graphical Effect 1", 28, new TypedPacketReceiveHandler(ReceiveGraphicEffect));
-            Register<WarModePacket>(0x72, "War Mode", 5, new TypedPacketReceiveHandler(ReceiveWarMode));
-            Register<VendorBuyListPacket>(0x74, "Vendor Buy List", -1, new TypedPacketReceiveHandler(ReceiveOpenBuyWindow));
-            Register<SubServerPacket>(0x76, "New Subserver", 16, new TypedPacketReceiveHandler(ReceiveNewSubserver));
-            Register<MobileMovingPacket>(0x77, "Mobile Moving", 17, new TypedPacketReceiveHandler(ReceiveMobileMoving));
-            Register<MobileIncomingPacket>(0x78, "Mobile Incoming", -1, new TypedPacketReceiveHandler(ReceiveMobileIncoming));
-            Register<DisplayMenuPacket>(0x7C, "Display Menu", -1, new TypedPacketReceiveHandler(ReceiveDisplayMenu));
-            Register<OpenPaperdollPacket>(0x88, "Open Paperdoll", 66, new TypedPacketReceiveHandler(ReceiveOpenPaperdoll));
-            Register<CorpseClothingPacket>(0x89, "Corpse Clothing", -1, new TypedPacketReceiveHandler(ReceiveCorpseClothing));
-            Register<PlayerMovePacket>(0x97, "Player Move", 2, new TypedPacketReceiveHandler(ReceivePlayerMove));
-            Register<RequestNameResponsePacket>(0x98, "Request Name Response", -1, new TypedPacketReceiveHandler(ReceiveRequestNameResponse));
-            Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(ReceiveTargetCursorMulti));
-            Register<VendorSellListPacket>(0x9E, "Vendor Sell List", -1, new TypedPacketReceiveHandler(ReceiveSellList));
-            Register<UpdateHealthPacket>(0xA1, "Update Current Health", 9, new TypedPacketReceiveHandler(ReceiveUpdateHealth));
-            Register<UpdateManaPacket>(0xA2, "Update Current Mana", 9, new TypedPacketReceiveHandler(ReceiveUpdateMana));
-            Register<UpdateStaminaPacket>(0xA3, "Update Current Stamina", 9, new TypedPacketReceiveHandler(ReceiveUpdateStamina));
-            Register<OpenWebBrowserPacket>(0xA5, "Open Web Browser", -1, new TypedPacketReceiveHandler(ReceiveOpenWebBrowser));
-            Register<TipNoticePacket>(0xA6, "Tip/Notice Window", -1, new TypedPacketReceiveHandler(ReceiveTipNotice));
-            Register<ChangeCombatantPacket>(0xAA, "Change Combatant", 5, new TypedPacketReceiveHandler(ReceiveChangeCombatant));
-            Register<UnicodeMessagePacket>(0xAE, "Unicode Message", -1, new TypedPacketReceiveHandler(ReceiveUnicodeMessage));
-            Register<DeathAnimationPacket>(0xAF, "Death Animation", 13, new TypedPacketReceiveHandler(ReceiveDeathAnimation));
-            Register<DisplayGumpFastPacket>(0xB0, "Display Gump Fast", -1, new TypedPacketReceiveHandler(ReceiveDisplayGumpFast));
-            Register<ObjectHelpResponsePacket>(0xB7, "Object Help Response ", -1, new TypedPacketReceiveHandler(ReceiveObjectHelpResponse));
-            Register<QuestArrowPacket>(0xBA, "Quest Arrow", 6, new TypedPacketReceiveHandler(ReceiveQuestArrow));
-            Register<SeasonChangePacket>(0xBC, "Seasonal Change", 3, new TypedPacketReceiveHandler(ReceiveSeasonalInformation));
-            Register<GeneralInfoPacket>(0xBF, "General Information", -1, new TypedPacketReceiveHandler(ReceiveGeneralInfo));
-            Register<GraphicEffectHuedPacket>(0xC0, "Hued Effect", 36, new TypedPacketReceiveHandler(ReceiveHuedEffect));
-            Register<MessageLocalizedPacket>(0xC1, "Message Localized", -1, new TypedPacketReceiveHandler(ReceiveCLILOCMessage));
-            Register<InvalidMapEnablePacket>(0xC6, "Invalid Map Enable", 1, new TypedPacketReceiveHandler(ReceiveInvalidMapEnable));
-            Register<GraphicEffectExtendedPacket>(0xC7, "Particle Effect", 49, new TypedPacketReceiveHandler(ReceiveOnParticleEffect));
-            Register<GlobalQueuePacket>(0xCB, "Global Queue Count", 7, new TypedPacketReceiveHandler(ReceiveGlobalQueueCount));
-            Register<MessageLocalizedAffixPacket>(0xCC, "Message Localized Affix ", -1, new TypedPacketReceiveHandler(ReceiveMessageLocalizedAffix));
-            Register<Extended0x78Packet>(0xD3, "Extended 0x78", -1, new TypedPacketReceiveHandler(ReceiveExtended0x78));
-            Register<ObjectPropertyListPacket>(0xD6, "Mega Cliloc", -1, new TypedPacketReceiveHandler(ReceiveObjectPropertyList));
-            Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(ReceiveSendCustomHouse));
-            Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(ReceiveToolTipRevision));
-            Register<CompressedGumpPacket>(0xDD, "Compressed Gump", -1, new TypedPacketReceiveHandler(ReceiveCompressedGump));
-
+            Register<DamagePacket>(0x0B, 0x07, ReceiveDamage);
+            Register<StatusInfoPacket>(0x11, -1, ReceiveStatusInfo);
+            Register<ObjectInfoPacket>(0x1A, -1, ReceiveWorldItem);
+            Register<AsciiMessagePacket>(0x1C, -1, ReceiveAsciiMessage);
+            Register<RemoveEntityPacket>(0x1D, 5, ReceiveDeleteObject);
+            Register<MobileUpdatePacket>(0x20, 19, ReceiveMobileUpdate);
+            Register<MovementRejectPacket>(0x21, 8, ReceiveMoveRej);
+            Register<MoveAcknowledgePacket>(0x22, 3, ReceiveMoveAck);
+            Register<DragEffectPacket>(0x23, 26, ReceiveDragItem);
+            Register<OpenContainerPacket>(0x24, 7, ReceiveContainer);
+            Register<AddSingleItemToContainerPacket>(0x25, 
+                ClientVersion.HasExtendedAddItemPacket(Settings.UltimaOnline.PatchVersion) ? 21 : 20,
+                ReceiveAddSingleItemToContainer);
+            Register<LiftRejectionPacket>(0x27, 2, ReceiveRejectMoveItemRequest);
+            Register<ResurrectionMenuPacket>(0x2C, 2, ReceiveResurrectionMenu);
+            Register<MobileAttributesPacket>(0x2D, 17, ReceiveMobileAttributes);
+            Register<WornItemPacket>(0x2E, 15, ReceiveWornItem);
+            Register<SwingPacket>(0x2F, 10, ReceiveOnSwing);
+            Register<SendSkillsPacket>(0x3A, -1, ReceiveSkillsList);
+            Register<ContainerContentPacket>(0x3C, -1, ReceiveAddMultipleItemsToContainer);
+            Register<PersonalLightLevelPacket>(0x4E, 6, ReceivePersonalLightLevel);
+            Register<OverallLightLevelPacket>(0x4F, 2, ReceiveOverallLightLevel);
+            Register<PopupMessagePacket>(0x53, 2, ReceivePopupMessage);
+            Register<PlaySoundEffectPacket>(0x54, 12, ReceivePlaySoundEffect);
+            Register<TimePacket>(0x5B, 4, ReceiveTime);
+            Register<WeatherPacket>(0x65, 4, ReceiveSetWeather);
+            Register<BookPagesPacket>(0x66, -1, ReceiveBookPages);
+            Register<TargetCursorPacket>(0x6C, 19, ReceiveTargetCursor);
+            Register<PlayMusicPacket>(0x6D, 3, ReceivePlayMusic);
+            Register<MobileAnimationPacket>(0x6E, 14, ReceiveMobileAnimation);
+            Register<GraphicEffectPacket>(0x70, 28, ReceiveGraphicEffect);
+            Register<WarModePacket>(0x72, 5, ReceiveWarMode);
+            Register<VendorBuyListPacket>(0x74, -1, ReceiveOpenBuyWindow);
+            Register<SubServerPacket>(0x76, 16, ReceiveNewSubserver);
+            Register<MobileMovingPacket>(0x77, 17, ReceiveMobileMoving);
+            Register<MobileIncomingPacket>(0x78, -1, ReceiveMobileIncoming);
+            Register<DisplayMenuPacket>(0x7C, -1, ReceiveDisplayMenu);
+            Register<OpenPaperdollPacket>(0x88, 66, ReceiveOpenPaperdoll);
+            Register<CorpseClothingPacket>(0x89, -1, ReceiveCorpseClothing);
+            Register<BookHeaderOldPacket>(0x93, 99, ReceiveBookHeaderOld);
+            Register<PlayerMovePacket>(0x97, 2, ReceivePlayerMove);
+            Register<RequestNameResponsePacket>(0x98, -1, ReceiveRequestNameResponse);
+            Register<TargetCursorMultiPacket>(0x99, 26, ReceiveTargetCursorMulti);
+            Register<VendorSellListPacket>(0x9E, -1, ReceiveSellList);
+            Register<UpdateHealthPacket>(0xA1, 9, ReceiveUpdateHealth);
+            Register<UpdateManaPacket>(0xA2, 9, ReceiveUpdateMana);
+            Register<UpdateStaminaPacket>(0xA3, 9, ReceiveUpdateStamina);
+            Register<OpenWebBrowserPacket>(0xA5, -1, ReceiveOpenWebBrowser);
+            Register<TipNoticePacket>(0xA6, -1, ReceiveTipNotice);
+            Register<ChangeCombatantPacket>(0xAA, 5, ReceiveChangeCombatant);
+            Register<UnicodeMessagePacket>(0xAE, -1, ReceiveUnicodeMessage);
+            Register<DeathAnimationPacket>(0xAF, 13, ReceiveDeathAnimation);
+            Register<DisplayGumpFastPacket>(0xB0, -1, ReceiveDisplayGumpFast);
+            Register<ObjectHelpResponsePacket>(0xB7, -1, ReceiveObjectHelpResponse);
+            Register<SupportedFeaturesPacket>(0xB9, 
+                ClientVersion.HasExtendedFeatures(Settings.UltimaOnline.PatchVersion) ? 5 : 3,
+                ReceiveEnableFeatures);
+            Register<QuestArrowPacket>(0xBA, 6, ReceiveQuestArrow);
+            Register<SeasonChangePacket>(0xBC, 3, ReceiveSeasonalInformation);
+            Register<GeneralInfoPacket>(0xBF, -1, ReceiveGeneralInfo);
+            Register<GraphicEffectHuedPacket>(0xC0, 36, ReceiveHuedEffect);
+            Register<MessageLocalizedPacket>(0xC1, -1, ReceiveCLILOCMessage);
+            Register<InvalidMapEnablePacket>(0xC6, 1, ReceiveInvalidMapEnable);
+            Register<GraphicEffectExtendedPacket>(0xC7, 49, ReceiveOnParticleEffect);
+            Register<GlobalQueuePacket>(0xCB, 7, ReceiveGlobalQueueCount);
+            Register<MessageLocalizedAffixPacket>(0xCC, -1, ReceiveMessageLocalizedAffix);
+            Register<Extended0x78Packet>(0xD3, -1, ReceiveExtended0x78);
+            Register<BookHeaderNewPacket>(0xD4, -1, ReceiveBookHeaderNew);
+            Register<ObjectPropertyListPacket>(0xD6, -1, ReceiveObjectPropertyList);
+            Register<CustomHousePacket>(0xD8, -1, ReceiveSendCustomHouse);
+            Register<ObjectPropertyListUpdatePacket>(0xDC, 9, ReceiveToolTipRevision);
+            Register<CompressedGumpPacket>(0xDD, -1, ReceiveCompressedGump);
+            Register<ProtocolExtensionPacket>(0xF0, -1, ReceiveProtocolExtension);
             /* Deprecated (not used by RunUO) and/or not implmented
              * Left them here incase we need to implement in the future
-            network.Register<HealthBarStatusPacket>(0x17, "Health Bar Status Update", 12, OnHealthBarStatusUpdate);
-            network.Register<KickPlayerPacket>(0x26, "Kick Player", 5, OnKickPlayer);
-            network.Register<DropItemFailedPacket>(0x28, "Drop Item Failed", 5, OnDropItemFailed);
-            network.Register<PaperdollClothingAddAckPacket>(0x29, "Paperdoll Clothing Add Ack", 1, OnPaperdollClothingAddAck
-            network.Register<RecvPacket>(0x30, "Attack Ok", 5, OnAttackOk);
-            network.Register<BloodPacket>(0x2A, "Blood", 5, OnBlood);
-            network.Register<RecvPacket>(0x33, "Pause Client", -1, OnPauseClient);
-            network.Register<RecvPacket>(0x90, "Map Message", -1, OnMapMessage);
-            network.Register<RecvPacket>(0x9C, "Help Request", -1, OnHelpRequest);
-            network.Register<RecvPacket>(0xAB, "Gump Text Entry Dialog", -1, OnGumpDialog);
-            network.Register<RecvPacket>(0xB2, "Chat Message", -1, OnChatMessage);
-            network.Register<RecvPacket>(0xC4, "Semivisible", -1, OnSemivisible);
-            network.Register<RecvPacket>(0xD2, "Extended 0x20", -1, OnExtended0x20);
-            network.Register<RecvPacket>(0xDB, "Character Transfer Log", -1, OnCharacterTransferLog);
-            network.Register<RecvPacket>(0xDC, "SE Introduced Revision", -1, OnToolTipRevision);
-            network.Register<RecvPacket>(0xDE, "Update Mobile Status", -1, OnUpdateMobileStatus);
-            network.Register<RecvPacket>(0xDF, "Buff/Debuff System", -1, OnBuffDebuff);
-            network.Register<RecvPacket>(0xE2, "Mobile status/Animation update", -1, OnMobileStatusAnimationUpdate);
-            network.Register<RecvPacket>(0xF0, "Krrios client special", -1, OnKrriosClientSpecial);
+            network.Register<HealthBarStatusPacket>(0x17, 12, OnHealthBarStatusUpdate);
+            network.Register<KickPlayerPacket>(0x26, 5, OnKickPlayer);
+            network.Register<DropItemFailedPacket>(0x28, 5, OnDropItemFailed);
+            network.Register<PaperdollClothingAddAckPacket>(0x29, 1, OnPaperdollClothingAddAck
+            network.Register<RecvPacket>(0x30, 5, OnAttackOk);
+            network.Register<BloodPacket>(0x2A, 5, OnBlood);
+            network.Register<RecvPacket>(0x33, -1, OnPauseClient);
+            network.Register<RecvPacket>(0x90, -1, OnMapMessage);
+            network.Register<RecvPacket>(0x9C, -1, OnHelpRequest);
+            network.Register<RecvPacket>(0xAB, -1, OnGumpDialog);
+            network.Register<RecvPacket>(0xB2, -1, OnChatMessage);
+            network.Register<RecvPacket>(0xC4, -1, OnSemivisible);
+            network.Register<RecvPacket>(0xD2, -1, OnExtended0x20);
+            network.Register<RecvPacket>(0xDB, -1, OnCharacterTransferLog);
+            network.Register<RecvPacket>(0xDE, -1, OnUpdateMobileStatus);
+            network.Register<RecvPacket>(0xDF, -1, OnBuffDebuff);
+            network.Register<RecvPacket>(0xE2, -1, OnMobileStatusAnimationUpdate);
             */
             MobileMovement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
         }
@@ -159,21 +156,15 @@ namespace UltimaXNA.Ultima.World
         public void Dispose()
         {
             StopKeepAlivePackets();
-
-            for (int i = 0; i < m_RegisteredHandlers.Count; i++)
-                m_Network.Unregister(m_RegisteredHandlers[i].Item1, m_RegisteredHandlers[i].Item2);
-            m_RegisteredHandlers.Clear();
-            m_RegisteredHandlers = null;
-
+            m_Network.Unregister(this);
             MobileMovement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
         }
 
-        public void Register<T>(int id, string name, int length, TypedPacketReceiveHandler onReceive) where T : IRecvPacket
+        public void Register<T>(int id, int length, Action<T> onReceive) where T : IRecvPacket
         {
-            m_RegisteredHandlers.Add(new Tuple<int, TypedPacketReceiveHandler>(id, onReceive));
-            m_Network.Register<T>(id, name, length, onReceive);
+            m_Network.Register(this, id, length, onReceive);
         }
-        
+
         public void SendWorldLoginPackets()
         {
             GetMySkills();
@@ -200,13 +191,13 @@ namespace UltimaXNA.Ultima.World
                 TimeSpan.FromSeconds(4));
         }
 
-        private void StopKeepAlivePackets()
+        void StopKeepAlivePackets()
         {
             if (m_KeepAliveTimer != null)
                 m_KeepAliveTimer.Dispose();
         }
 
-        private void SendKeepAlivePacket()
+        void SendKeepAlivePacket()
         {
             m_Network.Send(new UOSEKeepAlivePacket());
         }
@@ -221,13 +212,13 @@ namespace UltimaXNA.Ultima.World
         /// </summary>
         public void SendClientVersion()
         {
-            if (Settings.UltimaOnline.ClientVersion.Length != 4)
+            if (Settings.UltimaOnline.PatchVersion.Length != 4)
             {
                 Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
             }
             else
             {
-                m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.ClientVersion));
+                m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.PatchVersion));
             }
         }
 
@@ -251,100 +242,93 @@ namespace UltimaXNA.Ultima.World
             m_Network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, WorldModel.PlayerSerial));
         }
 
-        private void ReceiveTargetCursor(IRecvPacket packet)
+        void ReceiveTargetCursor(TargetCursorPacket p)
         {
-            TargetCursorPacket p = (TargetCursorPacket)packet;
             m_World.Cursor.SetTargeting((WorldCursor.TargetType)p.CommandType, p.CursorID);
         }
 
-        private void ReceiveTargetCursorMulti(IRecvPacket packet)
+        void ReceiveTargetCursorMulti(TargetCursorMultiPacket p)
         {
-            TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
             m_World.Cursor.SetTargetingMulti(p.DeedSerial, p.MultiModel);
         }
 
-        private void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket packet)
+        void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket p)
         {
-            m_Network.Send(packet);
+            m_Network.Send(p);
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Effect handling
-        // ======================================================================
+        // ============================================================================================================
 
-        private void ReceiveGraphicEffect(IRecvPacket packet)
+        void ReceiveGraphicEffect(GraphicEffectPacket p)
         {
-            WorldModel.Effects.Add((GraphicEffectPacket)packet);
+            WorldModel.Effects.Add(p);
         }
 
-        private void ReceiveHuedEffect(IRecvPacket packet)
+        void ReceiveHuedEffect(GraphicEffectHuedPacket p)
         {
-            WorldModel.Effects.Add((GraphicEffectHuedPacket)packet);
+            WorldModel.Effects.Add(p);
         }
 
-        private void ReceiveOnParticleEffect(IRecvPacket packet)
+        void ReceiveOnParticleEffect(GraphicEffectExtendedPacket p)
         {
-            WorldModel.Effects.Add((GraphicEffectExtendedPacket)packet);
+            WorldModel.Effects.Add(p);
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Entity handling
-        // ======================================================================
+        // ============================================================================================================
 
-        private void ReceiveAddMultipleItemsToContainer(IRecvPacket packet)
+        void ReceiveAddMultipleItemsToContainer(ContainerContentPacket p)
         {
-            ContainerContentPacket p = (ContainerContentPacket)packet;
             if (p.Items.Length == 0)
                 return;
-
             // special handling for spellbook contents
             if (p.AllItemsInSameContainer)
             {
-                Container container = WorldModel.Entities.GetObject<Container>(p.Items[0].ContainerSerial, true);
+                ContainerItem container = WorldModel.Entities.GetObject<ContainerItem>(p.Items[0].ContainerSerial, true);
                 if (SpellbookData.GetSpellBookTypeFromItemID(container.ItemID) != SpellBookTypes.Unknown)
                 {
                     SpellbookData data = new SpellbookData(container, p);
                     (container as SpellBook).ReceiveSpellData(data.BookType, data.SpellsBitfield);
                 }
             }
-
-            foreach (ItemInContainer i in p.Items)
+            foreach (ItemInContainer pItem in p.Items)
             {
-                // Add the item...
-                Item item = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
-                item.InContainerPosition = new Point(i.X, i.Y);
-                // ... and add it the container contents of the container.
-                Container container = WorldModel.Entities.GetObject<Container>(i.ContainerSerial, true);
-                if (container != null)
-                    container.AddItem(item);
+                Item item = CreateItem(pItem.Serial, pItem.ItemID, pItem.Hue, pItem.Amount);
+                item.InContainerPosition = new Point(pItem.X, pItem.Y);
+                PlaceItemInContainer(item, pItem.ContainerSerial);
             }
         }
 
-        private void ReceiveAddSingleItemToContainer(IRecvPacket packet)
+        void ReceiveAddSingleItemToContainer(AddSingleItemToContainerPacket p)
         {
-            AddSingleItemToContainerPacket p = (AddSingleItemToContainerPacket)packet;
-
-            // Add the item...
-            Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
+            Item item = CreateItem(p.Serial, p.ItemId, p.Hue, p.Amount);
             item.InContainerPosition = new Point(p.X, p.Y);
-            // ... and add it the container contents of the container.
-            AEntity container = WorldModel.Entities.GetObject<AEntity>(p.ContainerSerial, false);
-            if (container == null)
-            {
-                // shouldn't we already have the container? Throw an error?
-                Tracer.Warn("SingleItemToContainer packet arrived before container entity created.");
-            }
-            if (container is Container) // place in container
-            {
-                (container as Container).AddItem(item);
-            }
-            else if (container is Mobile) // secure trade
-            {
+            PlaceItemInContainer(item, p.ContainerSerial);
+        }
 
+        void PlaceItemInContainer(Item item, Serial cSerial)
+        {
+            // This code is necessary sanity checking: It may be possible that the server will ask us to add an item to
+            // a mobile, which this codebase does not currently handle.
+            AEntity entity = WorldModel.Entities.GetObject<AEntity>(cSerial, false);
+            if (entity == null)
+            {
+                entity = WorldModel.Entities.GetObject<ContainerItem>(cSerial, true);
+            }
+            if (entity is ContainerItem)
+            {
+                (entity as ContainerItem).AddItem(item);
+            }
+            else
+            {
+                Tracer.Warn($"Illegal PlaceItemInContainer({item}, {cSerial}): container is {entity.GetType()}.");
             }
         }
 
-        private Item add_Item(Serial serial, int itemID, int nHue, Serial parentSerial, int amount)
+        Item CreateItem(Serial serial, int itemID, int nHue, int amount)
         {
             Item item;
             if (itemID == 0x2006)
@@ -363,25 +347,35 @@ namespace UltimaXNA.Ultima.World
                     }
                     else
                     {
-                        item = WorldModel.Entities.GetObject<Container>(serial, true);
+                        item = WorldModel.Entities.GetObject<ContainerItem>(serial, true);
                     }
                 }
                 else
-                    item = WorldModel.Entities.GetObject<Item>(serial, true);
+                {
+                    // special case for books
+                    if (Books.IsBookItem((ushort)itemID))
+                    {
+                        item = WorldModel.Entities.GetObject<BaseBook>(serial, true);
+                    }
+                    else
+                    {
+                        item = WorldModel.Entities.GetObject<Item>(serial, true);
+                    }
+                }
             }
             if (item == null)
+            {
                 return null;
+            }
             item.Amount = amount;
             item.ItemID = itemID;
             item.Hue = nHue;
             return item;
         }
 
-        private void ReceiveContainer(IRecvPacket packet)
+        void ReceiveContainer(OpenContainerPacket p)
         {
-            OpenContainerPacket p = (OpenContainerPacket)packet;
-
-            Container item;
+            ContainerItem item;
             // Special case for 0x30, which tells us to open a buy from vendor window.
             if (p.GumpId == 0x30)
             {
@@ -397,11 +391,11 @@ namespace UltimaXNA.Ultima.World
             }
             else
             {
-                item = WorldModel.Entities.GetObject<Container>(p.Serial, false);
+                item = WorldModel.Entities.GetObject<ContainerItem>(p.Serial, false);
                 if (item == null)
                 {
                     // log error - item does not exist
-                    m_World.Interaction.ChatMessage(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
+                    m_World.Interaction.ChatMessage("Client: Object {item.Serial} has no support for a container object!");
                 }
                 else
                 {
@@ -410,16 +404,14 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveWorldItem(IRecvPacket packet)
+        void ReceiveWorldItem(ObjectInfoPacket p)
         {
-            ObjectInfoPacket p = (ObjectInfoPacket)packet;
-
             // Now create the GameObject.
             // If the iItemID < 0x4000, this is a regular game object.
             // If the iItemID >= 0x4000, then this is a multiobject.
-            if (p.ItemID <= 0x4000)
+            if (p.ItemID < 0x4000)
             {
-                Item item = add_Item(p.Serial, p.ItemID, p.Hue, 0, p.Amount);
+                Item item = CreateItem(p.Serial, p.ItemID, p.Hue, p.Amount);
                 item.Position.Set(p.X, p.Y, p.Z);
             }
             else
@@ -431,52 +423,49 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveWornItem(IRecvPacket packet)
+        void ReceiveWornItem(WornItemPacket p)
         {
-            WornItemPacket p = (WornItemPacket)packet;
-            Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ParentSerial, 0);
+            Item item = CreateItem(p.Serial, p.ItemId, p.Hue, 0);
             WorldModel.Entities.AddWornItem(item, p.Layer, p.ParentSerial);
             if (item.PropertyList.Hash == 0)
+            {
                 m_Network.Send(new QueryPropertiesPacket(item.Serial));
+            }
         }
 
-        private void ReceiveDeleteObject(IRecvPacket packet)
+        void ReceiveDeleteObject(RemoveEntityPacket p)
         {
-            RemoveEntityPacket p = (RemoveEntityPacket)packet;
             WorldModel.Entities.RemoveEntity(p.Serial);
         }
 
-        private void ReceiveMobileIncoming(IRecvPacket packet)
+        void ReceiveMobileIncoming(MobileIncomingPacket p)
         {
-            MobileIncomingPacket p = (MobileIncomingPacket)packet;
             Mobile mobile = WorldModel.Entities.GetObject<Mobile>(p.Serial, true);
             mobile.Body = p.BodyID;
-            mobile.Hue = (int)p.Hue;
+            mobile.Hue = p.Hue;
             mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
             mobile.Flags = p.Flags;
             mobile.Notoriety = p.Notoriety;
             mobile.Notoriety = p.Notoriety;
-
             for (int i = 0; i < p.Equipment.Length; i++)
             {
-                Item item = add_Item(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, p.Serial, 0);
+                Item item = CreateItem(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, 1);
                 mobile.WearItem(item, p.Equipment[i].Layer);
                 if (item.PropertyList.Hash == 0)
+                {
                     m_Network.Send(new QueryPropertiesPacket(item.Serial));
+                }
             }
-
             if (mobile.Name == null || mobile.Name == string.Empty)
             {
                 mobile.Name = "Unknown";
                 m_Network.Send(new RequestNamePacket(p.Serial));
             }
-
             m_Network.Send(new SingleClickPacket(p.Serial)); // look at the object so we receive its stats.
         }
 
-        private void ReceiveDeathAnimation(IRecvPacket packet)
+        void ReceiveDeathAnimation(DeathAnimationPacket p)
         {
-            DeathAnimationPacket p = (DeathAnimationPacket)packet;
             Mobile m = WorldModel.Entities.GetObject<Mobile>(p.PlayerSerial, false);
             Corpse c = WorldModel.Entities.GetObject<Corpse>(p.CorpseSerial, false);
             if (m == null)
@@ -491,29 +480,27 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveDragItem(IRecvPacket packet)
+        void ReceiveDragItem(DragEffectPacket p)
         {
-            DragEffectPacket p = (DragEffectPacket)packet;
             // This is sent by the server to display an item being dragged from one place to another.
             // Note that this does not actually move the item, it just displays an animation.
 
             // bool iSourceGround = false;
             // bool iDestGround = false;
-            if (p.SourceContainer == Serial.World)
+            if (p.Source == Serial.World)
             {
                 // iSourceGround = true;
             }
 
-            if (p.DestContainer == Serial.World)
+            if (p.Destination == Serial.World)
             {
                 // iDestGround = true;
             }
-            announce_UnhandledPacket(packet);
+            AnnounceUnhandledPacket(p);
         }
 
-        private void ReceiveMobileAttributes(IRecvPacket packet)
+        void ReceiveMobileAttributes(MobileAttributesPacket p)
         {
-            MobileAttributesPacket p = (MobileAttributesPacket)packet;
             Mobile mobile = WorldModel.Entities.GetObject<Mobile>(p.Serial, false);
             if (mobile == null)
                 return;
@@ -528,9 +515,8 @@ namespace UltimaXNA.Ultima.World
             mobile.Stamina.Max = p.MaxStamina;
         }
 
-        private void ReceiveMobileAnimation(IRecvPacket packet)
+        void ReceiveMobileAnimation(MobileAnimationPacket p)
         {
-            MobileAnimationPacket p = (MobileAnimationPacket)packet;
             Mobile mobile = WorldModel.Entities.GetObject<Mobile>(p.Serial, false);
             if (mobile == null)
                 return;
@@ -538,9 +524,8 @@ namespace UltimaXNA.Ultima.World
             mobile.Animate(p.Action, p.FrameCount, p.RepeatCount, p.Reverse, p.Repeat, p.Delay);
         }
 
-        private void ReceiveMobileMoving(IRecvPacket packet)
+        void ReceiveMobileMoving(MobileMovingPacket p)
         {
-            MobileMovingPacket p = (MobileMovingPacket)packet;
             Mobile mobile = WorldModel.Entities.GetObject<Mobile>(p.Serial, true);
             if (mobile == null)
                 return;
@@ -562,16 +547,15 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveMobileUpdate(IRecvPacket packet)
+        void ReceiveMobileUpdate(MobileUpdatePacket p)
         {
-            MobileUpdatePacket p = (MobileUpdatePacket)packet;
             Mobile mobile = WorldModel.Entities.GetObject<Mobile>(p.Serial, true);
             if (mobile == null)
                 return;
 
             mobile.Body = p.BodyID;
             mobile.Flags = p.Flags;
-            mobile.Hue = (int)p.Hue;
+            mobile.Hue = p.Hue;
             mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
 
             if (mobile.Name == null || mobile.Name == string.Empty)
@@ -581,41 +565,36 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveMoveAck(IRecvPacket packet)
+        void ReceiveMoveAck(MoveAcknowledgePacket p)
         {
-            MoveAcknowledgePacket p = (MoveAcknowledgePacket)packet;
-            Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();
+            Mobile player = WorldModel.Entities.GetPlayerEntity();
             player.PlayerMobile_MoveEventAck(p.Sequence);
             player.Notoriety = p.Notoriety;
         }
 
-        private void ReceiveMoveRej(IRecvPacket packet)
+        void ReceiveMoveRej(MovementRejectPacket p)
         {
-            MovementRejectPacket p = (MovementRejectPacket)packet;
-            Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();
+            Mobile player = WorldModel.Entities.GetPlayerEntity();
             player.PlayerMobile_MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
         }
 
-        private void ReceivePlayerMove(IRecvPacket packet)
+        void ReceivePlayerMove(PlayerMovePacket p)
         {
-            PlayerMovePacket p = (PlayerMovePacket)packet;
-            announce_UnhandledPacket(packet);
+            AnnounceUnhandledPacket(p);
         }
 
-        private void ReceiveRejectMoveItemRequest(IRecvPacket packet)
+        void ReceiveRejectMoveItemRequest(LiftRejectionPacket p)
         {
-            LiftRejectionPacket p = (LiftRejectionPacket)packet;
             m_World.Interaction.ChatMessage("Could not pick up item: " + p.ErrorMessage);
             m_World.Interaction.ClearHolding();
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Corpse handling
-        // ======================================================================
+        // ============================================================================================================
 
-        private void ReceiveCorpseClothing(IRecvPacket packet)
+        void ReceiveCorpseClothing(CorpseClothingPacket p)
         {
-            CorpseClothingPacket p = (CorpseClothingPacket)packet;
             Corpse corpse = WorldModel.Entities.GetObject<Corpse>(p.CorpseSerial, false);
             if (corpse == null)
                 return;
@@ -627,20 +606,18 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Combat handling
-        // ======================================================================
+        // ============================================================================================================
 
-        private void ReceiveChangeCombatant(IRecvPacket packet)
+        void ReceiveChangeCombatant(ChangeCombatantPacket p)
         {
-            ChangeCombatantPacket p = (ChangeCombatantPacket)packet;
             if (p.Serial > 0x00000000)
                 m_World.Interaction.LastTarget = p.Serial;
         }
 
-        private void ReceiveDamage(IRecvPacket packet)
+        void ReceiveDamage(DamagePacket p)
         {
-            DamagePacket p = (DamagePacket)packet;
             Mobile entity = WorldModel.Entities.GetObject<Mobile>(p.Serial, false);
             if (entity == null)
                 return;
@@ -648,9 +625,8 @@ namespace UltimaXNA.Ultima.World
             m_World.Interaction.ChatMessage(string.Format("{0} takes {1} damage!", entity.Name, p.Damage));
         }
 
-        private void ReceiveOnSwing(IRecvPacket packet)
+        void ReceiveOnSwing(SwingPacket p)
         {
-            SwingPacket p = (SwingPacket)packet;
             // this changes our last target - does this behavior match legacy?
             if (p.Attacker == WorldModel.PlayerSerial)
             {
@@ -658,83 +634,73 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveWarMode(IRecvPacket packet)
+        void ReceiveWarMode(WarModePacket p)
         {
-            WarModePacket p = (WarModePacket)packet;
-            ((Mobile)WorldModel.Entities.GetPlayerEntity()).Flags.IsWarMode = p.WarMode;
+            WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode = p.WarMode;
         }
 
-        private void ReceiveUpdateMana(IRecvPacket packet)
+        void ReceiveUpdateMana(UpdateManaPacket p)
         {
-            UpdateManaPacket p = (UpdateManaPacket)packet;
             Mobile entity = WorldModel.Entities.GetObject<Mobile>(p.Serial, false);
             if (entity == null)
                 return;
             entity.Mana.Update(p.Current, p.Max);
         }
 
-        private void ReceiveUpdateStamina(IRecvPacket packet)
+        void ReceiveUpdateStamina(UpdateStaminaPacket p)
         {
-            UpdateStaminaPacket p = (UpdateStaminaPacket)packet;
             Mobile entity = WorldModel.Entities.GetObject<Mobile>(p.Serial, false);
             if (entity == null)
                 return;
             entity.Stamina.Update(p.Current, p.Max);
         }
 
-        private void ReceiveUpdateHealth(IRecvPacket packet)
+        void ReceiveUpdateHealth(UpdateHealthPacket p)
         {
-            UpdateHealthPacket p = (UpdateHealthPacket)packet;
             Mobile entity = WorldModel.Entities.GetObject<Mobile>(p.Serial, false);
             if (entity == null)
                 return;
             entity.Health.Update(p.Current, p.Max);
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Chat / messaging handling
-        // ======================================================================
+        // ============================================================================================================
 
-        private void ReceiveCLILOCMessage(IRecvPacket packet)
+        void ReceiveCLILOCMessage(MessageLocalizedPacket p)
         {
-            MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
-
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             string strCliLoc = constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements);
             ReceiveTextMessage(p.MessageType, strCliLoc, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
         }
 
-        private void ReceiveAsciiMessage(IRecvPacket packet)
+        void ReceiveAsciiMessage(AsciiMessagePacket p)
         {
-            AsciiMessagePacket p = (AsciiMessagePacket)packet;
             ReceiveTextMessage(p.MsgType, p.Text, p.Font, p.Hue, p.Serial, p.SpeakerName, false);
         }
 
-        private void ReceiveUnicodeMessage(IRecvPacket packet)
+        void ReceiveUnicodeMessage(UnicodeMessagePacket p)
         {
-            UnicodeMessagePacket p = (UnicodeMessagePacket)packet;
             ReceiveTextMessage(p.MsgType, p.Text, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
         }
 
-        private void ReceiveMessageLocalizedAffix(IRecvPacket packet)
+        void ReceiveMessageLocalizedAffix(MessageLocalizedAffixPacket p)
         {
-            MessageLocalizedAffixPacket p = (MessageLocalizedAffixPacket)packet;
-
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
                 constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements), p.Affix);
             ReceiveTextMessage(p.MessageType, localizedString, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
         }
 
-        private string constructCliLoc(string baseCliloc, string arg = null, bool capitalize = false)
+        string constructCliLoc(string baseCliloc, string arg = null, bool capitalize = false)
         {
             if (string.IsNullOrEmpty(baseCliloc))
                 return string.Empty;
 
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             if (arg == null)
             {
@@ -786,7 +752,7 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveTextMessage(MessageTypes msgType, string text, int font, ushort hue, Serial serial, string speakerName, bool asUnicode)
+        void ReceiveTextMessage(MessageTypes msgType, string text, int font, ushort hue, Serial serial, string speakerName, bool asUnicode)
         {
             // PlayerState.Journaling.AddEntry(text, font, hue, speakerName, asUnicode);
             Overhead overhead;
@@ -833,33 +799,39 @@ namespace UltimaXNA.Ultima.World
                     m_World.Interaction.ChatMessage("[YELL] " + text, font, hue, asUnicode);
                     break;
                 case MessageTypes.Spell:
-                    m_World.Interaction.ChatMessage("[SPELL] " + text, font, hue, asUnicode);
+                    if (serial.IsValid)
+                    {
+                        overhead = WorldModel.Entities.AddOverhead(msgType, serial, text, font, hue, asUnicode);
+                        PlayerState.Journaling.AddEntry(text, font, hue, speakerName, asUnicode);
+                    }
                     break;
                 case MessageTypes.Guild:
-                    m_World.Interaction.ChatMessage("[UILD] " + text, font, hue, asUnicode);
+                    m_World.Interaction.ChatMessage($"[GUILD] {speakerName}: {text}", font, hue, asUnicode);
                     break;
                 case MessageTypes.Alliance:
-                    m_World.Interaction.ChatMessage("[ALLIANCE] " + text, font, hue, asUnicode);
+                    m_World.Interaction.ChatMessage($"[ALLIANCE] {speakerName}: {text}", font, hue, asUnicode);
                     break;
                 case MessageTypes.Command:
                     m_World.Interaction.ChatMessage("[COMMAND] " + text, font, hue, asUnicode);
+                    break;
+                case MessageTypes.PartyDisplayOnly:
+                    m_World.Interaction.ChatMessage($"[PARTY] {speakerName}: {text}", font, hue, asUnicode);
                     break;
                 case MessageTypes.Information:
                     m_World.Interaction.CreateLabel(msgType, serial, text, font, hue, asUnicode);
                     break;
                 default:
-                    Tracer.Warn("Speech packet with unknown msgType parameter received. MsgType={0} Msg={1}", msgType, text);
+                    Tracer.Warn("Speech p with unknown msgType parameter received. MsgType={0} Msg={1}", msgType, text);
                     break;
             }
         }
 
-        // ======================================================================
+        // ============================================================================================================
         // Gump & Menu handling
-        // ======================================================================
+        // ============================================================================================================
 
-        private void ReceiveResurrectionMenu(IRecvPacket packet)
+        void ReceiveResurrectionMenu(ResurrectionMenuPacket p)
         {
-            ResurrectionMenuPacket p = (ResurrectionMenuPacket)packet;
             switch (p.ResurrectionAction)
             {
                 case 0x00: // Notify client of their death.
@@ -871,15 +843,13 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceivePopupMessage(IRecvPacket packet)
+        void ReceivePopupMessage(PopupMessagePacket p)
         {
-            PopupMessagePacket p = (PopupMessagePacket)packet;
             MsgBoxGump.Show(p.Message, MsgBoxTypes.OkOnly);
         }
 
-        private void ReceiveOpenBuyWindow(IRecvPacket packet)
+        void ReceiveOpenBuyWindow(VendorBuyListPacket p)
         {
-            VendorBuyListPacket p = (VendorBuyListPacket)packet;
             Item entity = WorldModel.Entities.GetObject<Item>(p.VendorPackSerial, false);
             if (entity == null)
                 return;
@@ -887,22 +857,19 @@ namespace UltimaXNA.Ultima.World
             m_UserInterface.AddControl(new VendorBuyGump(entity, p), 200, 200);
         }
 
-        private void ReceiveSellList(IRecvPacket packet)
+        void ReceiveSellList(VendorSellListPacket p)
         {
-            VendorSellListPacket p = (VendorSellListPacket)packet;
             m_UserInterface.RemoveControl<VendorSellGump>();
             m_UserInterface.AddControl(new VendorSellGump(p), 200, 200);
         }
 
-        private void ReceiveOpenPaperdoll(IRecvPacket packet)
+        void ReceiveOpenPaperdoll(OpenPaperdollPacket p)
         {
-            OpenPaperdollPacket p = packet as OpenPaperdollPacket;
             if (m_UserInterface.GetControl<PaperDollGump>(p.Serial) == null)
                 m_UserInterface.AddControl(new PaperDollGump(p.Serial, p.MobileTitle), 400, 100);
         }
-        private void ReceiveCompressedGump(IRecvPacket packet)
+        void ReceiveCompressedGump(CompressedGumpPacket p)
         {
-            CompressedGumpPacket p = (CompressedGumpPacket)packet;
             if (p.HasData)
             {
                 string[] gumpPieces;
@@ -914,19 +881,19 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveDisplayGumpFast(IRecvPacket packet)
+        void ReceiveDisplayGumpFast(DisplayGumpFastPacket p)
         {
-            announce_UnhandledPacket(packet);
+            AnnounceUnhandledPacket(p);
         }
 
-        private void ReceiveDisplayMenu(IRecvPacket packet)
+        void ReceiveDisplayMenu(DisplayMenuPacket p)
         {
-            announce_UnhandledPacket(packet);
+            AnnounceUnhandledPacket(p);
         }
 
-        private bool TryParseGumplings(string gumpData, out string[] pieces)
+        bool TryParseGumplings(string gumpData, out string[] pieces)
         {
-            List<string> i = new List<string>(); ;
+            List<string> i = new List<string>();
             int dataIndex = 0;
             while (dataIndex < gumpData.Length)
             {
@@ -959,23 +926,20 @@ namespace UltimaXNA.Ultima.World
         // Other packets
         // 
 
-        private void ReceiveNewSubserver(IRecvPacket packet)
+        void ReceiveNewSubserver(SubServerPacket p)
         {
-            SubServerPacket p = (SubServerPacket)packet;
-            announce_UnhandledPacket(packet);
+            // this packet does not matter on modern server software that handles an entire shard on one server.
         }
 
-        private void ReceiveObjectHelpResponse(IRecvPacket packet)
+        void ReceiveObjectHelpResponse(ObjectHelpResponsePacket p)
         {
-            announce_UnhandledPacket(packet);
+            AnnounceUnhandledPacket(p);
         }
 
-        private void ReceiveObjectPropertyList(IRecvPacket packet)
+        void ReceiveObjectPropertyList(ObjectPropertyListPacket p)
         {
-            ObjectPropertyListPacket p = (ObjectPropertyListPacket)packet;
-
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             AEntity entity = WorldModel.Entities.GetObject<AEntity>(p.Serial, false);
             if (entity == null)
@@ -997,9 +961,8 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveSendCustomHouse(IRecvPacket packet)
+        void ReceiveSendCustomHouse(CustomHousePacket p)
         {
-            CustomHousePacket p = (CustomHousePacket)packet;
             CustomHousing.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
 
             Multi multi = WorldModel.Entities.GetObject<Multi>(p.HouseSerial, false);
@@ -1010,9 +973,9 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveSkillsList(IRecvPacket packet)
+        void ReceiveSkillsList(SendSkillsPacket p)
         {
-            foreach (SendSkillsPacket_SkillEntry skill in ((SendSkillsPacket)packet).Skills)
+            foreach (SendSkillsPacket_SkillEntry skill in p.Skills)
             {
                 SkillEntry entry = PlayerState.Skills.SkillEntry(skill.SkillID);
                 if (entry != null)
@@ -1025,10 +988,8 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void ReceiveStatusInfo(IRecvPacket packet)
+        void ReceiveStatusInfo(StatusInfoPacket p)
         {
-            StatusInfoPacket p = (StatusInfoPacket)packet;
-
             if (p.StatusTypeFlag >= 6)
             {
                 throw (new Exception("KR Status not handled."));
@@ -1060,24 +1021,24 @@ namespace UltimaXNA.Ultima.World
             mobile.PlayerCanChangeName = p.NameChangeFlag;
         }
 
-        private void ReceiveTime(IRecvPacket packet)
+        void ReceiveTime(TimePacket p)
         {
-            TimePacket p = (TimePacket)packet;
             m_World.Interaction.ChatMessage(string.Format("The current server time is {0}:{1}:{2}", p.Hour, p.Minute, p.Second));
         }
 
-        private void ReceiveTipNotice(IRecvPacket packet)
+        void ReceiveTipNotice(TipNoticePacket p)
         {
-            announce_UnhandledPacket(packet);
+            AnnounceUnhandledPacket(p);
         }
 
-        private void ReceiveToolTipRevision(IRecvPacket packet)
+        void ReceiveToolTipRevision(ObjectPropertyListUpdatePacket p)
         {
-            ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
+            if (!PlayerState.ClientFeatures.TooltipsEnabled)
+                return;
             AEntity entity = WorldModel.Entities.GetObject<AEntity>(p.Serial, false);
             if (entity == null)
             {
-                // received a tool tip revision for an entity.
+                Tracer.Warn($"Received tooltip for entity {p.Serial} before entity received.");
             }
             else
             {
@@ -1088,129 +1049,176 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        private void announce_UnhandledPacket(IRecvPacket packet)
+        void AnnounceUnhandledPacket(IRecvPacket p)
         {
-            Tracer.Warn(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
+            Tracer.Warn($"Client: Unhandled {p.GetType().Name} [ID:{p.Id}]");
         }
 
-        private void announce_UnhandledPacket(IRecvPacket packet, string addendum)
+        void ReceiveExtended0x78(Extended0x78Packet p)
         {
-            Tracer.Warn(string.Format("Client: Unhandled {0} [ID:{1}] {2}]", packet.Name, packet.Id, addendum));
+            AnnounceUnhandledPacket(p);
         }
 
-        private void ReceiveExtended0x78(IRecvPacket packet)
-        {
-            announce_UnhandledPacket(packet);
-        }
-
-        private void ReceiveGeneralInfo(IRecvPacket packet)
+        void ReceiveGeneralInfo(GeneralInfoPacket p)
         {
             // Documented here: http://docs.polserver.com/packets/index.php?Packet=0xBF
-            GeneralInfoPacket p = (GeneralInfoPacket)packet;
             switch (p.Subcommand)
             {
-                case 0x04: // Close generic gump
+                case GeneralInfoPacket.CloseGump:
+                    CloseGumpInfo closeGumpInfo = p.Info as CloseGumpInfo;
+                    AControl control = m_UserInterface.GetControlByTypeID(closeGumpInfo.GumpTypeID);
+                    (control as Gump)?.OnButtonClick(closeGumpInfo.GumpButtonID);
+                    break;
+                case GeneralInfoPacket.Party:
+                    PartyInfo partyInfo = p.Info as PartyInfo;
+                    switch (partyInfo.SubsubCommand)
                     {
-                        AControl control = m_UserInterface.GetControlByTypeID(p.CloseGumpTypeID);
-                        if (control is Gump)
-                        {
-                            (control as Gump).OnButtonClick(p.CloseGumpButtonID);
-                        }
+                        case PartyInfo.CommandPartyList:
+                            PlayerState.Partying.ReceivePartyMemberList(partyInfo.Info as PartyMemberListInfo);
+                            break;
+                        case PartyInfo.CommandRemoveMember:
+                            PlayerState.Partying.ReceiveRemovePartyMember(partyInfo.Info as PartyRemoveMemberInfo);
+                            break;
+                        case PartyInfo.CommandPrivateMessage:
+                        case PartyInfo.CommandPublicMessage:
+                            PartyMessageInfo msg = partyInfo.Info as PartyMessageInfo;
+                            PartyMember member = PlayerState.Partying.GetMember(msg.Source);
+                            // note: msx752 identified hue 50 for "targeted to : " and 34 for "Help me.. I'm stunned !!"
+                            ushort hue = (ushort)(msg.IsPrivate ? Settings.UserInterface.PartyPrivateMsgColor : Settings.UserInterface.PartyMsgColor);
+                            ReceiveTextMessage(MessageTypes.PartyDisplayOnly, msg.Message, 3, hue, 0xFFFFFFF, member.Name, true);
+                            break;
+                        case PartyInfo.CommandInvitation:
+                            PlayerState.Partying.ReceiveInvitation(partyInfo.Info as PartyInvitationInfo);
+                            break;
                     }
                     break;
-                case 0x06: // party system
-                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                case GeneralInfoPacket.SetMap:
+                    MapIndexInfo mapInfo = p.Info as MapIndexInfo;
+                    m_World.MapIndex = mapInfo.MapID;
                     break;
-                case 0x08: // set map
-                    m_World.MapIndex = p.MapID;
+                case GeneralInfoPacket.ContextMenu:
+                    ContextMenuInfo menuInfo = p.Info as ContextMenuInfo;
+                    InputManager input = Services.Get<InputManager>();
+                    m_UserInterface.AddControl(new ContextMenuGump(menuInfo.Menu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
                     break;
-                case 0x14: // return context menu
+                case GeneralInfoPacket.MapDiff:
+                    TileMatrixDataPatch.EnableMapDiffs(p.Info as MapDiffInfo);
+                    m_World.Map.ReloadStatics();
+                    break;
+                case GeneralInfoPacket.ExtendedStats:
+                    ExtendedStatsInfo extendedStats = p.Info as ExtendedStatsInfo;
+                    if (extendedStats.Serial != WorldModel.PlayerSerial)
                     {
-                        InputManager input = ServiceRegistry.GetService<InputManager>();
-                        m_UserInterface.AddControl(new ContextMenuGump(p.ContextMenu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
-                        break;
-                    }
-                case 0x18: // Enable map-diff (files) / number of maps
-                    // as of 6.0.0.0, this only tells us the number of maps.
-                    m_World.MapCount = p.MapDiffsCount;
-                    break;
-                case 0x19: // Extended stats
-                    if (p.ExtendedStatsSerial != WorldModel.PlayerSerial)
                         Tracer.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
+                    }
                     else
                     {
-                        PlayerState.StatLocks.StrengthLock = p.ExtendedStatsLocks.Strength;
-                        PlayerState.StatLocks.DexterityLock = p.ExtendedStatsLocks.Dexterity;
-                        PlayerState.StatLocks.IntelligenceLock = p.ExtendedStatsLocks.Intelligence;
+                        PlayerState.StatLocks.StrengthLock = extendedStats.Locks.Strength;
+                        PlayerState.StatLocks.DexterityLock = extendedStats.Locks.Dexterity;
+                        PlayerState.StatLocks.IntelligenceLock = extendedStats.Locks.Intelligence;
                     }
                     break;
-                case 0x1B: // spellbook data
-                    SpellbookData spellbook = p.Spellbook;
+                case GeneralInfoPacket.SpellBookContents:
+                    SpellbookData spellbook = (p.Info as SpellBookContentsInfo).Spellbook;
                     WorldModel.Entities.GetObject<SpellBook>(spellbook.Serial, true).ReceiveSpellData(spellbook.BookType, spellbook.SpellsBitfield);
                     break;
-                case 0x1D: // House revision state
-                    if (CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
+                case GeneralInfoPacket.HouseRevision:
+                    HouseRevisionInfo houseInfo = p.Info as HouseRevisionInfo;
+                    if (CustomHousing.IsHashCurrent(houseInfo.Revision.Serial, houseInfo.Revision.Hash))
                     {
-                        Multi multi = WorldModel.Entities.GetObject<Multi>(p.HouseRevisionState.Serial, false);
+                        Multi multi = WorldModel.Entities.GetObject<Multi>(houseInfo.Revision.Serial, false);
                         if (multi == null)
                         {
                             // received a house revision for a multi that does not exist.
                         }
                         else
                         {
-                            if (multi.CustomHouseRevision != p.HouseRevisionState.Hash)
+                            if (multi.CustomHouseRevision != houseInfo.Revision.Hash)
                             {
-                                CustomHouse house = CustomHousing.GetCustomHouseData(p.HouseRevisionState.Serial);
+                                CustomHouse house = CustomHousing.GetCustomHouseData(houseInfo.Revision.Serial);
                                 multi.AddCustomHousingTiles(house);
                             }
                         }
                     }
                     else
                     {
-                        m_Network.Send(new RequestCustomHousePacket(p.HouseRevisionState.Serial));
+                        m_Network.Send(new RequestCustomHousePacket(houseInfo.Revision.Serial));
                     }
                     break;
-                case 0x21: // (AOS) Ability icon confirm.
+                case GeneralInfoPacket.AOSAbilityIconConfirm: // (AOS) Ability icon confirm.
                     // no data, just (bf 00 05 21)
-                    // ???
-                    break;
-                default:
-                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                    // What do we do with this???
                     break;
             }
         }
 
-        private void ReceiveGlobalQueueCount(IRecvPacket packet)
+        void ReceiveGlobalQueueCount(GlobalQueuePacket p)
         {
-            GlobalQueuePacket p = (GlobalQueuePacket)packet;
             m_World.Interaction.ChatMessage("System: There are currently " + p.Count + " available calls in the global queue.");
         }
 
-        private void ReceiveInvalidMapEnable(IRecvPacket packet)
+        void ReceiveInvalidMapEnable(InvalidMapEnablePacket p)
         {
-            announce_UnhandledPacket(packet);
+            AnnounceUnhandledPacket(p);
         }
 
-        private void ReceiveOpenWebBrowser(IRecvPacket packet)
+        void ReceiveOpenWebBrowser(OpenWebBrowserPacket p)
         {
-            OpenWebBrowserPacket p = (OpenWebBrowserPacket)packet;
-            Process.Start("iexplore.exe", p.WebsiteUrl);
+            if (!ValidateUrl(p.WebsiteUrl))
+            {
+                return;
+            }
+            try
+            {
+                Process.Start(p.WebsiteUrl);
+            }
+            catch (Win32Exception noBrowser)
+            {
+                if (noBrowser.ErrorCode == unchecked((int)0x80004005))
+                {
+                    MsgBoxGump.Show(noBrowser.Message, MsgBoxTypes.OkOnly);
+                }
+            }
+            catch (Exception other)
+            {
+                MsgBoxGump.Show(other.Message, MsgBoxTypes.OkOnly);
+            }
         }
 
-        private void ReceiveOverallLightLevel(IRecvPacket packet)
+        bool ValidateUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return false;
+            }
+            if (url.IndexOf("http", StringComparison.Ordinal) != 0)
+            {
+                url = $"http://{url}";
+            }
+            Uri uri;
+            bool result = Uri.TryCreate(url, UriKind.Absolute, out uri);
+            if (!result)
+            {
+                return false;
+            }
+            if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        void ReceiveOverallLightLevel(OverallLightLevelPacket p)
         {
             // byte iLightLevel = reader.ReadByte();
             // 0x00 - day
             // 0x09 - OSI night
             // 0x1F - Black
             // Max normal val = 0x1F
-
-            OverallLightLevelPacket p = (OverallLightLevelPacket)packet;
-
             ((WorldView)m_World.GetView()).Isometric.Lighting.OverallLightning = p.LightLevel;
         }
 
-        private void ReceivePersonalLightLevel(IRecvPacket packet)
+        void ReceivePersonalLightLevel(PersonalLightLevelPacket p)
         {
             // int iCreatureID = reader.ReadInt();
             // byte iLightLevel = reader.ReadByte();
@@ -1218,56 +1226,83 @@ namespace UltimaXNA.Ultima.World
             // 0x09 - OSI night
             // 0x1F - Black
             // Max normal val = 0x1F
-
-            PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
-
             ((WorldView)m_World.GetView()).Isometric.Lighting.PersonalLightning = p.LightLevel;
         }
 
-        private void ReceivePlayMusic(IRecvPacket packet)
+        void ReceivePlayMusic(PlayMusicPacket p)
         {
-            PlayMusicPacket p = (PlayMusicPacket)packet;
-            AudioService service = ServiceRegistry.GetService<AudioService>();
+            AudioService service = Services.Get<AudioService>();
             service.PlayMusic(p.MusicID);
         }
 
-        private void ReceivePlaySoundEffect(IRecvPacket packet)
+        void ReceivePlaySoundEffect(PlaySoundEffectPacket p)
         {
-            PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
-            AudioService service = ServiceRegistry.GetService<AudioService>();
+            AudioService service = Services.Get<AudioService>();
             service.PlaySound(p.SoundModel, spamCheck: true);
         }
 
-        private void ReceiveQuestArrow(IRecvPacket packet)
+        void ReceiveQuestArrow(QuestArrowPacket p)
         {
-            announce_UnhandledPacket(packet);
+            AnnounceUnhandledPacket(p);
         }
 
-        private void ReceiveRequestNameResponse(IRecvPacket packet)
+        void ReceiveRequestNameResponse(RequestNameResponsePacket p)
         {
-            RequestNameResponsePacket p = (RequestNameResponsePacket)packet;
             Mobile mobile = WorldModel.Entities.GetObject<Mobile>(p.Serial, false);
             if (mobile == null)
                 return;
             mobile.Name = p.MobileName;
         }
 
-        /// <summary>
-        /// Handle a season change packet.
-        /// </summary>
-        /// <param name="packet">Should be of type SeasonChangePacket.</param>
-        private void ReceiveSeasonalInformation(IRecvPacket packet)
+        void ReceiveSeasonalInformation(SeasonChangePacket p)
         {
-            SeasonChangePacket p = (SeasonChangePacket)packet;
             if (p.SeasonChanged)
             {
                 m_World.Map.Season = p.Season;
             }
         }
 
-        private void ReceiveSetWeather(IRecvPacket packet)
+        void ReceiveSetWeather(WeatherPacket p)
         {
-            announce_UnhandledPacket(packet);
+            AnnounceUnhandledPacket(p);
+        }
+
+        void ReceiveBookPages(BookPagesPacket p)
+        {
+            BaseBook book = WorldModel.Entities.GetObject<BaseBook>(p.Serial, false);
+            book.Pages = p.Pages;
+            m_UserInterface.AddControl(new BookGump(book), 200, 200);
+        }
+
+        void ReceiveBookHeaderNew(BookHeaderNewPacket p)
+        {
+            BaseBook book = WorldModel.Entities.GetObject<BaseBook>(p.Serial, true);
+            book.IsEditable = (p.Flag0 == 1 && p.Flag1 == 1);
+            book.Title = p.Title;
+            book.Author = p.Author;
+        }
+
+        void ReceiveBookHeaderOld(BookHeaderOldPacket p)
+        {
+            AnnounceUnhandledPacket(p);
+        }
+
+        void ReceiveEnableFeatures(SupportedFeaturesPacket p) {
+            PlayerState.ClientFeatures.SetFlags(p.Flags);
+        }
+
+        void ReceiveProtocolExtension(ProtocolExtensionPacket p)
+        {
+            switch (p.Subcommand)
+            {
+                case ProtocolExtensionPacket.SubcommandNegotiateFeatures:
+                    PlayerState.DisabledFeatures = p.DisabledFeatures;
+                    m_Network.Send(new NegotiateFeatureResponsePacket());
+                    break;
+                default:
+                    Tracer.Warn($"Unhandled protocol extension packet (0xF0) with subcommand: 0x{p.Subcommand:x2}");
+                    break;
+            }
         }
     }
 }

@@ -11,18 +11,16 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
 {
     class MulFileIndex : AFileIndex
     {
-        private string idxPath;
+        private readonly string IndexPath;
         public int patchFile { get; set; }
 
         /// <summary>
@@ -35,19 +33,24 @@ namespace UltimaXNA.Ultima.IO
         public MulFileIndex(string idxFile, string mulFile, int length, int patch_file)
             : base(mulFile)
         {
-            idxPath = FileManager.GetFilePath(idxFile);
+            IndexPath = FileManager.GetFilePath(idxFile);
             Length = length;
             patchFile = patch_file;  
+            Open();
         }
 
         protected override FileIndexEntry3D[] ReadEntries()
         {
+            if (!File.Exists(IndexPath) || !File.Exists(DataPath))
+            {
+                return new FileIndexEntry3D[0];
+            }
 
             List<FileIndexEntry3D> entries = new List<FileIndexEntry3D>();
 
-            int length = (int)((new FileInfo(idxPath).Length / 3) / 4);
+            int length = (int)((new FileInfo(IndexPath).Length / 3) / 4);
 
-            using (FileStream index = new FileStream(idxPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream index = new FileStream(IndexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 BinaryReader bin = new BinaryReader(index);
 
@@ -55,25 +58,13 @@ namespace UltimaXNA.Ultima.IO
 
                 for (int i = 0; i < count && i < length; ++i)
                 {
-                    FileIndexEntry3D entry = new FileIndexEntry3D
-                    {
-                        lookup = bin.ReadInt32(),
-                        length = bin.ReadInt32(),
-                        extra = bin.ReadInt32()
-                    };
-
+                    FileIndexEntry3D entry = new FileIndexEntry3D(bin.ReadInt32(), bin.ReadInt32(), bin.ReadInt32());
                     entries.Add(entry);
                 }
 
                 for (int i = count; i < length; ++i)
                 {
-                    FileIndexEntry3D entry = new FileIndexEntry3D
-                    {
-                        lookup = -1,
-                        length = -1,
-                        extra = -1
-                    };
-
+                    FileIndexEntry3D entry = new FileIndexEntry3D(-1, -1, -1);
                     entries.Add(entry);
                 }
             }
@@ -87,9 +78,9 @@ namespace UltimaXNA.Ultima.IO
                 if (patch.file == patchFile && patch.index >= 0 && patch.index < entries.Count)
                 {
                     FileIndexEntry3D entry = entries.ElementAt(patch.index);
-                    entry.lookup = patch.lookup;
-                    entry.length = patch.length | (1 << 31);
-                    entry.extra = patch.extra;
+                    entry.Lookup = patch.lookup;
+                    entry.Length = patch.length | (1 << 31);
+                    entry.Extra = patch.extra;
                 }
             }
 

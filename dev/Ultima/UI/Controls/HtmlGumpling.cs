@@ -24,12 +24,12 @@ namespace UltimaXNA.Ultima.UI.Controls
         // private variables
         private IScrollBar m_Scrollbar;
         private RenderedText m_RenderedText;
-        private bool m_IsMouseDown = false;
+        private bool m_IsMouseDown;
         private int m_MouseDownHREF = -1;
         private int m_MouseOverHREF = -1;
         // public variables
-        public int ScrollX = 0;
-        public int ScrollY = 0;
+        public int ScrollX;
+        public int ScrollY;
 
         public string Text
         {
@@ -69,10 +69,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             set
             {
-                if (value != base.Width)
-                {
-                    base.Width = value;
-                }
+                base.Width = value;
             }
         }
 
@@ -88,16 +85,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             background = Int32.Parse(arguements[6]);
             scrollbar = Int32.Parse(arguements[7]);
 
-            buildGumpling(x, y, width, height, background, scrollbar, "<font color=#000>" + lines[textIndex]);
+            BuildGumpling(x, y, width, height, background, scrollbar, "<font color=#000>" + lines[textIndex]);
         }
 
         public HtmlGumpling(AControl parent, int x, int y, int width, int height, int background, int scrollbar, string text)
             : base(parent)
         {
-            buildGumpling(x, y, width, height, background, scrollbar, text);
+            BuildGumpling(x, y, width, height, background, scrollbar, text);
         }
 
-        void buildGumpling(int x, int y, int width, int height, int background, int scrollbar, string text)
+        void BuildGumpling(int x, int y, int width, int height, int background, int scrollbar, string text)
         {
             Position = new Point(x, y);
             base.Width = width;
@@ -156,9 +153,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
 
             m_RenderedText.MouseOverRegionID = m_MouseOverHREF;
             m_RenderedText.IsMouseDown = m_IsMouseDown;

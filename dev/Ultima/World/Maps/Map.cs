@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.World.Maps
 {
     public class Map
     {
-        private MapChunk[] m_Chunks;
+        private readonly MapChunk[] m_Chunks;
         public TileMatrixData MapData
         {
             get;
@@ -55,7 +55,10 @@ namespace UltimaXNA.Ultima.World.Maps
             for (int i = 0; i < m_Chunks.Length; i++)
             {
                 if (m_Chunks[i] != null)
-                    m_Chunks[i].Unload();
+                {
+                    m_Chunks[i].Dispose();
+                    m_Chunks[i] = null;
+                }
             }
         }
 
@@ -117,9 +120,9 @@ namespace UltimaXNA.Ultima.World.Maps
                     if (m_Chunks[cellIndex] == null || m_Chunks[cellIndex].ChunkX != cellX || m_Chunks[cellIndex].ChunkY != cellY)
                     {
                         if (m_Chunks[cellIndex] != null)
-                            m_Chunks[cellIndex].Unload();
+                            m_Chunks[cellIndex].Dispose();
                         m_Chunks[cellIndex] = new MapChunk(cellX, cellY);
-                        m_Chunks[cellIndex].Load(MapData, this);
+                        m_Chunks[cellIndex].LoadStatics(MapData, this);
                         // if we have a translator and it's not spring, change some statics!
                         if (Season != Seasons.Spring && SeasonalTranslator != null)
                             SeasonalTranslator(m_Chunks[cellIndex], Season);
@@ -205,6 +208,18 @@ namespace UltimaXNA.Ultima.World.Maps
             }
         }
 
-        public static Action<MapChunk, Seasons> SeasonalTranslator = null;
+        public static Action<MapChunk, Seasons> SeasonalTranslator;
+
+        public void ReloadStatics()
+        {
+            foreach (MapChunk chunk in m_Chunks)
+            {
+                if (chunk != null)
+                {
+                    chunk.UnloadStatics();
+                    chunk.LoadStatics(MapData, this);
+                }
+            }
+        }
     }
 }

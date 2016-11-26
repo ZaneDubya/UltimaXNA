@@ -10,7 +10,6 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.World.Entities.Effects;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
@@ -19,13 +18,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 {
     class LightningEffectView : AEntityView
     {
-        LightningEffect Effect
-        {
-            get
-            {
-                return (LightningEffect)base.Entity;
-            }
-        }
+        LightningEffect Effect => (LightningEffect)Entity;
 
         int m_DisplayItemID = -1;
 
@@ -35,26 +28,24 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             CheckDefer(map, drawPosition);
 
-            return DrawInternal(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
+            return DrawInternal(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
         }
 
-        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, bool roofHideFlag)
+        public override bool DrawInternal(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOver, Map map, bool roofHideFlag)
         {
             int displayItemdID = 0x4e20 + Effect.FramesActive;
             if (displayItemdID > 0x4e29)
+            {
                 return false;
-
+            }
             if (displayItemdID != m_DisplayItemID)
             {
                 m_DisplayItemID = displayItemdID;
-
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-                DrawTexture = provider.GetUITexture(displayItemdID);
-
+                DrawTexture = Provider.GetUITexture(displayItemdID);
                 Point offset = s_Offsets[m_DisplayItemID - 20000];
                 DrawArea = new Rectangle(offset.X, DrawTexture.Height - 33 + (Entity.Z * 4) + offset.Y, DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;
@@ -64,11 +55,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
             // Update hue vector.
             HueVector = Utility.GetHueVector(Entity.Hue);
 
-            return base.Draw(spriteBatch, drawPosition, mouseOverList, map, roofHideFlag);
+            return base.Draw(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
         }
 
-        static Point[] s_Offsets = new Point[10]
-            {
+        static readonly Point[] s_Offsets = {
                 new Point(48, 0),
                 new Point(68, 0),
                 new Point(92, 0),

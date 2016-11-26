@@ -20,8 +20,8 @@ namespace UltimaXNA.Ultima.World.Entities
 {
     public class DeferredEntity : AEntity
     {
-        private Vector3 m_DrawPosition;
-        private AEntityView m_BaseView;
+        Vector3 m_DrawPosition;
+        AEntityView m_BaseView;
 
         public DeferredEntity(AEntity entity, Vector3 drawPosition, int z)
             : base(entity.Serial, entity.Map)
@@ -31,20 +31,19 @@ namespace UltimaXNA.Ultima.World.Entities
             Position.Set(int.MinValue, int.MinValue, z);
         }
 
-        private AEntityView GetBaseView(AEntity entity)
+        AEntityView GetBaseView(AEntity entity)
         {
             if (entity is Mobile)
                 return (MobileView)entity.GetView();
-            else if (entity is Corpse)
+            if (entity is Corpse)
                 return (MobileView)entity.GetView();
-            else if (entity is LightningEffect)
+            if (entity is LightningEffect)
                 return (LightningEffectView)entity.GetView();
-            else if (entity is AnimatedItemEffect)
+            if (entity is AnimatedItemEffect)
                 return (AnimatedItemEffectView)entity.GetView();
-            else if (entity is MovingEffect)
+            if (entity is MovingEffect)
                 return (MovingEffectView)entity.GetView();
-            else
-                Tracer.Critical("Cannot defer this type of object.");
+            Tracer.Critical("Cannot defer this type of object.");
             return null;
         }
 
@@ -53,9 +52,6 @@ namespace UltimaXNA.Ultima.World.Entities
             return new DeferredView(this, m_DrawPosition, m_BaseView);
         }
 
-        public override string ToString()
-        {
-            return base.ToString() + " | deferred";
-        }
+        public override string ToString() => $"{base.ToString()} | deferred";
     }
 }

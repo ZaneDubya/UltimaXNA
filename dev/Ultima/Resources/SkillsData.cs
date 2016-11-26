@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.Resources
 
         private static Skill[] m_List = new Skill[DefaultLength];
         public static Skill[] List { get { return m_List; } }
-        private static string[] m_listNames = null;
+        private static string[] m_listNames;
         public static string[] ListNames
         {
             get
@@ -67,8 +67,8 @@ namespace UltimaXNA.Ultima.Resources
 
         private static unsafe Skill LoadSkill(int index, BinaryFileReader reader)
         {
-            int nameLength = m_FileIndex.Index[index].length - 2;
-            int extra = m_FileIndex.Index[index].extra;
+            int nameLength = m_FileIndex.Index[index].Length - 2;
+            int extra = m_FileIndex.Index[index].Extra;
 
             byte[] set1 = new byte[1];
             byte[] set2 = new byte[nameLength];
@@ -119,22 +119,22 @@ namespace UltimaXNA.Ultima.Resources
 
     public class Skill
     {
-        private SkillVars m_Data = null;
+        private SkillVars m_Data;
         public SkillVars Data { get { return m_Data; } }
 
         private int m_Index = -1;
         public int Index { get { return m_Index; } }
 
-        private bool m_UseButton = false;
+        private bool m_UseButton;
         public bool UseButton { get { return m_UseButton; } set { m_UseButton = value; } }
 
         private string m_Name = String.Empty;
         public string Name { get { return m_Name; } set { m_Name = value; } }
 
-        private SkillCategory m_Category = null;
+        private SkillCategory m_Category;
         public SkillCategory Category { get { return m_Category; } set { m_Category = value; } }
 
-        private byte m_Unknown = 0x0;
+        private byte m_Unknown;
         public byte Unknown { get { return m_Unknown; } }
 
         public int ID { get { return m_Index + 1; } }
@@ -182,19 +182,19 @@ namespace UltimaXNA.Ultima.Resources
         private int m_Index = -1;
         public int Index { get { return m_Index; } }
 
-        private string m_Name = String.Empty;
+        private readonly string m_Name = String.Empty;
         public string Name { get { return m_Name; } }
 
-        private int m_Extra = 0;
+        private readonly int m_Extra;
         public int Extra { get { return m_Extra; } }
 
-        private bool m_UseButton = false;
+        private readonly bool m_UseButton;
         public bool UseButton { get { return m_UseButton; } }
 
-        private byte m_Unknown = 0x0;
+        private readonly byte m_Unknown;
         public byte Unknown { get { return m_Unknown; } }
 
-        private SkillCategory m_Category = null;
+        private SkillCategory m_Category;
         public SkillCategory Category { get { return m_Category; } }
 
         public int NameLength { get { return m_Name.Length; } }
@@ -323,7 +323,7 @@ namespace UltimaXNA.Ultima.Resources
 
     public class SkillCategory
     {
-        private SkillCategoryData m_Data = null;
+        private SkillCategoryData m_Data;
         public SkillCategoryData Data { get { return m_Data; } }
 
         private int m_Index = -1;
@@ -363,7 +363,7 @@ namespace UltimaXNA.Ultima.Resources
         private int m_Index = -1;
         public int Index { get { return m_Index; } }
 
-        private string m_Name = String.Empty;
+        private readonly string m_Name = String.Empty;
         public string Name { get { return m_Name; } }
 
         public SkillCategoryData(long fileIndex, int index, string name)

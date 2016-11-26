@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
@@ -21,14 +22,13 @@ namespace UltimaXNA.Ultima.World.Managers
 {
     class EntityManager
     {
-        private WorldModel m_Model;
-
-        private List<QueuedWornItem> m_QueuedWornItems = new List<QueuedWornItem>();
-        private Dictionary<int, AEntity> m_Entities = new Dictionary<int, AEntity>();
-        private List<AEntity> m_Entities_Queued = new List<AEntity>();
-
-        private bool m_EntitiesCollectionIsLocked = false;
-        private List<int> m_SerialsToRemove = new List<int>();
+        WorldModel m_Model;
+        Dictionary<int, AEntity> m_Entities = new Dictionary<int, AEntity>();
+        List<AEntity> m_Entities_Queued = new List<AEntity>();
+        List<Serial> m_RetainedPlayerEntities = new List<Serial>();
+        bool m_EntitiesCollectionIsLocked;
+        List<int> m_SerialsToRemove = new List<int>();
+        List<OrphanedItem> m_OrphanedItems = new List<OrphanedItem>();
 
         public EntityManager(WorldModel model)
         {
@@ -37,27 +37,52 @@ namespace UltimaXNA.Ultima.World.Managers
 
         public void Reset(bool clearPlayerEntity = false)
         {
-            m_QueuedWornItems.Clear();
-
-            if (clearPlayerEntity)
+            m_OrphanedItems.Clear();
+            m_RetainedPlayerEntities.Clear();
+            if (!clearPlayerEntity)
             {
-                m_Entities.Clear();
-                foreach (AEntity entity in m_Entities.Values)
+                Mobile player = GetPlayerEntity();
+                if (player != null)
                 {
-                    entity.Dispose();
+                    RetainPlayerEntities(player, m_RetainedPlayerEntities);
                 }
             }
-            else
+            foreach (AEntity e in m_Entities.Values)
             {
-                foreach (AEntity entity in m_Entities.Values)
+                if (!m_RetainedPlayerEntities.Contains(e.Serial))
+                    e.Dispose();
+            }
+        }
+
+        void RetainPlayerEntities(Mobile player, List<Serial> retained)
+        {
+            retained.Add(player.Serial);
+            for (int i = (int)EquipLayer.FirstValid; i <= (int)EquipLayer.LastUserValid; i++)
+            {
+                AEntity e = player.Equipment[i];
+                if (e != null && !e.IsDisposed)
                 {
-                    if (!entity.IsClientEntity)
-                        entity.Dispose();
+                    retained.Add(e.Serial);
+                    if (e is ContainerItem)
+                    {
+                        RecursiveRetainPlayerEntities(e as ContainerItem, retained);
+                    }
                 }
-                AEntity player = GetPlayerEntity();
-                m_Entities.Clear();
-                if (player != null)
-                    m_Entities.Add(player.Serial, player);
+            }
+        }
+
+        void RecursiveRetainPlayerEntities(ContainerItem container, List<Serial> retained)
+        {
+            foreach (AEntity e in container.Contents)
+            {
+                if (e != null && !e.IsDisposed)
+                {
+                    retained.Add(e.Serial);
+                    if (e is ContainerItem)
+                    {
+                        RecursiveRetainPlayerEntities(e as ContainerItem, retained);
+                    }
+                }
             }
         }
 
@@ -66,19 +91,18 @@ namespace UltimaXNA.Ultima.World.Managers
             // This could be cached to save time.
             if (m_Entities.ContainsKey(WorldModel.PlayerSerial))
                 return (Mobile)m_Entities[WorldModel.PlayerSerial];
-            else
-                return null;
+            return null;
         }
 
         public void Update(double frameMS)
         {
             if (WorldModel.IsInWorld)
             {
-                updateEntities(frameMS);
+                UpdateEntities(frameMS);
             }
         }
 
-        private void updateEntities(double frameMS)
+        void UpdateEntities(double frameMS)
         {
             // redirect any new entities to a queue while we are enumerating the collection.
             m_EntitiesCollectionIsLocked = true;
@@ -104,16 +128,12 @@ namespace UltimaXNA.Ultima.World.Managers
                         m_SerialsToRemove.Add(entity.Key);
                 }
             }
-
-
-
             // Remove disposed entities
             foreach (int i in m_SerialsToRemove)
             {
                 m_Entities.Remove(i);
             }
             m_SerialsToRemove.Clear();
-
             // stop redirecting new entities to the queue and add any queued entities to the main entity collection.
             m_EntitiesCollectionIsLocked = false;
             foreach (AEntity e in m_Entities_Queued)
@@ -129,10 +149,7 @@ namespace UltimaXNA.Ultima.World.Managers
                 Overhead overhead = ownerEntity.AddOverhead(msgType, text, fontID, hue, asUnicode);
                 return overhead;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         public T GetObject<T>(Serial serial, bool create) where T : AEntity
@@ -152,14 +169,10 @@ namespace UltimaXNA.Ultima.World.Managers
                         entity = InternalCreateEntity<T>(serial);
                         return (T)entity;
                     }
-                    else
-                    {
-                        return null;
-                    }
+                    return null;
                 }
                 return (T)m_Entities[serial];
             }
-
             // No object with this Serial is in the collection. So we create a new one and return that, and hope that the server
             // will fill us in on the details of this object soon.
             if (create)
@@ -167,40 +180,34 @@ namespace UltimaXNA.Ultima.World.Managers
                 entity = InternalCreateEntity<T>(serial);
                 return (T)entity;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         T InternalCreateEntity<T>(Serial serial) where T : AEntity
         {
             var ctor = typeof(T).GetConstructor(new[] { typeof(Serial), typeof(Map) });
-
             AEntity e = (T)ctor.Invoke(new object[] { serial, m_Model.Map });
-
             if (e.Serial == WorldModel.PlayerSerial)
+            {
                 e.IsClientEntity = true;
-
+            }
             if (e is Mobile)
             {
-                for (int i = 0; i < m_QueuedWornItems.Count; i++)
+                for (int i = 0; i < m_OrphanedItems.Count; i++)
                 {
-                    if (m_QueuedWornItems[i].ParentSerial == serial)
+                    if (m_OrphanedItems[i].ParentSerial == serial)
                     {
-                        (e as Mobile).WearItem(m_QueuedWornItems[i].Item, m_QueuedWornItems[i].Layer);
-                        m_QueuedWornItems.RemoveAt(i--);
+                        (e as Mobile).WearItem(m_OrphanedItems[i].Item, m_OrphanedItems[i].Layer);
+                        m_OrphanedItems.RemoveAt(i--);
                     }
                 }
             }
-
             // If the entities collection is locked, add the new entity to the queue. Otherwise 
             // add it directly to the main entity collection.
             if (m_EntitiesCollectionIsLocked)
                 m_Entities_Queued.Add(e);
             else
                 m_Entities.Add(e.Serial, e);
-
             return (T)e;
         }
 
@@ -216,18 +223,22 @@ namespace UltimaXNA.Ultima.World.Managers
         {
             Mobile m = WorldModel.Entities.GetObject<Mobile>(parent, false);
             if (m != null)
+            {
                 m.WearItem(item, layer);
+            }
             else
-                m_QueuedWornItems.Add(new QueuedWornItem(item, layer, parent));
+            {
+                m_OrphanedItems.Add(new OrphanedItem(item, layer, parent));
+            }
         }
 
-        private struct QueuedWornItem
+        struct OrphanedItem
         {
             public readonly byte Layer;
             public readonly Item Item;
             public readonly Serial ParentSerial;
 
-            public QueuedWornItem(Item item, byte layer, Serial parent)
+            public OrphanedItem(Item item, byte layer, Serial parent)
             {
                 Item = item;
                 Layer = layer;

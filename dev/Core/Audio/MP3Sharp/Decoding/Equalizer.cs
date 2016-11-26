@@ -27,7 +27,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     ///     At -1.0, the input signal is attenuated by 6dB, at +1.0 the signal is
     ///     amplified by 6dB.
     /// </summary>
-    internal class Equalizer
+    class Equalizer
     {
         private const int BANDS = 32;
 
@@ -48,10 +48,10 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             InitBlock();
         }
 
-        //	private Equalizer(float b1, float b2, float b3, float b4, float b5,
-        //					 float b6, float b7, float b8, float b9, float b10, float b11,
-        //					 float b12, float b13, float b14, float b15, float b16,
-        //					 float b17, float b18, float b19, float b20);
+        //    private Equalizer(float b1, float b2, float b3, float b4, float b5,
+        //                     float b6, float b7, float b8, float b9, float b10, float b11,
+        //                     float b12, float b13, float b14, float b15, float b16,
+        //                     float b17, float b18, float b19, float b20);
 
         public Equalizer(float[] settings)
         {
@@ -215,15 +215,14 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         internal abstract class EQFunction
         {
             /// <summary>
-            ///     Returns the setting of a band in the equalizer.
+            /// Returns the setting of a band in the equalizer.
             /// </summary>
-            /// <param name="band	The">
-            ///     index of the band to retrieve the setting
-            ///     for.
+            /// <param name="band">
+            /// The index of the band to retrieve the setting for.
             /// </param>
             /// <returns>
-            ///     the setting of the specified band. This is a value between
-            ///     -1 and +1.
+            /// the setting of the specified band. This is a value between
+            /// -1 and +1.
             /// </returns>
             public virtual float getBand(int band)
             {

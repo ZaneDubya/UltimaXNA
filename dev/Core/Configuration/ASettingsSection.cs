@@ -52,12 +52,7 @@ namespace UltimaXNA.Core.Configuration
 
         private void onInvalidated()
         {
-            EventHandler handler = Invalidated;
-
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            Invalidated?.Invoke(this, EventArgs.Empty);
         }
 
         protected int Clamp(int value, int min, int max)

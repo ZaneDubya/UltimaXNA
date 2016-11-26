@@ -21,7 +21,7 @@ using UltimaXNA.Core.Audio.MP3Sharp.Decoding;
 namespace UltimaXNA.Core.Audio.MP3Sharp.IO
 {
     /// <summary> Implements an Obuffer by writing the data to a file in RIFF WAVE format.</summary>
-    internal class WaveFileBuffer : ABuffer
+    class WaveFileBuffer : ABuffer
     {
         private readonly short[] m_Buffer;
         private readonly short[] m_Bufferp;

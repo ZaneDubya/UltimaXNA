@@ -17,10 +17,10 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class TextLabelAscii : AControl
     {
-        public int Hue = 0;
-        public int FontID = 0;
+        public int Hue;
+        public int FontID;
 
-        private RenderedText m_Rendered;
+        private readonly RenderedText m_Rendered;
         private string m_Text;
         private int m_Width;
 
@@ -50,10 +50,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         public TextLabelAscii(AControl parent, int x, int y, int font, int hue, string text, int width = 400)
             : this(parent, width)
         {
-            buildGumpling(x, y, font, hue, text);
+            BuildGumpling(x, y, font, hue, text);
         }
 
-        void buildGumpling(int x, int y, int font, int hue, string text)
+        void BuildGumpling(int x, int y, int font, int hue, string text)
         {
             Position = new Point(x, y);
             Hue = hue;
@@ -61,10 +61,10 @@ namespace UltimaXNA.Ultima.UI.Controls
             Text = text;
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             m_Rendered.Draw(spriteBatch, position, Utility.GetHueVector(Hue, true, false, true));
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
     }
 }

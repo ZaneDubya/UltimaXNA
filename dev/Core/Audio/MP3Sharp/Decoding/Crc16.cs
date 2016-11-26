@@ -21,7 +21,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     /// <summary>
     ///     16-Bit CRC checksum
     /// </summary>
-    internal sealed class Crc16
+    sealed class Crc16
     {
         private static readonly short Polynomial;
         private short m_Crc;

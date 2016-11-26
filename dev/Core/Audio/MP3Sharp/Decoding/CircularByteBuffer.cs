@@ -19,7 +19,7 @@ using System;
 namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
 {
     [Serializable]
-    internal class CircularByteBuffer
+class CircularByteBuffer
     {
         private byte[] m_DataArray;
         private int m_Index;
@@ -154,9 +154,11 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
 
             // Do thin modulo (should just drop through)
             for (; ind >= m_Length; ind -= m_Length)
-                ;
+            {
+            }
             for (; ind < 0; ind += m_Length)
-                ;
+            {
+            }
             // Set value
             return m_DataArray[ind];
         }
@@ -167,9 +169,12 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
 
             // Do thin modulo (should just drop through)
             for (; ind > m_Length; ind -= m_Length)
-                ;
+            {
+            }
+
             for (; ind < 0; ind += m_Length)
-                ;
+            {
+            }
             // Set value
             m_DataArray[ind] = valueToSet;
         }

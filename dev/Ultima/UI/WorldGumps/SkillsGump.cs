@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             IsMoveable = true;
 
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = Services.Get<WorldModel>();
 
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 200));
             m_Background.TitleGumpID = 0x834;
@@ -92,7 +92,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     if (!int.TryParse(href.Substring(9), out skillIndex))
                         return;
                     SkillEntry skill = PlayerState.Skills.SkillEntryByIndex(skillIndex);
-                    InputManager input = ServiceRegistry.GetService<InputManager>();
+                    InputManager input = Services.Get<InputManager>();
                     UseSkillButtonGump gump = new UseSkillButtonGump(skill);
                     UserInterface.AddControl(gump, input.MousePosition.X - 60, input.MousePosition.Y - 20);
                     UserInterface.AttemptDragControl(gump, input.MousePosition, true);
@@ -123,7 +123,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             "<a href='skill={0}' color='#5b4f29' hovercolor='#857951' activecolor='#402708' style='text-decoration=none'>{1}</a></left>";
         const string kSkillName_NoUseButton = "<left>   <medium color=#50422D>{1}</medium></left>";
         // 0 = skill value
-        static string[] kSkillValues = new string[3] {
+        static string[] kSkillValues = {
             "<right><medium color=#50422D>{0:0.0}</medium><a href='skilllock={1}'><gumpimg src='2436'/></a> </right><br/>",
             "<right><medium color=#50422D>{0:0.0}</medium><a href='skilllock={1}'><gumpimg src='2438'/></a> </right><br/>",
             "<right><medium color=#50422D>{0:0.0}</medium><a href='skilllock={1}'><gumpimg src='2092'/></a> </right><br/>" };

@@ -21,7 +21,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
     /// <summary>
     ///     Implements decoding of MPEG Audio Layer I frames.
     /// </summary>
-    internal class LayerIDecoder : IFrameDecoder
+    class LayerIDecoder : IFrameDecoder
     {
         protected internal ABuffer buffer;
         protected internal Crc16 crc;

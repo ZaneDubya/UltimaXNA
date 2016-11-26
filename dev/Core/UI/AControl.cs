@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
+using UltimaXNA.Ultima.Player;
 #endregion
 
 namespace UltimaXNA.Core.UI
@@ -25,25 +26,25 @@ namespace UltimaXNA.Core.UI
     /// </summary>
     public abstract class AControl
     {
-        // ================================================================================
+        // ============================================================================================================
         // Private variables
-        // ================================================================================
-        private Rectangle m_Area = new Rectangle();
-        private ControlMetaData m_MetaData = null;
-        private List<AControl> m_Children = null;
+        // ============================================================================================================
+        Rectangle m_Area = new Rectangle();
+        ControlMetaData m_MetaData;
+        List<AControl> m_Children;
 
-        // ================================================================================
+        // ============================================================================================================
         // Private services
-        // ================================================================================
+        // ============================================================================================================
         protected UserInterfaceService UserInterface
         {
             get;
             private set;
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Public properties
-        // ================================================================================
+        // ============================================================================================================
         #region Public properties
         /// <summary>
         /// An identifier for this control. Can be used to differentiate controls of the same type. Used by UO as a 'Serial'
@@ -137,16 +138,7 @@ namespace UltimaXNA.Core.UI
         /// </summary>
         public bool IsVisible { get; set; }
 
-        private bool _isedit = true;
-
-        public bool IsEditable
-        {
-            get { return _isedit; }
-            set
-            {
-                _isedit = value;
-            }
-        }
+        public bool IsEditable { get; set; }
 
         /// <summary>
         /// A list of all the child controls that this control owns.
@@ -249,7 +241,7 @@ namespace UltimaXNA.Core.UI
             set;
         }
 
-        private int m_ActivePage = 0; // we always draw m_activePage and Page 0.
+        int m_ActivePage; // we always draw m_activePage and Page 0.
 
         /// <summary>
         /// This control's active page index. On Update and Draw(), this control will send update to and draw all children with Page == 0 or
@@ -349,7 +341,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private int ParentX
+        int ParentX
         {
             get
             {
@@ -360,7 +352,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private int ParentY
+        int ParentY
         {
             get
             {
@@ -373,14 +365,14 @@ namespace UltimaXNA.Core.UI
 
         #endregion
 
-        // ================================================================================
+        // ============================================================================================================
         // Ctor, Init, Dispose, Update, and Draw
-        // ================================================================================
-        public AControl(AControl parent)
+        // ============================================================================================================
+        protected AControl(AControl parent)
         {
             Parent = parent;
             Page = 0;
-            UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            UserInterface = Services.Get<UserInterfaceService>();
         }
 
         public void Initialize()
@@ -409,7 +401,7 @@ namespace UltimaXNA.Core.UI
             ExpandToFitControls();
         }
 
-        virtual public void Draw(SpriteBatchUI spriteBatch, Point position)
+        public virtual void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             if (!IsInitialized)
                 return;
@@ -421,15 +413,15 @@ namespace UltimaXNA.Core.UI
                     if (c.IsInitialized && c.IsVisible)
                     {
                         Point offset = new Point(c.Position.X + position.X, c.Position.Y + position.Y);
-                        c.Draw(spriteBatch, offset);
+                        c.Draw(spriteBatch, offset, frameMS);
                     }
                 }
             }
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Child control methods
-        // ================================================================================
+        // ============================================================================================================
         public T AddControl<T>(AControl c, int page = 0) where T : AControl
         {
             c.Page = page;
@@ -456,7 +448,7 @@ namespace UltimaXNA.Core.UI
                     c.Dispose();
         }
 
-        private void InitializeControls()
+        void InitializeControls()
         {
             bool newlyInitializedChildReceivedKeyboardFocus = false;
 
@@ -474,7 +466,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private void UpdateControls(double totalMS, double frameMS)
+        void UpdateControls(double totalMS, double frameMS)
         {
             foreach (AControl c in Children)
             {
@@ -493,7 +485,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private bool ExpandToFitControls()
+        bool ExpandToFitControls()
         {
             bool changedDimensions = false;
             if (Children.Count > 0)
@@ -524,9 +516,9 @@ namespace UltimaXNA.Core.UI
             return changedDimensions;
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Miscellaneous methods
-        // ================================================================================
+        // ============================================================================================================
         public void CenterThisControlOnScreen()
         {
             Position = new Point(
@@ -576,9 +568,9 @@ namespace UltimaXNA.Core.UI
             return hue;
         }
 
-        // ================================================================================
+        // ============================================================================================================
         // Overrideable methods
-        // ================================================================================
+        // ============================================================================================================
 
         #region OverrideableMethods
 
@@ -625,31 +617,24 @@ namespace UltimaXNA.Core.UI
 
         #endregion
 
-        // ================================================================================
+        // ============================================================================================================
         // Tooltip handling code - shows text when the player mouses over this control.
-        // ================================================================================
+        // ============================================================================================================
 
         #region Tooltip
 
-        private string m_Tooltip = null;
+        string m_Tooltip;
 
-        public string Tooltip
-        {
-            get { return m_Tooltip; }
-        }
+        public string Tooltip => m_Tooltip;
 
-        public bool HasTooltip
-        {
-            get
-            {
-                return (m_Tooltip != null);
-            }
-        }
+        public bool HasTooltip => PlayerState.ClientFeatures.TooltipsEnabled && (m_Tooltip != null);
 
         public void SetTooltip(string caption)
         {
-            if (caption == null)
+            if (string.IsNullOrEmpty(caption))
+            {
                 ClearTooltip();
+            }
             else
             {
                 m_Tooltip = caption;
@@ -663,17 +648,16 @@ namespace UltimaXNA.Core.UI
 
         #endregion
 
-        // ================================================================================
+        // ============================================================================================================
         // Mouse handling code
-        // ================================================================================
+        // ============================================================================================================
 
         #region MouseInput
 
         // private variables
-        private bool m_HandlesMouseInput = false;
-
-        private float m_MaxTimeForDoubleClick = 0f;
-        private Point m_LastClickPosition;
+        bool m_HandlesMouseInput;
+        float m_MaxTimeForDoubleClick;
+        Point m_LastClickPosition;
 
         // public methods
         public bool IsMouseOver
@@ -704,8 +688,7 @@ namespace UltimaXNA.Core.UI
             int x = (int)position.X - X - ParentX;
             int y = (int)position.Y - Y - ParentY;
             OnMouseDown(x, y, button);
-            if (MouseDownEvent != null)
-                MouseDownEvent(this, x, y, button);
+            MouseDownEvent?.Invoke(this, x, y, button);
         }
 
         public void MouseUp(Point position, MouseButton button)
@@ -713,8 +696,7 @@ namespace UltimaXNA.Core.UI
             int x = (int)position.X - X - ParentX;
             int y = (int)position.Y - Y - ParentY;
             OnMouseUp(x, y, button);
-            if (MouseUpEvent != null)
-                MouseUpEvent(this, x, y, button);
+            MouseUpEvent?.Invoke(this, x, y, button);
         }
 
         public void MouseOver(Point position)
@@ -726,8 +708,7 @@ namespace UltimaXNA.Core.UI
             int x = (int)position.X - X - ParentX;
             int y = (int)position.Y - Y - ParentY;
             OnMouseOver(x, y);
-            if (MouseOverEvent != null)
-                MouseOverEvent(this, x, y);
+            MouseOverEvent?.Invoke(this, x, y);
         }
 
         public void MouseOut(Point position)
@@ -735,19 +716,19 @@ namespace UltimaXNA.Core.UI
             int x = (int)position.X - X - ParentX;
             int y = (int)position.Y - Y - ParentY;
             OnMouseOut(x, y);
-            if (MouseOutEvent != null)
-                MouseOutEvent(this, x, y);
+            MouseOutEvent?.Invoke(this, x, y);
         }
 
         public void MouseClick(Point position, MouseButton button)
         {
-            int x = (int)position.X - X - ParentX;
-            int y = (int)position.Y - Y - ParentY;
+            int x = position.X - X - ParentX;
+            int y = position.Y - Y - ParentY;
+            float totalMS = (float)Services.Get<UltimaGame>().TotalMS;
 
             bool doubleClick = false;
             if (m_MaxTimeForDoubleClick != 0f)
             {
-                if (UltimaGame.TotalMS <= m_MaxTimeForDoubleClick)
+                if (totalMS <= m_MaxTimeForDoubleClick)
                 {
                     m_MaxTimeForDoubleClick = 0f;
                     doubleClick = true;
@@ -755,7 +736,7 @@ namespace UltimaXNA.Core.UI
             }
             else
             {
-                m_MaxTimeForDoubleClick = (float)UltimaGame.TotalMS + Settings.UserInterface.Mouse.DoubleClickMS;
+                m_MaxTimeForDoubleClick = totalMS + Settings.UserInterface.Mouse.DoubleClickMS;
             }
 
             if (button == MouseButton.Right && !IsUncloseableWithRMB)
@@ -767,14 +748,12 @@ namespace UltimaXNA.Core.UI
             if (doubleClick)
             {
                 OnMouseDoubleClick(x, y, button);
-                if (MouseDoubleClickEvent != null)
-                    MouseDoubleClickEvent(this, x, y, button);
+                MouseDoubleClickEvent?.Invoke(this, x, y, button);
             }
             else
             {
                 OnMouseClick(x, y, button);
-                if (MouseClickEvent != null)
-                    MouseClickEvent(this, x, y, button);
+                MouseClickEvent?.Invoke(this, x, y, button);
             }
         }
 
@@ -807,7 +786,9 @@ namespace UltimaXNA.Core.UI
                 if (IsPointWithinControl((int)position.X - X - ParentX, (int)position.Y - Y - ParentY))
                 {
                     if (alwaysHandleMouseInput || HandlesMouseInput)
+                    {
                         focusedControls.Insert(0, this);
+                    }
                     for (int i = 0; i < Children.Count; i++)
                     {
                         AControl c = Children[i];
@@ -834,14 +815,14 @@ namespace UltimaXNA.Core.UI
 
         #endregion
 
-        // ================================================================================
+        // ============================================================================================================
         // Keyboard handling code
-        // ================================================================================
+        // ============================================================================================================
 
         #region KeyboardInput
 
         // private variables
-        private bool m_HandlesKeyboardFocus = false;
+        bool m_HandlesKeyboardFocus;
 
         // public methods
         public virtual bool HandlesKeyboardFocus
@@ -913,13 +894,13 @@ namespace UltimaXNA.Core.UI
 
         #endregion
 
-        // ================================================================================
+        // ============================================================================================================
         // Debug control boundary drawing code
-        // ================================================================================
+        // ============================================================================================================
 
         #region DebugBoundaryDrawing
 
-        private Texture2D m_BoundsTexture;
+        Texture2D m_BoundsTexture;
 
         protected void DebugDrawBounds(SpriteBatchUI spriteBatch, Point position, Color color)
         {
@@ -929,7 +910,7 @@ namespace UltimaXNA.Core.UI
             if (m_BoundsTexture == null)
             {
                 m_BoundsTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                m_BoundsTexture.SetData<Color>(new Color[] { Color.White });
+                m_BoundsTexture.SetData(new Color[] { Color.White });
             }
 
             Rectangle drawArea = new Rectangle(ScreenX, ScreenY, Width, Height);

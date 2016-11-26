@@ -13,28 +13,20 @@ using Microsoft.Xna.Framework.Audio;
 using System;
 using UltimaXNA.Core.Audio;
 using UltimaXNA.Core.Audio.MP3Sharp;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.Audio
 {
     class UOMusic : ASound
     {
-        private MP3Stream m_Stream;
-        private const int NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK = 0x8000; // 32768 bytes, about 0.9 seconds
-        private readonly byte[] m_WaveBuffer = new byte[NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK];
+        MP3Stream m_Stream;
+        const int NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK = 0x8000; // 32768 bytes, about 0.9 seconds
+        readonly byte[] m_WaveBuffer = new byte[NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK];
+        bool m_Repeat;
+        bool m_Playing;
 
-        private bool m_Repeat;
-        private bool m_Playing;
-
-        protected string Path
-        {
-            get
-            {
-                string path = FileManager.GetPath(string.Format("Music\\Digital\\{0}.mp3", Name));
-                return path;
-            }
-        }
-
+        protected string Path => FileManager.GetPath(string.Format("Music/Digital/{0}.mp3", Name));
         public UOMusic(int index, string name, bool loop)
             : base(name)
         {
@@ -71,18 +63,14 @@ namespace UltimaXNA.Ultima.Audio
                 }
                 return m_WaveBuffer;
             }
-            else
-            {
-                Stop();
-                return null;
-            }
+            Stop();
+            return null;
         }
 
         protected override void OnBufferNeeded(object sender, EventArgs e)
         {
             if (m_Playing)
             {
-                // DynamicSoundEffectInstance instance = sender as DynamicSoundEffectInstance;
                 while (m_ThisInstance.PendingBufferCount < 3)
                 {
                     byte[] buffer = GetBuffer();
@@ -103,14 +91,14 @@ namespace UltimaXNA.Ultima.Audio
             try
             {
                 m_Stream = new MP3Stream(Path, NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK);
-
                 Frequency = m_Stream.Frequency;
 
                 m_Playing = true;
             }
-            catch
+            catch (Exception e)
             {
-                // file in use
+                // file in use or access denied.
+                Tracer.Error(e);
                 m_Playing = false;
             }
         }

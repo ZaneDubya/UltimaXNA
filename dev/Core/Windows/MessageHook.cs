@@ -18,17 +18,17 @@ namespace UltimaXNA.Core.Windows
     {
         public abstract int HookType { get; }
 
-        private IntPtr m_hWnd;
-        private WndProcHandler m_Hook;
-        private IntPtr m_prevWndProc;
-        private IntPtr m_hIMC;
+        IntPtr m_hWnd;
+        WndProcHandler m_Hook;
+        IntPtr m_prevWndProc;
+        IntPtr m_hIMC;
 
         public IntPtr HWnd
         {
             get { return m_hWnd; }
         }
 
-        public MessageHook(IntPtr hWnd)
+        protected MessageHook(IntPtr hWnd)
         {
             m_hWnd = hWnd;
             m_Hook = WndProcHook;
@@ -36,7 +36,7 @@ namespace UltimaXNA.Core.Windows
                 hWnd,
                 NativeConstants.GWL_WNDPROC, (int)Marshal.GetFunctionPointerForDelegate(m_Hook));
             m_hIMC = NativeMethods.ImmGetContext(m_hWnd);
-            new InputMessageFilter(m_Hook);
+            Application.AddMessageFilter(new InputMessageFilter(m_Hook));
         }
 
         ~MessageHook()
@@ -79,12 +79,11 @@ namespace UltimaXNA.Core.Windows
     // http://www.gamedev.net/community/forums/topic.asp?topic_id=554322
     class InputMessageFilter : IMessageFilter
     {
-        private WndProcHandler m_Hook;
+        readonly WndProcHandler m_Hook;
 
         public InputMessageFilter(WndProcHandler hook)
         {
             m_Hook = hook;
-            Application.AddMessageFilter(this);
         }
         [DllImport("user32.dll", EntryPoint = "TranslateMessage")]
         protected extern static bool m_TranslateMessage(ref System.Windows.Forms.Message m);

@@ -29,16 +29,15 @@ namespace UltimaXNA.Ultima.Network.Server
 
     public class LoginRejectionPacket : RecvPacket
     {
-        private static Tuple<int, string>[] m_Reasons = new Tuple<int, string>[] {
+        private static Tuple<int, string>[] m_Reasons = {
             new Tuple<int, string>(0x00, "Incorrect username and/or password."), 
             new Tuple<int, string>(0x01, "Someone is already using this account."),
             new Tuple<int, string>(0x02, "Your account has been blocked."),
             new Tuple<int, string>(0x03, "Your account credentials are invalid."),
             new Tuple<int, string>(0xFE, "Login idle period exceeded."),
-            new Tuple<int, string>(0xFF, "Communication problem."),
+            new Tuple<int, string>(0xFF, "Communication problem.")
         };
-
-        byte m_id;
+        readonly byte m_id;
 
         public string ReasonText
         {

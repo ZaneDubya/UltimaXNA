@@ -12,8 +12,6 @@
 #region usings
 using System.Collections.Generic;
 using UltimaXNA.Ultima.World;
-using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.Resources;
 #endregion
 

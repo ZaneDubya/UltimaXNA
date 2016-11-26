@@ -28,31 +28,29 @@ namespace UltimaXNA.Ultima.UI.Controls
         ResizePic m_resize;
         TextLabelAscii m_label;
 
-        bool m_listOpen = false;
+        bool m_listOpen;
         ResizePic m_openResizePic;
         ScrollBar m_openScrollBar;
         TextLabelAscii[] m_openLabels;
 
         const int hue_Text = 1107;
         const int hue_TextSelected = 588;
+        readonly IFont m_Font;
 
-        IFont m_Font;
-
-        public DropDownList(AControl parent)
+        DropDownList(AControl parent)
             : base(parent)
         {
             HandlesMouseInput = true;
-
-            m_Font = ServiceRegistry.GetService<IResourceProvider>().GetAsciiFont(1);
+            m_Font = Services.Get<IResourceProvider>().GetAsciiFont(1);
         }
 
         public DropDownList(AControl parent, int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull)
             : this(parent)
         {
-            buildGumpling(x, y, width, items, itemsVisible, index, canBeNull);
+            BuildGumpling(x, y, width, items, itemsVisible, index, canBeNull);
         }
 
-        void buildGumpling(int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull)
+        void BuildGumpling(int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull)
         {
             Position = new Point(x, y);
             m_items = new List<string>(items);
@@ -92,7 +90,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 // the resizepic for the open list, and the scroll bar if it is loaded.
                 if (UserInterface.MouseOverControl != m_openResizePic &&
                     UserInterface.MouseOverControl != m_resize &&
-                    (m_openScrollBar == null ? false : UserInterface.MouseOverControl != m_openScrollBar))
+                    (m_openScrollBar != null && UserInterface.MouseOverControl != m_openScrollBar))
                 {
                     closeOpenList();
                 }

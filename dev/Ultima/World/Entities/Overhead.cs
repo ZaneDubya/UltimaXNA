@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.World.Entities
             private set;
         }
 
-        private int m_TimePersist = 0;
+        private int m_TimePersist;
 
         public Overhead(AEntity parent, MessageTypes msgType, string text)
             : base(parent.Serial, parent.Map)
@@ -65,9 +65,9 @@ namespace UltimaXNA.Ultima.World.Entities
                 Dispose();
         }
 
-        // ============================================================
+        // ============================================================================================================
         // View management
-        // ============================================================
+        // ============================================================================================================
 
         protected override AEntityView CreateView()
         {

@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         RenderedText m_textRenderer;
 
-        public TextLabel(AControl parent)
+        TextLabel(AControl parent)
             : base(parent)
         {
 
@@ -55,16 +55,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             y = Int32.Parse(arguements[2]);
             hue = ServerRecievedHueTransform(Int32.Parse(arguements[3]));
             textIndex = Int32.Parse(arguements[4]);
-            buildGumpling(x, y, hue, lines[textIndex]);
+            BuildGumpling(x, y, hue, lines[textIndex]);
         }
 
         public TextLabel(AControl parent, int x, int y, int hue, string text)
             : this(parent)
         {
-            buildGumpling(x, y, hue, text);
+            BuildGumpling(x, y, hue, text);
         }
 
-        void buildGumpling(int x, int y, int hue, string text)
+        void BuildGumpling(int x, int y, int hue, string text)
         {
             Position = new Point(x, y);
             Text = string.Format("{0}{1}", (hue == 0 ? string.Empty : "<outline>"), text);
@@ -75,10 +75,10 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             m_textRenderer.Draw(spriteBatch, position, Utility.GetHueVector(Hue, false, false, true));
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
     }
 }

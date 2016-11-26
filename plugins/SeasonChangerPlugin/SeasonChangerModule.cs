@@ -18,7 +18,7 @@ using UltimaXNA.Ultima.World.Maps;
 
 namespace SeasonChangerPlugin
 {
-    internal sealed class SeasonChangerModule : IModule
+    sealed class SeasonChangerModule : IModule
     {
         public string Name
         {

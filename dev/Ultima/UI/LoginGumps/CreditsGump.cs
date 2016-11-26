@@ -9,45 +9,37 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.Input;
 using System.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.LoginGumps
 {
-    public class CreditsGump : Gump
-    {
+    public class CreditsGump : Gump {
         public CreditsGump()
-            : base(0, 0)
-        {
+            : base(0, 0) {
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 0x0588));
             AddControl(new HtmlGumpling(this, 96, 64, 400, 400, 1, 1, ReadCreditsFile()));
             HandlesMouseInput = true;
         }
 
-        protected override void OnMouseClick(int x, int y, MouseButton button)
-        {
+        protected override void OnMouseClick(int x, int y, MouseButton button) {
             Dispose();
         }
 
-        private string ReadCreditsFile()
-        {
-            string path = @"Data\credits.txt";
+        private string ReadCreditsFile() {
+            string path = @"Data/credits.txt";
             if (!File.Exists(path))
                 return "<span color='#000'>Credits file not found.";
-            try
-            {
+            try {
                 string text = File.ReadAllText(@"Data\credits.txt");
                 return text;
             }
-            catch
-            {
+            catch {
                 return "<span color='#000'>Could not read credits file.";
             }
-            
+
         }
     }
 }

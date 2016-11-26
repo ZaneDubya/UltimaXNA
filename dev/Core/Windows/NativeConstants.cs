@@ -11,7 +11,7 @@
 
 namespace UltimaXNA.Core.Windows
 {
-    internal static class NativeConstants
+    static class NativeConstants
     {
         public const int WM_NULL = 0x00;
         public const int WM_CREATE = 0x01;

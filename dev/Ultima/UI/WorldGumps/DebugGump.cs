@@ -10,7 +10,9 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 #endregion
@@ -19,21 +21,30 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     public class DebugGump : Gump
     {
-        private WorldModel m_World;
+        readonly WorldModel m_World;
+        HtmlGumpling m_Debug;
 
         public DebugGump()
             : base(0, 0)
         {
-            m_World = ServiceRegistry.GetService<WorldModel>();
-
+            m_World = Services.Get<WorldModel>();
             IsMoveable = true;
-
             AddControl(new ResizePic(this, 0, 0, 0x2436, 256 + 16, 256 + 16));
+            AddControl(m_Debug = new HtmlGumpling(this, 0, 0, 256, 256, 0, 0, string.Empty));
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Update(totalMS, frameMS);
+            InputManager input = Services.Get<InputManager>();
+            bool lmb = input.MouseState.LeftButton == ButtonState.Pressed;
+            bool rmb = input.MouseState.RightButton == ButtonState.Pressed;
+            m_Debug.Text = $"{(lmb ? "LMB" : string.Empty)}:{(rmb ? "RMB" : string.Empty)}";
+        }
+
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
+        {
+            base.Draw(spriteBatch, position, frameMS);
 
             spriteBatch.Draw2D(((WorldView)m_World.GetView()).MiniMap.Texture, new Vector3(position.X + 8, position.Y + 8, 0), Vector3.Zero);
         }

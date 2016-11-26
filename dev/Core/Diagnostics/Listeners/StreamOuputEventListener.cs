@@ -24,7 +24,7 @@ namespace UltimaXNA.Core.Diagnostics.Listeners
         private readonly bool m_closeStreamOnDispose;
 
         private Stream m_stream;
-        private StreamWriter m_writer;
+        private readonly StreamWriter m_writer;
 
         public StreamOuputEventListener(Stream stream, bool closeStreamOnDispose)
         {
