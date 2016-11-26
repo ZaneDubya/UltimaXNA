@@ -21,7 +21,7 @@ namespace UltimaXNA.Core
     /// <summary>
     /// Contains a list of all valid resolutions, and the code to change the size of the rendered window.
     /// </summary>
-    internal class Resolutions
+    class Resolutions
     {
         public static readonly List<ResolutionProperty> FullScreenResolutionsList;
         public static readonly List<ResolutionProperty> PlayWindowResolutionsList;

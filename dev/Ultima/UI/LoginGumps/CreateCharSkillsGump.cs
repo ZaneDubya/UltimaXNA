@@ -167,7 +167,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
                     m_OnForward();
                     break;
                 case Buttons.QuitButton:
-                    UltimaGame.IsRunning = false;
+                    ServiceRegistry.GetService<UltimaGame>().Quit();
                     break;
             }
         }

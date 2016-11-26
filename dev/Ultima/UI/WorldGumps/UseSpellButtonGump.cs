@@ -53,9 +53,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Dispose();
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         private void EventMouseDoubleClick(AControl sender, int x, int y, MouseButton button)

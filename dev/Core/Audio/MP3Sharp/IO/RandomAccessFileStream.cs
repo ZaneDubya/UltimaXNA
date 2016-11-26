@@ -19,7 +19,7 @@ using System.IO;
 
 namespace UltimaXNA.Core.Audio.MP3Sharp.IO
 {
-    internal class RandomAccessFileStream
+    class RandomAccessFileStream
     {
         public static FileStream CreateRandomAccessFile(string fileName, string mode)
         {

@@ -52,9 +52,9 @@ namespace UltimaXNA.Core.UI
             m_Entries = new List<RenderedText>();
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
 
             Point p = new Point(position.X, position.Y);
             int height = 0;

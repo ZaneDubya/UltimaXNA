@@ -26,7 +26,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     ///     REVIEW: much of the parsing currently occurs in the various decoders.
     ///     This should be moved into this class and associated inner classes.
     /// </summary>
-    internal sealed class Bitstream
+    sealed class Bitstream
     {
         /// <summary>
         ///     Maximum size of the frame buffer:

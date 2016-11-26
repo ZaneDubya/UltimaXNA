@@ -13,7 +13,7 @@ using UltimaXNA.Core.Patterns;
 
 namespace ExamplePlugin
 {
-    internal sealed class ExamplePluginModule : IModule
+    sealed class ExamplePluginModule : IModule
     {
         public string Name
         {

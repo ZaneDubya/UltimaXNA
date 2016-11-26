@@ -300,7 +300,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        protected override void BeforeDraw(SpriteBatchUI spritebatch, Point position)
+        protected override void BeforeDraw(SpriteBatchUI spriteBatch, Point position)
         {
             Mobile player = WorldModel.Entities.GetPlayerEntity();
 
@@ -313,7 +313,6 @@ namespace UltimaXNA.Ultima.World.Input
             if (IsHoldingItem)
             {
                 ItemSpriteArtIndex = HeldItem.DisplayItemID;
-
                 if (m_ItemSprite != null)
                 {
                     m_ItemSprite.Hue = HeldItem.Hue;
@@ -321,13 +320,12 @@ namespace UltimaXNA.Ultima.World.Input
                     if (HeldItem.Amount > 1 && HeldItem.ItemData.IsGeneric && HeldItem.DisplayItemID == HeldItem.ItemID)
                     {
                         int offset = HeldItem.ItemData.Unknown4;
-                        m_ItemSprite.Draw(spritebatch, new Point(position.X - 5, position.Y - 5));
+                        m_ItemSprite.Draw(spriteBatch, new Point(position.X - 5, position.Y - 5));
                     }
-                    m_ItemSprite.Draw(spritebatch, position);
+                    m_ItemSprite.Draw(spriteBatch, position);
                 }
-
                 // set up to draw standard cursor sprite above item art.
-                base.BeforeDraw(spritebatch, position);
+                base.BeforeDraw(spriteBatch, position);
             }
             else if (IsTargeting)
             {
@@ -404,7 +402,7 @@ namespace UltimaXNA.Ultima.World.Input
             else
             {
                 // cursor is over UI or there is a modal message box open. Set up to draw standard cursor sprite.
-                base.BeforeDraw(spritebatch, position);
+                base.BeforeDraw(spriteBatch, position);
             }
         }
 

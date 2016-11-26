@@ -21,7 +21,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
     /// <summary>
     ///     Implements decoding of MPEG Audio Layer II frames.
     /// </summary>
-    internal class LayerIIDecoder : LayerIDecoder, IFrameDecoder
+    class LayerIIDecoder : LayerIDecoder, IFrameDecoder
     {
         protected internal override void CreateSubbands()
         {

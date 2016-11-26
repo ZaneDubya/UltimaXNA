@@ -16,7 +16,7 @@
 
 namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerIII
 {
-    internal class ChannelData
+    class ChannelData
     {
         public GranuleInfo[] Granules;
         public int[] ScaleFactorBits;

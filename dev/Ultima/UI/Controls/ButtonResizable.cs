@@ -57,8 +57,8 @@ namespace UltimaXNA.Ultima.UI.Controls {
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position) {
-            base.Draw(spriteBatch, position);
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS) {
+            base.Draw(spriteBatch, position, frameMS);
             if (Caption != string.Empty) {
                 int yoffset = IsMouseDownOnThis ? 2 : 1;
                 m_Caption.Draw(spriteBatch, new Point(

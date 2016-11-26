@@ -39,7 +39,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 	/// The main reason for this class is to split very long HTMLparser file into parts that are reasonably
 	/// self-contained
 	/// </summary>
-	internal class TagParser : IDisposable
+	class TagParser : IDisposable
 	{
 		HTMLparser oP=null;
 		HTMLchunk oChunk=null;
