@@ -66,7 +66,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             return new ItemView(this);
         }
 
-		private int m_amount;
+        private int m_amount;
         public int Amount
         {
             get
@@ -81,7 +81,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 
         public ItemData ItemData;
 
-		private int m_ItemID;
+        private int m_ItemID;
         private int? m_DisplayItemID;
 
         public int ItemID
@@ -89,13 +89,13 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             get { return m_ItemID; }
             set
             {
-				m_ItemID = value;
+                m_ItemID = value;
                 ItemData = TileData.ItemData[m_ItemID & 0xFFFF]; // TODO: Does this work on both legacy and UOP clients?
             }
         }
 
-		public int DisplayItemID
-		{
+        public int DisplayItemID
+        {
             get
             {
                 if (m_DisplayItemID.HasValue)
@@ -117,17 +117,17 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             {
                 m_DisplayItemID = value;
             }
-		}
+        }
 
-		public bool NoDraw
-		{
-			get { return m_ItemID <= 1 || m_DisplayItemID <= 1; } // no draw
-		}
-
-		public bool IsCoin
+        public bool NoDraw
         {
-			get { return m_ItemID >= 0xEEA && m_ItemID <= 0xEF2; }
-		}
+            get { return m_ItemID <= 1 || m_DisplayItemID <= 1; } // no draw
+        }
+
+        public bool IsCoin
+        {
+            get { return m_ItemID >= 0xEEA && m_ItemID <= 0xEF2; }
+        }
 
         public int ContainerSlotIndex;
 
@@ -146,13 +146,13 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             return base.ToString() + " | " + ItemData.Name;
         }
 
-		public bool AtWorldPoint(int x, int y)
-		{
+        public bool AtWorldPoint(int x, int y)
+        {
             if (Position.X == x && Position.Y == y)
-				return true;
-			else
-				return false;
-		}
+                return true;
+            else
+                return false;
+        }
 
         public virtual bool TryPickUp()
         {

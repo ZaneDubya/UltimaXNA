@@ -441,7 +441,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerII
         protected internal float[] c = { 0 };
         protected internal int[] codelength = { 0 };
         protected internal float[] d = { 0 };
-        //protected float[][] 		groupingtable = {{0},{0}} ;
+        //protected float[][] groupingtable = {{0},{0}} ;
         protected internal float[] factor = { 0.0f };
         protected internal float[][] groupingtable;
         protected internal int groupnumber;

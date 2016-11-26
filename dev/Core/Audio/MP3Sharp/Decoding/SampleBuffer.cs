@@ -94,8 +94,8 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         /// </summary>
         public override void WriteBuffer(int val)
         {
-            //for (int i = 0; i < channels; ++i) 
-            //	bufferp[i] = (short)i;
+            // for (int i = 0; i < channels; ++i) 
+            // bufferp[i] = (short)i;
         }
 
         public override void Close()

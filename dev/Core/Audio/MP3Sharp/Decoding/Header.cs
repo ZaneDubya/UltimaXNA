@@ -351,24 +351,24 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             if (h_sample_frequency == FOURTYFOUR_POINT_ONE)
             {
                 /*
-				if (offset == null)
-				{
-				int max = max_number_of_frames(stream);
-				offset = new int[max];
-				for(int i=0; i<max; i++) offset[i] = 0;
-				}
-				// Bizarre, y avait ici une acollade ouvrante
-				int cf = stream.current_frame();
-				int lf = stream.last_frame();
-				if ((cf > 0) && (cf == lf))
-				{
-				offset[cf] = offset[cf-1] + h_padding_bit;
-				}
-				else
-				{
-				offset[0] = h_padding_bit;
-				}
-				*/
+                if (offset == null)
+                {
+                int max = max_number_of_frames(stream);
+                offset = new int[max];
+                for(int i=0; i<max; i++) offset[i] = 0;
+                }
+                // Bizarre, y avait ici une acollade ouvrante
+                int cf = stream.current_frame();
+                int lf = stream.last_frame();
+                if ((cf > 0) && (cf == lf))
+                {
+                offset[cf] = offset[cf-1] + h_padding_bit;
+                }
+                else
+                {
+                offset[0] = h_padding_bit;
+                }
+                */
             }
         }
 

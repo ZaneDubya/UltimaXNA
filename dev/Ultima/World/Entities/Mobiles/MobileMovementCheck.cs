@@ -20,193 +20,193 @@ using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.Entities.Mobiles
 {
-	static class MobileMovementCheck
-	{
-        static List<Item>[] m_Pools = { new List<Item>(), new List<Item>(),  new List<Item>(), new List<Item>() };
+    static class MobileMovementCheck
+    {
+        static List<Item>[] m_Pools = { new List<Item>(), new List<Item>(), new List<Item>(), new List<Item>() };
         static List<MapTile> m_Tiles = new List<MapTile>();
         const TileFlag ImpassableSurface = TileFlag.Impassable | TileFlag.Surface;
         const int PersonHeight = 16;
         const int StepHeight = 2;
 
         public static int GetNextZ(Mobile m, Position3D loc, Direction d)
-		{
+        {
             int newZ;
             if (CheckMovement(m, loc, d, out newZ, true))
                 return newZ;
             return loc.Z;
-		}
+        }
 
-		public static bool CheckMovement(Mobile m, Position3D loc, Direction d, out int newZ, bool forceOK = false)
-		{
-			Map map = m.Map;
+        public static bool CheckMovement(Mobile m, Position3D loc, Direction d, out int newZ, bool forceOK = false)
+        {
+            Map map = m.Map;
 
-			if (map == null)
-			{
-				newZ = 0;
-				return true;
-			}
+            if (map == null)
+            {
+                newZ = 0;
+                return true;
+            }
 
-			int xStart = loc.X;
-			int yStart = loc.Y;
-			int xForward = xStart, yForward = yStart;
-			int xRight = xStart, yRight = yStart;
-			int xLeft = xStart, yLeft = yStart;
+            int xStart = loc.X;
+            int yStart = loc.Y;
+            int xForward = xStart, yForward = yStart;
+            int xRight = xStart, yRight = yStart;
+            int xLeft = xStart, yLeft = yStart;
 
-			bool checkDiagonals = ((int)d & 0x1) == 0x1;
+            bool checkDiagonals = ((int)d & 0x1) == 0x1;
 
-			offsetXY(d, ref xForward, ref yForward);
-			offsetXY((Direction)(((int)d - 1) & 0x7), ref xLeft, ref yLeft);
-			offsetXY((Direction)(((int)d + 1) & 0x7), ref xRight, ref yRight);
+            offsetXY(d, ref xForward, ref yForward);
+            offsetXY((Direction)(((int)d - 1) & 0x7), ref xLeft, ref yLeft);
+            offsetXY((Direction)(((int)d + 1) & 0x7), ref xRight, ref yRight);
 
-			if (xForward < 0 || yForward < 0 || xForward >= map.TileWidth || yForward >= map.TileHeight)
-			{
-				newZ = 0;
-				return false;
-			}
+            if (xForward < 0 || yForward < 0 || xForward >= map.TileWidth || yForward >= map.TileHeight)
+            {
+                newZ = 0;
+                return false;
+            }
 
-			int startZ, startTop;
+            int startZ, startTop;
 
-			List<Item> itemsStart = m_Pools[0];
-			List<Item> itemsForward = m_Pools[1];
-			List<Item> itemsLeft = m_Pools[2];
-			List<Item> itemsRight = m_Pools[3];
+            List<Item> itemsStart = m_Pools[0];
+            List<Item> itemsForward = m_Pools[1];
+            List<Item> itemsLeft = m_Pools[2];
+            List<Item> itemsRight = m_Pools[3];
 
-			TileFlag reqFlags = ImpassableSurface;
+            TileFlag reqFlags = ImpassableSurface;
 
-			// if (m.CanSwim)
-			//     reqFlags |= TileFlag.Wet;
+            // if (m.CanSwim)
+            //     reqFlags |= TileFlag.Wet;
 
-			if (checkDiagonals)
-			{
-				MapTile tileStart = map.GetMapTile(xStart, yStart);
-				MapTile tileForward = map.GetMapTile(xForward, yForward);
-				MapTile tileLeft = map.GetMapTile(xLeft, yLeft);
-				MapTile tileRight = map.GetMapTile(xRight, yRight);
-				if ((tileForward == null) || (tileStart == null) || (tileLeft == null) || (tileRight == null))
-				{
-					newZ = loc.Z;
-					return false;
-				}
+            if (checkDiagonals)
+            {
+                MapTile tileStart = map.GetMapTile(xStart, yStart);
+                MapTile tileForward = map.GetMapTile(xForward, yForward);
+                MapTile tileLeft = map.GetMapTile(xLeft, yLeft);
+                MapTile tileRight = map.GetMapTile(xRight, yRight);
+                if ((tileForward == null) || (tileStart == null) || (tileLeft == null) || (tileRight == null))
+                {
+                    newZ = loc.Z;
+                    return false;
+                }
 
-				List<MapTile> tiles = m_Tiles;
+                List<MapTile> tiles = m_Tiles;
 
-				tiles.Add(tileStart);
-				tiles.Add(tileForward);
-				tiles.Add(tileLeft);
-				tiles.Add(tileRight);
+                tiles.Add(tileStart);
+                tiles.Add(tileForward);
+                tiles.Add(tileLeft);
+                tiles.Add(tileRight);
 
-				for (int i = 0; i < tiles.Count; ++i)
-				{
-					MapTile tile = tiles[i];
+                for (int i = 0; i < tiles.Count; ++i)
+                {
+                    MapTile tile = tiles[i];
 
-					for (int j = 0; j < tile.Entities.Count; ++j)
-					{
-						AEntity entity = tile.Entities[j];
+                    for (int j = 0; j < tile.Entities.Count; ++j)
+                    {
+                        AEntity entity = tile.Entities[j];
 
-						// if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
-						//     continue;
+                        // if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
+                        //     continue;
 
-						if (entity is Item)
-						{
-							Item item = (Item)entity;
+                        if (entity is Item)
+                        {
+                            Item item = (Item)entity;
 
-							if ((item.ItemData.Flags & reqFlags) == 0)
-								continue;
+                            if ((item.ItemData.Flags & reqFlags) == 0)
+                                continue;
 
-							if (tile == tileStart && item.AtWorldPoint(xStart, yStart) && item.ItemID < 0x4000)
-								itemsStart.Add(item);
-							else if (tile == tileForward && item.AtWorldPoint(xForward, yForward) && item.ItemID < 0x4000)
-								itemsForward.Add(item);
-							else if (tile == tileLeft && item.AtWorldPoint(xLeft, yLeft) && item.ItemID < 0x4000)
-								itemsLeft.Add(item);
-							else if (tile == tileRight && item.AtWorldPoint(xRight, yRight) && item.ItemID < 0x4000)
-								itemsRight.Add(item);
-						}
-					}
-				}
-			}
-			else
-			{
-				MapTile tileStart = map.GetMapTile(xStart, yStart);
-				MapTile tileForward = map.GetMapTile(xForward, yForward);
-				if ((tileForward == null) || (tileStart == null))
-				{
-					newZ = loc.Z;
-					return false;
-				}
+                            if (tile == tileStart && item.AtWorldPoint(xStart, yStart) && item.ItemID < 0x4000)
+                                itemsStart.Add(item);
+                            else if (tile == tileForward && item.AtWorldPoint(xForward, yForward) && item.ItemID < 0x4000)
+                                itemsForward.Add(item);
+                            else if (tile == tileLeft && item.AtWorldPoint(xLeft, yLeft) && item.ItemID < 0x4000)
+                                itemsLeft.Add(item);
+                            else if (tile == tileRight && item.AtWorldPoint(xRight, yRight) && item.ItemID < 0x4000)
+                                itemsRight.Add(item);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MapTile tileStart = map.GetMapTile(xStart, yStart);
+                MapTile tileForward = map.GetMapTile(xForward, yForward);
+                if ((tileForward == null) || (tileStart == null))
+                {
+                    newZ = loc.Z;
+                    return false;
+                }
 
-				if (tileStart == tileForward)
-				{
-					for (int i = 0; i < tileStart.Entities.Count; ++i)
-					{
-						AEntity entity = tileStart.Entities[i];
+                if (tileStart == tileForward)
+                {
+                    for (int i = 0; i < tileStart.Entities.Count; ++i)
+                    {
+                        AEntity entity = tileStart.Entities[i];
 
-						if (entity is Item)
-						{
-							Item item = (Item)entity;
+                        if (entity is Item)
+                        {
+                            Item item = (Item)entity;
 
-							// if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
-							//     continue;
+                            // if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
+                            //     continue;
 
-							if ((item.ItemData.Flags & reqFlags) == 0)
-								continue;
+                            if ((item.ItemData.Flags & reqFlags) == 0)
+                                continue;
 
-							if (item.AtWorldPoint(xStart, yStart) && item.ItemID < 0x4000)
-								itemsStart.Add(item);
-							else if (item.AtWorldPoint(xForward, yForward) && item.ItemID < 0x4000)
-								itemsForward.Add(item);
-						}
-					}
-				}
-				else
-				{
-					for (int i = 0; i < tileForward.Entities.Count; ++i)
-					{
-						AEntity entity = tileForward.Entities[i];
+                            if (item.AtWorldPoint(xStart, yStart) && item.ItemID < 0x4000)
+                                itemsStart.Add(item);
+                            else if (item.AtWorldPoint(xForward, yForward) && item.ItemID < 0x4000)
+                                itemsForward.Add(item);
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < tileForward.Entities.Count; ++i)
+                    {
+                        AEntity entity = tileForward.Entities[i];
 
-						if (entity is Item)
-						{
-							Item item = (Item)entity;
+                        if (entity is Item)
+                        {
+                            Item item = (Item)entity;
 
-							// if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
-							//     continue;
+                            // if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
+                            //     continue;
 
-							if ((item.ItemData.Flags & reqFlags) == 0)
-								continue;
+                            if ((item.ItemData.Flags & reqFlags) == 0)
+                                continue;
 
-							if (item.AtWorldPoint(xForward, yForward) && item.ItemID < 0x4000)
-								itemsForward.Add(item);
-						}
-					}
+                            if (item.AtWorldPoint(xForward, yForward) && item.ItemID < 0x4000)
+                                itemsForward.Add(item);
+                        }
+                    }
 
-					for (int i = 0; i < tileStart.Entities.Count; ++i)
-					{
-						AEntity entity = tileStart.Entities[i];
+                    for (int i = 0; i < tileStart.Entities.Count; ++i)
+                    {
+                        AEntity entity = tileStart.Entities[i];
 
-						if (entity is Item)
-						{
-							Item item = (Item)entity;
+                        if (entity is Item)
+                        {
+                            Item item = (Item)entity;
 
-							// if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
-							//     continue;
+                            // if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
+                            //     continue;
 
-							if ((item.ItemData.Flags & reqFlags) == 0)
-								continue;
+                            if ((item.ItemData.Flags & reqFlags) == 0)
+                                continue;
 
-							if (item.AtWorldPoint(xStart, yStart) && item.ItemID < 0x4000)
-								itemsStart.Add(item);
-						}
-					}
-				}
-			}
+                            if (item.AtWorldPoint(xStart, yStart) && item.ItemID < 0x4000)
+                                itemsStart.Add(item);
+                        }
+                    }
+                }
+            }
 
-			getStartZ(m, map, loc, itemsStart, out startZ, out startTop);
+            getStartZ(m, map, loc, itemsStart, out startZ, out startTop);
 
-			bool moveIsOk = check(map, m, itemsForward, xForward, yForward, startTop, startZ, out newZ) || forceOK;
+            bool moveIsOk = check(map, m, itemsForward, xForward, yForward, startTop, startZ, out newZ) || forceOK;
 
-			if (moveIsOk && checkDiagonals)
-			{
-				int hold;
+            if (moveIsOk && checkDiagonals)
+            {
+                int hold;
                 if (Settings.UltimaOnline.AllowCornerMovement)
                 {
                     if (!check(map, m, itemsLeft, xLeft, yLeft, startTop, startZ, out hold) && !check(map, m, itemsRight, xRight, yRight, startTop, startZ, out hold))
@@ -221,19 +221,19 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                         moveIsOk = false;
                     }
                 }
-			}
+            }
 
-			for (int i = 0; i < (checkDiagonals ? 4 : 2); ++i)
-			{
-				if (m_Pools[i].Count > 0)
-					m_Pools[i].Clear();
-			}
+            for (int i = 0; i < (checkDiagonals ? 4 : 2); ++i)
+            {
+                if (m_Pools[i].Count > 0)
+                    m_Pools[i].Clear();
+            }
 
-			if (!moveIsOk)
-				newZ = startZ;
+            if (!moveIsOk)
+                newZ = startZ;
 
-			return moveIsOk;
-		}
+            return moveIsOk;
+        }
 
         static bool check(Map map, Mobile m, List<Item> items, int x, int y, int startTop, int startZ, out int newZ)
         {
@@ -441,23 +441,43 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         }
 
         public static Point OffsetTile(Position3D currentTile, Direction facing)
-		{
-			Point nextTile = currentTile.Tile;
+        {
+            Point nextTile = currentTile.Tile;
 
-			switch (facing & Direction.FacingMask)
-			{
-				case Direction.North: nextTile.Y--; break;
-				case Direction.South: nextTile.Y++; break;
-				case Direction.West: nextTile.X--; break;
-				case Direction.East: nextTile.X++; break;
-				case Direction.Right: nextTile.X++; nextTile.Y--; break;
-				case Direction.Left: nextTile.X--; nextTile.Y++; break;
-				case Direction.Down: nextTile.X++; nextTile.Y++; break;
-				case Direction.Up: nextTile.X--; nextTile.Y--; break;
-			}
+            switch (facing & Direction.FacingMask)
+            {
+                case Direction.North:
+                    nextTile.Y--;
+                    break;
+                case Direction.South:
+                    nextTile.Y++;
+                    break;
+                case Direction.West:
+                    nextTile.X--;
+                    break;
+                case Direction.East:
+                    nextTile.X++;
+                    break;
+                case Direction.Right:
+                    nextTile.X++;
+                    nextTile.Y--;
+                    break;
+                case Direction.Left:
+                    nextTile.X--;
+                    nextTile.Y++;
+                    break;
+                case Direction.Down:
+                    nextTile.X++;
+                    nextTile.Y++;
+                    break;
+                case Direction.Up:
+                    nextTile.X--;
+                    nextTile.Y--;
+                    break;
+            }
 
-			return nextTile;
-		}
+            return nextTile;
+        }
 
         static void offsetXY(Direction d, ref int x, ref int y)
         {

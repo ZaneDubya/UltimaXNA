@@ -23,10 +23,10 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerII
     {
         protected internal int channel2_allocation;
         protected internal float[] channel2_c = { 0 };
-        //protected boolean	 	channel2_grouping;  ???? Never used!
+        //protected boolean channel2_grouping;  ???? Never used!
         protected internal int[] channel2_codelength = { 0 };
         protected internal float[] channel2_d = { 0 };
-        //protected float[][] 	channel2_groupingtable = {{0},{0}};
+        //protected float[][] channel2_groupingtable = {{0},{0}};
         protected internal float[] channel2_factor = { 0 };
         protected internal float[] channel2_samples;
         protected internal float channel2_scalefactor1, channel2_scalefactor2, channel2_scalefactor3;

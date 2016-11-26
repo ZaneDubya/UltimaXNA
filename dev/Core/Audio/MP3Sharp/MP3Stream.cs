@@ -41,7 +41,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
         {
             get; 
             protected set;
-		}
+        }
 
         /// <summary>
         ///     Creates a new stream instance using the provided filename, and the default chunk size of 4096 bytes.
