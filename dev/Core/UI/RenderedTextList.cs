@@ -25,10 +25,10 @@ namespace UltimaXNA.Core.UI
     /// </summary>
     class RenderedTextList : AControl
     {
-        private List<RenderedText> m_Entries;
+        private readonly List<RenderedText> m_Entries;
         private IScrollBar m_ScrollBar;
 
-        private bool m_IsMouseDown = false;
+        private bool m_IsMouseDown;
         private int m_MouseDownHREF = -1;
         private int m_MouseDownText = -1;
         private int m_MouseOverHREF = -1;
@@ -52,9 +52,9 @@ namespace UltimaXNA.Core.UI
             m_Entries = new List<RenderedText>();
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
 
             Point p = new Point(position.X, position.Y);
             int height = 0;

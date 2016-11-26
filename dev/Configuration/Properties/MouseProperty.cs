@@ -17,11 +17,11 @@ namespace UltimaXNA.Configuration.Properties
 {
     public class MouseProperty : NotifyPropertyChangedBase
     {
-        private MouseButton m_InteractionButton = MouseButton.Left;
-        private MouseButton m_MovementButton = MouseButton.Right;
-        private bool m_IsEnabled = true;
-        private float m_ClickAndPickUpMS = 800f; // this is close to what the legacy client uses.
-        private float m_DoubleClickMS = 400f;
+        MouseButton m_InteractionButton = MouseButton.Left;
+        MouseButton m_MovementButton = MouseButton.Right;
+        bool m_IsEnabled = true;
+        float m_ClickAndPickUpMS = 800f; // this is close to what the legacy client uses.
+        float m_DoubleClickMS = 400f;
 
         public MouseProperty()
         {

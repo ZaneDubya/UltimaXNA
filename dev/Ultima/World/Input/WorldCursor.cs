@@ -80,9 +80,9 @@ namespace UltimaXNA.Ultima.World.Input
 
         public WorldCursor(WorldModel model)
         {
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
-            m_Input = ServiceRegistry.GetService<InputManager>();
+            m_Network = Services.Get<INetworkClient>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
+            m_Input = Services.Get<InputManager>();
 
             m_World = model;
             InternalRegisterInteraction();
@@ -113,7 +113,7 @@ namespace UltimaXNA.Ultima.World.Input
 
                         if (targetItem.ItemData.IsContainer) // 1.a.
                         {
-                            DropHeldItemToContainer((Container)targetItem);
+                            DropHeldItemToContainer((ContainerItem)targetItem);
                         }
                         else if (HeldItem.ItemID == targetItem.ItemID && HeldItem.ItemData.IsGeneric) // 1.b.
                         {
@@ -121,9 +121,9 @@ namespace UltimaXNA.Ultima.World.Input
                         }
                         else // 1.c.
                         {
-                            if (targetItem.Parent != null && targetItem.Parent is Container)
+                            if (targetItem.Parent != null && targetItem.Parent is ContainerItem)
                             {
-                                DropHeldItemToContainer(targetItem.Parent as Container,
+                                DropHeldItemToContainer(targetItem.Parent as ContainerItem,
                                     target.X + (m_Input.MousePosition.X - target.ScreenX) - m_HeldItemOffset.X,
                                     target.Y + (m_Input.MousePosition.Y - target.ScreenY) - m_HeldItemOffset.Y);
                             }
@@ -131,7 +131,7 @@ namespace UltimaXNA.Ultima.World.Input
                     }
                     else if (target is GumpPicContainer)
                     {
-                        Container targetItem = (Container)((GumpPicContainer)target).Item;
+                        ContainerItem targetItem = (ContainerItem)((GumpPicContainer)target).Item;
                         MouseOverItem = targetItem;
 
                         int x = (int)m_Input.MousePosition.X - m_HeldItemOffset.X - (target.X + target.Parent.X);
@@ -145,7 +145,7 @@ namespace UltimaXNA.Ultima.World.Input
                     }
                     else if (target is GumpPicBackpack)
                     {
-                        DropHeldItemToContainer((Container)((GumpPicBackpack)target).BackpackItem);
+                        DropHeldItemToContainer((ContainerItem)((GumpPicBackpack)target).BackpackItem);
                     }
                 }
                 else if (m_World.Input.IsMouseOverWorld)
@@ -272,7 +272,7 @@ namespace UltimaXNA.Ultima.World.Input
         // Drawing routines
         // ============================================================================================================
 
-        HuedTexture m_ItemSprite = null;
+        HuedTexture m_ItemSprite;
         int m_ItemSpriteArtIndex = -1;
 
         public int ItemSpriteArtIndex
@@ -284,7 +284,7 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     m_ItemSpriteArtIndex = value;
 
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     Texture2D art = provider.GetItemTexture(m_ItemSpriteArtIndex);
                     if (art == null)
                     {
@@ -300,7 +300,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
         }
 
-        protected override void BeforeDraw(SpriteBatchUI spritebatch, Point position)
+        protected override void BeforeDraw(SpriteBatchUI spriteBatch, Point position)
         {
             Mobile player = WorldModel.Entities.GetPlayerEntity();
 
@@ -313,7 +313,6 @@ namespace UltimaXNA.Ultima.World.Input
             if (IsHoldingItem)
             {
                 ItemSpriteArtIndex = HeldItem.DisplayItemID;
-
                 if (m_ItemSprite != null)
                 {
                     m_ItemSprite.Hue = HeldItem.Hue;
@@ -321,13 +320,12 @@ namespace UltimaXNA.Ultima.World.Input
                     if (HeldItem.Amount > 1 && HeldItem.ItemData.IsGeneric && HeldItem.DisplayItemID == HeldItem.ItemID)
                     {
                         int offset = HeldItem.ItemData.Unknown4;
-                        m_ItemSprite.Draw(spritebatch, new Point(position.X - 5, position.Y - 5));
+                        m_ItemSprite.Draw(spriteBatch, new Point(position.X - 5, position.Y - 5));
                     }
-                    m_ItemSprite.Draw(spritebatch, position);
+                    m_ItemSprite.Draw(spriteBatch, position);
                 }
-
                 // set up to draw standard cursor sprite above item art.
-                base.BeforeDraw(spritebatch, position);
+                base.BeforeDraw(spriteBatch, position);
             }
             else if (IsTargeting)
             {
@@ -404,7 +402,7 @@ namespace UltimaXNA.Ultima.World.Input
             else
             {
                 // cursor is over UI or there is a modal message box open. Set up to draw standard cursor sprite.
-                base.BeforeDraw(spritebatch, position);
+                base.BeforeDraw(spriteBatch, position);
             }
         }
 
@@ -590,7 +588,7 @@ namespace UltimaXNA.Ultima.World.Input
         // Pickup/Drop/Hold item routines
         // ============================================================================================================
 
-        Item m_HeldItem = null;
+        Item m_HeldItem;
         internal Item HeldItem
         {
             get { return m_HeldItem; }
@@ -652,13 +650,13 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     (item.Parent as Mobile).RemoveItem(item.Serial);
                 }
-                else if (item.Parent is Container)
+                else if (item.Parent is ContainerItem)
                 {
                     AEntity parent = item.Parent;
                     if (parent is Corpse)
                         (parent as Corpse).RemoveItem(item.Serial);
                     else
-                        (parent as Container).RemoveItem(item.Serial);
+                        (parent as ContainerItem).RemoveItem(item.Serial);
                 }
                 item.Parent = null;
             }
@@ -672,9 +670,9 @@ namespace UltimaXNA.Ultima.World.Input
         void RecursivelyCloseItemGumps(Item item)
         {
             m_UserInterface.RemoveControl<Gump>(item.Serial);
-            if (item is Container)
+            if (item is ContainerItem)
             {
-                foreach (Item child in (item as Container).Contents)
+                foreach (Item child in (item as ContainerItem).Contents)
                 {
                     RecursivelyCloseItemGumps(child);
                 }
@@ -705,7 +703,7 @@ namespace UltimaXNA.Ultima.World.Input
             ClearHolding();
         }
 
-        void DropHeldItemToContainer(Container container)
+        void DropHeldItemToContainer(ContainerItem container)
         {
             // get random coords and drop the item there.
             Rectangle bounds = ContainerData.Get(container.ItemID).Bounds;
@@ -714,10 +712,10 @@ namespace UltimaXNA.Ultima.World.Input
             DropHeldItemToContainer(container, x, y);
         }
 
-        void DropHeldItemToContainer(Container container, int x, int y)
+        void DropHeldItemToContainer(ContainerItem container, int x, int y)
         {
             Rectangle bounds = ContainerData.Get(container.ItemID).Bounds;
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             Texture2D itemTexture = provider.GetItemTexture(HeldItem.DisplayItemID);
             if (x < bounds.Left)
                 x = bounds.Left;

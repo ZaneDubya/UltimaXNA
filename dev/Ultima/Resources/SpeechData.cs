@@ -19,9 +19,9 @@ namespace UltimaXNA.Ultima.Resources
 {
     class SpeechEntry
     {
-        private int m_Index;
-        List<string> m_Strings;
-        List<Regex> m_Regex;
+        private readonly int m_Index;
+        readonly List<string> m_Strings;
+        readonly List<Regex> m_Regex;
 
         public int Index { get { return m_Index; } }
         public List<string> Strings { get { return m_Strings; } }
@@ -45,17 +45,17 @@ namespace UltimaXNA.Ultima.Resources
 
     class SpeechData
     {
-        static List<Dictionary<int, SpeechEntry>> table;
+        static List<Dictionary<int, SpeechEntry>> m_Table;
 
         public static void GetSpeechTriggers(string text, string lang, out int count, out int[] triggers)
         {
-            if (table == null)
-                table = LoadSpeechFile();
+            if (m_Table == null)
+                m_Table = LoadSpeechFile();
             
             List<int> t = new List<int>();
             int speechTable = 0; // "ENU/0"
 
-            foreach (KeyValuePair<int, SpeechEntry> e in table[speechTable])
+            foreach (KeyValuePair<int, SpeechEntry> e in m_Table[speechTable])
             {
                 for (int i = 0; i < e.Value.Regex.Count; i++)
                 {

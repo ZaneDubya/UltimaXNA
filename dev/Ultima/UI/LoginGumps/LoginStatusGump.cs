@@ -39,7 +39,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
             m_OnCancelLogin = onCancelLogin;
 
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             int hue = 902;
             // backdrop
@@ -102,7 +102,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         public override void OnButtonClick(int buttonID) {
             switch ((LoggingInGumpButtons)buttonID) {
                 case LoggingInGumpButtons.QuitButton:
-                    UltimaGame.IsRunning = false;
+                    Services.Get<UltimaGame>().Quit();
                     break;
                 case LoggingInGumpButtons.CancelLoginButton:
                     m_OnCancelLogin();

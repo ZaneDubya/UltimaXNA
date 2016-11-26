@@ -19,7 +19,7 @@ namespace UltimaXNA.Ultima.Resources
 {
     class GumpDefTranslator
     {
-        private static Dictionary<int, Tuple<int, int>> m_Translations;
+        private static readonly Dictionary<int, Tuple<int, int>> m_Translations;
 
         static GumpDefTranslator()
         {

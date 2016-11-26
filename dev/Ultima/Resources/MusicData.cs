@@ -19,11 +19,11 @@ namespace UltimaXNA.Ultima.Resources
 	class MusicData
 	{
         private const string m_ConfigFilePath = @"Music\Digital\Config.txt";
-        private static char[] m_configFileDelimiters = new char[] { ' ', ',', '\t' };
+        private static char[] m_configFileDelimiters = { ' ', ',', '\t' };
 
-        private static Dictionary<int, Tuple<string, bool>> m_MusicData = new Dictionary<int, Tuple<string, bool>>();
+        private static readonly Dictionary<int, Tuple<string, bool>> m_MusicData = new Dictionary<int, Tuple<string, bool>>();
 
-		static MusicData()
+        static MusicData()
 		{
             // open UO's music Config.txt
 		    if (!FileManager.Exists(m_ConfigFilePath))
@@ -61,7 +61,7 @@ namespace UltimaXNA.Ultima.Resources
 
             int index = int.Parse(splits[0]);
             string name = splits[1].Trim();
-            bool doesLoop = splits.Length == 3 ? splits[2] == "loop" : false;
+            bool doesLoop = splits.Length == 3 && splits[2] == "loop";
 
             songData = new Tuple<int, string, bool>(index, name, doesLoop);
             return true;

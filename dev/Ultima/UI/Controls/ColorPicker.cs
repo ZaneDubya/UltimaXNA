@@ -36,8 +36,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             set;
         }
 
-        public bool IsChild = false;
-        public ColorPicker ParentColorPicker = null;
+        public bool IsChild;
+        public ColorPicker ParentColorPicker;
 
         public int HueValue
         {
@@ -90,7 +90,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (IsChild) // is a child
                 {
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     m_huesTexture = HueData.CreateHueSwatch(m_hueWidth, m_hueHeight, m_hues);
                     m_selectedIndicator = provider.GetUITexture(6000);
                 }
@@ -101,7 +101,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             spriteBatch.Draw2D(m_huesTexture, new Rectangle(position.X, position.Y, Width, Height), Vector3.Zero);
             if (IsChild && IsMouseOver)
@@ -111,7 +111,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     (int)(position.Y + (float)(Height / m_hueHeight) * ((Index / m_hueWidth) + 0.5f) - m_selectedIndicator.Height / 2),
                     0), Vector3.Zero);
             }
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override void OnMouseClick(int x, int y, MouseButton button)

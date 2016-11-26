@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         bool m_IsFocused;
         bool m_CaratBlinkOn;
         float m_MSSinceLastCaratBlink;
-        RenderedText m_RenderedText;
+        readonly RenderedText m_RenderedText;
         RenderedText m_RenderedCarat;
         int m_CaratAt;
         int? m_CaratKeyUpDownX;
@@ -165,7 +165,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
             if (IsEditable)
@@ -180,7 +180,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     m_RenderedCarat.Draw(spriteBatch, caratPosition);
                 }
             }
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         void SetBlinkOn()

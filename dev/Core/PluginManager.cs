@@ -20,7 +20,7 @@ using UltimaXNA.Core.Patterns;
 
 namespace UltimaXNA.Core {
     class PluginManager {
-        List<IModule> m_Modules = new List<IModule>();
+        readonly List<IModule> m_Modules = new List<IModule>();
 
         public PluginManager(string baseAppPath) {
             Configure(baseAppPath);

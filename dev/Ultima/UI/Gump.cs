@@ -99,7 +99,7 @@ namespace UltimaXNA.Ultima.UI
             {
                 if (buttonID == 0) // cancel
                 {
-                    WorldModel world = ServiceRegistry.GetService<WorldModel>();
+                    WorldModel world = Services.Get<WorldModel>();
                     world.Client.SendGumpMenuSelect(GumpLocalID, GumpServerTypeID, buttonID, null, null);
                 }
                 else
@@ -120,7 +120,7 @@ namespace UltimaXNA.Ultima.UI
                             textEntries.Add(new Tuple<short, string>((short)control.GumpLocalID, (control as TextEntry).Text));
                         }
                     }
-                    WorldModel world = ServiceRegistry.GetService<WorldModel>();
+                    WorldModel world = Services.Get<WorldModel>();
                     world.Client.SendGumpMenuSelect(GumpLocalID, GumpServerTypeID, buttonID, switchIDs.ToArray(), textEntries.ToArray());
                 }
                 Dispose();
@@ -159,7 +159,7 @@ namespace UltimaXNA.Ultima.UI
 
         protected override void OnMove()
         {
-            SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
+            SpriteBatchUI sb = Services.Get<SpriteBatchUI>();
             Point position = Position;
 
             int halfWidth = Width / 2;
@@ -178,9 +178,9 @@ namespace UltimaXNA.Ultima.UI
         }
 
         #region Position Save and Restore
-        private bool m_WillSavePosition = false, m_WillOffsetNextPosition = false;
-        private string m_SavePositionName = null;
-        private bool m_HasRestoredPosition = false;
+        private bool m_WillSavePosition, m_WillOffsetNextPosition;
+        private string m_SavePositionName;
+        private bool m_HasRestoredPosition;
 
         private static Point s_SavePositionOffsetAmount = new Point(24, 24);
 

@@ -19,8 +19,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
 {
     public class DeferredView : AEntityView
     {
-        Vector3 m_DrawPosition;
-        AEntityView m_BaseView;
+        readonly Vector3 m_DrawPosition;
+        readonly AEntityView m_BaseView;
 
         public DeferredView(DeferredEntity entity, Vector3 drawPosition, AEntityView baseView)
             : base(entity)

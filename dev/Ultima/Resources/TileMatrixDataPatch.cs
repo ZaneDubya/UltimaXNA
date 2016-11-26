@@ -24,20 +24,20 @@ namespace UltimaXNA.Ultima.Resources
     public class TileMatrixDataPatch
     {
         // ============================================================================================================ Static Data ============================================================================================
-        private static MapDiffInfo EnabledDiffs;
+        static MapDiffInfo EnabledDiffs;
         public static void EnableMapDiffs(MapDiffInfo diffs)
         {
             EnabledDiffs = diffs;
         }
 
         // ============================================================================================================ Instance data ==========================================================================================
-        private FileStream m_LandPatchStream;
-        private FileStream m_StaticPatchStream;
+        FileStream m_LandPatchStream;
+        FileStream m_StaticPatchStream;
 
-        private Dictionary<uint, LandPatchData> m_LandPatchPtrs;
-        private Dictionary<uint, StaticPatchData> m_StaticPatchPtrs;
+        Dictionary<uint, LandPatchData> m_LandPatchPtrs;
+        Dictionary<uint, StaticPatchData> m_StaticPatchPtrs;
 
-        private class LandPatchData
+        class LandPatchData
         {
             public readonly uint Index;
             public readonly uint Pointer;
@@ -50,7 +50,7 @@ namespace UltimaXNA.Ultima.Resources
             }
         }
 
-        private class StaticPatchData
+        class StaticPatchData
         {
             public readonly uint Index;
             public readonly uint Pointer;
@@ -71,7 +71,7 @@ namespace UltimaXNA.Ultima.Resources
             LoadStaticPatches(matrix, String.Format("stadif{0}.mul", index), String.Format("stadifl{0}.mul", index), String.Format("stadifi{0}.mul", index));
         }
 
-        private uint MakeChunkKey(uint blockX, uint blockY)
+        uint MakeChunkKey(uint blockX, uint blockY)
         {
             return ((blockY & 0x0000ffff) << 16) | (blockX & 0x0000ffff);
         }
@@ -98,17 +98,14 @@ namespace UltimaXNA.Ultima.Resources
                 }
                 m_LandPatchStream.Seek(data.Pointer, SeekOrigin.Begin);
                 landData = new byte[192];
-                fixed (byte* pTiles = landData)
-                {
-                    NativeMethods.ReadBuffer(m_LandPatchStream.SafeFileHandle, pTiles, 192);
-                }
+                NativeMethods.ReadBuffer(m_LandPatchStream, landData, 192);
                 return true;
             }
 
             return false;
         }
 
-        private unsafe int LoadLandPatches(TileMatrixData tileMatrix, string landPath, string indexPath)
+        unsafe int LoadLandPatches(TileMatrixData tileMatrix, string landPath, string indexPath)
         {
             m_LandPatchPtrs = new Dictionary<uint, LandPatchData>();
 
@@ -186,10 +183,7 @@ namespace UltimaXNA.Ultima.Resources
                     {
                         staticData = new byte[length];
                     }
-                    fixed (byte* pStaticTiles = staticData)
-                    {
-                        NativeMethods.ReadBuffer(m_StaticPatchStream.SafeFileHandle, pStaticTiles, length);
-                    }
+                    NativeMethods.ReadBuffer(m_StaticPatchStream, staticData, length);
                     return true;
                 }
                 length = 0;
@@ -201,7 +195,7 @@ namespace UltimaXNA.Ultima.Resources
             }
         }
 
-        private unsafe int LoadStaticPatches(TileMatrixData tileMatrix, string dataPath, string indexPath, string lookupPath)
+        unsafe int LoadStaticPatches(TileMatrixData tileMatrix, string dataPath, string indexPath, string lookupPath)
         {
             m_StaticPatchPtrs = new Dictionary<uint, StaticPatchData>();
 

@@ -20,7 +20,8 @@ namespace UltimaXNA.Ultima.UI.Controls {
         ResizePic[] m_Gumps = new ResizePic[3];
         bool m_IsMouseDown;
         RenderedText m_Caption;
-        Action m_OnClickLeft, m_OnClickRight;
+        Action m_OnClickRight;
+        readonly Action m_OnClickLeft;
 
         internal bool IsMouseDownOnThis => m_IsMouseDown;
 
@@ -57,8 +58,8 @@ namespace UltimaXNA.Ultima.UI.Controls {
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position) {
-            base.Draw(spriteBatch, position);
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS) {
+            base.Draw(spriteBatch, position, frameMS);
             if (Caption != string.Empty) {
                 int yoffset = IsMouseDownOnThis ? 2 : 1;
                 m_Caption.Draw(spriteBatch, new Point(

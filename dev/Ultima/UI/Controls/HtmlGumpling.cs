@@ -24,12 +24,12 @@ namespace UltimaXNA.Ultima.UI.Controls
         // private variables
         private IScrollBar m_Scrollbar;
         private RenderedText m_RenderedText;
-        private bool m_IsMouseDown = false;
+        private bool m_IsMouseDown;
         private int m_MouseDownHREF = -1;
         private int m_MouseOverHREF = -1;
         // public variables
-        public int ScrollX = 0;
-        public int ScrollY = 0;
+        public int ScrollX;
+        public int ScrollY;
 
         public string Text
         {
@@ -153,9 +153,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
 
             m_RenderedText.MouseOverRegionID = m_MouseOverHREF;
             m_RenderedText.IsMouseDown = m_IsMouseDown;

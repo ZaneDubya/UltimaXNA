@@ -19,7 +19,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
     /// <summary>
     ///     Abstract base class for subband classes of layer I and II
     /// </summary>
-    internal abstract class ASubband
+    abstract class ASubband
     {
         /*
         *  Changes from version 1.1 to 1.2:

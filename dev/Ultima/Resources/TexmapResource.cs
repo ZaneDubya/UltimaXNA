@@ -21,8 +21,8 @@ namespace UltimaXNA.Ultima.Resources
     class TexmapResource
     {
         private Texture2D[] m_Cache = new Texture2D[0x4000];
-        private AFileIndex m_Index = FileManager.CreateFileIndex("texidx.mul", "texmaps.mul", 0x4000, -1); // !!! must find patch file reference for texmap.
-        private GraphicsDevice m_Graphics;
+        private readonly AFileIndex m_Index = FileManager.CreateFileIndex("texidx.mul", "texmaps.mul", 0x4000, -1); // !!! must find patch file reference for texmap.
+        private readonly GraphicsDevice m_Graphics;
 
         private const int DEFAULT_TEXTURE = 0x007F; // index 127 is the first 'unused' texture.
 

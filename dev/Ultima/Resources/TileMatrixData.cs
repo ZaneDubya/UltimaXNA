@@ -37,8 +37,8 @@ namespace UltimaXNA.Ultima.Resources
         public readonly uint ChunkHeight;
         public readonly uint ChunkWidth;
         public readonly uint MapIndex;
-        byte[][] m_BufferedLandChunks;
-        uint[] m_BufferedLandChunkKeys;
+        readonly byte[][] m_BufferedLandChunks;
+        readonly uint[] m_BufferedLandChunkKeys;
         byte[] m_StaticTileLoadingBuffer;
         readonly TileMatrixDataPatch m_Patch;
         readonly FileStream m_MapDataStream;
@@ -182,10 +182,7 @@ namespace UltimaXNA.Ultima.Resources
                 {
                     m_StaticTileLoadingBuffer = new byte[length];
                 }
-                fixed (byte* pStaticTiles = m_StaticTileLoadingBuffer)
-                {
-                    NativeMethods.ReadBuffer(m_StaticDataStream.SafeFileHandle, pStaticTiles, length);
-                }
+                NativeMethods.ReadBuffer(m_StaticDataStream, m_StaticTileLoadingBuffer, length);
                 return m_StaticTileLoadingBuffer;
             }
             catch (EndOfStreamException)
@@ -219,10 +216,7 @@ namespace UltimaXNA.Ultima.Resources
                 ptr = m_UOPIndex.Lookup(ptr);
             }
             m_MapDataStream.Seek(ptr, SeekOrigin.Begin);
-            fixed (byte* pData = m_BufferedLandChunks[index])
-            {
-                NativeMethods.ReadBuffer(m_MapDataStream.SafeFileHandle, pData, SizeOfLandChunkData);
-            }
+            NativeMethods.ReadBuffer(m_MapDataStream, m_BufferedLandChunks[index], SizeOfLandChunkData);
             Metrics.ReportDataRead(SizeOfLandChunkData);
             return m_BufferedLandChunks[index];
         }

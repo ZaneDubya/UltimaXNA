@@ -2,7 +2,7 @@ namespace UltimaXNA.Ultima.Player
 {
     public class Quest
     {
-        int[] QuestData;
+        readonly int[] QuestData;
 
         Quest()
         {

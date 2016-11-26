@@ -18,7 +18,7 @@ using UltimaXNA.Ultima.Input;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    internal class MacroDropDownList : AControl
+    class MacroDropDownList : AControl
     {
         public int Index;
 
@@ -28,9 +28,9 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool IsFirstvisible = true;
         public List<string> Items;
 
-        private int m_Width;
+        private readonly int m_Width;
         private bool m_CanBeNull;
-        private bool m_IsListOpen = false;
+        private bool m_IsListOpen;
         private int m_visibleItems = -1;
 
         private TextLabelAscii m_label;
@@ -41,12 +41,12 @@ namespace UltimaXNA.Ultima.UI.Controls
         private const int hue_Text = 1107;
         private const int hue_TextSelected = 588;
 
-        private IFont m_Font;
+        private readonly IFont m_Font;
 
         public MacroDropDownList(AControl parent, int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull, int ID, bool firstVisible)
                 : base(parent)
         {
-            m_Font = ServiceRegistry.GetService<IResourceProvider>().GetAsciiFont(1);
+            m_Font = Services.Get<IResourceProvider>().GetAsciiFont(1);
 
             GumpLocalID = ID;
             Position = new Point(x, y);
@@ -105,7 +105,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 // the resizepic for the open list, and the scroll bar if it is loaded.
                 if (UserInterface.MouseOverControl != m_openResizePic &&
                     UserInterface.MouseOverControl != m_ResizePic &&
-                    (m_openScrollBar == null ? false : UserInterface.MouseOverControl != m_openScrollBar))
+                    (m_openScrollBar != null && UserInterface.MouseOverControl != m_openScrollBar))
                 {
                     closeOpenList();
                 }

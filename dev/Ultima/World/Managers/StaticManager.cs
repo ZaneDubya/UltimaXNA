@@ -17,7 +17,7 @@ namespace UltimaXNA.Ultima.World.Managers
 {
     public class StaticManager
     {
-        private List<StaticItem> m_ActiveStatics = new List<StaticItem>();
+        private readonly List<StaticItem> m_ActiveStatics = new List<StaticItem>();
 
         public void AddStaticThatNeedsUpdating(StaticItem item)
         {

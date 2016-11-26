@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Book.SetCallbacks(OnEntityUpdate, OnEntityDispose);
             m_LastPage = (m_Book.PageCount + 2) / 2;
             IsMoveable = true;
-            m_World = ServiceRegistry.GetService<WorldModel>(false);
+            m_World = Services.Get<WorldModel>(false);
             BuildGump();
         }
 
@@ -108,7 +108,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 AddControl(new HtmlGumpling(this, x, 195, 135, 20, 0, 0, $"<center><font color=#444>{i + 1}"), onGumpPage);
                 isRight = !isRight;
             }
-            AudioService service = ServiceRegistry.GetService<AudioService>();
+            AudioService service = Services.Get<AudioService>();
             service.PlaySound(0x058);
             SetActivePage(1);
             UserInterface.KeyboardFocusControl = m_Pages[0];
@@ -179,7 +179,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 SetActivePage(ActivePage + 1);
             }
-            AudioService service = ServiceRegistry.GetService<AudioService>();
+            AudioService service = Services.Get<AudioService>();
             service.PlaySound(0x055);
         }
 
@@ -202,7 +202,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         protected override void CloseWithRightMouseButton()
         {
             CheckForContentChanges();
-            AudioService service = ServiceRegistry.GetService<AudioService>();
+            AudioService service = Services.Get<AudioService>();
             service.PlaySound(0x058);
             base.CloseWithRightMouseButton();
         }
@@ -303,7 +303,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
             else
             {
-                if (m_Pages[rightIndex].TextWithLineBreaks != m_Book.Pages[rightIndex].GetAllLines())
+                if (m_Pages[leftIndex].TextWithLineBreaks != m_Book.Pages[leftIndex].GetAllLines())
                 {
                     m_World?.Interaction.BookPageChange(m_Book.Serial, leftIndex, GetTextEntryAsArray(m_Pages[leftIndex]));
                 }

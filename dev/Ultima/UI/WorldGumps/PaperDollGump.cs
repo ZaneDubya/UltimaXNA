@@ -26,7 +26,7 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    internal class PaperDollGump : Gump
+    class PaperDollGump : Gump
     {
         private enum Buttons
         {
@@ -58,8 +58,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private bool m_IsWarMode;
         private Button m_WarModeBtn;
 
-        private readonly int[] PeaceModeBtnGumps = new int[] { 0x07e5, 0x07e6, 0x07e7 };
-        private readonly int[] WarModeBtnGumps = new int[] { 0x07e8, 0x07e9, 0x07ea };
+        private readonly int[] PeaceModeBtnGumps = { 0x07e5, 0x07e6, 0x07e7 };
+        private readonly int[] WarModeBtnGumps = { 0x07e8, 0x07e9, 0x07ea };
 
         private GumpPic m_VirtueMenuButton;
 
@@ -82,8 +82,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         private void BuildGump()
         {
-            m_World = ServiceRegistry.GetService<WorldModel>();
-            m_Client = ServiceRegistry.GetService<INetworkClient>();
+            m_World = Services.Get<WorldModel>();
+            m_Client = Services.Get<INetworkClient>();
 
             IsMoveable = true;
             SaveOnWorldStop = true;
@@ -221,9 +221,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         public override void OnButtonClick(int buttonID)

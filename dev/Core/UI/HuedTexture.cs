@@ -18,8 +18,8 @@ namespace UltimaXNA.Ultima.Resources
 {
     public class HuedTexture
     {
-        private Texture2D m_Texture = null;
-        private Rectangle m_SourceRect = Rectangle.Empty;
+        private readonly Texture2D m_Texture;
+        private readonly Rectangle m_SourceRect = Rectangle.Empty;
 
         private Point m_Offset;
         public Point Offset
@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.Resources
             get { return m_Offset; }
         }
         
-        private int m_Hue = 0;
+        private int m_Hue;
         public int Hue
         {
             set { m_Hue = value; }

@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.UI.Controls
     class CheckBox : AControl
     {
         Texture2D m_Inactive, m_Active;
-        bool m_ischecked = false;
+        bool m_ischecked;
 
         public bool IsChecked
         {
@@ -66,9 +66,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             BuildGumpling(x, y, inactiveID, activeID, initialState, switchID);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
             if (IsChecked && m_Active != null)
             {
                 spriteBatch.Draw2D(m_Active, new Vector3(position.X, position.Y, 0), Vector3.Zero);
@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void BuildGumpling(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
         {
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             m_Inactive = provider.GetUITexture(inactiveID);
             m_Active = provider.GetUITexture(activeID);
 

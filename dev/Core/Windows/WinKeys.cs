@@ -9,8 +9,11 @@
  *
  ***************************************************************************/
 
+using System;
+
 namespace UltimaXNA.Core.Windows
 {
+    [Flags]
     public enum WinKeys
     {
         A = 0x41,

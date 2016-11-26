@@ -24,7 +24,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     ///     errors that can occur when decoding MPEG audio.
     /// </summary>
     [Serializable]
-    internal class DecoderException : MP3SharpException
+class DecoderException : MP3SharpException
     {
         private int m_ErrorCode;
 
@@ -53,7 +53,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         {
             if (info == null)
             {
-                throw new ArgumentNullException("info");
+                throw new ArgumentNullException(nameof(info));
             }
 
             info.AddValue("ErrorCode", m_ErrorCode);

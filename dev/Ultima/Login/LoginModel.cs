@@ -23,7 +23,7 @@ using UltimaXNA.Ultima.UI.LoginGumps;
 
 namespace UltimaXNA.Ultima.Login
 {
-    class LoginModel : AUltimaModel {
+    class LoginModel : AModel {
         UserInterfaceService m_UserInterface;
 
         public LoginClient Client {
@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.Login
         }
 
         public LoginModel() {
-            ServiceRegistry.Register(this);
+            Services.Add(this);
             Client = new LoginClient();
         }
 
@@ -41,16 +41,16 @@ namespace UltimaXNA.Ultima.Login
         }
 
         protected override void OnInitialize() {
-            ServiceRegistry.GetService<UltimaGame>().SetupWindowForLogin();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            Services.Get<UltimaGame>().SetupWindowForLogin();
+            m_UserInterface = Services.Get<UserInterfaceService>();
             m_UserInterface.Cursor = new UltimaCursor();
-            ServiceRegistry.GetService<AudioService>().PlayMusic(0);
+            Services.Get<AudioService>().PlayMusic(0);
             ResetToLogin();
         }
 
         protected override void OnDispose() {
-            ServiceRegistry.GetService<AudioService>().StopMusic();
-            ServiceRegistry.Unregister<LoginModel>();
+            Services.Get<AudioService>().StopMusic();
+            Services.Remove<LoginModel>();
             Client.Dispose();
             Client = null;
             m_UserInterface.Reset();
@@ -187,6 +187,8 @@ namespace UltimaXNA.Ultima.Login
 
         public void ShowCreateCharacter() {
             m_Data = new CreateCharacterData();
+            m_Data.ShirtColor = Utility.RandomValue(600, 900);
+            m_Data.PantsColor = Utility.RandomValue(600, 900);
             openSkillsGump();
         }
 
@@ -229,7 +231,7 @@ namespace UltimaXNA.Ultima.Login
 
         bool validateAppearance() {
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             // save the values
             (CurrentGump as CreateCharAppearanceGump).SaveData(m_Data);
             if (m_Data.Name.Length < 2) {

@@ -178,7 +178,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         }
 
         public Chairs.ChairData ChairData = Chairs.ChairData.Null;
-        public int SittingZ = 0;
+        public int SittingZ;
 
         // ============================================================================================================
         // Properties
@@ -196,7 +196,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             set;
         }
 
-        public bool PlayerCanChangeName = false;
+        public bool PlayerCanChangeName;
 
         public int Strength, Dexterity, Intelligence, StatCap, Luck, Gold;
         public CurrentMaxValue Health, Stamina, Mana;
@@ -280,19 +280,19 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             }
         }
 
-        public Container Backpack
+        public ContainerItem Backpack
         {
             get
             {
-                return (Container)Equipment[(int)EquipLayer.Backpack];
+                return (ContainerItem)Equipment[(int)EquipLayer.Backpack];
             }
         }
 
-        public Container VendorShopContents
+        public ContainerItem VendorShopContents
         {
             get
             {
-                return (Container)Equipment[(int)EquipLayer.ShopBuy];
+                return (ContainerItem)Equipment[(int)EquipLayer.ShopBuy];
             }
         }
 
@@ -300,7 +300,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         // Appearance and Hues
         // ============================================================================================================
 
-        static int[] s_HumanoidBodyIDs = new int[] {
+        static int[] s_HumanoidBodyIDs = {
             183, 184, 185, 186, // savages
             400, 401, 402, 403, // humans
             694, 695,
@@ -312,7 +312,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             666, 667 // gargoyles. 666. Clever.
         };
 
-        int m_BodyID = 0;
+        int m_BodyID;
         public Body Body
         {
             get

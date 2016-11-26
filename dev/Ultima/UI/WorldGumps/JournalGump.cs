@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     {
         private ExpandableScroll m_Background;
         private RenderedTextList m_JournalEntries;
-        private IScrollBar m_ScrollBar;
+        private readonly IScrollBar m_ScrollBar;
 
         public JournalGump()
             : base(0, 0)
@@ -56,9 +56,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         private void AddJournalEntry(JournalEntry entry)

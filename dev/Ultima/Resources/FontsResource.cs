@@ -25,10 +25,10 @@ namespace UltimaXNA.Ultima.Resources
         GraphicsDevice m_GraphicsDevice;
 
         public const int UniFontCount = 3;
-        AFont[] m_UnicodeFonts = new AFont[UniFontCount];
+        readonly AFont[] m_UnicodeFonts = new AFont[UniFontCount];
 
         public const int AsciiFontCount = 10;
-        AFont[] m_AsciiFonts = new AFont[AsciiFontCount];
+        readonly AFont[] m_AsciiFonts = new AFont[AsciiFontCount];
 
         internal AFont GetUniFont(int index)
         {

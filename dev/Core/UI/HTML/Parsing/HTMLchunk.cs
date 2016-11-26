@@ -122,12 +122,12 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// <summary>
 		/// Offset in bHTML data array at which this chunk starts
 		/// </summary>
-		public int iChunkOffset=0;
+		public int iChunkOffset;
 
 		/// <summary>
 		/// Length of the chunk in bHTML data array
 		/// </summary>
-		public int iChunkLength=0;
+		public int iChunkLength;
 
 		/// <summary>
 		/// If its open/close tag type then this is where lowercased Tag will be kept
@@ -138,44 +138,44 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// If true then it must be closed tag
 		/// </summary>
 		/// <exclude/>
-		public bool bClosure=false;
+		public bool bClosure;
 
 		/// <summary>
 		/// If true then it must be closed tag and closure sign / was at the END of tag, ie this is a SOLO
 		/// tag 
 		/// </summary>
 		/// <exclude/>
-		public bool bEndClosure=false;
+		public bool bEndClosure;
 
 		/// <summary>
 		/// If true then it must be comments tag
 		/// </summary>
 		/// <exclude/>
-		public bool bComments=false;
+		public bool bComments;
 		
 		/// <summary>
 		/// True if entities were present (and transformed) in the original HTML
 		/// </summary>
 		/// <exclude/>
-		public bool bEntities=false;
+		public bool bEntities;
 
 		/// <summary>
 		/// Set to true if &lt; entity (tag start) was found 
 		/// </summary>
 		/// <exclude/>
-		public bool bLtEntity=false;
+		public bool bLtEntity;
 
 		/// <summary>
 		/// Hashtable with tag parameters: keys are param names and values are param values.
 		/// ONLY used if bHashMode is set to TRUE.
 		/// </summary>
-		public Hashtable oParams=null; 
+		public Hashtable oParams; 
 
 		/// <summary>
 		/// Number of parameters and values stored in sParams array, OR in oParams hashtable if
 		/// bHashMode is true
 		/// </summary>
-		public int iParams=0;
+		public int iParams;
 
 		/// <summary>
 		/// Param names will be stored here - actual number is in iParams.
@@ -200,7 +200,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// </summary>
 		public Encoding oEnc=Encoding.Default;
 
-		bool bDisposed=false;
+		bool bDisposed;
 
 		/// <summary>
 		/// This function will convert parameters stored in sParams/sValues arrays into oParams hash
@@ -312,8 +312,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 				case HTMLchunkType.Text:
 
 					return oHTML;
-			};
-
+			}
 			return sHTML;
 		}
 
@@ -439,8 +438,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 
 						default:
 							break;
-					};
-				}
+					}				}
 
 				return sParam+"="+sValue;
 			}

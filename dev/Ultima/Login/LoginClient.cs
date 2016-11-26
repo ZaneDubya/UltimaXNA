@@ -36,9 +36,9 @@ namespace UltimaXNA.Ultima.Login
         SecureString m_Password;
 
         public LoginClient() {
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_Engine = ServiceRegistry.GetService<UltimaGame>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Network = Services.Get<INetworkClient>();
+            m_Engine = Services.Get<UltimaGame>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
             Initialize();
         }
 
@@ -107,14 +107,14 @@ namespace UltimaXNA.Ultima.Login
 
         public void LoginWithCharacter(int index) {
             if (Characters.List[index].Name != string.Empty) {
-                m_Engine.QueuedModel = new WorldModel();
+                m_Engine.Models.Next = new WorldModel();
                 m_Network.Send(new LoginCharacterPacket(Characters.List[index].Name, index, Utility.IPAddress));
                 Macros.Player.Load(Characters.List[index].Name);
             }
         }
 
         public void CreateCharacter(CreateCharacterPacket packet) {
-            m_Engine.QueuedModel = new WorldModel();
+            m_Engine.Models.Next = new WorldModel();
             m_Network.Send(packet);
         }
 
@@ -142,23 +142,23 @@ namespace UltimaXNA.Ultima.Login
 
         void ReceiveCharacterListUpdate(CharacterListUpdatePacket packet) {
             Characters.SetCharacterList(packet.Characters);
-            (m_Engine.ActiveModel as LoginModel).ShowCharacterList();
+            (m_Engine.Models.Current as LoginModel).ShowCharacterList();
         }
 
         void ReceiveCharacterList(CharacterCityListPacket packet) {
             Characters.SetCharacterList(packet.Characters);
             Characters.SetStartingLocations(packet.Locations);
             StartKeepAlivePackets();
-            (m_Engine.ActiveModel as LoginModel).ShowCharacterList();
+            (m_Engine.Models.Current as LoginModel).ShowCharacterList();
         }
 
         void ReceiveServerList(ServerListPacket packet) {
-            (m_Engine.ActiveModel as LoginModel).ShowServerList((packet).Servers);
+            (m_Engine.Models.Current as LoginModel).ShowServerList((packet).Servers);
         }
 
         void ReceiveLoginRejection(LoginRejectionPacket packet) {
             Disconnect();
-            (m_Engine.ActiveModel as LoginModel).ShowLoginRejection(packet.Reason);
+            (m_Engine.Models.Current as LoginModel).ShowLoginRejection(packet.Reason);
         }
 
         void ReceiveServerRelay(ServerRelayPacket packet) {
@@ -209,11 +209,11 @@ namespace UltimaXNA.Ultima.Login
             // map the player will be loading on login. If we don't have either of these, we
             // delay loading until we do.
             if (!m_LoggingInToWorld) {
-                if ((m_Engine.QueuedModel as WorldModel).MapIndex != 0xffffffff) { // will be 0xffffffff if no map
+                if ((m_Engine.Models.Next as WorldModel).MapIndex != 0xffffffff) { // will be 0xffffffff if no map
                     m_LoggingInToWorld = true; // stops double log in attempt caused by out of order packets.
-                    m_Engine.ActivateQueuedModel();
-                    if (m_Engine.ActiveModel is WorldModel) {
-                        (m_Engine.ActiveModel as WorldModel).LoginToWorld();
+                    m_Engine.Models.ActivateNext();
+                    if (m_Engine.Models.Current is WorldModel) {
+                        (m_Engine.Models.Current as WorldModel).LoginToWorld();
                         Mobile player = WorldModel.Entities.GetObject<Mobile>(m_QueuedLoginConfirmPacket.Serial, true);
                         if (player == null) {
                             Tracer.Critical("No player object ready in CheckIfOkayToLogin().");

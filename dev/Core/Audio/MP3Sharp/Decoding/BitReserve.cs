@@ -26,7 +26,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
 
     // REVIEW: there is no range checking, so buffer underflow or overflow
     // can silently occur.
-    internal sealed class BitReserve
+    sealed class BitReserve
     {
         /// <summary>
         ///     Size of the internal buffer to store the reserved bits.

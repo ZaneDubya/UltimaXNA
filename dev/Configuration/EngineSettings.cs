@@ -16,10 +16,8 @@ namespace UltimaXNA.Configuration
 {
     public sealed class EngineSettings : ASettingsSection
     {
-        public const string SectionName = "engine";
-
-        private bool m_IsVSyncEnabled;
-        private bool m_IsFixedTimeStep;
+        bool m_IsVSyncEnabled;
+        bool m_IsFixedTimeStep;
 
         public EngineSettings()
         {

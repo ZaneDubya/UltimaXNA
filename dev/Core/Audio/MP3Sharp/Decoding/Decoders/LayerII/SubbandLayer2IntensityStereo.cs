@@ -19,7 +19,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerII
     /// <summary>
     ///     Class for layer II subbands in joint stereo mode.
     /// </summary>
-    internal class SubbandLayer2IntensityStereo : SubbandLayer2
+    class SubbandLayer2IntensityStereo : SubbandLayer2
     {
         protected internal float channel2_scalefactor1, channel2_scalefactor2, channel2_scalefactor3;
         protected internal int channel2_scfsi;

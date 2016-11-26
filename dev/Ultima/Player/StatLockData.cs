@@ -12,8 +12,8 @@ namespace UltimaXNA.Ultima.Player
 {
     public class StatLockData
     {
-        public int StrengthLock = 0;
-        public int DexterityLock = 0;
-        public int IntelligenceLock = 0;
+        public int StrengthLock;
+        public int DexterityLock;
+        public int IntelligenceLock;
     }
 }

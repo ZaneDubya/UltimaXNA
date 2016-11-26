@@ -19,8 +19,9 @@ public static class SecureStringExtensions
     public static string ConvertToUnsecureString(this SecureString securePassword)
     {
         if (securePassword == null)
-            throw new ArgumentNullException("securePassword");
-
+        {
+            throw new ArgumentNullException(nameof(securePassword));
+        }
         IntPtr unmanagedString = IntPtr.Zero;
         try
         {

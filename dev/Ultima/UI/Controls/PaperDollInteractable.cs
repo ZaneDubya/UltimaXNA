@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Position = new Point(x, y);
             m_isFemale = sourceEntity.Flags.IsFemale;
             SourceEntity = sourceEntity;
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = Services.Get<WorldModel>();
         }
 
         public override void Dispose()
@@ -109,7 +109,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void On_Dblclick_Backpack(AControl control, int x, int y, MouseButton button)
         {
-            Container backpack = ((Mobile)m_sourceEntity).Backpack;
+            ContainerItem backpack = ((Mobile)m_sourceEntity).Backpack;
             m_World.Interaction.DoubleClick(backpack);
         }
 

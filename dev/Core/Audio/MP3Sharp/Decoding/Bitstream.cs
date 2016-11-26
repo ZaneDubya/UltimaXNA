@@ -26,7 +26,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     ///     REVIEW: much of the parsing currently occurs in the various decoders.
     ///     This should be moved into this class and associated inner classes.
     /// </summary>
-    internal sealed class Bitstream
+    sealed class Bitstream
     {
         /// <summary>
         ///     Maximum size of the frame buffer:
@@ -38,7 +38,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         ///     Synchronization control constant for the initial
         ///     synchronization to the start of a frame.
         /// </summary>
-        internal static sbyte INITIAL_SYNC = 0;
+        internal static sbyte INITIAL_SYNC;
 
         /// <summary>
         ///     Synchronization control constant for non-inital frame
@@ -430,25 +430,8 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         }
 
         /// <summary>
-        ///     Reads the exact number of bytes from the source
-        ///     input stream into a byte array.
+        /// Reads the exact number of bytes from the source input stream into a byte array.
         /// </summary>
-        /// <param name="b		The">
-        ///     byte array to read the specified number
-        ///     of bytes into.
-        /// </param>
-        /// <param name="offs	The">
-        ///     index in the array where the first byte
-        ///     read should be stored.
-        /// </param>
-        /// <param name="len	the">
-        ///     number of bytes to read.
-        ///     *
-        /// </param>
-        /// <exception cref="">
-        ///     BitstreamException is thrown if the specified
-        ///     number of bytes could not be read from the stream.
-        /// </exception>
         private void readFully(sbyte[] b, int offs, int len)
         {
             try
@@ -480,8 +463,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         }
 
         /// <summary>
-        ///     Simlar to readFully, but doesn't throw exception when
-        ///     EOF is reached.
+        /// Simlar to readFully, but doesn't throw exception when EOF is reached.
         /// </summary>
         private int readBytes(sbyte[] b, int offs, int len)
         {

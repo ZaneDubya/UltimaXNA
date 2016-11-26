@@ -26,14 +26,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         // ============================================================================================================
         // Private variables
         // ============================================================================================================
-        private Texture2D m_GumpSlider = null;
+        private Texture2D m_GumpSlider;
 
         private int m_SliderExtentTop, m_SliderExtentHeight;
         private float m_SliderPosition;
         private float m_Value;
         private int m_Max, m_Min;
 
-        private bool m_BtnSliderClicked = false;
+        private bool m_BtnSliderClicked;
         private Point m_ClickPosition;
 
         // ============================================================================================================
@@ -110,7 +110,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.OnInitialize();
 
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             m_GumpSlider = provider.GetUITexture(0x0828);
             Size = new Point(m_GumpSlider.Width, m_GumpSlider.Height);
         }
@@ -127,7 +127,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_SliderPosition = CalculateSliderYPosition();
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             // draw slider
             if (MaxValue == MinValue)
@@ -139,7 +139,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 spriteBatch.Draw2D(m_GumpSlider, new Vector3(position.X - 5, position.Y + m_SliderPosition, 0), Vector3.Zero);
             }
 
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         private float CalculateSliderYPosition()

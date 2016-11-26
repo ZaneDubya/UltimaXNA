@@ -117,9 +117,9 @@ namespace UltimaXNA.Ultima.Resources
                 return m_Default;
         }
 
-        private int m_GumpID;
-        private Rectangle m_Bounds;
-        private int m_DropSound;
+        private readonly int m_GumpID;
+        private readonly Rectangle m_Bounds;
+        private readonly int m_DropSound;
 
         public int GumpID { get { return m_GumpID; } }
         public Rectangle Bounds { get { return m_Bounds; } }

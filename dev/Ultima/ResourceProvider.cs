@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima
         FontsResource m_Fonts;
         GumpMulResource m_Gumps;
         TexmapResource m_Texmaps;
-        Dictionary<Type, object> m_Resources = new Dictionary<Type, object>();
+        readonly Dictionary<Type, object> m_Resources = new Dictionary<Type, object>();
 
         public ResourceProvider(Game game)
         {

@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
 {
     public class MovingEffect : AEffect
     {
-        public float AngleToTarget = 0f;
+        public float AngleToTarget;
 
         int m_ItemID;
         public int ItemID
@@ -174,8 +174,8 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
             
         }
 
-        private float m_TimeActive = 0f;
-        private float m_TimeUntilHit = 0f;
+        private float m_TimeActive;
+        private float m_TimeUntilHit;
 
         protected override AEntityView CreateView()
         {

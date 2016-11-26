@@ -17,7 +17,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class CroppedText : AControl
     {
-        public int Hue = 0;
+        public int Hue;
         public string Text = string.Empty;
         RenderedText m_Texture;
 
@@ -55,10 +55,10 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_Texture = new RenderedText(Text, width);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             m_Texture.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
     }
 }

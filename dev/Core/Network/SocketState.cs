@@ -15,7 +15,7 @@ namespace UltimaXNA.Core.Network
 {
     public class SocketState
     {
-        private Socket m_Socket;
+        private readonly Socket m_Socket;
         private byte[] m_Buffer;
         private int m_DataLength;
 

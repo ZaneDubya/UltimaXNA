@@ -23,7 +23,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
     /// <summary>
     ///     Implements decoding of MPEG Audio Layer 3 frames.
     /// </summary>
-    internal sealed class LayerIIIDecoder : IFrameDecoder
+    sealed class LayerIIIDecoder : IFrameDecoder
     {
         private const int SSLIMIT = 18;
         private const int SBLIMIT = 32;

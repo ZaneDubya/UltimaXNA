@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.Network.Server
             get
             {
                 // get the resource provider
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
 
                 switch ((DeleteResultType)m_result)
                 {
@@ -54,7 +54,7 @@ namespace UltimaXNA.Ultima.Network.Server
             BadRequest
         }
 
-        byte m_result;
+        readonly byte m_result;
 
         public DeleteResultPacket(PacketReader reader)
             : base(0x85, "Character Delete Result")

@@ -19,13 +19,9 @@ namespace UltimaXNA.Ultima.Data {
             m_Serial = serial;
         }
 
-        public Serial Serial {
-            get { return m_Serial; }
-        }
+        public Serial Serial => m_Serial;
 
-        public int Count {
-            get { return m_Entries.Count; }
-        }
+        public int Count => m_Entries.Count;
 
         public ContextMenuItem this[int index] {
             get {
@@ -36,8 +32,8 @@ namespace UltimaXNA.Ultima.Data {
         }
 
         // Add a new context menu entry.
-        internal void AddItem(int nResponseCode, int nStringID, int nFlags, int nHue) {
-            m_Entries.Add(new ContextMenuItem(nResponseCode, nStringID, nFlags, nHue));
+        internal void AddItem(int responseCode, int stringID, int flags, int hue) {
+            m_Entries.Add(new ContextMenuItem(responseCode, stringID, flags, hue));
         }
     }
 }

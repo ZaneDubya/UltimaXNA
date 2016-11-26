@@ -39,13 +39,13 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 	/// The main reason for this class is to split very long HTMLparser file into parts that are reasonably
 	/// self-contained
 	/// </summary>
-	internal class TagParser : IDisposable
+	class TagParser : IDisposable
 	{
-		HTMLparser oP=null;
-		HTMLchunk oChunk=null;
-		DynaString sText=null;
-		byte[] bHTML=null;
-		int iDataLength=0;
+		HTMLparser oP;
+		HTMLchunk oChunk;
+		DynaString sText;
+		byte[] bHTML;
+		int iDataLength;
 
 		/// <summary>
 		/// Minimum data size for heuristics engine to kick in
@@ -55,11 +55,11 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// <summary>
 		/// Max data length for heuristical checks
 		/// </summary>
-		int iMaxHeuDataLength=0;
+		int iMaxHeuDataLength;
 
 		//byte[] bWhiteSpace=null;
-		HTMLentities oE=null;
-		HTMLheuristics oHE=null;
+		HTMLentities oE;
+		HTMLheuristics oHE;
 
 		/// <summary>
 		/// Tag char types lookup table: allows one off lookup to determine if char used in tag is acceptable
@@ -1320,7 +1320,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 			GC.SuppressFinalize(this);
 		}
 
-		bool bDisposed=false;
+		bool bDisposed;
 
 		private void Dispose(bool bDisposing)
 		{

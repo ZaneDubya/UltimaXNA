@@ -374,8 +374,7 @@ namespace UltimaXNA.Core.Windows
         /// <param name="e">InputEventCM for the MouseWheel event</param>
         private void invokeMouseWheel(InputEventMouse e)
         {
-            if (MouseWheel != null)
-                MouseWheel(e);
+            MouseWheel?.Invoke(e);
         }
 
         /// <summary>
@@ -384,8 +383,7 @@ namespace UltimaXNA.Core.Windows
         /// <param name="e">InputEventCM for the MouseMove event</param>
         private void invokeMouseMove(InputEventMouse e)
         {
-            if (MouseMove != null)
-                MouseMove(e);
+            MouseMove?.Invoke(e);
         }
 
         /// <summary>
@@ -394,8 +392,7 @@ namespace UltimaXNA.Core.Windows
         /// <param name="e">InputEventCM for the MouseDown event</param>
         private void invokeMouseDown(InputEventMouse e)
         {
-            if (MouseDown != null)
-                MouseDown(e);
+            MouseDown?.Invoke(e);
         }
 
         /// <summary>
@@ -404,8 +401,7 @@ namespace UltimaXNA.Core.Windows
         /// <param name="e">InputEventCM for the MouseUp event</param>
         private void invokeMouseUp(InputEventMouse e)
         {
-            if (MouseUp != null)
-                MouseUp(e);
+            MouseUp?.Invoke(e);
         }
 
         /// <summary>
@@ -414,8 +410,7 @@ namespace UltimaXNA.Core.Windows
         /// <param name="e">KeyboardPressEventArgs for the KeyUp event</param>
         private void invokeKeyUp(InputEventKeyboard e)
         {
-            if (KeyUp != null)
-                KeyUp(e);
+            KeyUp?.Invoke(e);
         }
 
         /// <summary>
@@ -424,8 +419,7 @@ namespace UltimaXNA.Core.Windows
         /// <param name="e">InputEventCKB for the KeyDown event</param>
         private void invokeKeyDown(InputEventKeyboard e)
         {
-            if (KeyDown != null)
-                KeyDown(e);
+            KeyDown?.Invoke(e);
         }
         
         /// <summary>
@@ -434,8 +428,7 @@ namespace UltimaXNA.Core.Windows
         /// <param name="e">InputEventCKB for the OnChar event</param>
         private void invokeChar(InputEventKeyboard e)
         {
-            if (KeyChar != null)
-                KeyChar(e);
+            KeyChar?.Invoke(e);
         }
     }
 }

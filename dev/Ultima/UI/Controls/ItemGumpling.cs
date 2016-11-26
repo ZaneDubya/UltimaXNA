@@ -25,13 +25,13 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool CanPickUp = true;
         public bool HighlightOnMouseOver = true;
 
-        protected Texture2D m_Texture = null;
-        HtmlGumpling m_Label = null;
+        protected Texture2D m_Texture;
+        HtmlGumpling m_Label;
 
-        bool m_ClickedCanDrag = false;
+        bool m_ClickedCanDrag;
         float m_PickUpTime;
         Point m_ClickPoint;
-        bool m_SendClickIfNoDoubleClick = false;
+        bool m_SendClickIfNoDoubleClick;
         float m_SingleClickTime;
 
         readonly WorldModel m_World;
@@ -48,7 +48,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             BuildGumpling(item);
             HandlesMouseInput = true;
 
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_World = Services.Get<WorldModel>();
         }
 
         void BuildGumpling(Item item)
@@ -71,13 +71,13 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return;
             }
 
-            if (m_ClickedCanDrag && UltimaGame.TotalMS >= m_PickUpTime)
+            if (m_ClickedCanDrag && totalMS >= m_PickUpTime)
             {
                 m_ClickedCanDrag = false;
                 AttemptPickUp();
             }
 
-            if (m_SendClickIfNoDoubleClick && UltimaGame.TotalMS >= m_SingleClickTime)
+            if (m_SendClickIfNoDoubleClick && totalMS >= m_SingleClickTime)
             {
                 m_SendClickIfNoDoubleClick = false;
                 m_World.Interaction.SingleClick(Item);
@@ -88,11 +88,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             if (m_Texture == null)
             {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 m_Texture = provider.GetItemTexture(Item.DisplayItemID);
                 Size = new Point(m_Texture.Width, m_Texture.Height);
             }
@@ -104,7 +104,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), hue);
 
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         protected override bool IsPointWithinControl(int x, int y)
@@ -128,7 +128,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         bool IsPointInTexture(int x, int y)
         {
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             return provider.IsPointInItemTexture(Item.DisplayItemID, x, y, 1);
         }
 
@@ -136,7 +136,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             m_ClickedCanDrag = true;
-            m_PickUpTime = (float)UltimaGame.TotalMS + Settings.UserInterface.Mouse.ClickAndPickupMS;
+            float totalMS = (float)Services.Get<UltimaGame>().TotalMS;
+            m_PickUpTime = totalMS + Settings.UserInterface.Mouse.ClickAndPickupMS;
             m_ClickPoint = new Point(x, y);
         }
 
@@ -161,7 +162,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 m_ClickedCanDrag = false;
                 m_SendClickIfNoDoubleClick = true;
-                m_SingleClickTime = (float)UltimaGame.TotalMS + Settings.UserInterface.Mouse.DoubleClickMS;
+                float totalMS = (float)Services.Get<UltimaGame>().TotalMS;
+                m_SingleClickTime = totalMS + Settings.UserInterface.Mouse.DoubleClickMS;
             }
         }
 
@@ -183,7 +185,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (this is ItemGumplingPaperdoll)
                 {
                     int w, h;
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     provider.GetItemDimensions(Item.DisplayItemID, out w, out h);
                     Point click_point = new Point(w / 2, h / 2);
                     m_World.Interaction.PickupItem(Item, InternalGetPickupOffset(click_point));
@@ -201,7 +203,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_Label == null)
                 {
-                    InputManager input = ServiceRegistry.GetService<InputManager>();
+                    InputManager input = Services.Get<InputManager>();
                     UserInterface.AddControl(m_Label = new HtmlGumpling(null, 0, 0, 200, 32, 0, 0,
                         string.Format("<center><span style='font-family: ascii3;'>{0}</center>", Item.Overheads[0].Text)),
                         input.MousePosition.X - 100, input.MousePosition.Y - 12);

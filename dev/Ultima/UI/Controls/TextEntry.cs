@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Size = new Point(width, height);
             Hue = hue;
             EntryID = entryID;
-            Text = text;
+            Text = text == null ? string.Empty : text;
             MaxCharCount = maxCharCount;
             m_CaratBlinkOn = false;
             m_RenderedText = new RenderedText(string.Empty, 2048, true);
@@ -141,7 +141,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             Point caratPosition = new Point(position.X, position.Y);
             if (IsEditable)
@@ -168,7 +168,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 m_RenderedCarat.Draw(spriteBatch, caratPosition, Utility.GetHueVector(Hue));
             }
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         // ============================================================================================================

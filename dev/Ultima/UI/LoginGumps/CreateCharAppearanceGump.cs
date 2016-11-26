@@ -93,7 +93,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
             m_OnBackward = onBackward;
 
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 9274));
@@ -195,7 +195,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
                     m_OnForward();
                     break;
                 case Buttons.QuitButton:
-                    UltimaGame.IsRunning = false;
+                    Services.Get<UltimaGame>().Quit();
                     break;
             }
         }

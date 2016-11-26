@@ -16,7 +16,7 @@
 
 namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerIII
 {
-    internal class Layer3SideInfo
+    class Layer3SideInfo
     {
         public ChannelData[] Channels;
         public int MainDataBegin;

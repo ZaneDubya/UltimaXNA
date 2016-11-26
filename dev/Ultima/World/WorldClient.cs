@@ -12,6 +12,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using UltimaXNA.Core.Diagnostics.Tracing;
@@ -43,15 +44,15 @@ namespace UltimaXNA.Ultima.World
     class WorldClient : IDisposable
     {
         Timer m_KeepAliveTimer;
-        INetworkClient m_Network;
+        readonly INetworkClient m_Network;
         UserInterfaceService m_UserInterface;
         WorldModel m_World;
 
         public WorldClient(WorldModel world)
         {
             m_World = world;
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Network = Services.Get<INetworkClient>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
         }
 
         public void Initialize()
@@ -286,7 +287,7 @@ namespace UltimaXNA.Ultima.World
             // special handling for spellbook contents
             if (p.AllItemsInSameContainer)
             {
-                Container container = WorldModel.Entities.GetObject<Container>(p.Items[0].ContainerSerial, true);
+                ContainerItem container = WorldModel.Entities.GetObject<ContainerItem>(p.Items[0].ContainerSerial, true);
                 if (SpellbookData.GetSpellBookTypeFromItemID(container.ItemID) != SpellBookTypes.Unknown)
                 {
                     SpellbookData data = new SpellbookData(container, p);
@@ -312,18 +313,18 @@ namespace UltimaXNA.Ultima.World
         {
             // This code is necessary sanity checking: It may be possible that the server will ask us to add an item to
             // a mobile, which this codebase does not currently handle.
-            AEntity cGeneric = WorldModel.Entities.GetObject<AEntity>(cSerial, false);
-            if (cGeneric == null)
+            AEntity entity = WorldModel.Entities.GetObject<AEntity>(cSerial, false);
+            if (entity == null)
             {
-                cGeneric = WorldModel.Entities.GetObject<Container>(cSerial, true);
+                entity = WorldModel.Entities.GetObject<ContainerItem>(cSerial, true);
             }
-            if (cGeneric is Container)
+            if (entity is ContainerItem)
             {
-                (cGeneric as Container).AddItem(item);
+                (entity as ContainerItem).AddItem(item);
             }
             else
             {
-                Tracer.Warn($"Illegal PlaceItemInContainer({item}, {cSerial}): container is {cGeneric.GetType()}.");
+                Tracer.Warn($"Illegal PlaceItemInContainer({item}, {cSerial}): container is {entity.GetType()}.");
             }
         }
 
@@ -346,7 +347,7 @@ namespace UltimaXNA.Ultima.World
                     }
                     else
                     {
-                        item = WorldModel.Entities.GetObject<Container>(serial, true);
+                        item = WorldModel.Entities.GetObject<ContainerItem>(serial, true);
                     }
                 }
                 else
@@ -374,7 +375,7 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveContainer(OpenContainerPacket p)
         {
-            Container item;
+            ContainerItem item;
             // Special case for 0x30, which tells us to open a buy from vendor window.
             if (p.GumpId == 0x30)
             {
@@ -390,7 +391,7 @@ namespace UltimaXNA.Ultima.World
             }
             else
             {
-                item = WorldModel.Entities.GetObject<Container>(p.Serial, false);
+                item = WorldModel.Entities.GetObject<ContainerItem>(p.Serial, false);
                 if (item == null)
                 {
                     // log error - item does not exist
@@ -408,7 +409,7 @@ namespace UltimaXNA.Ultima.World
             // Now create the GameObject.
             // If the iItemID < 0x4000, this is a regular game object.
             // If the iItemID >= 0x4000, then this is a multiobject.
-            if (p.ItemID <= 0x4000)
+            if (p.ItemID < 0x4000)
             {
                 Item item = CreateItem(p.Serial, p.ItemID, p.Hue, p.Amount);
                 item.Position.Set(p.X, p.Y, p.Z);
@@ -669,7 +670,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveCLILOCMessage(MessageLocalizedPacket p)
         {
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             string strCliLoc = constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements);
             ReceiveTextMessage(p.MessageType, strCliLoc, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
         }
@@ -687,7 +688,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveMessageLocalizedAffix(MessageLocalizedAffixPacket p)
         {
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
                 constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements), p.Affix);
             ReceiveTextMessage(p.MessageType, localizedString, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
@@ -699,7 +700,7 @@ namespace UltimaXNA.Ultima.World
                 return string.Empty;
 
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             if (arg == null)
             {
@@ -893,7 +894,6 @@ namespace UltimaXNA.Ultima.World
         bool TryParseGumplings(string gumpData, out string[] pieces)
         {
             List<string> i = new List<string>();
-            ;
             int dataIndex = 0;
             while (dataIndex < gumpData.Length)
             {
@@ -939,7 +939,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveObjectPropertyList(ObjectPropertyListPacket p)
         {
             // get the resource provider
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
 
             AEntity entity = WorldModel.Entities.GetObject<AEntity>(p.Serial, false);
             if (entity == null)
@@ -1098,7 +1098,7 @@ namespace UltimaXNA.Ultima.World
                     break;
                 case GeneralInfoPacket.ContextMenu:
                     ContextMenuInfo menuInfo = p.Info as ContextMenuInfo;
-                    InputManager input = ServiceRegistry.GetService<InputManager>();
+                    InputManager input = Services.Get<InputManager>();
                     m_UserInterface.AddControl(new ContextMenuGump(menuInfo.Menu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
                     break;
                 case GeneralInfoPacket.MapDiff:
@@ -1164,7 +1164,48 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveOpenWebBrowser(OpenWebBrowserPacket p)
         {
-            Process.Start("iexplore.exe", p.WebsiteUrl);
+            if (!ValidateUrl(p.WebsiteUrl))
+            {
+                return;
+            }
+            try
+            {
+                Process.Start(p.WebsiteUrl);
+            }
+            catch (Win32Exception noBrowser)
+            {
+                if (noBrowser.ErrorCode == unchecked((int)0x80004005))
+                {
+                    MsgBoxGump.Show(noBrowser.Message, MsgBoxTypes.OkOnly);
+                }
+            }
+            catch (Exception other)
+            {
+                MsgBoxGump.Show(other.Message, MsgBoxTypes.OkOnly);
+            }
+        }
+
+        bool ValidateUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return false;
+            }
+            if (url.IndexOf("http", StringComparison.Ordinal) != 0)
+            {
+                url = $"http://{url}";
+            }
+            Uri uri;
+            bool result = Uri.TryCreate(url, UriKind.Absolute, out uri);
+            if (!result)
+            {
+                return false;
+            }
+            if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+            {
+                return false;
+            }
+            return true;
         }
 
         void ReceiveOverallLightLevel(OverallLightLevelPacket p)
@@ -1190,13 +1231,13 @@ namespace UltimaXNA.Ultima.World
 
         void ReceivePlayMusic(PlayMusicPacket p)
         {
-            AudioService service = ServiceRegistry.GetService<AudioService>();
+            AudioService service = Services.Get<AudioService>();
             service.PlayMusic(p.MusicID);
         }
 
         void ReceivePlaySoundEffect(PlaySoundEffectPacket p)
         {
-            AudioService service = ServiceRegistry.GetService<AudioService>();
+            AudioService service = Services.Get<AudioService>();
             service.PlaySound(p.SoundModel, spamCheck: true);
         }
 

@@ -16,13 +16,11 @@ namespace UltimaXNA.Configuration
 {
     public class AudioSettings : ASettingsSection
     {
-        public const string SectionName = "audio";
-
-        private int m_MusicVolume;
-        private int m_SoundVolume;
-        private bool m_MusicOn;
-        private bool m_SoundOn;
-        private bool m_FootStepSoundOn;
+        int m_MusicVolume;
+        int m_SoundVolume;
+        bool m_MusicOn;
+        bool m_SoundOn;
+        bool m_FootStepSoundOn;
 
         public AudioSettings()
         {

@@ -16,12 +16,12 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 {
     public static class MobileSounds
     {
-        private static AudioService m_Audio = ServiceRegistry.GetService<AudioService>();
+        private static AudioService m_Audio = Services.Get<AudioService>();
 
         private static Dictionary<Serial, MobileSoundData> m_Data = new Dictionary<Serial,MobileSoundData>();
 
-        private static int[] m_StepSFX = new int[] { 0x12B, 0x12C };
-        private static int[] m_StepMountedSFX = new int[] { 0x129, 0x12A };
+        private static int[] m_StepSFX = { 0x12B, 0x12C };
+        private static int[] m_StepMountedSFX = { 0x129, 0x12A };
 
         public static void ResetFootstepSounds(Mobile mobile)
         {

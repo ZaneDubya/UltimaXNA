@@ -17,7 +17,7 @@ using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls {
     public class ResizePic : AControl {
-        Texture2D[] m_Gumps;
+        readonly Texture2D[] m_Gumps;
         int GumpID;
 
         ResizePic(AControl parent)
@@ -60,7 +60,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
 
         public override void Update(double totalMS, double frameMS) {
             if (m_Gumps[0] == null) {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 for (int i = 0; i < 9; i++) {
                     m_Gumps[i] = provider.GetUITexture(GumpID + i);
                 }
@@ -68,7 +68,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position) {
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS) {
             int centerWidth = Width - m_Gumps[0].Width - m_Gumps[2].Width;
             int centerHeight = Height - m_Gumps[0].Height - m_Gumps[6].Height;
             int line2Y = position.Y + m_Gumps[0].Height;
@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
             spriteBatch.Draw2DTiled(m_Gumps[7], new Rectangle(position.X + m_Gumps[6].Width, line3Y, centerWidth, m_Gumps[6].Height), Vector3.Zero);
             spriteBatch.Draw2D(m_Gumps[8], new Vector3(position.X + Width - m_Gumps[8].Width, line3Y, 0), Vector3.Zero);
 
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
     }
 }

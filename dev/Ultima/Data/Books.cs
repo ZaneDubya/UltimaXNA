@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.Data
             0x2B2F // A Greenish Book
         };
 
-        static ushort[] m_BookItemIDs = {
+        static readonly ushort[] m_BookItemIDs = {
             0xFEF, // Brown Book
             0xFF0, // Tan Book
             0xFF1, // Red Book

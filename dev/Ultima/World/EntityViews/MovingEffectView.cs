@@ -14,7 +14,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         MovingEffect Effect => (MovingEffect)Entity;
 
         EffectData m_AnimData;
-        bool m_Animated;
+        readonly bool m_Animated;
         int m_DisplayItemID = -1;
 
         public MovingEffectView(MovingEffect effect)

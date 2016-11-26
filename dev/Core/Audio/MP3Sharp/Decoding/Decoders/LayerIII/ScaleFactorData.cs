@@ -16,7 +16,7 @@
 
 namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders.LayerIII
 {
-    internal class ScaleFactorData
+    class ScaleFactorData
     {
         public int[] l; /* [cb] */
         public int[][] s; /* [window][cb] */

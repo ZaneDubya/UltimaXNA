@@ -85,8 +85,8 @@ namespace UltimaXNA.Ultima.Resources
 
         class StringEntry
         {
-            int m_Number;
-            string m_Text;
+            readonly int m_Number;
+            readonly string m_Text;
 
             public int Number { get { return m_Number; } }
             public string Text { get { return m_Text; } }

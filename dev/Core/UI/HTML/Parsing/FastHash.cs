@@ -97,7 +97,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// <summary>
 		/// Number of keys stored
 		/// </summary>
-		ushort usCount=0;
+		ushort usCount;
 
 		/// <summary>
 		/// Gets keys in this hash
@@ -345,9 +345,9 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 			GC.SuppressFinalize(this);
 		}
 
-		bool bDisposed=false;
+        readonly bool bDisposed;
 
-		private void Dispose(bool bDisposing)
+        private void Dispose(bool bDisposing)
 		{
 			if(!bDisposed)
 			{

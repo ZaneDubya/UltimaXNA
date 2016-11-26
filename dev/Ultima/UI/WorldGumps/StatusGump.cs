@@ -26,10 +26,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     {
         public static void Toggle(Serial serial)
         {
-            UserInterfaceService ui = ServiceRegistry.GetService<UserInterfaceService>();
+            UserInterfaceService ui = Services.Get<UserInterfaceService>();
             if (ui.GetControl<StatusGump>() == null)
             {
-                INetworkClient client = ServiceRegistry.GetService<INetworkClient>();
+                INetworkClient client = Services.Get<INetworkClient>();
                 client.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, serial));
                 ui.AddControl(new StatusGump(), 200, 400);
             }
@@ -38,7 +38,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         }
 
         private Mobile m_Mobile = WorldModel.Entities.GetPlayerEntity();
-        double m_RefreshTime = 0d;
+        double m_RefreshTime;
 
         private TextLabelAscii[] m_Labels = new TextLabelAscii[(int)MobileStats.Max];
 
@@ -199,9 +199,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         private string ConcatCurrentMax(int min, int max)

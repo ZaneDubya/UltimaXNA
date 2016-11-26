@@ -18,7 +18,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     /// <summary>
     ///     Base Class for audio output.
     /// </summary>
-    internal abstract class ABuffer
+    abstract class ABuffer
     {
         public const int OBUFFERSIZE = 2*1152; // max. 2 * 1152 samples per frame
         public const int MAXCHANNELS = 2; // max. number of channels

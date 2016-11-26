@@ -104,8 +104,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_TextEntries = new List<ChatLineTimed>();
             m_MessageHistory = new List<Tuple<ChatMode, string>>();
 
-            m_Input = ServiceRegistry.GetService<InputManager>();
-            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_Input = Services.Get<InputManager>();
+            m_World = Services.Get<WorldModel>();
 
             IsUncloseableWithRMB = true;
         }
@@ -121,7 +121,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (m_TextEntry == null)
             {
-                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IResourceProvider provider = Services.Get<IResourceProvider>();
                 IFont font = provider.GetUnicodeFont(0);
                 m_TextEntry = new TextEntry(this, 1, Height - font.Height, Width, font.Height, 0, 0, MaxChatMessageLength, string.Empty);
                 m_TextEntry.LegacyCarat = true;
@@ -197,7 +197,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
             int y = m_TextEntry.Y + position.Y - 6;
             for (int i = m_TextEntries.Count - 1; i >= 0; i--)
@@ -205,7 +205,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 y -= m_TextEntries[i].TextHeight;
                 m_TextEntries[i].Draw(spriteBatch, new Point(position.X + 2, y));
             }
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         public override void OnKeyboardReturn(int textID, string text)
@@ -249,7 +249,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     hue = Settings.UserInterface.AllianceMsgColor;
                     break;
             }
-            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            INetworkClient network = Services.Get<INetworkClient>();
             network.Send(new AsciiSpeechPacket(speechType, 0, hue + 2, "ENU", text));
         }
 
@@ -262,14 +262,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         class ChatLineTimed
         {
-            string m_text;
+            readonly string m_text;
             public string Text { get { return m_text; } }
             float m_createdTime = float.MinValue;
             bool m_isExpired;
             public bool IsExpired { get { return m_isExpired; } }
             float m_alpha;
             public float Alpha { get { return m_alpha; } }
-            private int m_width = 0;
+            private int m_width;
 
             const float Time_Display = 10000.0f;
             const float Time_Fadeout = 4000.0f;

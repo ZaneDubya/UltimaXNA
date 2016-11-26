@@ -32,7 +32,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
         // local variables.
         private readonly Buffer16BitStereo m_Buffer;
         private readonly Stream m_SourceStream;
-        private readonly int m_BackStreamByteCountRep = 0;
+        private readonly int m_BackStreamByteCountRep;
         private short m_ChannelCountRep = -1;
         protected SoundFormat FormatRep;
         private int m_FrequencyRep = -1;

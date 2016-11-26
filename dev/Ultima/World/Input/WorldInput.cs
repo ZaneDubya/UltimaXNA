@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.World.Input
     /// <summary>
     /// Handles all the mouse input when the mouse is over the world.
     /// </summary>
-    internal class WorldInput
+    class WorldInput
     {
         const double c_PauseBeforeMouseMovementMS = 105d;
         const double c_PauseBeforeKeyboardFacingMS = 55d; // a little more than three frames @ 60fps.
@@ -67,9 +67,9 @@ namespace UltimaXNA.Ultima.World.Input
             World = world;
 
             // service references
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
-            m_Input = ServiceRegistry.GetService<InputManager>();
+            m_Network = Services.Get<INetworkClient>();
+            m_UserInterface = Services.Get<UserInterfaceService>();
+            m_Input = Services.Get<InputManager>();
 
             // local instances
             MousePick = new MousePicking();
@@ -132,7 +132,7 @@ namespace UltimaXNA.Ultima.World.Input
         {
             get
             {
-                WorldViewport world = ServiceRegistry.GetService<WorldViewport>();
+                WorldViewport world = Services.Get<WorldViewport>();
                 Point mouse = new Point(m_Input.MousePosition.X - world.ScreenX, m_Input.MousePosition.Y - world.ScreenY);
                 return mouse;
             }

@@ -204,7 +204,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             // this is where we would draw the reverse of the chair texture.
 
-            bool isMounted = (Entity is Mobile) ? (Entity as Mobile).IsMounted ? true : false : false;
+            bool isMounted = (Entity is Mobile) && (Entity as Mobile).IsMounted;
             DrawOverheads(spriteBatch, overheadDrawPosition, mouseOver, map, isMounted ? yOffset + 16 : yOffset);
 
             return true;
@@ -406,7 +406,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck,
             (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair,
             (int)EquipLayer.Earrings, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.Helm,
-            (int)EquipLayer.TwoHanded,
+            (int)EquipLayer.TwoHanded
             };
         static int[] s_DrawLayerOrderRight = {
             (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants,

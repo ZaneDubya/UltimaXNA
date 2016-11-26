@@ -15,7 +15,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 {
     public class StaticItem : Item
     {
-        public int SortInfluence = 0;
+        public int SortInfluence;
 
         public StaticItem(int itemID, int hue,  int sortInfluence, Map map)
             : base(Serial.Null, map)

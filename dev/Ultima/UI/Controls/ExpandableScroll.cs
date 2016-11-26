@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         private const int c_GumplingExpander_ButtonID = 0x7FBEEF;
 
         private bool m_IsResizable = true;
-        private bool m_IsExpanding = false;
+        private bool m_IsExpanding;
         private int m_isExpanding_InitialX, m_isExpanding_InitialY, m_isExpanding_InitialHeight;
 
         public ExpandableScroll(AControl parent, int x, int y, int height, bool isResizable = true)
@@ -134,9 +134,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         void expander_OnMouseDown(AControl control, int x, int y, MouseButton button)
@@ -170,7 +170,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        bool m_gumplingTitleGumpIDDelta = false;
+        bool m_gumplingTitleGumpIDDelta;
         int m_gumplingTitleGumpID;
         GumpPic m_gumplingTitle;
         public int TitleGumpID { set { m_gumplingTitleGumpID = value; m_gumplingTitleGumpIDDelta = true; } }

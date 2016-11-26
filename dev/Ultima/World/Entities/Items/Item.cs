@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 {
     public class Item : AEntity
     {
-        public AEntity Parent = null;
+        public AEntity Parent;
 
         public override string Name
         {
@@ -57,8 +57,8 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             // if is worn, let the wearer know we are disposing.
             if (Parent is Mobile)
                 ((Mobile)Parent).RemoveItem(Serial);
-            else if (Parent is Container)
-                ((Container)Parent).RemoveItem(Serial);
+            else if (Parent is ContainerItem)
+                ((ContainerItem)Parent).RemoveItem(Serial);
         }
 
         protected override AEntityView CreateView()
@@ -81,8 +81,8 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 
         public ItemData ItemData;
 
-		private int m_ItemID = 0;
-        private int? m_DisplayItemID = null;
+		private int m_ItemID;
+        private int? m_DisplayItemID;
 
         public int ItemID
         {
@@ -129,7 +129,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 			get { return m_ItemID >= 0xEEA && m_ItemID <= 0xEF2; }
 		}
 
-        public int ContainerSlotIndex = 0;
+        public int ContainerSlotIndex;
 
         public override void Update(double frameMS)
         {
@@ -181,7 +181,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
         {
             if (m_lastParent != null)
             {
-                ((Container)m_lastParent).AddItem(this);
+                ((ContainerItem)m_lastParent).AddItem(this);
             }
         }
     }

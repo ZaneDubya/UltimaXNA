@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.World.Managers
         Dictionary<int, AEntity> m_Entities = new Dictionary<int, AEntity>();
         List<AEntity> m_Entities_Queued = new List<AEntity>();
         List<Serial> m_RetainedPlayerEntities = new List<Serial>();
-        bool m_EntitiesCollectionIsLocked = false;
+        bool m_EntitiesCollectionIsLocked;
         List<int> m_SerialsToRemove = new List<int>();
         List<OrphanedItem> m_OrphanedItems = new List<OrphanedItem>();
 
@@ -63,24 +63,24 @@ namespace UltimaXNA.Ultima.World.Managers
                 if (e != null && !e.IsDisposed)
                 {
                     retained.Add(e.Serial);
-                    if (e is Container)
+                    if (e is ContainerItem)
                     {
-                        RecursiveRetainPlayerEntities(e as Container, retained);
+                        RecursiveRetainPlayerEntities(e as ContainerItem, retained);
                     }
                 }
             }
         }
 
-        void RecursiveRetainPlayerEntities(Container container, List<Serial> retained)
+        void RecursiveRetainPlayerEntities(ContainerItem container, List<Serial> retained)
         {
             foreach (AEntity e in container.Contents)
             {
                 if (e != null && !e.IsDisposed)
                 {
                     retained.Add(e.Serial);
-                    if (e is Container)
+                    if (e is ContainerItem)
                     {
-                        RecursiveRetainPlayerEntities(e as Container, retained);
+                        RecursiveRetainPlayerEntities(e as ContainerItem, retained);
                     }
                 }
             }

@@ -35,11 +35,7 @@ namespace UltimaXNA.Core.ComponentModel
 
         protected virtual void OnPropertyChanged()
         {
-            EventHandler handler = PropertyChanged;
-            if(handler != null)
-            {
-                handler(this, null);
-            }
+            PropertyChanged?.Invoke(this, null);
         }
 
         protected float Clamp(float value, float min, float max)

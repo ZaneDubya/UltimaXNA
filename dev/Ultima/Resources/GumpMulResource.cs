@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.Resources
             FileManager.CreateFileIndex("gumpartLegacyMUL.uop", 0xFFFF, true, ".tga") :
             FileManager.CreateFileIndex("Gumpidx.mul", "Gumpart.mul", 0x10000, 12);
         GraphicsDevice m_graphicsDevice;
-        PixelPicking m_Picking = new PixelPicking();
+        readonly PixelPicking m_Picking = new PixelPicking();
         Texture2D[] m_TextureCache = new Texture2D[0x10000];
 
         public AFileIndex FileIndex => m_FileIndex;

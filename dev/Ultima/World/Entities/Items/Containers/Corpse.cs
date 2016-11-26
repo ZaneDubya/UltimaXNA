@@ -17,7 +17,7 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 {
-    class Corpse : Container
+    class Corpse : ContainerItem
     {
         public Serial MobileSerial = 0;
 

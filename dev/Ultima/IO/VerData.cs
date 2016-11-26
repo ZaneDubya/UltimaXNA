@@ -4,8 +4,8 @@ namespace UltimaXNA.Ultima.IO
 {
     public class VerData
     {
-        private static FileIndexEntry5D[] m_Patches;
-        private static Stream m_Stream;
+        private static readonly FileIndexEntry5D[] m_Patches;
+        private static readonly Stream m_Stream;
 
         public static Stream Stream { get { return m_Stream; } }
         public static FileIndexEntry5D[] Patches { get { return m_Patches; } }

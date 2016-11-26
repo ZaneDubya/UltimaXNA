@@ -22,7 +22,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
     /// <summary>
     ///     Encapsulates the details of decoding an MPEG audio frame.
     /// </summary>
-    internal class Decoder
+    class Decoder
     {
         private static readonly Params DEFAULT_PARAMS = new Params();
         private readonly Params params_Renamed;
@@ -260,7 +260,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         /// </summary>
         internal class Params : ICloneable
         {
-            private Equalizer m_Equalizer = null;
+            private Equalizer m_Equalizer;
             private OutputChannels m_OutputChannels;
 
             public virtual OutputChannels OutputChannels

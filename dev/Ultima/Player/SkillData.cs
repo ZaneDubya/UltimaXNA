@@ -17,10 +17,10 @@ namespace UltimaXNA.Ultima.Player
 {
     public class SkillData
     {
-        public Action<SkillEntry> OnSkillChanged = null;
+        public Action<SkillEntry> OnSkillChanged;
 
-        private Dictionary<int, SkillEntry> m_Skills = new Dictionary<int,SkillEntry>();
-        private bool m_SkillsLoaded = false;
+        private readonly Dictionary<int, SkillEntry> m_Skills = new Dictionary<int, SkillEntry>();
+        private bool m_SkillsLoaded;
 
         public Dictionary<int, SkillEntry> List
         {
@@ -62,7 +62,7 @@ namespace UltimaXNA.Ultima.Player
 
     public class SkillEntry
     {
-        private SkillData m_DataParent;
+        private readonly SkillData m_DataParent;
 
         private int m_id;
         private int m_index;
@@ -99,8 +99,7 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_value = value;
-                if (m_DataParent.OnSkillChanged != null)
-                    m_DataParent.OnSkillChanged(this);
+                m_DataParent.OnSkillChanged?.Invoke(this);
             }
         }
         public float ValueUnmodified
@@ -109,8 +108,7 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_valueUnmodified = value;
-                if (m_DataParent.OnSkillChanged != null)
-                    m_DataParent.OnSkillChanged(this);
+                m_DataParent.OnSkillChanged?.Invoke(this);
             }
         }
         public byte LockType
@@ -119,8 +117,7 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_lockType = value;
-                if (m_DataParent.OnSkillChanged != null)
-                    m_DataParent.OnSkillChanged(this);
+                m_DataParent.OnSkillChanged?.Invoke(this);
             }
         }
         public float Cap
@@ -129,8 +126,7 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_cap = value;
-                if (m_DataParent.OnSkillChanged != null)
-                    m_DataParent.OnSkillChanged(this);
+                m_DataParent.OnSkillChanged?.Invoke(this);
             }
         }
 

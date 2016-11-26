@@ -103,17 +103,16 @@ namespace UltimaXNA.Ultima.Data
             }
         }
 
-        public SpellbookData(Container spellbook, ContainerContentPacket contents)
+        public SpellbookData(ContainerItem spellbook, ContainerContentPacket contents)
         {
             Serial = spellbook.Serial;
             ItemID = (ushort)spellbook.ItemID;
-
             BookType = GetSpellBookTypeFromItemID(spellbook.ItemID);
             if (BookType == SpellBookTypes.Unknown)
+            {
                 return;
-
+            }
             int offset = GetOffsetFromSpellBookType(BookType);
-
             foreach (ItemInContainer i in contents.Items)
             {
                 int index = ((i.Amount - offset) & 0x0000003F);
@@ -121,7 +120,6 @@ namespace UltimaXNA.Ultima.Data
                 index = index % 8;
                 index = ((3 - circle % 4) + (circle / 4) * 4) * 8 + (index);
                 ulong flag = ((ulong)1) << index;
-
                 SpellsBitfield |= flag;
             }
         }

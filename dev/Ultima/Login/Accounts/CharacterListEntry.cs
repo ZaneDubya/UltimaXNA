@@ -15,8 +15,8 @@ namespace UltimaXNA.Ultima.Login.Accounts
 {
     public class CharacterListEntry
     {
-        string name;
-        string password;
+        readonly string name;
+        readonly string password;
 
         public string Name
         {

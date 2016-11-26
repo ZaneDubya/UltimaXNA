@@ -58,7 +58,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             return base.Draw(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
         }
 
-        static Point[] s_Offsets = {
+        static readonly Point[] s_Offsets = {
                 new Point(48, 0),
                 new Point(68, 0),
                 new Point(92, 0),

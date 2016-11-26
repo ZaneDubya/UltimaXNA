@@ -29,7 +29,7 @@ namespace ExamplePlugin
                 m_WriteGumps = new Task(
                     () => {
                         System.IO.Directory.CreateDirectory("Gumps");
-                        IResourceProvider resources = ServiceRegistry.GetService<IResourceProvider>();
+                        IResourceProvider resources = Services.Get<IResourceProvider>();
                         for (int i = 0; i < 0x10000; i++) {
                             Texture2D texture = resources.GetUITexture(i);
                             if (texture != null) {

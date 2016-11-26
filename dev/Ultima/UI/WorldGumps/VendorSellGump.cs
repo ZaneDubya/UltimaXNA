@@ -34,8 +34,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private RenderedTextList m_ShopContents;
 
         private MouseState m_MouseState = MouseState.None;
-        private int m_MouseDownOnIndex = 0;
-        private double m_MouseDownMS = 0;
+        private int m_MouseDownOnIndex;
+        private double m_MouseDownMS;
         private Button m_OKButton;
 
         public VendorSellGump(VendorSellListPacket packet)
@@ -81,7 +81,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (itemsToBuy.Count == 0)
                 return;
 
-            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            INetworkClient network = Services.Get<INetworkClient>();
             network.Send(new SellItemsPacket(m_VendorSerial, itemsToBuy.ToArray()));
             this.Dispose();
         }
@@ -130,7 +130,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     else
                     {
                         // get the resource provider
-                        IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                        IResourceProvider provider = Services.Get<IResourceProvider>();
                         description = Utility.CapitalizeAllWords(provider.GetString(clilocDescription));
                     }
 

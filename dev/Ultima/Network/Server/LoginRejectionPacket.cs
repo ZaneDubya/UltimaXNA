@@ -35,10 +35,9 @@ namespace UltimaXNA.Ultima.Network.Server
             new Tuple<int, string>(0x02, "Your account has been blocked."),
             new Tuple<int, string>(0x03, "Your account credentials are invalid."),
             new Tuple<int, string>(0xFE, "Login idle period exceeded."),
-            new Tuple<int, string>(0xFF, "Communication problem."),
+            new Tuple<int, string>(0xFF, "Communication problem.")
         };
-
-        byte m_id;
+        readonly byte m_id;
 
         public string ReasonText
         {

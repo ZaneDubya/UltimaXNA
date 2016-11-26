@@ -98,7 +98,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 		/// <summary>
 		/// This array will contain all double char strings 
 		/// </summary>
-		static string[,] sAllTwoCharStrings=null;
+		static string[,] sAllTwoCharStrings;
 
 		/// <summary>
 		/// Static constructor
@@ -293,7 +293,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 			return true;
 		}
 
-		bool bDisposed=false;
+		bool bDisposed;
 
 		/// <summary>
 		/// Disposes of resources

@@ -4,7 +4,7 @@ namespace UltimaXNA.Ultima.Input
 {
     class MacroEngine
     {
-        private List<RunningMacroAction> m_RunningMacros = new List<RunningMacroAction>();
+        List<RunningMacroAction> m_RunningMacros = new List<RunningMacroAction>();
 
         public void Run(Action action)
         {
@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.Input
             }
         }
 
-        private class RunningMacroAction
+        class RunningMacroAction
         {
             public Action Action
             {
@@ -49,8 +49,8 @@ namespace UltimaXNA.Ultima.Input
                 private set;
             }
 
-            private double m_LastMacroTimestamp = 0;
-            private int m_MacroIndex = 0;
+            double m_LastMacroTimestamp;
+            int m_MacroIndex;
 
             public RunningMacroAction(Action action)
             {
@@ -67,7 +67,7 @@ namespace UltimaXNA.Ultima.Input
             }
         }
 
-        private static void RunMacroAction(Action action)
+        static void RunMacroAction(Action action)
         {
             /*WorldModel world = ServiceRegistry.GetService<WorldModel>();
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();

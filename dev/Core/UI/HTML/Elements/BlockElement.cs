@@ -48,8 +48,8 @@ namespace UltimaXNA.Core.UI.HTML.Elements
 
         public Alignments Alignment = Alignments.Default;
 
-        public int Layout_MinWidth = 0;
-        public int Layout_MaxWidth = 0;
+        public int Layout_MinWidth;
+        public int Layout_MaxWidth;
 
         public BlockElement(string tag, StyleState style)
             : base(style)
@@ -66,6 +66,6 @@ namespace UltimaXNA.Core.UI.HTML.Elements
 
         public override string ToString() => Tag;
 
-        public bool Err_Cant_Fit_Children = false;
+        public bool Err_Cant_Fit_Children;
     }
 }

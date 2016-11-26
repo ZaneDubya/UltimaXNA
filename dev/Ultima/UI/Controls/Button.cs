@@ -97,7 +97,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
         public override void Update(double totalMS, double frameMS) {
             for (int i = Gump_Up; i <= Gump_Over; i++) {
                 if (m_GumpID[i] != 0 && m_GumpTextures[i] == null) {
-                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    IResourceProvider provider = Services.Get<IResourceProvider>();
                     m_GumpTextures[i] = provider.GetUITexture(m_GumpID[i]);
                 }
             }
@@ -107,7 +107,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch, Point position) {
+        public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS) {
             Texture2D texture = GetTextureFromMouseState();
             if (Caption != string.Empty) {
                 m_Texture.Text = Caption;
@@ -119,7 +119,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
                     position.X + (Width - m_Texture.Width) / 2, 
                     position.Y + yoffset + (Height - m_Texture.Height) / 2));
             }
-            base.Draw(spriteBatch, position);
+            base.Draw(spriteBatch, position, frameMS);
         }
 
         Texture2D GetTextureFromMouseState()
@@ -151,7 +151,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
         protected override bool IsPointWithinControl(int x, int y)
         {
             int gumpID = GetGumpIDFromMouseState();
-            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IResourceProvider provider = Services.Get<IResourceProvider>();
             return provider.IsPointInUITexture(gumpID, x, y);
         }
 

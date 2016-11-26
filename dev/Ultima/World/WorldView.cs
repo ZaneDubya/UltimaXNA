@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.World
             MiniMap = new MiniMapTexture();
             MiniMap.Initialize();
 
-            m_UI = ServiceRegistry.GetService<UserInterfaceService>();
+            m_UI = Services.Get<UserInterfaceService>();
         }
 
         public override void Draw(double frameTime)
@@ -125,8 +125,8 @@ namespace UltimaXNA.Ultima.World
             MiniMap.Update(Model.Map, center);
         }
 
-        private bool m_ShowingDeathEffect = false;
-        private double m_DeathEffectTime = 0d;
+        private bool m_ShowingDeathEffect;
+        private double m_DeathEffectTime;
         private double m_LightingGlobal;
         private double m_LightingPersonal;
         private YouAreDeadGump m_YouAreDead;
