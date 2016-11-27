@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Extensions;
 using UltimaXNA.Core.Windows;
 #endregion
 
@@ -22,127 +23,113 @@ namespace UltimaXNA.Core.Input
 {
     public class InputManager
     {
-        // Base WndProc
-        private WndProc m_WndProc;
-        private bool m_IsInitialized;
-
-        // event data
-        private readonly List<InputEvent> m_EventsAccumulating = new List<InputEvent>();
-        private readonly List<InputEvent> m_EventsAccumulatingAlternate = new List<InputEvent>();
-        private readonly List<InputEvent> m_EventsThisFrame = new List<InputEvent>();
-        private bool m_EventsAccumulatingUseAlternate;
+        WndProc m_WndProc;
+        List<InputEvent> m_Events = new List<InputEvent>();
+        List<InputEvent> m_EventsNext = new List<InputEvent>();
+        MouseState m_MouseState;
+        MouseState m_MouseStateLast;
 
         // Mouse dragging support
-        private const int MouseDragBeginDistance = 2;
-        private const int MouseClickMaxDelta = 2;
-        private InputEventMouse m_LastMouseClick;
-        private float m_LastMouseClickTime;
-        private InputEventMouse m_LastMouseDown;
-        private float m_LastMouseDownTime;
-        private bool m_MouseIsDragging;
-        private MouseState m_MouseStateLastFrame;
-        private MouseState m_MouseStateThisFrame;
-        private float m_TheTime = -1f;
-
-        private float m_mouseStationaryMS;
+        const int MouseDragBeginDistance = 2;
+        const int MouseClickMaxDelta = 2;
+        InputEventMouse m_LastMouseClick;
+        float m_LastMouseClickTime;
+        InputEventMouse m_LastMouseDown;
+        float m_LastMouseDownTime;
+        bool m_MouseIsDragging;
+        float m_TheTime = -1f;
 
         public InputManager(IntPtr handle)
         {
             m_WndProc = new WndProc(handle);
-            m_WndProc.MouseWheel += onMouseWheel;
-            m_WndProc.MouseMove += onMouseMove;
-            m_WndProc.MouseUp += onMouseUp;
-            m_WndProc.MouseDown += onMouseDown;
-            m_WndProc.KeyDown += onKeyDown;
-            m_WndProc.KeyUp += onKeyUp;
-            m_WndProc.KeyChar += onKeyChar;
+            m_WndProc.MouseWheel += AddEvent;
+            m_WndProc.MouseMove += OnMouseMove;
+            m_WndProc.MouseUp += OnMouseUp;
+            m_WndProc.MouseDown += OnMouseDown;
+            m_WndProc.KeyDown += OnKeyDown;
+            m_WndProc.KeyUp += OnKeyUp;
+            m_WndProc.KeyChar += OnKeyChar;
         }
 
         public void Dispose()
         {
-            m_WndProc.MouseWheel -= onMouseWheel;
-            m_WndProc.MouseMove -= onMouseMove;
-            m_WndProc.MouseUp -= onMouseUp;
-            m_WndProc.MouseDown -= onMouseDown;
-            m_WndProc.KeyDown -= onKeyDown;
-            m_WndProc.KeyUp -= onKeyUp;
-            m_WndProc.KeyChar -= onKeyChar;
+            m_WndProc.MouseWheel -= AddEvent;
+            m_WndProc.MouseMove -= OnMouseMove;
+            m_WndProc.MouseUp -= OnMouseUp;
+            m_WndProc.MouseDown -= OnMouseDown;
+            m_WndProc.KeyDown -= OnKeyDown;
+            m_WndProc.KeyUp -= OnKeyUp;
+            m_WndProc.KeyChar -= OnKeyChar;
             m_WndProc.Dispose();
             m_WndProc = null;
+        }
+
+        public void Update(double totalTime, double frameTime)
+        {
+            m_TheTime = (float)totalTime;
+            m_MouseStateLast = m_MouseState;
+            m_MouseState = m_WndProc.MouseState.CreateWithDPI(DpiManager.GetSystemDpiScalar());
+            lock (m_EventsNext)
+            {
+                m_Events.Clear();
+                foreach (InputEvent e in m_EventsNext)
+                {
+                    m_Events.Add(e);
+                }
+                m_EventsNext.Clear();
+            }
         }
 
         public bool IsCtrlDown => NativeMethods.GetKeyState((int)WinKeys.ControlKey) < 0;
 
         public bool IsShiftDown => NativeMethods.GetKeyState((int)WinKeys.ShiftKey) < 0;
 
-        public int MouseStationaryTimeMS
-        {
-            get { return (int)m_mouseStationaryMS; }
-        }
+        public bool IsKeyDown(WinKeys key) => NativeMethods.GetKeyState((int)key) < 0;
 
-        public Point MousePosition
+        public Point MousePosition => new Point(m_MouseState.X, m_MouseState.Y);
+
+        public bool IsMouseButtonDown(MouseButton btn)
         {
-            get
+            switch (btn)
             {
-                Point p = new Point();
-                p.X = m_MouseStateThisFrame.X;
-                p.Y = m_MouseStateThisFrame.Y;
-                return p;
+                case MouseButton.Left:
+                    return m_MouseState.LeftButton == ButtonState.Pressed;
+                case MouseButton.Middle:
+                    return m_MouseState.MiddleButton == ButtonState.Pressed;
+                case MouseButton.Right:
+                    return m_MouseState.RightButton == ButtonState.Pressed;
+                case MouseButton.XButton1:
+                    return m_MouseState.XButton1 == ButtonState.Pressed;
+                case MouseButton.XButton2:
+                    return m_MouseState.XButton2 == ButtonState.Pressed;
+                default:
+                    return false;
             }
         }
 
-        public MouseState MouseState
-        {
-            get { return m_MouseStateThisFrame; }
-        }
-
-        private bool hasMouseBeenStationarySinceLastUpdate
+        InputEventKeyboard LastKeyPressEvent
         {
             get
             {
-                if ((m_MouseStateLastFrame.X == m_MouseStateThisFrame.X) &&
-                   (m_MouseStateLastFrame.Y == m_MouseStateThisFrame.Y))
+                for (int i = m_EventsNext.Count; i > 0; i--)
                 {
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        private InputEventKeyboard LastKeyPressEvent
-        {
-            get
-            {
-                List<InputEvent> list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
-                for (int i = list.Count; i > 0; i--)
-                {
-                    InputEvent e = list[i - 1];
-                    if ((e is InputEventKeyboard) && (((InputEventKeyboard)e).EventType == KeyboardEvent.Press))
+                    if ((m_EventsNext[i - 1] as InputEventKeyboard)?.EventType == KeyboardEvent.Press)
                     {
-                        return (InputEventKeyboard)e;
+                        return m_EventsNext[i - 1] as InputEventKeyboard;
                     }
                 }
                 return null;
             }
         }
 
-        public bool IsKeyDown(WinKeys key)
-        {
-            if (NativeMethods.GetKeyState((int)key) < 0)
-            {
-                return true;
-            }
-            return false;
-        }
-
         public List<InputEventKeyboard> GetKeyboardEvents()
         {
             List<InputEventKeyboard> list = new List<InputEventKeyboard>();
-            foreach (InputEvent e in m_EventsThisFrame)
+            foreach (InputEvent e in m_Events)
             {
                 if (!e.Handled && e is InputEventKeyboard)
                 {
-                    list.Add((InputEventKeyboard)e);
+                    list.Add(e as InputEventKeyboard);
                 }
             }
             return list;
@@ -151,62 +138,25 @@ namespace UltimaXNA.Core.Input
         public List<InputEventMouse> GetMouseEvents()
         {
             List<InputEventMouse> list = new List<InputEventMouse>();
-            foreach (InputEvent e in m_EventsThisFrame)
+            foreach (InputEvent e in m_Events)
             {
                 if (!e.Handled && e is InputEventMouse)
                 {
-                    list.Add((InputEventMouse)e);
+                    list.Add(e as InputEventMouse);
                 }
             }
             return list;
         }
 
-        public void Update(double totalTime, double frameTime)
-        {
-            m_TheTime = (float)totalTime;
-
-            if (!m_IsInitialized)
-            {
-                m_MouseStateLastFrame = m_MouseStateThisFrame = m_WndProc.MouseState;
-                m_IsInitialized = true;
-            }
-
-            m_MouseStateLastFrame = m_MouseStateThisFrame;
-            m_MouseStateThisFrame = CreateMouseState(m_WndProc.MouseState);
-
-            // update mouse stationary business
-            if (hasMouseBeenStationarySinceLastUpdate)
-            {
-                m_mouseStationaryMS += (float)frameTime;
-            }
-            else
-            {
-                m_mouseStationaryMS = 0;
-            }
-
-            copyEvents();
-        }
-
-        public MouseState CreateMouseState(MouseState state)
-        {
-            Vector2 dpi = DpiManager.GetSystemDpiScalar();
-            MouseState newstate = new MouseState((int)(state.X / dpi.X), (int)(state.Y / dpi.Y),
-                state.ScrollWheelValue, state.LeftButton, state.MiddleButton, state.RightButton, state.XButton1, state.XButton2);
-            return newstate;
-        }
-
         public bool HandleKeyboardEvent(KeyboardEvent type, WinKeys key, bool shift, bool alt, bool ctrl)
         {
-            foreach (InputEvent e in m_EventsThisFrame)
+            foreach (InputEvent e in m_Events)
             {
                 if (!e.Handled && e is InputEventKeyboard)
                 {
-                    InputEventKeyboard ek = (InputEventKeyboard)e;
-                    if (ek.EventType == type &&
-                       ek.KeyCode == key &&
-                       ek.Shift == shift &&
-                       ek.Alt == alt &&
-                       ek.Control == ctrl)
+                    InputEventKeyboard ek = e as InputEventKeyboard;
+                    if (ek.EventType == type && ek.KeyCode == key && 
+                        ek.Shift == shift && ek.Alt == alt && ek.Control == ctrl)
                     {
                         e.Handled = true;
                         return true;
@@ -218,7 +168,7 @@ namespace UltimaXNA.Core.Input
 
         public bool HandleMouseEvent(MouseEvent type, MouseButton mb)
         {
-            foreach (InputEvent e in m_EventsThisFrame)
+            foreach (InputEvent e in m_Events)
             {
                 if (!e.Handled && e is InputEventMouse)
                 {
@@ -233,23 +183,18 @@ namespace UltimaXNA.Core.Input
             return false;
         }
 
-        private void onMouseWheel(InputEventMouse e)
-        {
-            addEvent(e);
-        }
-
-        private void onMouseDown(InputEventMouse e)
+        void OnMouseDown(InputEventMouse e)
         {
             m_LastMouseDown = e;
             m_LastMouseDownTime = m_TheTime;
-            addEvent(m_LastMouseDown);
+            AddEvent(m_LastMouseDown);
         }
 
-        private void onMouseUp(InputEventMouse e)
+        void OnMouseUp(InputEventMouse e)
         {
             if (m_MouseIsDragging)
             {
-                addEvent(new InputEventMouse(MouseEvent.DragEnd, e));
+                AddEvent(new InputEventMouse(MouseEvent.DragEnd, e));
                 m_MouseIsDragging = false;
             }
             else
@@ -258,13 +203,13 @@ namespace UltimaXNA.Core.Input
                 {
                     if (!DistanceBetweenPoints(m_LastMouseDown.Position, e.Position, MouseClickMaxDelta))
                     {
-                        addEvent(new InputEventMouse(MouseEvent.Click, e));
+                        AddEvent(new InputEventMouse(MouseEvent.Click, e));
 
                         if ((m_TheTime - m_LastMouseClickTime <= Settings.UserInterface.Mouse.DoubleClickMS) &&
                            !DistanceBetweenPoints(m_LastMouseClick.Position, e.Position, MouseClickMaxDelta))
                         {
                             m_LastMouseClickTime = 0f;
-                            addEvent(new InputEventMouse(MouseEvent.DoubleClick, e));
+                            AddEvent(new InputEventMouse(MouseEvent.DoubleClick, e));
                         }
                         else
                         {
@@ -274,92 +219,64 @@ namespace UltimaXNA.Core.Input
                     }
                 }
             }
-            addEvent(new InputEventMouse(MouseEvent.Up, e));
+            AddEvent(new InputEventMouse(MouseEvent.Up, e));
             m_LastMouseDown = null;
         }
 
-        private void onMouseMove(InputEventMouse e)
+        void OnMouseMove(InputEventMouse e)
         {
-            addEvent(new InputEventMouse(MouseEvent.Move, e));
+            AddEvent(new InputEventMouse(MouseEvent.Move, e));
             if (!m_MouseIsDragging && m_LastMouseDown != null)
             {
                 if (DistanceBetweenPoints(m_LastMouseDown.Position, e.Position, MouseDragBeginDistance))
                 {
-                    addEvent(new InputEventMouse(MouseEvent.DragBegin, e));
+                    AddEvent(new InputEventMouse(MouseEvent.DragBegin, e));
                     m_MouseIsDragging = true;
                 }
             }
         }
 
-        private void onKeyDown(InputEventKeyboard e)
+        void OnKeyDown(InputEventKeyboard e)
         {
-            // handle the initial key down
-            if (e.Data_PreviousState == 0)
+            if (e.DataPreviousState == 0)
             {
-                addEvent(new InputEventKeyboard(KeyboardEvent.Down, e));
+                AddEvent(new InputEventKeyboard(KeyboardEvent.Down, e));
             }
-            // handle the key presses. Possibly multiple per keydown message.
-            for (int i = 0; i < e.Data_RepeatCount; i++)
+            for (int i = 0; i < e.DataRepeatCount; i++)
             {
-                addEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
+                AddEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
             }
         }
 
-        private void onKeyUp(InputEventKeyboard e)
+        void OnKeyUp(InputEventKeyboard e)
         {
-            addEvent(new InputEventKeyboard(KeyboardEvent.Up, e));
+            AddEvent(new InputEventKeyboard(KeyboardEvent.Up, e));
         }
 
-        private void onKeyChar(InputEventKeyboard e)
+        void OnKeyChar(InputEventKeyboard e)
         {
             // Control key sends a strange wm_char message ...
             if (e.Control && !e.Alt)
             {
                 return;
             }
-
-            InputEventKeyboard pressEvent = LastKeyPressEvent;
-            if (pressEvent == null)
+            InputEventKeyboard ek = LastKeyPressEvent;
+            if (ek == null)
             {
-                Tracer.Critical("No corresponding KeyPress event for this WM_CHAR message.");
+                Tracer.Warn("No corresponding KeyPress event for a WM_CHAR message.");
             }
             else
             {
-                pressEvent.OverrideKeyChar(e.KeyCode);
+                ek.OverrideKeyChar(e.KeyCode);
             }
         }
 
-        private void copyEvents()
+        void AddEvent(InputEvent e)
         {
-            // use alternate events list while we copy the accumulated events to the events list for this frame.
-            m_EventsAccumulatingUseAlternate = true;
-
-            // clear the old events list, copy all accumulated events to the this frame event list, then clear the accumulated events list.
-            m_EventsThisFrame.Clear();
-            foreach (InputEvent e in m_EventsAccumulating)
-            {
-                m_EventsThisFrame.Add(e);
-            }
-            m_EventsAccumulating.Clear();
-
-            // start accumulating new events in the standard accumulating list again.
-            m_EventsAccumulatingUseAlternate = false;
-
-            // copy all events in the alternate accumulating list to the this frame event list, then clear the alternate accumulating list.
-            foreach (InputEvent e in m_EventsAccumulatingAlternate)
-            {
-                m_EventsThisFrame.Add(e);
-            }
-            m_EventsAccumulatingAlternate.Clear();
+            m_EventsNext.Add(e);
         }
 
-        private void addEvent(InputEvent e)
-        {
-            List<InputEvent> list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
-            list.Add(e);
-        }
-
-        private bool DistanceBetweenPoints(Point initial, Point final, int distance)
+        bool DistanceBetweenPoints(Point initial, Point final, int distance)
         {
             if (Math.Abs(final.X - initial.X) + Math.Abs(final.Y - initial.Y) > distance)
             {

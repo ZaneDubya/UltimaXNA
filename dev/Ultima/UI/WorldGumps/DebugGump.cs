@@ -37,8 +37,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             base.Update(totalMS, frameMS);
             InputManager input = Services.Get<InputManager>();
-            bool lmb = input.MouseState.LeftButton == ButtonState.Pressed;
-            bool rmb = input.MouseState.RightButton == ButtonState.Pressed;
+            bool lmb = input.IsMouseButtonDown(MouseButton.Left);
+            bool rmb = input.IsMouseButtonDown(MouseButton.Right);
             m_Debug.Text = $"{(lmb ? "LMB" : string.Empty)}:{(rmb ? "RMB" : string.Empty)}";
         }
 
