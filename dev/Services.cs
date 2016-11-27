@@ -23,13 +23,11 @@ namespace UltimaXNA
         public static T Add<T>(T service)
         {
             Type type = typeof(T);
-
             if (m_Services.ContainsKey(type))
             {
                 Tracer.Critical(string.Format("Attempted to register service of type {0} twice.", type));
                 m_Services.Remove(type);
             }
-
             m_Services.Add(type, service);
             return service;
         }
@@ -37,7 +35,6 @@ namespace UltimaXNA
         public static void Remove<T>()
         {
             Type type = typeof(T);
-
             if (m_Services.ContainsKey(type))
             {
                 m_Services.Remove(type);

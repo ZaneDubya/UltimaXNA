@@ -345,18 +345,11 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
             GC.SuppressFinalize(this);
         }
 
-        readonly bool bDisposed;
-
         private void Dispose(bool bDisposing)
         {
-            if (!bDisposed)
-            {
-                oHash = null;
-                usChars = null;
-                iValues = null;
-            }
-
+            oHash = null;
+            usChars = null;
+            iValues = null;
         }
-
     }
 }
