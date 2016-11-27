@@ -56,19 +56,23 @@ namespace UltimaXNA.Ultima.World {
         }
 
         /// <summary>
-        /// Informs the server we have single-clicked on an entity. Also requests a context menu.
+        /// For items, if server.expansion is less than AOS, sends single click packet.
+        /// For mobiles, always sends a single click.
+        /// Requests a context menu regardless of version.
         /// </summary>
-        /// <param name="item">The entity clicked on.</param>
-        public void SingleClick(AEntity item)
+        public void SingleClick(AEntity e)
         {
-            m_Network.Send(new SingleClickPacket(item.Serial));
-            m_Network.Send(new RequestContextMenuPacket(item.Serial));
+            if (!PlayerState.ClientFeatures.TooltipsEnabled)
+            {
+                m_Network.Send(new SingleClickPacket(e.Serial));
+            }
+            m_Network.Send(new RequestContextMenuPacket(e.Serial));
         }
 
-        public void DoubleClick(AEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
+        public void DoubleClick(AEntity e) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
         {
-            if (item!=null)
-                m_Network.Send(new DoubleClickPacket(item.Serial));
+            if (e != null)
+                m_Network.Send(new DoubleClickPacket(e.Serial));
         }
         
         public void AttackRequest(Mobile mobile)
