@@ -19,6 +19,7 @@ namespace UltimaXNA.Ultima.Network.Server {
         public const int CloseGump = 0x04;
         public const int Party = 0x06;
         public const int SetMap = 0x08;
+        public const int ShowLabel = 0x10;
         public const int ContextMenu = 0x14;
         public const int MapDiff = 0x18;
         public const int ExtendedStats = 0x19;
@@ -41,6 +42,9 @@ namespace UltimaXNA.Ultima.Network.Server {
                     break;
                 case SetMap:
                     Info = new MapIndexInfo(reader);
+                    break;
+                case ShowLabel:
+                    Info = new ShowLabelInfo(reader);
                     break;
                 case ContextMenu:
                     Info = new ContextMenuInfo(reader);

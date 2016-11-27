@@ -1096,6 +1096,13 @@ namespace UltimaXNA.Ultima.World
                     MapIndexInfo mapInfo = p.Info as MapIndexInfo;
                     m_World.MapIndex = mapInfo.MapID;
                     break;
+                case GeneralInfoPacket.ShowLabel:
+                    ShowLabelInfo labelInfo = p.Info as ShowLabelInfo;
+                    AEntity item = WorldModel.Entities.GetObject<AEntity>(labelInfo.Serial, false);
+                    IResourceProvider provider = Service.Get<IResourceProvider>();
+                    item.Name = constructCliLoc(provider.GetString(labelInfo.LabelIndex));
+                    m_World.Interaction.CreateLabel(MessageTypes.Label, item.Serial, item.Name, 3, 946, true);
+                    break;
                 case GeneralInfoPacket.ContextMenu:
                     ContextMenuInfo menuInfo = p.Info as ContextMenuInfo;
                     IInputService input = Service.Get<IInputService>();

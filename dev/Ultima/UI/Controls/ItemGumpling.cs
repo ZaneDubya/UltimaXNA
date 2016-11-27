@@ -19,7 +19,7 @@ using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Ultima.UI.Controls
-{
+{   
     class ItemGumpling : AControl
     {
         public bool CanPickUp = true;

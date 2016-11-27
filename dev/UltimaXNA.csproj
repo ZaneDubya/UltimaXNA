@@ -155,6 +155,7 @@
     <Compile Include="Ultima\Network\Server\GeneralInfo\PartyInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\PartyMessageInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\PartyRemoveMemberInfo.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfo\ShowLabelInfo.cs" />
     <Compile Include="Ultima\Network\Server\GeneralInfo\SpellBookContentsInfo.cs" />
     <Compile Include="Ultima\Network\Server\ProtocolExtensionPacket.cs" />
     <Compile Include="Ultima\Player\Partying\PartyMember.cs" />

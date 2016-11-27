@@ -380,12 +380,10 @@ namespace UltimaXNA.Ultima.World.Input
                 }
                 else if (overEntity is Item)
                 {
-                    // request context menu
                     World.Interaction.SingleClick(overEntity);
                 }
                 else if (overEntity is Mobile)
                 {
-                    // request context menu
                     World.Interaction.SingleClick(overEntity);
                 }
             }
