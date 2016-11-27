@@ -244,12 +244,12 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveTargetCursor(TargetCursorPacket p)
         {
-            m_World.Cursor.SetTargeting((WorldCursor.TargetType)p.CommandType, p.CursorID);
+            m_World.Cursor.SetTargeting((WorldCursor.TargetType)p.CommandType, p.CursorID, p.CursorType);
         }
 
         void ReceiveTargetCursorMulti(TargetCursorMultiPacket p)
         {
-            m_World.Cursor.SetTargetingMulti(p.DeedSerial, p.MultiModel);
+            m_World.Cursor.SetTargetingMulti(p.DeedSerial, p.MultiModel, p.CursorType);
         }
 
         void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket p)

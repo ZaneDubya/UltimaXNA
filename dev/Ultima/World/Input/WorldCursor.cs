@@ -212,7 +212,7 @@ namespace UltimaXNA.Ultima.World.Input
             {
                 if (m_Input.HandleKeyboardEvent(KeyboardEvent.Press, WinKeys.Escape, false, false, false))
                 {
-                    SetTargeting(TargetType.Nothing, 0);
+                    SetTargeting(TargetType.Nothing, 0, 0);
                 }
 
                 if (m_Input.HandleMouseEvent(MouseEvent.Click, Settings.UserInterface.Mouse.InteractionButton))
@@ -480,7 +480,9 @@ namespace UltimaXNA.Ultima.World.Input
         }
 
         TargetType m_Targeting = TargetType.Nothing;
-        int m_TargetID = int.MinValue;
+        int m_TargetCursorID;
+        byte m_TargetCursorType;
+
         public TargetType Targeting
         {
             get { return m_Targeting; }
@@ -496,13 +498,13 @@ namespace UltimaXNA.Ultima.World.Input
             m_Targeting = TargetType.Nothing;
         }
 
-        public void SetTargeting(TargetType targeting, int cursorID)
+        public void SetTargeting(TargetType targeting, int cursorID, byte cursorType)
         {
-            if (m_Targeting != targeting || cursorID != m_TargetID)
+            if (m_Targeting != targeting || cursorID != m_TargetCursorID || cursorType != m_TargetCursorType)
             {
                 if (targeting == TargetType.Nothing)
                 {
-                    m_Network.Send(new TargetCancelPacket());
+                    m_Network.Send(new TargetCancelPacket(m_TargetCursorID, m_TargetCursorType));
                 }
                 else
                 {
@@ -510,14 +512,15 @@ namespace UltimaXNA.Ultima.World.Input
                     m_World.Input.ContinuousMouseMovementCheck = false;
                 }
                 m_Targeting = targeting;
-                m_TargetID = cursorID;
+                m_TargetCursorID = cursorID;
+                m_TargetCursorType = cursorType;
             }
         }
 
         int m_MultiModel;
-        public void SetTargetingMulti(Serial deedSerial, int model)
+        public void SetTargetingMulti(Serial deedSerial, int model, byte targetType)
         {
-            SetTargeting(TargetType.MultiPlacement, (int)deedSerial);
+            SetTargeting(TargetType.MultiPlacement, (int)deedSerial, targetType);
             m_MultiModel = model;
         }
 
@@ -534,7 +537,7 @@ namespace UltimaXNA.Ultima.World.Input
                 modelNumber = 0;
             }
             // Send the target ...
-            m_Network.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
+            m_Network.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetCursorID, m_TargetCursorType));
             // ... and clear our targeting cursor.
             ClearTargetingWithoutTargetCancelPacket();
         }
@@ -548,7 +551,7 @@ namespace UltimaXNA.Ultima.World.Input
             // Send the targetting event back to the server
             if (serial.IsValid)
             {
-                m_Network.Send(new TargetObjectPacket(selectedEntity, m_TargetID));
+                m_Network.Send(new TargetObjectPacket(selectedEntity, m_TargetCursorID, m_TargetCursorType));
             }
             else
             {
@@ -561,7 +564,7 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     modelNumber = 0;
                 }
-                m_Network.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
+                m_Network.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetCursorID, m_TargetCursorType));
             }
 
             // Clear our target cursor.
