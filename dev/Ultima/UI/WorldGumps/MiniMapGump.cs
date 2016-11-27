@@ -40,7 +40,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public static void Toggle()
         {
-            UserInterfaceService ui = Services.Get<UserInterfaceService>();
+            UserInterfaceService ui = Service.Get<UserInterfaceService>();
             if (ui.GetControl<MiniMapGump>() == null)
             {
                 ui.AddControl(new MiniMapGump(), 566, 25);
@@ -62,7 +62,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public MiniMapGump()
             : base(0, 0)
         {
-            m_World = Services.Get<WorldModel>();
+            m_World = Service.Get<WorldModel>();
 
             m_UseLargeMap = MiniMap_LargeFormat;
 
@@ -85,7 +85,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 {
                     m_GumpTexture = null;
                 }
-                IResourceProvider provider = Services.Get<IResourceProvider>();
+                IResourceProvider provider = Service.Get<IResourceProvider>();
                 m_GumpTexture = provider.GetUITexture((m_UseLargeMap ? 5011 : 5010), true);
                 Size = new Point(m_GumpTexture.Width, m_GumpTexture.Height);
             }

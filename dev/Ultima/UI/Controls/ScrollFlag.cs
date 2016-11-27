@@ -110,7 +110,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.OnInitialize();
 
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             m_GumpSlider = provider.GetUITexture(0x0828);
             Size = new Point(m_GumpSlider.Width, m_GumpSlider.Height);
         }

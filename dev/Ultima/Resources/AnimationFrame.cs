@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.Resources
 
         AnimationFrame()
         {
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             Texture = provider.GetItemTexture(1);
             Center = new Point(0, 0);
         }

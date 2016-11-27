@@ -64,7 +64,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_texture == null)
             {
-                IResourceProvider provider = Services.Get<IResourceProvider>();
+                IResourceProvider provider = Service.Get<IResourceProvider>();
                 m_texture = provider.GetItemTexture(m_tileID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }

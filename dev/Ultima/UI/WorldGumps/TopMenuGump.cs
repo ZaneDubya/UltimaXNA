@@ -57,8 +57,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 5, 3, 5537, 5539, 0, 1, 0), 2);
             ((Button)LastControl).GumpOverID = 5538;
 
-            m_World = Services.Get<WorldModel>();
-            m_Client = Services.Get<INetworkClient>();
+            m_World = Service.Get<WorldModel>();
+            m_Client = Service.Get<INetworkClient>();
 
             MetaData.Layer = UILayer.Over;
         }

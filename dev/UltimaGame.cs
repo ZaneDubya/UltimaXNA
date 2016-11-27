@@ -33,10 +33,7 @@ namespace UltimaXNA
 {
     class UltimaGame : CoreGame
     {
-        AudioService m_Audio;
-        InputManager m_Input;
         UserInterfaceService m_UserInterface;
-        INetworkClient m_Network;
         PluginManager m_Plugins;
         ModelManager m_Models;
         bool m_IsRunning;
@@ -54,13 +51,13 @@ namespace UltimaXNA
         protected override void Initialize()
         {
             Content.RootDirectory = "Content";
-            UltimaXNA.Services.Add(this);
-            UltimaXNA.Services.Add(new SpriteBatch3D(this));
-            UltimaXNA.Services.Add(new SpriteBatchUI(this));
-            m_Audio = UltimaXNA.Services.Add(new AudioService());
-            m_Network = UltimaXNA.Services.Add<INetworkClient>(new NetworkClient());
-            m_Input = UltimaXNA.Services.Add(new InputManager(Window.Handle));
-            m_UserInterface = UltimaXNA.Services.Add(new UserInterfaceService());
+            Service.Add(this);
+            Service.Add(new SpriteBatch3D(this));
+            Service.Add(new SpriteBatchUI(this));
+            Service.Add<INetworkClient>(new NetworkClient());
+            Service.Add<IInputService>(new InputService(Window.Handle));
+            Service.Add(new AudioService());
+            m_UserInterface = Service.Add(new UserInterfaceService());
             m_Plugins = new PluginManager(AppDomain.CurrentDomain.BaseDirectory);
             m_Models = new ModelManager();
             // Make sure we have a UO installation before loading IO.
@@ -69,7 +66,7 @@ namespace UltimaXNA
                 // Initialize and load data
                 IResourceProvider provider = new ResourceProvider(this);
                 provider.RegisterResource(new EffectDataResource());
-                UltimaXNA.Services.Add(provider);
+                Service.Add(provider);
                 HueData.Initialize(GraphicsDevice);
                 SkillsData.Initialize();
                 GraphicsDevice.Textures[1] = HueData.HueTexture0;
@@ -84,13 +81,6 @@ namespace UltimaXNA
             }
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            UltimaXNA.Services.Remove<UltimaGame>();
-            m_UserInterface.Dispose();
-            base.Dispose(disposing);
-        }
-
         protected override void OnUpdate(double totalMS, double frameMS)
         {
             if (!m_IsRunning)
@@ -102,13 +92,10 @@ namespace UltimaXNA
             {
                 IsFixedTimeStep = Settings.Engine.IsFixedTimeStep;
                 m_TotalMS = totalMS;
-                m_Audio.Update();
-                m_Input.Update(totalMS, frameMS);
+                Service.Get<AudioService>().Update();
+                Service.Get<IInputService>().Update(totalMS, frameMS);
                 m_UserInterface.Update(totalMS, frameMS);
-                if (m_Network.IsConnected)
-                {
-                    m_Network.Slice();
-                }
+                Service.Get<INetworkClient>().Slice();
                 Models.Current.Update(totalMS, frameMS);
             }
         }

@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.Login
         }
 
         public LoginModel() {
-            Services.Add(this);
+            Service.Add(this);
             Client = new LoginClient();
         }
 
@@ -41,16 +41,16 @@ namespace UltimaXNA.Ultima.Login
         }
 
         protected override void OnInitialize() {
-            Services.Get<UltimaGame>().SetupWindowForLogin();
-            m_UserInterface = Services.Get<UserInterfaceService>();
+            Service.Get<UltimaGame>().SetupWindowForLogin();
+            m_UserInterface = Service.Get<UserInterfaceService>();
             m_UserInterface.Cursor = new UltimaCursor();
-            Services.Get<AudioService>().PlayMusic(0);
+            Service.Get<AudioService>().PlayMusic(0);
             ResetToLogin();
         }
 
         protected override void OnDispose() {
-            Services.Get<AudioService>().StopMusic();
-            Services.Remove<LoginModel>();
+            Service.Get<AudioService>().StopMusic();
+            Service.Remove<LoginModel>();
             Client.Dispose();
             Client = null;
             m_UserInterface.Reset();
@@ -231,7 +231,7 @@ namespace UltimaXNA.Ultima.Login
 
         bool validateAppearance() {
             // get the resource provider
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             // save the values
             (CurrentGump as CreateCharAppearanceGump).SaveData(m_Data);
             if (m_Data.Name.Length < 2) {

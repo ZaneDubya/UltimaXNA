@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.Data
                 if (m_male == null)
                 {
                     // get the resource provider
-                    IResourceProvider provider = Services.Get<IResourceProvider>();
+                    IResourceProvider provider = Service.Get<IResourceProvider>();
 
                     m_male = new string[m_maleStyles.Length];
                     for (int i = 0; i < m_maleStyles.Length; i++)
@@ -64,7 +64,7 @@ namespace UltimaXNA.Ultima.Data
                 if (m_facial == null)
                 {
                     // get the resource provider
-                    IResourceProvider provider = Services.Get<IResourceProvider>();
+                    IResourceProvider provider = Service.Get<IResourceProvider>();
 
                     m_facial = new string[m_facialStyles.Length];
                     for (int i = 0; i < m_facialStyles.Length; i++)
@@ -102,7 +102,7 @@ namespace UltimaXNA.Ultima.Data
                 if (m_female == null)
                 {
                     // get the resource provider
-                    IResourceProvider provider = Services.Get<IResourceProvider>();
+                    IResourceProvider provider = Service.Get<IResourceProvider>();
 
                     m_female = new string[m_femaleStyles.Length];
                     for (int i = 0; i < m_femaleStyles.Length; i++)

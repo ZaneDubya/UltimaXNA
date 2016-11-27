@@ -21,7 +21,7 @@ using UltimaXNA.Core.Windows;
 
 namespace UltimaXNA.Core.Input
 {
-    public class InputManager
+    public class InputService : IInputService
     {
         WndProc m_WndProc;
         List<InputEvent> m_Events = new List<InputEvent>();
@@ -39,7 +39,7 @@ namespace UltimaXNA.Core.Input
         bool m_MouseIsDragging;
         float m_TheTime = -1f;
 
-        public InputManager(IntPtr handle)
+        public InputService(IntPtr handle)
         {
             m_WndProc = new WndProc(handle);
             m_WndProc.MouseWheel += AddEvent;
@@ -111,7 +111,7 @@ namespace UltimaXNA.Core.Input
         {
             get
             {
-                for (int i = m_EventsNext.Count; i > 0; i--)
+                for (int i = m_EventsNext.Count; i >= 0; i--)
                 {
                     if ((m_EventsNext[i - 1] as InputEventKeyboard)?.EventType == KeyboardEvent.Press)
                     {

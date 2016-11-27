@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_Texture == null)
             {
-                IResourceProvider provider = Services.Get<IResourceProvider>();
+                IResourceProvider provider = Service.Get<IResourceProvider>();
                 m_GumpIndex = Item.ItemData.AnimID + (IsFemale ? 60000 : 50000);
                 int indexTranslated, hueTranslated;
                 if (GumpDefTranslator.ItemHasGumpTranslation(m_GumpIndex, out indexTranslated, out hueTranslated))
@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override bool IsPointWithinControl(int x, int y)
         {
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             return provider.IsPointInUITexture(m_GumpIndex, x, y);
         }
     }

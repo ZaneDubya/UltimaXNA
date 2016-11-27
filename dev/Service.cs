@@ -16,7 +16,7 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 
 namespace UltimaXNA
 {
-    public static class Services
+    public static class Service
     {
         static readonly Dictionary<Type, object> m_Services = new Dictionary<Type, object>();
 

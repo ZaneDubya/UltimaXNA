@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.UI
             int currentRadioGroup = 0;
 
             // get the resource provider
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
 
             for (int i = 0; i < gumpPieces.Length; i++)
             {

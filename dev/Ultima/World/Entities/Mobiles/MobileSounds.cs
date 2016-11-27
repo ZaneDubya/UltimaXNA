@@ -16,7 +16,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 {
     public static class MobileSounds
     {
-        private static AudioService m_Audio = Services.Get<AudioService>();
+        private static AudioService m_Audio = Service.Get<AudioService>();
 
         private static Dictionary<Serial, MobileSoundData> m_Data = new Dictionary<Serial,MobileSoundData>();
 

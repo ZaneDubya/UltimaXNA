@@ -473,6 +473,11 @@ namespace UltimaXNA.Core.Network
 
         public void Slice()
         {
+            if (!IsConnected)
+            {
+                return;
+            }
+
             lock (m_SyncRoot)
             {
                 Queue<QueuedPacket> temp = m_WorkingQueue;

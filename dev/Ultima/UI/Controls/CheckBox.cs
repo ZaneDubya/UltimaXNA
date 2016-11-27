@@ -86,7 +86,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void BuildGumpling(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
         {
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             m_Inactive = provider.GetUITexture(inactiveID);
             m_Active = provider.GetUITexture(activeID);
 

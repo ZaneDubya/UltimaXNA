@@ -45,7 +45,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             IsMoveable = true;
 
             Mobile = mobile;
-            m_World = Services.Get<WorldModel>();
+            m_World = Service.Get<WorldModel>();
 
             if (Mobile.IsClientEntity)
             {
@@ -154,7 +154,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void OnKeyboardReturn(int textID, string text)
         {
-            INetworkClient client = Services.Get<INetworkClient>();
+            INetworkClient client = Service.Get<INetworkClient>();
             client.Send(new RenameCharacterPacket(Mobile.Serial, text));
         }
     }

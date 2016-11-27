@@ -57,7 +57,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_bgGump == null)
             {
-                IResourceProvider provider = Services.Get<IResourceProvider>();
+                IResourceProvider provider = Service.Get<IResourceProvider>();
                 m_bgGump = provider.GetUITexture(m_gumpID);
             }
             base.Update(totalMS, frameMS);

@@ -132,6 +132,7 @@
     <Compile Include="Configuration\GumpSettings.cs" />
     <Compile Include="Core\CoreGame.cs" />
     <Compile Include="Core\Extensions\MouseStateExtensions.cs" />
+    <Compile Include="Core\Input\IInputService.cs" />
     <Compile Include="Core\Network\PacketChunk.cs" />
     <Compile Include="Core\Patterns\MVC\ModelManager.cs" />
     <Compile Include="Core\UI\HTML\Elements\InternalLineBreakElement.cs" />
@@ -261,7 +262,7 @@
     <Compile Include="Core\PluginManager.cs" />
     <Compile Include="Core\UI\RenderedTextList.cs" />
     <Compile Include="Core\UI\RenderedText.cs" />
-    <Compile Include="Services.cs" />
+    <Compile Include="Service.cs" />
     <Compile Include="Core\Audio\AudioEffects.cs" />
     <Compile Include="Ultima\Audio\AudioService.cs" />
     <Compile Include="Ultima\Audio\UOMusic.cs" />
@@ -274,7 +275,7 @@
     <Compile Include="Core\Configuration\ASettingsSection.cs" />
     <Compile Include="Configuration\UltimaOnlineSettings.cs" />
     <Compile Include="Core\ConsoleManager.cs" />
-    <Compile Include="Core\Input\InputManager.cs" />
+    <Compile Include="Core\Input\InputService.cs" />
     <Compile Include="Core\Windows\WinKeys.cs" />
     <Compile Include="Core\Input\InputEvent.cs" />
     <Compile Include="Core\Input\InputEventKeyboard.cs" />

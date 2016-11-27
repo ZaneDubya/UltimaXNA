@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
             : base(0, 0) {
             m_OnLogin = onLogin;
             // get the resource provider
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             int hue = 902; // dark grey
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 0x0588));
@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
 
             switch ((LoginGumpButtons)buttonID) {
                 case LoginGumpButtons.QuitButton:
-                    Services.Get<UltimaGame>().Quit();
+                    Service.Get<UltimaGame>().Quit();
                     break;
                 case LoginGumpButtons.LoginButton: {
                         SecureString secureStr = new SecureString();

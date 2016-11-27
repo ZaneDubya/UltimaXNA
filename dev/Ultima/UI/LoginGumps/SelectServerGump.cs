@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
             m_OnSelectServer = onSelectServer;
 
             // get the resource provider
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
 
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 9274));
@@ -78,7 +78,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         public override void OnButtonClick(int buttonID) {
             switch ((SelectServerGumpButtons)buttonID) {
                 case SelectServerGumpButtons.QuitButton:
-                    Services.Get<UltimaGame>().Quit();
+                    Service.Get<UltimaGame>().Quit();
                     break;
                 case SelectServerGumpButtons.BackButton:
                     m_OnBackToLoginScreen();

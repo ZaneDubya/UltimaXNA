@@ -111,7 +111,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (m_Slider.Value > 0)
             {
-                WorldModel world = Services.Get<WorldModel>();
+                WorldModel world = Service.Get<WorldModel>();
                 world.Interaction.PickupItem(Item, m_PickupOffset, m_Slider.Value);
             }
             Dispose();
@@ -121,7 +121,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (m_Slider.Value > 0)
             {
-                WorldModel world = Services.Get<WorldModel>();
+                WorldModel world = Service.Get<WorldModel>();
                 world.Interaction.PickupItem(Item, m_PickupOffset, m_Slider.Value);
             }
             Dispose();

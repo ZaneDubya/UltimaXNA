@@ -90,7 +90,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (IsChild) // is a child
                 {
-                    IResourceProvider provider = Services.Get<IResourceProvider>();
+                    IResourceProvider provider = Service.Get<IResourceProvider>();
                     m_huesTexture = HueData.CreateHueSwatch(m_hueWidth, m_hueHeight, m_hues);
                     m_selectedIndicator = provider.GetUITexture(6000);
                 }

@@ -45,7 +45,7 @@ namespace UltimaXNA.Ultima.World.Input
 
         INetworkClient m_Network;
         UserInterfaceService m_UserInterface;
-        InputManager m_Input;
+        IInputService m_Input;
 
         // keyboard movement variables.
         double m_PauseBeforeKeyboardMovementMS;
@@ -67,9 +67,9 @@ namespace UltimaXNA.Ultima.World.Input
             World = world;
 
             // service references
-            m_Network = Services.Get<INetworkClient>();
-            m_UserInterface = Services.Get<UserInterfaceService>();
-            m_Input = Services.Get<InputManager>();
+            m_Network = Service.Get<INetworkClient>();
+            m_UserInterface = Service.Get<UserInterfaceService>();
+            m_Input = Service.Get<IInputService>();
 
             // local instances
             MousePick = new MousePicking();
@@ -132,7 +132,7 @@ namespace UltimaXNA.Ultima.World.Input
         {
             get
             {
-                WorldViewport world = Services.Get<WorldViewport>();
+                WorldViewport world = Service.Get<WorldViewport>();
                 Point mouse = new Point(m_Input.MousePosition.X - world.ScreenX, m_Input.MousePosition.Y - world.ScreenY);
                 return mouse;
             }

@@ -38,8 +38,8 @@ namespace UltimaXNA.Ultima.World {
 
         public WorldInteraction(WorldModel world)
         {
-            m_Network = Services.Get<INetworkClient>();
-            m_UserInterface = Services.Get<UserInterfaceService>();
+            m_Network = Service.Get<INetworkClient>();
+            m_UserInterface = Service.Get<UserInterfaceService>();
 
             m_World = world;
         }
@@ -175,7 +175,7 @@ namespace UltimaXNA.Ultima.World {
         {
             m_ChatQueue.Add(new QueuedMessage(text, font, hue, asUnicode));
 
-            ChatControl chat = Services.Get<ChatControl>();
+            ChatControl chat = Service.Get<ChatControl>();
             if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)

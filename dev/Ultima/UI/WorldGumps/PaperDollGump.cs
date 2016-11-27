@@ -82,8 +82,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         private void BuildGump()
         {
-            m_World = Services.Get<WorldModel>();
-            m_Client = Services.Get<INetworkClient>();
+            m_World = Service.Get<WorldModel>();
+            m_Client = Service.Get<INetworkClient>();
 
             IsMoveable = true;
             SaveOnWorldStop = true;

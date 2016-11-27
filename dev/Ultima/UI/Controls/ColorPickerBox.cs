@@ -94,7 +94,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (IsChild) // is a child
                 {
                     m_huesTexture = HueData.CreateHueSwatch(m_hueWidth, m_hueHeight, m_hues);
-                    IResourceProvider provider = Services.Get<IResourceProvider>();
+                    IResourceProvider provider = Service.Get<IResourceProvider>();
                     m_selectedIndicator = provider.GetUITexture(6000);
                 }
                 else
@@ -106,7 +106,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position, double frameMS)
         {
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             m_Inactive = provider.GetUITexture(210);
 
             spriteBatch.Draw2D(m_Inactive, new Vector3(position.X, position.Y, 0), Vector3.Zero);
