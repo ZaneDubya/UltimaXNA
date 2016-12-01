@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.World
             MiniMap = new MiniMapTexture();
             MiniMap.Initialize();
 
-            m_UI = Services.Get<UserInterfaceService>();
+            m_UI = Service.Get<UserInterfaceService>();
         }
 
         public override void Draw(double frameTime)

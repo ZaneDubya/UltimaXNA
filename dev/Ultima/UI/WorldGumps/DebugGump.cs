@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public DebugGump()
             : base(0, 0)
         {
-            m_World = Services.Get<WorldModel>();
+            m_World = Service.Get<WorldModel>();
             IsMoveable = true;
             AddControl(new ResizePic(this, 0, 0, 0x2436, 256 + 16, 256 + 16));
             AddControl(m_Debug = new HtmlGumpling(this, 0, 0, 256, 256, 0, 0, string.Empty));
@@ -36,9 +36,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public override void Update(double totalMS, double frameMS)
         {
             base.Update(totalMS, frameMS);
-            InputManager input = Services.Get<InputManager>();
-            bool lmb = input.MouseState.LeftButton == ButtonState.Pressed;
-            bool rmb = input.MouseState.RightButton == ButtonState.Pressed;
+            IInputService input = Service.Get<IInputService>();
+            bool lmb = input.IsMouseButtonDown(MouseButton.Left);
+            bool rmb = input.IsMouseButtonDown(MouseButton.Right);
             m_Debug.Text = $"{(lmb ? "LMB" : string.Empty)}:{(rmb ? "RMB" : string.Empty)}";
         }
 

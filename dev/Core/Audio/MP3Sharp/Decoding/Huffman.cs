@@ -689,19 +689,19 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             new[] {0, 12}, new[] {0, 13}, new[] {2, 1}, new[] {0, 14}, new[] {0, 15}
         };
 
-        public static Huffman[] ht; /* Simulate extern struct                 */
-        private readonly int linbits; /* number of linbits   	                  */
-        private readonly char tablename0 = ' '; /* string, containing table_description   */
-        private readonly char tablename1 = ' '; /* string, containing table_description   */
-        private readonly int treelen; /* length of decoder tree  	              */
-        private readonly int[][] val; /* decoder tree		    	              */
-        private readonly int xlen; /* max. x-index+                          */
-        private readonly int ylen; /* max. y-index+				          */
-        private int[] hlen; /* pointer to array[xlen][ylen]		      */
-        private int linmax; /* max number to be stored in linbits	  */
-        private int ref_Renamed; /* a positive value indicates a reference */
-        private int[] table; /* pointer to array[xlen][ylen]		      */
-        private char tablename2 = ' '; /* string, containing table_description   */
+        public static Huffman[] ht; //Simulate extern struct
+        private readonly int linbits; //number of linbits
+        private readonly char tablename0 = ' '; //string, containing table_description
+        private readonly char tablename1 = ' '; //string, containing table_description
+        private readonly int treelen; //length of decoder tree
+        private readonly int[][] val; //decoder tree
+        private readonly int xlen; //max. x-index+
+        private readonly int ylen; //max. y-index+
+        private int[] hlen; //pointer to array[xlen][ylen]
+        private int linmax; //max number to be stored in linbits
+        private int ref_Renamed; //a positive value indicates a reference
+        private int[] table; //pointer to array[xlen][ylen]
+        private char tablename2 = ' '; //string, containing table_description
 
         static Huffman()
         {
@@ -755,10 +755,10 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
 
             /* Lookup in Huffman table. */
 
-            /*int bitsAvailable = 0;	 
-			int bitIndex = 0;
-			
-			int bits[] = bitbuf;*/
+            /*int bitsAvailable = 0;     
+            int bitIndex = 0;
+            
+            int bits[] = bitbuf;*/
             do
             {
                 if (h.val[point][0] == 0)
@@ -773,12 +773,12 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
                 // hget1bit() is called thousands of times, and so needs to be
                 // ultra fast. 
                 /*
-				if (bitIndex==bitsAvailable)
-				{
-				bitsAvailable = br.readBits(bits, 32);			
-				bitIndex = 0;
-				}
-				*/
+                if (bitIndex==bitsAvailable)
+                {
+                bitsAvailable = br.readBits(bits, 32);            
+                bitIndex = 0;
+                }
+                */
                 //if (bits[bitIndex++]!=0)
                 if (br.ReadOneBit() != 0)
                 {
@@ -797,11 +797,11 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             } while ((level != 0) || (point < 0));
 
             // put back any bits not consumed
-            /*	
-			int unread = (bitsAvailable-bitIndex);
-			if (unread>0)
-			br.rewindNbits(unread);
-			*/
+            /*    
+            int unread = (bitsAvailable-bitIndex);
+            if (unread>0)
+            br.rewindNbits(unread);
+            */
             /* Process sign encodings for quadruples tables. */
             // System.out.println(h.tablename);
             if (h.tablename0 == '3' && (h.tablename1 == '2' || h.tablename1 == '3'))
@@ -812,7 +812,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
                 y[0] = y[0] & 1;
 
                 /* v, w, x and y are reversed in the bitstream.
-				switch them around to make test bistream work. */
+                switch them around to make test bistream work. */
 
                 if (v[0] != 0)
                     if (br.ReadOneBit() != 0)

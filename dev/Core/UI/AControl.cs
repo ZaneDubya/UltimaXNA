@@ -372,7 +372,7 @@ namespace UltimaXNA.Core.UI
         {
             Parent = parent;
             Page = 0;
-            UserInterface = Services.Get<UserInterfaceService>();
+            UserInterface = Service.Get<UserInterfaceService>();
         }
 
         public void Initialize()
@@ -723,7 +723,7 @@ namespace UltimaXNA.Core.UI
         {
             int x = position.X - X - ParentX;
             int y = position.Y - Y - ParentY;
-            float totalMS = (float)Services.Get<UltimaGame>().TotalMS;
+            float totalMS = (float)Service.Get<UltimaGame>().TotalMS;
 
             bool doubleClick = false;
             if (m_MaxTimeForDoubleClick != 0f)

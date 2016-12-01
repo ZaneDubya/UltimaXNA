@@ -17,31 +17,16 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class TargetCursorPacket : RecvPacket
     {
-        readonly byte m_commandtype;
-        readonly int m_cursorid;
-        readonly byte m_cursortype;
-
-        public byte CommandType 
-        {
-            get { return m_commandtype; }
-        }
-
-        public int CursorID 
-        {
-            get { return m_cursorid; }         
-        }
-
-        public byte CursorType 
-        {
-            get { return m_cursortype; } 
-        }
+        public readonly byte CommandType;
+        public readonly int CursorID;
+        public readonly byte CursorType;
         
         public TargetCursorPacket(PacketReader reader)
             : base(0x6C, "Target Cursor")
         {
-            m_commandtype = reader.ReadByte(); // 0x00 = Select Object; 0x01 = Select X, Y, Z
-            m_cursorid = reader.ReadInt32();
-            m_cursortype = reader.ReadByte(); // 0 - 2 = unknown; 3 = Cancel current targetting RunUO seems to always send 0.
+            CommandType = reader.ReadByte(); // 0x00 = Select Object; 0x01 = Select X, Y, Z
+            CursorID = reader.ReadInt32();
+            CursorType = reader.ReadByte(); // 0 - 2 = unknown; 3 = Cancel current targetting RunUO seems to always send 0.
         }
     }
 }

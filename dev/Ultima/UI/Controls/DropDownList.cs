@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             : base(parent)
         {
             HandlesMouseInput = true;
-            m_Font = Services.Get<IResourceProvider>().GetAsciiFont(1);
+            m_Font = Service.Get<IResourceProvider>().GetAsciiFont(1);
         }
 
         public DropDownList(AControl parent, int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull)

@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             Entity = entity;
             SortZ = Entity.Z;
-            Provider = Services.Get<IResourceProvider>();
+            Provider = Service.Get<IResourceProvider>();
         }
 
         public PickType PickType = PickType.PickNothing;

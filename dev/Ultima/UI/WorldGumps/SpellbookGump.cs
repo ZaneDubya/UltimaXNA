@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public SpellbookGump(SpellBook entity)
             : base(entity.Serial, 0)
         {
-            m_World = Services.Get<WorldModel>();
+            m_World = Service.Get<WorldModel>();
 
             m_Spellbook = entity;
             m_Spellbook.SetCallbacks(OnEntityUpdate, OnEntityDispose);
@@ -249,7 +249,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     SpellDefinition spell = SpellsMagery.GetSpell(spellIndex);
                     if (spell.ID == spellIndex)
                     {
-                        InputManager input = Services.Get<InputManager>();
+                        IInputService input = Service.Get<IInputService>();
                         UseSpellButtonGump gump = new UseSpellButtonGump(spell);
                         UserInterface.AddControl(gump, input.MousePosition.X - 22, input.MousePosition.Y - 22);
                         UserInterface.AttemptDragControl(gump, input.MousePosition, true);

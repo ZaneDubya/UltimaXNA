@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.Data
         public ContextMenuItem(int responseCode, int stringID, int flags, int hue)
         {
             // get the resource provider
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             m_Caption = provider.GetString(stringID);
             m_ResponseCode = responseCode;
         }

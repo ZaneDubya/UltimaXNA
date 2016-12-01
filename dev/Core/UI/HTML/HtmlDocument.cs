@@ -150,7 +150,7 @@ namespace UltimaXNA.Core.UI.HTML
 
         BlockElement ParseHtmlToBlocks(string html)
         {
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             StyleParser styles = new StyleParser(provider);
             BlockElement root, currentBlock;
             root = currentBlock = new BlockElement("root", styles.Style); // this is the root!
@@ -704,7 +704,7 @@ namespace UltimaXNA.Core.UI.HTML
 
         void GetAllImages(BlockElement block)
         {
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             foreach (AElement atom in block.Children)
             {
                 if (atom is ImageElement)

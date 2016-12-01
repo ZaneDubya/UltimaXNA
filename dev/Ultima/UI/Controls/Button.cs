@@ -97,7 +97,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
         public override void Update(double totalMS, double frameMS) {
             for (int i = Gump_Up; i <= Gump_Over; i++) {
                 if (m_GumpID[i] != 0 && m_GumpTextures[i] == null) {
-                    IResourceProvider provider = Services.Get<IResourceProvider>();
+                    IResourceProvider provider = Service.Get<IResourceProvider>();
                     m_GumpTextures[i] = provider.GetUITexture(m_GumpID[i]);
                 }
             }
@@ -151,7 +151,7 @@ namespace UltimaXNA.Ultima.UI.Controls {
         protected override bool IsPointWithinControl(int x, int y)
         {
             int gumpID = GetGumpIDFromMouseState();
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             return provider.IsPointInUITexture(gumpID, x, y);
         }
 

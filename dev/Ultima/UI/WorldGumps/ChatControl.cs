@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private TextEntry m_TextEntry;
         private List<ChatLineTimed> m_TextEntries;
         private List<Tuple<ChatMode, string>> m_MessageHistory;
-        private InputManager m_Input;
+        private IInputService m_Input;
         private WorldModel m_World;
         private int m_MessageHistoryIndex = -1;
         private Serial m_PrivateMessageSerial = Serial.Null;
@@ -104,8 +104,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_TextEntries = new List<ChatLineTimed>();
             m_MessageHistory = new List<Tuple<ChatMode, string>>();
 
-            m_Input = Services.Get<InputManager>();
-            m_World = Services.Get<WorldModel>();
+            m_Input = Service.Get<IInputService>();
+            m_World = Service.Get<WorldModel>();
 
             IsUncloseableWithRMB = true;
         }
@@ -121,7 +121,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (m_TextEntry == null)
             {
-                IResourceProvider provider = Services.Get<IResourceProvider>();
+                IResourceProvider provider = Service.Get<IResourceProvider>();
                 IFont font = provider.GetUnicodeFont(0);
                 m_TextEntry = new TextEntry(this, 1, Height - font.Height, Width, font.Height, 0, 0, MaxChatMessageLength, string.Empty);
                 m_TextEntry.LegacyCarat = true;
@@ -249,7 +249,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     hue = Settings.UserInterface.AllianceMsgColor;
                     break;
             }
-            INetworkClient network = Services.Get<INetworkClient>();
+            INetworkClient network = Service.Get<INetworkClient>();
             network.Send(new AsciiSpeechPacket(speechType, 0, hue + 2, "ENU", text));
         }
 

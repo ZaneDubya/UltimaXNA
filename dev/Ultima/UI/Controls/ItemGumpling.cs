@@ -19,7 +19,7 @@ using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Ultima.UI.Controls
-{
+{   
     class ItemGumpling : AControl
     {
         public bool CanPickUp = true;
@@ -48,7 +48,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             BuildGumpling(item);
             HandlesMouseInput = true;
 
-            m_World = Services.Get<WorldModel>();
+            m_World = Service.Get<WorldModel>();
         }
 
         void BuildGumpling(Item item)
@@ -92,7 +92,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_Texture == null)
             {
-                IResourceProvider provider = Services.Get<IResourceProvider>();
+                IResourceProvider provider = Service.Get<IResourceProvider>();
                 m_Texture = provider.GetItemTexture(Item.DisplayItemID);
                 Size = new Point(m_Texture.Width, m_Texture.Height);
             }
@@ -128,7 +128,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         bool IsPointInTexture(int x, int y)
         {
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             return provider.IsPointInItemTexture(Item.DisplayItemID, x, y, 1);
         }
 
@@ -136,7 +136,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             m_ClickedCanDrag = true;
-            float totalMS = (float)Services.Get<UltimaGame>().TotalMS;
+            float totalMS = (float)Service.Get<UltimaGame>().TotalMS;
             m_PickUpTime = totalMS + Settings.UserInterface.Mouse.ClickAndPickupMS;
             m_ClickPoint = new Point(x, y);
         }
@@ -162,7 +162,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 m_ClickedCanDrag = false;
                 m_SendClickIfNoDoubleClick = true;
-                float totalMS = (float)Services.Get<UltimaGame>().TotalMS;
+                float totalMS = (float)Service.Get<UltimaGame>().TotalMS;
                 m_SingleClickTime = totalMS + Settings.UserInterface.Mouse.DoubleClickMS;
             }
         }
@@ -185,7 +185,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (this is ItemGumplingPaperdoll)
                 {
                     int w, h;
-                    IResourceProvider provider = Services.Get<IResourceProvider>();
+                    IResourceProvider provider = Service.Get<IResourceProvider>();
                     provider.GetItemDimensions(Item.DisplayItemID, out w, out h);
                     Point click_point = new Point(w / 2, h / 2);
                     m_World.Interaction.PickupItem(Item, InternalGetPickupOffset(click_point));
@@ -203,7 +203,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_Label == null)
                 {
-                    InputManager input = Services.Get<InputManager>();
+                    IInputService input = Service.Get<IInputService>();
                     UserInterface.AddControl(m_Label = new HtmlGumpling(null, 0, 0, 200, 32, 0, 0,
                         string.Format("<center><span style='font-family: ascii3;'>{0}</center>", Item.Overheads[0].Text)),
                         input.MousePosition.X - 100, input.MousePosition.Y - 12);

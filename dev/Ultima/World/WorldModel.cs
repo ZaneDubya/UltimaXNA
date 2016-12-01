@@ -154,11 +154,11 @@ namespace UltimaXNA.Ultima.World
         // ============================================================================================================
         public WorldModel()
         {
-            Services.Add<WorldModel>(this);
+            Service.Add<WorldModel>(this);
 
-            m_Engine = Services.Get<UltimaGame>();
-            m_Network = Services.Get<INetworkClient>();
-            m_UserInterface = Services.Get<UserInterfaceService>();
+            m_Engine = Service.Get<UltimaGame>();
+            m_Network = Service.Get<INetworkClient>();
+            m_UserInterface = Service.Get<UserInterfaceService>();
 
             Entities = new EntityManager(this);
             Entities.Reset(true);
@@ -183,7 +183,7 @@ namespace UltimaXNA.Ultima.World
             SaveOpenGumps();
             m_Engine.SaveResolution();
 
-            Services.Remove<WorldModel>();
+            Service.Remove<WorldModel>();
 
             m_UserInterface.Reset();
 

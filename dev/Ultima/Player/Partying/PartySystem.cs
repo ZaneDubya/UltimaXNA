@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.Player.Partying
             set
             {
                 m_AllowPartyLoot = value;
-                INetworkClient network = Services.Get<INetworkClient>();
+                INetworkClient network = Service.Get<INetworkClient>();
                 network.Send(new PartyCanLootPacket(m_AllowPartyLoot));
             }
         }
@@ -80,7 +80,7 @@ namespace UltimaXNA.Ultima.Player.Partying
                 m_PartyMembers.RemoveAt(index);
             }
             m_PartyMembers.Add(new PartyMember(serial));
-            INetworkClient network = Services.Get<INetworkClient>();
+            INetworkClient network = Service.Get<INetworkClient>();
             network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, serial));
         }
 
@@ -98,11 +98,11 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public void LeaveParty()
         {
-            INetworkClient network = Services.Get<INetworkClient>();
+            INetworkClient network = Service.Get<INetworkClient>();
             network.Send(new PartyLeavePacket());
             m_PartyMembers.Clear();
             m_LeaderSerial = Serial.Null;
-            UserInterfaceService ui = Services.Get<UserInterfaceService>();
+            UserInterfaceService ui = Service.Get<UserInterfaceService>();
             ui.RemoveControl<PartyHealthTrackerGump>();
         }
 
@@ -111,8 +111,8 @@ namespace UltimaXNA.Ultima.Player.Partying
             // I do this a little differently than the legacy client. With legacy, if you type "/add this other player,
             // please ?" the client will detect the first word is "add" and request an add player target. Instead, I
             // interpret this as a message, and send the message "add this other player, please?" as a party message.
-            INetworkClient network = Services.Get<INetworkClient>();
-            WorldModel world = Services.Get<WorldModel>();
+            INetworkClient network = Service.Get<INetworkClient>();
+            WorldModel world = Service.Get<WorldModel>();
             string command = text.ToLower();
             bool commandHandled = false;
             switch (command)
@@ -167,18 +167,18 @@ namespace UltimaXNA.Ultima.Player.Partying
             PartyMember member = GetMember((Serial)serial);
             if (member != null)
             {
-                ChatControl chat = Services.Get<ChatControl>();
+                ChatControl chat = Service.Get<ChatControl>();
                 chat.SetModeToPartyPrivate(member.Name, member.Serial);
             }
         }
 
         public void SendPartyPrivateMessage(Serial serial, string text)
         {
-            WorldModel world = Services.Get<WorldModel>();
+            WorldModel world = Service.Get<WorldModel>();
             PartyMember recipient = GetMember(serial);
             if (recipient != null)
             {
-                INetworkClient network = Services.Get<INetworkClient>();
+                INetworkClient network = Service.Get<INetworkClient>();
                 network.Send(new PartyPrivateMessagePacket(serial, text));
                 world.Interaction.ChatMessage($"To {recipient.Name}: {text}", 3, Settings.UserInterface.PartyPrivateMsgColor, false);
             }
@@ -190,8 +190,8 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         internal void RequestAddPartyMemberTarget()
         {
-            INetworkClient network = Services.Get<INetworkClient>();
-            WorldModel world = Services.Get<WorldModel>();
+            INetworkClient network = Service.Get<INetworkClient>();
+            WorldModel world = Service.Get<WorldModel>();
             if (!InParty)
             {
                 m_LeaderSerial = WorldModel.PlayerSerial;
@@ -209,7 +209,7 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public void RefreshPartyGumps()
         {
-            UserInterfaceService ui = Services.Get<UserInterfaceService>();
+            UserInterfaceService ui = Service.Get<UserInterfaceService>();
             ui.RemoveControl<PartyHealthTrackerGump>();
             for (int i = 0; i < Members.Count; i++)
             {
@@ -227,7 +227,7 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public void RemoveMember(Serial serial)
         {
-            INetworkClient network = Services.Get<INetworkClient>();
+            INetworkClient network = Service.Get<INetworkClient>();
             network.Send(new PartyRemoveMemberPacket(serial));
             int index = m_PartyMembers.FindIndex(p => p.Serial == serial);
             if (index != -1)
@@ -238,7 +238,7 @@ namespace UltimaXNA.Ultima.Player.Partying
 
         public void ShowPartyHelp()
         {
-            WorldModel m_world = Services.Get<WorldModel>();
+            WorldModel m_world = Service.Get<WorldModel>();
             m_world.Interaction.ChatMessage("/add       - add a new member or create a party", 3, 51, true);
             m_world.Interaction.ChatMessage("/rem       - kick a member from your party", 3, 51, true);
             m_world.Interaction.ChatMessage("/accept    - join a party", 3, 51, true);

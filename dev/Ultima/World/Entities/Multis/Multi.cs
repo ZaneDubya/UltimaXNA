@@ -73,10 +73,10 @@ namespace UltimaXNA.Ultima.World.Entities.Multis
         }
 
         public Multi(Serial serial, Map map)
-			: base(serial, map)
-		{
+            : base(serial, map)
+        {
             RegisterForMapBlockLoads(this);
-		}
+        }
 
         public override void Dispose()
         {

@@ -16,20 +16,18 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 
 namespace UltimaXNA
 {
-    public static class Services
+    public static class Service
     {
         static readonly Dictionary<Type, object> m_Services = new Dictionary<Type, object>();
 
         public static T Add<T>(T service)
         {
             Type type = typeof(T);
-
             if (m_Services.ContainsKey(type))
             {
                 Tracer.Critical(string.Format("Attempted to register service of type {0} twice.", type));
                 m_Services.Remove(type);
             }
-
             m_Services.Add(type, service);
             return service;
         }
@@ -37,7 +35,6 @@ namespace UltimaXNA
         public static void Remove<T>()
         {
             Type type = typeof(T);
-
             if (m_Services.ContainsKey(type))
             {
                 m_Services.Remove(type);

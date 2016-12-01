@@ -51,8 +51,8 @@ namespace UltimaXNA.Ultima.World
         public WorldClient(WorldModel world)
         {
             m_World = world;
-            m_Network = Services.Get<INetworkClient>();
-            m_UserInterface = Services.Get<UserInterfaceService>();
+            m_Network = Service.Get<INetworkClient>();
+            m_UserInterface = Service.Get<UserInterfaceService>();
         }
 
         public void Initialize()
@@ -244,12 +244,12 @@ namespace UltimaXNA.Ultima.World
 
         void ReceiveTargetCursor(TargetCursorPacket p)
         {
-            m_World.Cursor.SetTargeting((WorldCursor.TargetType)p.CommandType, p.CursorID);
+            m_World.Cursor.SetTargeting((WorldCursor.TargetType)p.CommandType, p.CursorID, p.CursorType);
         }
 
         void ReceiveTargetCursorMulti(TargetCursorMultiPacket p)
         {
-            m_World.Cursor.SetTargetingMulti(p.DeedSerial, p.MultiModel);
+            m_World.Cursor.SetTargetingMulti(p.DeedSerial, p.MultiModel, p.CursorType);
         }
 
         void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket p)
@@ -670,7 +670,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveCLILOCMessage(MessageLocalizedPacket p)
         {
             // get the resource provider
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             string strCliLoc = constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements);
             ReceiveTextMessage(p.MessageType, strCliLoc, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
         }
@@ -688,7 +688,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveMessageLocalizedAffix(MessageLocalizedAffixPacket p)
         {
             // get the resource provider
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
             string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
                 constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements), p.Affix);
             ReceiveTextMessage(p.MessageType, localizedString, p.Font, p.Hue, p.Serial, p.SpeakerName, true);
@@ -700,7 +700,7 @@ namespace UltimaXNA.Ultima.World
                 return string.Empty;
 
             // get the resource provider
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
 
             if (arg == null)
             {
@@ -939,7 +939,7 @@ namespace UltimaXNA.Ultima.World
         void ReceiveObjectPropertyList(ObjectPropertyListPacket p)
         {
             // get the resource provider
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
 
             AEntity entity = WorldModel.Entities.GetObject<AEntity>(p.Serial, false);
             if (entity == null)
@@ -1096,9 +1096,16 @@ namespace UltimaXNA.Ultima.World
                     MapIndexInfo mapInfo = p.Info as MapIndexInfo;
                     m_World.MapIndex = mapInfo.MapID;
                     break;
+                case GeneralInfoPacket.ShowLabel:
+                    ShowLabelInfo labelInfo = p.Info as ShowLabelInfo;
+                    AEntity item = WorldModel.Entities.GetObject<AEntity>(labelInfo.Serial, false);
+                    IResourceProvider provider = Service.Get<IResourceProvider>();
+                    item.Name = constructCliLoc(provider.GetString(labelInfo.LabelIndex));
+                    m_World.Interaction.CreateLabel(MessageTypes.Label, item.Serial, item.Name, 3, 946, true);
+                    break;
                 case GeneralInfoPacket.ContextMenu:
                     ContextMenuInfo menuInfo = p.Info as ContextMenuInfo;
-                    InputManager input = Services.Get<InputManager>();
+                    IInputService input = Service.Get<IInputService>();
                     m_UserInterface.AddControl(new ContextMenuGump(menuInfo.Menu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
                     break;
                 case GeneralInfoPacket.MapDiff:
@@ -1231,13 +1238,13 @@ namespace UltimaXNA.Ultima.World
 
         void ReceivePlayMusic(PlayMusicPacket p)
         {
-            AudioService service = Services.Get<AudioService>();
+            AudioService service = Service.Get<AudioService>();
             service.PlayMusic(p.MusicID);
         }
 
         void ReceivePlaySoundEffect(PlaySoundEffectPacket p)
         {
-            AudioService service = Services.Get<AudioService>();
+            AudioService service = Service.Get<AudioService>();
             service.PlaySound(p.SoundModel, spamCheck: true);
         }
 

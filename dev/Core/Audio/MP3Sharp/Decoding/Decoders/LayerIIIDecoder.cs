@@ -617,7 +617,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
 
                             if (m_SideInfo.Channels[ch].Granules[gr].BlockType == 0)
                             {
-                                //	 Side info bad: block_type == 0 in split block
+                                // Side info bad: block_type == 0 in split block
                                 return false;
                             }
                             if (m_SideInfo.Channels[ch].Granules[gr].BlockType == 2 && m_SideInfo.Channels[ch].Granules[gr].MixedBlockFlag == 0)
@@ -1242,8 +1242,8 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
                 {
                     t_index = (index - cb_begin)/cb_width;
                     /*            xr[sb][ss] *= pow(2.0, ((-2.0 * gr_info.subblock_gain[t_index])
-					-(0.5 * (1.0 + gr_info.scalefac_scale)
-					* scalefac[ch].s[t_index][cb]))); */
+                    -(0.5 * (1.0 + gr_info.scalefac_scale)
+                    * scalefac[ch].s[t_index][cb]))); */
                     int idx = scalefac[ch].s[t_index][cb] << gr_info.ScaleFacScale;
                     idx += (gr_info.SubblockGain[t_index] << 2);
 
@@ -1252,9 +1252,9 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
                 else
                 {
                     // LONG block types 0,1,3 & 1st 2 subbands of switched blocks
-                    /*				xr[sb][ss] *= pow(2.0, -0.5 * (1.0+gr_info.scalefac_scale)
-					* (scalefac[ch].l[cb]
-					+ gr_info.preflag * pretab[cb])); */
+                    /* xr[sb][ss] *= pow(2.0, -0.5 * (1.0+gr_info.scalefac_scale)
+                    * (scalefac[ch].l[cb]
+                    + gr_info.preflag * pretab[cb])); */
                     int idx = scalefac[ch].l[cb];
 
                     if (gr_info.Preflag != 0)
@@ -1707,9 +1707,9 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
                                 lr[0][sb][ss] = lr[1][sb][ss]*is_ratio[i];
                             }
                         }
-                        /*				else {
-						System.out.println("Error in stereo processing\n");
-						} */
+                        /* else {
+                        System.out.println("Error in stereo processing\n");
+                        } */
                         i++;
                     }
             }
@@ -1850,16 +1850,16 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding.Decoders
             if (blockType == 2)
             {
                 /*
-				*
-				*		Under MicrosoftVM 2922, This causes a GPF, or
-				*		At best, an ArrayIndexOutOfBoundsExceptin.
-				for(int p=0;p<36;p+=9)
-				{
-				out[p]   = out[p+1] = out[p+2] = out[p+3] =
-				out[p+4] = out[p+5] = out[p+6] = out[p+7] =
-				out[p+8] = 0.0f;
-				}
-				*/
+                *
+                * Under MicrosoftVM 2922, This causes a GPF, or
+                * At best, an ArrayIndexOutOfBoundsExceptin.
+                for(int p=0;p<36;p+=9)
+                {
+                out[p]   = out[p+1] = out[p+2] = out[p+3] =
+                out[p+4] = out[p+5] = out[p+6] = out[p+7] =
+                out[p+8] = 0.0f;
+                }
+                */
                 outValues[0] = 0.0f;
                 outValues[1] = 0.0f;
                 outValues[2] = 0.0f;

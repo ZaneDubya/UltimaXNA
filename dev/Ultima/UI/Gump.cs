@@ -99,7 +99,7 @@ namespace UltimaXNA.Ultima.UI
             {
                 if (buttonID == 0) // cancel
                 {
-                    WorldModel world = Services.Get<WorldModel>();
+                    WorldModel world = Service.Get<WorldModel>();
                     world.Client.SendGumpMenuSelect(GumpLocalID, GumpServerTypeID, buttonID, null, null);
                 }
                 else
@@ -120,7 +120,7 @@ namespace UltimaXNA.Ultima.UI
                             textEntries.Add(new Tuple<short, string>((short)control.GumpLocalID, (control as TextEntry).Text));
                         }
                     }
-                    WorldModel world = Services.Get<WorldModel>();
+                    WorldModel world = Service.Get<WorldModel>();
                     world.Client.SendGumpMenuSelect(GumpLocalID, GumpServerTypeID, buttonID, switchIDs.ToArray(), textEntries.ToArray());
                 }
                 Dispose();
@@ -159,7 +159,7 @@ namespace UltimaXNA.Ultima.UI
 
         protected override void OnMove()
         {
-            SpriteBatchUI sb = Services.Get<SpriteBatchUI>();
+            SpriteBatchUI sb = Service.Get<SpriteBatchUI>();
             Point position = Position;
 
             int halfWidth = Width / 2;

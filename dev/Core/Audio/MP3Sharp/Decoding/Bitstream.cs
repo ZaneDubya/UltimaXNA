@@ -473,7 +473,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
                 while (len > 0)
                 {
                     int bytesread = m_SourceStream.Read(b, offs, len);
-//					for (int i = 0; i < len; i++) b[i] = (sbyte)Temp[i];
+                    // for (int i = 0; i < len; i++) b[i] = (sbyte)Temp[i];
                     if (bytesread == -1 || bytesread == 0)
                     {
                         break;

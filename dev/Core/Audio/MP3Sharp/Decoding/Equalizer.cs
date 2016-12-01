@@ -48,10 +48,10 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             InitBlock();
         }
 
-        //	private Equalizer(float b1, float b2, float b3, float b4, float b5,
-        //					 float b6, float b7, float b8, float b9, float b10, float b11,
-        //					 float b12, float b13, float b14, float b15, float b16,
-        //					 float b17, float b18, float b19, float b20);
+        //    private Equalizer(float b1, float b2, float b3, float b4, float b5,
+        //                     float b6, float b7, float b8, float b9, float b10, float b11,
+        //                     float b12, float b13, float b14, float b15, float b16,
+        //                     float b17, float b18, float b19, float b20);
 
         public Equalizer(float[] settings)
         {

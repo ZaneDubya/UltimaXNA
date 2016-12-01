@@ -543,7 +543,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             new_v30 = (tmp1 = -p8 - p12 - p14 - p15) - p0;
             new_v28 = tmp1 - tmp2;
 
-            // insert V[0-15] (== new_v[0-15]) into actual v:	
+            // insert V[0-15] (== new_v[0-15]) into actual v:
             // float[] x2 = actual_v + actual_write_pos;
             float[] dest = actual_v;
 
@@ -647,9 +647,9 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
                 new_v[i] = 0.0f;
             }
 
-            //	float[] new_v = new float[32]; // new V[0-15] and V[33-48] of Figure 3-A.2 in ISO DIS 11172-3
-            //	float[] p = new float[16];
-            //	float[] pp = new float[16];
+            // float[] new_v = new float[32]; // new V[0-15] and V[33-48] of Figure 3-A.2 in ISO DIS 11172-3
+            // float[] p = new float[16];
+            // float[] pp = new float[16];
 
             float[] x1 = samples;
 
@@ -1402,7 +1402,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
             actual_write_pos = (actual_write_pos + 1) & 0xf;
             actual_v = (actual_v == v1) ? v2 : v1;
 
-            // initialize samples[]:	
+            // initialize samples[]:
             //for (register float *floatp = samples + 32; floatp > samples; )
             // *--floatp = 0.0f;  
 
@@ -1429,11 +1429,11 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         ///     to achieve offset + constant indexing into an array. Each sub-array
         ///     represents a block of values of the original array.
         /// </summary>
-        /// <param name="array			The">
-        ///     array to split up into blocks.
+        /// <param name="array">
+        ///     The array to split up into blocks.
         /// </param>
-        /// <param name="blockSize		The">
-        ///     size of the blocks to split the array
+        /// <param name="blockSize">
+        ///     The size of the blocks to split the array
         ///     into. This must be an exact divisor of
         ///     the length of the array, or some data
         ///     will be lost from the main array.

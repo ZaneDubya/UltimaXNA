@@ -28,7 +28,7 @@ namespace UltimaXNA.Core.UI
         public int Width => m_SpriteBatch.GraphicsDevice.Viewport.Width;
         public int Height => m_SpriteBatch.GraphicsDevice.Viewport.Height;
 
-        InputManager m_Input;
+        IInputService m_Input;
         SpriteBatchUI m_SpriteBatch;
         AControl[] m_MouseDownControl = new AControl[5];
 
@@ -38,8 +38,8 @@ namespace UltimaXNA.Core.UI
 
         public UserInterfaceService()
         {
-            m_Input = Services.Get<InputManager>();
-            m_SpriteBatch = Services.Get<SpriteBatchUI>();
+            m_Input = Service.Get<IInputService>();
+            m_SpriteBatch = Service.Get<SpriteBatchUI>();
             OpenControls = new List<AControl>();
         }
 

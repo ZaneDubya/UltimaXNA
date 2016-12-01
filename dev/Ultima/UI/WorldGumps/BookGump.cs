@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Book.SetCallbacks(OnEntityUpdate, OnEntityDispose);
             m_LastPage = (m_Book.PageCount + 2) / 2;
             IsMoveable = true;
-            m_World = Services.Get<WorldModel>(false);
+            m_World = Service.Get<WorldModel>(false);
             BuildGump();
         }
 
@@ -108,7 +108,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 AddControl(new HtmlGumpling(this, x, 195, 135, 20, 0, 0, $"<center><font color=#444>{i + 1}"), onGumpPage);
                 isRight = !isRight;
             }
-            AudioService service = Services.Get<AudioService>();
+            AudioService service = Service.Get<AudioService>();
             service.PlaySound(0x058);
             SetActivePage(1);
             UserInterface.KeyboardFocusControl = m_Pages[0];
@@ -179,7 +179,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 SetActivePage(ActivePage + 1);
             }
-            AudioService service = Services.Get<AudioService>();
+            AudioService service = Service.Get<AudioService>();
             service.PlaySound(0x055);
         }
 
@@ -202,7 +202,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         protected override void CloseWithRightMouseButton()
         {
             CheckForContentChanges();
-            AudioService service = Services.Get<AudioService>();
+            AudioService service = Service.Get<AudioService>();
             service.PlaySound(0x058);
             base.CloseWithRightMouseButton();
         }

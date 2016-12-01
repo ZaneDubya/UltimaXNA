@@ -98,7 +98,7 @@ namespace UltimaXNA.Core.Audio.MP3Sharp.Decoding
         /// </summary>
         /// <param name="code">
         ///     one of the OutputChannels channel code constants.
-        ///     @throws	IllegalArgumentException if code is not a valid
+        ///     @throws IllegalArgumentException if code is not a valid
         ///     channel code.
         /// </param>
         public static OutputChannels fromInt(int code)

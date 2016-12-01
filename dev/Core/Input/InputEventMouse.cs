@@ -16,91 +16,57 @@ namespace UltimaXNA.Core.Input
 {
     public class InputEventMouse : InputEvent
     {
-        public bool IsEvent(MouseEvent e, MouseButton b)
-        {
-            if (e == this.EventType && b == this.Button)
-                return true;
-            return false;
-        }
+        const int WHEEL_DELTA = 120;
 
-        private readonly MouseEvent m_eventType;
-        public MouseEvent EventType
-        {
-            get { return m_eventType; }
-        }
+        public readonly MouseEvent EventType;
+        public readonly int X;
+        public readonly int Y;
+        public int WheelValue => m_Clicks / WHEEL_DELTA;
+        public Point Position => new Point(X, Y);
 
-        private const int WHEEL_DELTA = 120;
-        public int WheelValue
-        {
-            get { return (m_clicks / WHEEL_DELTA); }
-        }
-
-        private readonly WinMouseButtons m_button;
-        private readonly int m_clicks;
-        private readonly int m_mouseData;
-        private readonly int m_x;
-        private readonly int m_y;
+        readonly WinMouseButtons m_Buttons;
+        readonly int m_Clicks;
+        readonly int m_MouseData;
 
         public MouseButton Button
         {
             get
             {
-                if ((m_button & WinMouseButtons.Left) == WinMouseButtons.Left)
+                if ((m_Buttons & WinMouseButtons.Left) == WinMouseButtons.Left)
                     return MouseButton.Left;
-                if ((m_button & WinMouseButtons.Right) == WinMouseButtons.Right)
+                if ((m_Buttons & WinMouseButtons.Right) == WinMouseButtons.Right)
                     return MouseButton.Right;
-                if ((m_button & WinMouseButtons.Middle) == WinMouseButtons.Middle)
+                if ((m_Buttons & WinMouseButtons.Middle) == WinMouseButtons.Middle)
                     return MouseButton.Middle;
-                if ((m_button & WinMouseButtons.XButton1) == WinMouseButtons.XButton1)
+                if ((m_Buttons & WinMouseButtons.XButton1) == WinMouseButtons.XButton1)
                     return MouseButton.XButton1;
-                if ((m_button & WinMouseButtons.XButton2) == WinMouseButtons.XButton2)
+                if ((m_Buttons & WinMouseButtons.XButton2) == WinMouseButtons.XButton2)
                     return MouseButton.XButton2;
                 return MouseButton.None;
             }
         }
 
-        public int MouseData
-        {
-            get { return m_mouseData; }
-        }
-
-        public int X
-        {
-            get { return m_x; }
-        }
-
-        public int Y
-        {
-            get { return m_y; }
-        }
-
-        public Point Position
-        {
-            get { return new Point(m_x, m_y); }
-        }
-
-        public InputEventMouse(MouseEvent eventType, WinMouseButtons button, int clicks, int x, int y, int mouseData, WinKeys modifiers)
+        public InputEventMouse(MouseEvent type, WinMouseButtons btn, int clicks, int x, int y, int data, WinKeys modifiers)
             : base(modifiers)
         {
             Vector2 dpi = DpiManager.GetSystemDpiScalar();
-
-            m_eventType = eventType;
-            m_button = button;
-            m_clicks = clicks;
-            m_x = (int)(x / dpi.X);
-            m_y = (int)(y / dpi.Y);
-            m_mouseData = mouseData;
+            EventType = type;
+            m_Buttons = btn;
+            m_Clicks = clicks;
+            X = (int)(x / dpi.X);
+            Y = (int)(y / dpi.Y);
+            m_MouseData = data;
         }
 
         public InputEventMouse(MouseEvent eventType, InputEventMouse parent)
             : base(parent)
         {
-            m_eventType = eventType;
-            m_button = parent.m_button;
-            m_clicks = parent.m_clicks;
-            m_x = parent.m_x;
-            m_y = parent.m_y;
-            m_mouseData = parent.m_mouseData;
+            EventType = eventType;
+            m_Buttons = parent.m_Buttons;
+            m_Clicks = parent.m_Clicks;
+            X = parent.X;
+            Y = parent.Y;
+            m_MouseData = parent.m_MouseData;
         }
     }
 }

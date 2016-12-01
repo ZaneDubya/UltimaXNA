@@ -15,7 +15,7 @@ namespace UltimaXNA.Core.UI.HTML
         /// </summary>
         public Texture2D Render(BlockElement root, int ascender, HtmlLinkList links)
         {
-            SpriteBatchUI sb = Services.Get<SpriteBatchUI>();
+            SpriteBatchUI sb = Service.Get<SpriteBatchUI>();
             GraphicsDevice graphics = sb.GraphicsDevice;
 
             if (root == null || root.Width == 0 || root.Height == 0) // empty text string

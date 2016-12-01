@@ -47,7 +47,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
             m_OnNewCharacter = onNew;
 
             // get the resource provider
-            IResourceProvider provider = Services.Get<IResourceProvider>();
+            IResourceProvider provider = Service.Get<IResourceProvider>();
 
             // backdrop
             AddControl(m_Background = new GumpPicTiled(this, 0, 0, 800, 600, 9274));
@@ -82,7 +82,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         }
 
         public override void Update(double totalMS, double frameMS) {
-            SpriteBatch3D sb = Services.Get<SpriteBatch3D>();
+            SpriteBatch3D sb = Service.Get<SpriteBatch3D>();
             if (m_Background.Width != sb.GraphicsDevice.Viewport.Width || m_Background.Height != sb.GraphicsDevice.Viewport.Height) {
                 m_Background.Width = sb.GraphicsDevice.Viewport.Width;
                 m_Background.Height = sb.GraphicsDevice.Viewport.Height;
@@ -102,7 +102,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
                 m_charListUpdate = Characters.UpdateValue;
             }
 
-            InputManager input = Services.Get<InputManager>();
+            IInputService input = Service.Get<IInputService>();
             if (input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Enter, false, false, false) && !m_isWorldLoading) {
                 if (m_characterNames.Length > 0) {
                     m_OnLoginWithCharacter(0);
@@ -116,7 +116,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps {
         public override void OnButtonClick(int buttonID) {
             switch ((Buttons)buttonID) {
                 case Buttons.QuitButton:
-                    Services.Get<UltimaGame>().Quit();
+                    Service.Get<UltimaGame>().Quit();
                     break;
                 case Buttons.BackButton:
                     m_OnBackToSelectServer();

@@ -94,7 +94,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (itemsToBuy.Count == 0)
                 return;
 
-            INetworkClient network = Services.Get<INetworkClient>();
+            INetworkClient network = Service.Get<INetworkClient>();
             network.Send(new BuyItemsPacket(m_VendorSerial, itemsToBuy.ToArray()));
             this.Dispose();
         }
@@ -159,7 +159,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     else
                     {
                         // get the resource provider
-                        IResourceProvider provider = Services.Get<IResourceProvider>();
+                        IResourceProvider provider = Service.Get<IResourceProvider>();
                         description = Utility.CapitalizeAllWords(provider.GetString(clilocDescription));
                     }
 

@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     Dispose();
                     break;
                 case 1:
-                    WorldModel world = Services.Get<WorldModel>();
+                    WorldModel world = Service.Get<WorldModel>();
                     world.Disconnect();
                     Dispose();
                     break;

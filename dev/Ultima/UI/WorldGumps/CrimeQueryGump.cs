@@ -50,7 +50,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     Dispose();
                     break;
                 case 1:
-                    INetworkClient m_Network = Services.Get<INetworkClient>();
+                    INetworkClient m_Network = Service.Get<INetworkClient>();
                     m_Network.Send(new AttackRequestPacket(Mobile.Serial));
                     Dispose();
                     break;
