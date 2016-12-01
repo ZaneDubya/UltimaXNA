@@ -25,9 +25,7 @@ namespace UltimaXNA.Ultima.IO
     class FileManager
     {
         static bool m_isDataPresent;
-        static public bool IsUODataPresent {
-            get { return m_isDataPresent; }
-        }
+        static public bool IsUODataPresent => m_isDataPresent;
 
         static readonly string[] m_knownRegkeys = {
                 @"Origin Worlds Online\Ultima Online\KR Legacy Beta",
@@ -53,20 +51,8 @@ namespace UltimaXNA.Ultima.IO
 
         static string m_FileDirectory;
 
-        public static string DataPath {
-            get { return m_FileDirectory; }
-        }
-
-        public static bool Is64Bit {
-            get { return IntPtr.Size == 8; }
-        }
-
-        /// <summary>
-        /// Returns 0xffff if the client files are UOP format, 0x3fff otherwise.
-        /// </summary>
-        public static int ItemIDMask {
-            get { return ClientVersion.InstallationIsUopFormat ? 0xffff : 0x3fff; }
-        }
+        public static bool Is64Bit => IntPtr.Size == 8;
+        public static int ItemIDMask => ClientVersion.InstallationIsUopFormat ? 0xffff : 0x3fff;
 
         static FileManager() {
             Tracer.Debug("Initializing UOData. Is64Bit = {0}", Is64Bit);
@@ -80,26 +66,16 @@ namespace UltimaXNA.Ultima.IO
             }
             else {
                 for (int i = 0; i < m_knownRegkeys.Length; i++) {
-                    string exePath;
-
-                    if (Is64Bit) {
-                        exePath = GetExePath(@"Wow6432Node\" + m_knownRegkeys[i]);
-                    }
-                    else {
-                        exePath = GetExePath(m_knownRegkeys[i]);
-                    }
-
+                    string exePath = GetExePath(Is64Bit ? $"Wow6432Node\\{m_knownRegkeys[i]}" : m_knownRegkeys[i]);
                     if (exePath != null && Directory.Exists(exePath)) {
                         if (IsClientIsCompatible(exePath)) {
-                            Tracer.Debug("Compatible: {0}", exePath);
-
+                            Tracer.Debug($"Compatible: {exePath}");
                             Settings.UltimaOnline.DataDirectory = exePath;
-
                             m_FileDirectory = exePath;
                             m_isDataPresent = true;
                         }
                         else {
-                            Tracer.Debug("Incompatible: {0}", exePath);
+                            Tracer.Debug($"Incompatible: {exePath}");
                         }
                     }
                 }
@@ -110,11 +86,14 @@ namespace UltimaXNA.Ultima.IO
             }
             else {
                 Tracer.Debug(string.Empty);
-                Tracer.Debug("Selected: {0}", m_FileDirectory);
-                Tracer.Debug("Client.Exe version: {0}; Patch version reported to server: {1}",
-                    string.Join(".", ClientVersion.ClientExe), string.Join(".", Settings.UltimaOnline.PatchVersion));
+                Tracer.Debug($"Selected: {m_FileDirectory}");
+                string clientVersion = string.Join(".", ClientVersion.ClientExe);
+                string patchVersion = string.Join(".", Settings.UltimaOnline.PatchVersion);
+                Tracer.Debug($"Client.Exe version: {clientVersion}; Patch version reported to server: {patchVersion}");
                 if (!ClientVersion.EqualTo(Settings.UltimaOnline.PatchVersion, ClientVersion.DefaultVersion))
+                {
                     Tracer.Warn("Note from ZaneDubya: I will not support any code where the Patch version is not {0}", string.Join(".", ClientVersion.DefaultVersion));
+                }
             }
         }
 
@@ -131,38 +110,29 @@ namespace UltimaXNA.Ultima.IO
 
         static string GetExePath(string subName) {
             try {
-                RegistryKey key = Registry.LocalMachine.OpenSubKey(string.Format(@"SOFTWARE\{0}", subName));
-
+                RegistryKey key = Registry.LocalMachine.OpenSubKey($"SOFTWARE\\{subName}");
                 if (key == null) {
-                    key = Registry.CurrentUser.OpenSubKey(string.Format(@"SOFTWARE\{0}", subName));
-
+                    key = Registry.CurrentUser.OpenSubKey($"SOFTWARE\\{subName}");
                     if (key == null) {
                         return null;
                     }
                 }
-
                 string path = key.GetValue("ExePath") as string;
-
                 if (string.IsNullOrEmpty(path) || !File.Exists(path)) {
                     path = key.GetValue("Install Dir") as string;
-
                     if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) {
                         path = key.GetValue("InstallDir") as string;
-
                         if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) {
                             return null;
                         }
                     }
                 }
-
                 if (File.Exists(path)) {
                     path = Path.GetDirectoryName(path);
                 }
-
                 if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) {
                     return null;
                 }
-
                 return path;
             }
             catch {
@@ -190,51 +160,36 @@ namespace UltimaXNA.Ultima.IO
         public static bool Exists(string name) {
             try {
                 name = Path.Combine(m_FileDirectory, name);
-                Tracer.Debug("Checking if file exists [{0}]", name);
+                Tracer.Debug($"Checking if file exists [{name}]");
                 if (File.Exists(name)) {
                     return true;
                 }
-
                 return false;
             }
-            catch { return false; }
-        }
-
-        public static bool Exists(string name, int index) {
-            return Exists(String.Format(name, index));
-        }
-
-        public static bool Exists(string name, int index, string type) {
-            return Exists(String.Format("{0}{1}.{2}", name, index, type));
-        }
-
-        public static bool Exists(string name, string type) {
-            return Exists(String.Format("{0}.{1}", name, type));
-        }
-
-        public static FileStream GetFile(string name) {
-            try {
-                name = Path.Combine(m_FileDirectory, name);
-                return new FileStream(name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            catch {
+                return false;
             }
-            catch { return null; }
         }
 
-        public static FileStream GetFile(string name, uint index) {
-            return GetFile(String.Format(name, index));
+        public static bool Exists(string name, int index, string type) => Exists($"{name}{index}.{type}");
+
+        public static bool Exists(string name, string type) => Exists($"{name}.{type}");
+
+        public static FileStream GetFile(string path) {
+            try {
+                path = Path.Combine(m_FileDirectory, path);
+                return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            }
+            catch {
+                return null;
+            }
         }
 
-        public static FileStream GetFile(string name, uint index, string type) {
-            return GetFile(String.Format("{0}{1}.{2}", name, index, type));
-        }
+        public static FileStream GetFile(string name, uint index, string type) => GetFile($"{name}{index}.{type}");
 
-        public static FileStream GetFile(string name, string type) {
-            return GetFile(String.Format("{0}.{1}", name, type));
-        }
+        public static FileStream GetFile(string name, string type) => GetFile($"{name}.{type}");
 
-        public static string GetPath(string name) {
-            return Path.Combine(m_FileDirectory, name);
-        }
+        public static string GetPath(string name) => Path.Combine(m_FileDirectory, name);
 
 
         public static AFileIndex CreateFileIndex(string uopFile, int length, bool hasExtra, string extension) {

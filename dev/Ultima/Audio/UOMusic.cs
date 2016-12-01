@@ -26,7 +26,8 @@ namespace UltimaXNA.Ultima.Audio
         bool m_Repeat;
         bool m_Playing;
 
-        protected string Path => FileManager.GetPath(string.Format("Music/Digital/{0}.mp3", Name));
+        string Path => FileManager.GetPath(string.Format("Music/Digital/{0}.mp3", Name));
+
         public UOMusic(int index, string name, bool loop)
             : base(name)
         {
