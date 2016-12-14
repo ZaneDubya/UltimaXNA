@@ -183,7 +183,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     }
                     DrawTexture = frame.Texture;
                     DrawArea = new Rectangle(x, -y, DrawTexture.Width, DrawTexture.Height);
-                    HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
+                    HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue, m_MobileLayers[i].PartialHue, false, false);
                     base.Draw(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
                     MobilePick(mouseOver, drawPosition, DrawArea, frame);
                 }
@@ -304,9 +304,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
                     if (drawLayers[i] == (int)EquipLayer.Body)
                     {
-                        AddLayer(Body, Entity.Hue);
+                        AddLayer(Body, Entity.Hue, Body.IsHumanoid);
                     }
-
                     else if (Equipment[drawLayers[i]] != null)
                     {
                         // special handling for mounts.
@@ -315,7 +314,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                             int body = Equipment[drawLayers[i]].ItemID;
                             if (BodyConverter.CheckIfItemIsMount(ref body))
                             {
-                                AddLayer(body, Equipment[drawLayers[i]].Hue, true);
+                                AddLayer(body, Equipment[drawLayers[i]].Hue, false, true);
                             }
                         }
                         else
@@ -328,7 +327,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                                 {
                                     continue;
                                 }
-                                AddLayer(Equipment[drawLayers[i]].ItemData.AnimID, Equipment[drawLayers[i]].Hue);
+                                AddLayer(Equipment[drawLayers[i]].ItemData.AnimID, Equipment[drawLayers[i]].Hue, Equipment[drawLayers[i]].ItemData.IsPartialHue, false);
                             }
                         }
                     }
@@ -340,7 +339,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        void AddLayer(int bodyID, int hue, bool asMount = false)
+        void AddLayer(int bodyID, int hue, bool partial = false, bool asMount = false)
         {
             int facing = MirrorFacingForDraw(Facing);
             int animation = 0;
@@ -360,7 +359,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             int frameCount;
             AAnimationFrame animframe = getFrame(bodyID, ref hue, facing, animation, frame, out frameCount);
-            m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, animframe);
+            m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, animframe, partial);
             m_FrameCount = frameCount;
         }
 
@@ -470,12 +469,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
             public int Hue;
             public AAnimationFrame Frame;
             public int BodyID;
+            public bool PartialHue;
 
-            public MobileViewLayer(int bodyID, int hue, AAnimationFrame frame)
+            public MobileViewLayer(int bodyID, int hue, AAnimationFrame frame, bool partialhue)
             {
                 BodyID = bodyID;
                 Hue = hue;
                 Frame = frame;
+                PartialHue = partialhue;
             }
 
             public override string ToString()

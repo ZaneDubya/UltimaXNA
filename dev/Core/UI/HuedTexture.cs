@@ -35,18 +35,21 @@ namespace UltimaXNA.Ultima.Resources
             get { return m_Hue; }
         }
 
-        public HuedTexture(Texture2D texture, Point offset, Rectangle source, int hue)
+        private bool m_PartialHue;
+
+        public HuedTexture(Texture2D texture, Point offset, Rectangle source, int hue, bool partialhue=false)
         {
             m_Texture = texture;
             m_Offset = offset;
             m_SourceRect = source;
             m_Hue = hue;
+            m_PartialHue = partialhue;
         }
 
         public void Draw(SpriteBatchUI sb, Point position)
         {
             Vector3 v = new Vector3(position.X - m_Offset.X, position.Y - m_Offset.Y, 0);
-            sb.Draw2D(m_Texture, v, m_SourceRect, Utility.GetHueVector(m_Hue));
+            sb.Draw2D(m_Texture, v, m_SourceRect, Utility.GetHueVector(m_Hue, m_PartialHue, false, false));
         }
     }
 }

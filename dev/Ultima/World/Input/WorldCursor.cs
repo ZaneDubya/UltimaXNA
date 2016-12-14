@@ -294,7 +294,8 @@ namespace UltimaXNA.Ultima.World.Input
                     else
                     {
                         Rectangle sourceRect = new Rectangle(0, 0, art.Width, art.Height);
-                        m_ItemSprite = new HuedTexture(art, Point.Zero, sourceRect, 0);
+                        bool partialhued = (value < 0 || value >= TileData.ItemData.Length ? false : TileData.ItemData[value].IsPartialHue);
+                        m_ItemSprite = new HuedTexture(art, Point.Zero, sourceRect, 0, partialhued);
                     }
                 }
             }

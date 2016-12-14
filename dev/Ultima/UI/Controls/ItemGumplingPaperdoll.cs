@@ -53,7 +53,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 Size = new Point(m_Texture.Width, m_Texture.Height);
             }
             int hue = (Item.Hue == 0 & m_HueOverride != 0) ? m_HueOverride : Item.Hue;
-            spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue, Item.ItemData.IsPartialHue, false, false));
             base.Draw(spriteBatch, position, frameMS);
         }
 
