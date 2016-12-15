@@ -96,7 +96,8 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_Texture = provider.GetItemTexture(Item.DisplayItemID);
                 Size = new Point(m_Texture.Width, m_Texture.Height);
             }
-            Vector3 hue = Utility.GetHueVector(IsMouseOver && HighlightOnMouseOver ? WorldView.MouseOverHue : Item.Hue, Item.ItemData.IsPartialHue, false, false );
+            bool mouseover_highlight = IsMouseOver && HighlightOnMouseOver;
+            Vector3 hue = Utility.GetHueVector(mouseover_highlight ? WorldView.MouseOverHue : Item.Hue, (Item.ItemData.IsPartialHue && !mouseover_highlight), false, false );
             if (Item.Amount > 1 && Item.ItemData.IsGeneric && Item.DisplayItemID == Item.ItemID)
             {
                 int offset = Item.ItemData.Unknown4;
