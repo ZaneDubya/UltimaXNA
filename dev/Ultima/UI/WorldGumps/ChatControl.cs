@@ -1,14 +1,16 @@
 ﻿/***************************************************************************
  *   ChatControl.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
- *   
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 #region usings
+
 using System;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -23,11 +25,12 @@ using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Core.Network;
-#endregion
+
+#endregion usings
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    class ChatControl : AControl
+    internal class ChatControl : AControl
     {
         private const int MaxChatMessageLength = 96;
 
@@ -41,6 +44,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private string m_PrivateMessageName;
 
         private ChatMode m_Mode = ChatMode.Default;
+
         private ChatMode Mode
         {
             get { return m_Mode; }
@@ -55,36 +59,42 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                         m_TextEntry.LeadingText = string.Empty;
                         m_TextEntry.Text = string.Empty;
                         break;
+
                     case ChatMode.Whisper:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.SpeechColor, 1)));
                         m_TextEntry.LeadingText = "Whisper: ";
                         m_TextEntry.Text = string.Empty;
                         break;
+
                     case ChatMode.Emote:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.EmoteColor, 1)));
                         m_TextEntry.LeadingText = "Emote: ";
                         m_TextEntry.Text = string.Empty;
                         break;
+
                     case ChatMode.Party:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.PartyMsgColor, 1)));
                         m_TextEntry.LeadingText = "Party: ";
                         m_TextEntry.Text = string.Empty;
                         break;
+
                     case ChatMode.PartyPrivate:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.PartyPrivateMsgColor, 1)));
                         m_TextEntry.LeadingText = $"To {m_PrivateMessageName}: ";
                         m_TextEntry.Text = string.Empty;
                         break;
+
                     case ChatMode.Guild:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.GuildMsgColor, 1)));
                         m_TextEntry.LeadingText = "Guild: ";
                         m_TextEntry.Text = string.Empty;
                         break;
+
                     case ChatMode.Alliance:
                         m_TextEntry.LeadingHtmlTag = string.Format("<outline color='#{0}' style='font-family: uni0;'>",
                             Utility.GetColorFromUshort(Resources.HueData.GetHue(Settings.UserInterface.AllianceMsgColor, 1)));
@@ -117,6 +127,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Mode = ChatMode.PartyPrivate;
         }
 
+        public void Speech(string text)//we should add something like this
+        {
+            Mode = ChatMode.Default;
+            OnKeyboardReturn(0, text);
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
             if (m_TextEntry == null)
@@ -142,8 +158,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 }
             }
 
-            // Ctrl-Q = Cycle backwards through the things you have said today
-            // Ctrl-W = Cycle forwards through the things you have said today
+            // Ctrl-Q = Cycle backwards through the things you have said today Ctrl-W = Cycle
+            // forwards through the things you have said today
             if (m_Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Q, false, false, true) && m_MessageHistoryIndex > -1)
             {
                 if (m_MessageHistoryIndex > 0)
@@ -179,15 +195,19 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     case ':':
                         Mode = ChatMode.Emote;
                         break;
+
                     case ';':
                         Mode = ChatMode.Whisper;
                         break;
+
                     case '/':
                         Mode = ChatMode.Party;
                         break;
+
                     case '\\':
                         Mode = ChatMode.Guild;
                         break;
+
                     case '|':
                         Mode = ChatMode.Alliance;
                         break;
@@ -226,24 +246,30 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     speechType = MessageTypes.Normal;
                     hue = Settings.UserInterface.SpeechColor;
                     break;
+
                 case ChatMode.Whisper:
                     speechType = MessageTypes.Whisper;
                     hue = Settings.UserInterface.SpeechColor;
                     break;
+
                 case ChatMode.Emote:
                     speechType = MessageTypes.Emote;
                     hue = Settings.UserInterface.EmoteColor;
                     break;
+
                 case ChatMode.Party:
                     PlayerState.Partying.DoPartyCommand(text);
                     return;
+
                 case ChatMode.PartyPrivate:
                     PlayerState.Partying.SendPartyPrivateMessage(m_PrivateMessageSerial, text);
                     return;
+
                 case ChatMode.Guild:
                     speechType = MessageTypes.Guild;
                     hue = Settings.UserInterface.GuildMsgColor;
                     break;
+
                 case ChatMode.Alliance:
                     speechType = MessageTypes.Alliance;
                     hue = Settings.UserInterface.AllianceMsgColor;
@@ -260,19 +286,19 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 Width));
         }
 
-        class ChatLineTimed
+        private class ChatLineTimed
         {
-            readonly string m_text;
+            private readonly string m_text;
             public string Text { get { return m_text; } }
-            float m_createdTime = float.MinValue;
-            bool m_isExpired;
+            private float m_createdTime = float.MinValue;
+            private bool m_isExpired;
             public bool IsExpired { get { return m_isExpired; } }
-            float m_alpha;
+            private float m_alpha;
             public float Alpha { get { return m_alpha; } }
             private int m_width;
 
-            const float Time_Display = 10000.0f;
-            const float Time_Fadeout = 4000.0f;
+            private const float Time_Display = 10000.0f;
+            private const float Time_Fadeout = 4000.0f;
 
             private RenderedText m_Texture;
             public int TextHeight { get { return m_Texture.Height; } }
@@ -290,8 +316,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             public void Update(double totalMS, double frameMS)
             {
                 if (m_createdTime == float.MinValue)
-                    m_createdTime = (float)totalMS;
-                float time = (float)totalMS - m_createdTime;
+                    m_createdTime = (float) totalMS;
+                float time = (float) totalMS - m_createdTime;
                 if (time > Time_Display)
                     m_isExpired = true;
                 else if (time > (Time_Display - Time_Fadeout))
