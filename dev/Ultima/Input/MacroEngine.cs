@@ -1,41 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UltimaXNA;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Input;
 
 namespace UltimaXNA.Ultima.Input
 {
-    class MacroEngine
+    internal class MacroEngine
     {
-        List<RunningMacroAction> m_RunningMacros = new List<RunningMacroAction>();
+        private List<RunningMacroAction> m_RunningMacros = new List<RunningMacroAction>();
 
         public void Run(Action action)
         {
-            for (int i = 0; i < m_RunningMacros.Count; i++)
-            {
-                if (m_RunningMacros[i].Action == action)
-                {
-                    m_RunningMacros.RemoveAt(i);
-                    i--;
-                }
-            }
-            m_RunningMacros.Add(new RunningMacroAction(action));
+            if (m_RunningMacros.FindIndex(p => p.Action == action) == -1) //ignoring state which prevents multiple calls
+                m_RunningMacros.Add(new RunningMacroAction(action));
         }
 
         public void Update(double frameMS)
         {
-            for (int i = 0; i < m_RunningMacros.Count; i++)
+            m_RunningMacros.RemoveAll(p => p.IsFinished);
+            m_RunningMacros.ForEach(item =>
             {
-                if (m_RunningMacros[i].IsFinished)
-                {
-                    m_RunningMacros.RemoveAt(i);
-                    i--;
-                }
-                else
-                {
-                    m_RunningMacros[i].Update(frameMS);
-                }
-            }
+                item.Update(frameMS);
+            });
         }
 
-        class RunningMacroAction
+        private class RunningMacroAction
         {
             public Action Action
             {
@@ -49,25 +42,85 @@ namespace UltimaXNA.Ultima.Input
                 private set;
             }
 
-            double m_LastMacroTimestamp;
-            int m_MacroIndex;
+            public DateTime? m_MacroDelayer;
+            public int m_MacroIndex = 0;
 
             public RunningMacroAction(Action action)
             {
                 Action = action;
                 IsFinished = false;
-
                 m_MacroIndex = 0;
-                m_LastMacroTimestamp = 0;
             }
 
             public void Update(double frameMS)
             {
-                IsFinished = true;
+                if (Action.Macros.Count == 0 ||
+                    m_MacroIndex == Action.Macros.Count ||
+                    Action.Macros[0].Type == MacroType.None)
+                {
+                    IsFinished = true;
+                    return;
+                }
+                RunMacro(this);
             }
         }
 
-        static void RunMacroAction(Action action)
+        private static void RunMacro(RunningMacroAction raction)
+        {
+            WorldModel world = Service.Get<WorldModel>();
+            ChatControl chat = Service.Get<ChatControl>();
+            switch (raction.Action.Macros[raction.m_MacroIndex].Type)
+            {
+                case MacroType.Say:
+                    chat.Speech(raction.Action.Macros[raction.m_MacroIndex].ValueString);
+                    break;
+
+                case MacroType.Delay:
+                    if (raction.m_MacroDelayer == null) //delay starts
+                    {
+                        raction.m_MacroDelayer = DateTime.Now;
+                        return;
+                    }
+
+                    int delayMs = 0;
+                    bool result = int.TryParse(raction.Action.Macros[raction.m_MacroIndex].ValueString, out delayMs);
+                    if (result)
+                    {
+                        TimeSpan ts = DateTime.Now - raction.m_MacroDelayer.Value;
+                        if ((int) ts.TotalMilliseconds >= delayMs) //delay ends
+                        {
+                            raction.m_MacroDelayer = null;
+                        }
+                        else
+                        {
+                            return; //prevent iterates
+                        }
+                    }
+                    break;
+
+                case MacroType.UseSkill:
+                    world.Interaction.UseSkill(raction.Action.Macros[raction.m_MacroIndex].ValueInteger);
+                    break;
+
+                case MacroType.CastSpell:
+                    world.Interaction.CastSpell(raction.Action.Macros[raction.m_MacroIndex].ValueInteger);
+                    break;
+
+                case MacroType.LastTarget:
+                    //'world.Interaction.LastTarget' must be update, after every click to mobile
+                    var source = WorldModel.Entities.GetObject<AEntity>(world.Interaction.LastTarget, false);
+                    if (source != null)
+                    {
+                        world.Input.MousePick.PickOnly = PickType.PickStatics | PickType.PickObjects;
+                        world.Cursor.mouseTargetingEventObject(source);
+                        //cursor event must be change after the click
+                    }
+                    break;
+            }
+            raction.m_MacroIndex++;
+        }
+
+        private static void RunMacroAction(Action action)//old method (for the example)
         {
             /*WorldModel world = ServiceRegistry.GetService<WorldModel>();
             INetworkClient m_Network = ServiceRegistry.GetService<INetworkClient>();
@@ -82,7 +135,6 @@ namespace UltimaXNA.Ultima.Input
                 int CurrentValueID = macro.actionList[i].valueID;
                 MacroDefinition action = Definitions[CurrentActionID];
                 string valueText = macro.actionList[i].valueText;
-
                 if (action.Type == MacroType.Skill)
                 {
                     MacroDefinition valueObj = useSkills[CurrentValueID];
@@ -113,11 +165,9 @@ namespace UltimaXNA.Ultima.Input
                     switch (CurrentActionID)
                     {
                         case 17://LAST OBJECT CALLING
-
                             break;
 
                         case 22://LAST TARGET CALLING
-
                             break;
 
                         case 23://TARGET SELF CALLING
@@ -126,19 +176,15 @@ namespace UltimaXNA.Ultima.Input
                             break;
 
                         case 24://ARM-DISARM CALLING
-
                             break;
 
                         case 25://WAITFORTARG CALLING
-
                             break;
 
                         case 26://TARGETNEXT CALLING
-
                             break;
 
                         case 27://ATTACK LAST CALLING
-
                             break;
 
                         case 28:
