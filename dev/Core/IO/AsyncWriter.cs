@@ -141,14 +141,7 @@ namespace UltimaXNA.Core.IO
             }
             catch
             {
-                if(ticks < now)
-                {
-                    d = TimeSpan.MaxValue;
-                }
-                else
-                {
-                    d = TimeSpan.MaxValue;
-                }
+                d = TimeSpan.MaxValue;
             }
 
             Write(d);

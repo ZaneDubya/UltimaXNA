@@ -135,7 +135,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.Update(totalMS, frameMS);
 
-            if (MaxValue <= MinValue || MinValue >= MaxValue)
+            if (MaxValue <= MinValue)
             {
                 Value = MaxValue = MinValue;
             }
