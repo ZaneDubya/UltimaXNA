@@ -435,7 +435,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     case MacroType.CloseGump:
                     case MacroType.Move:
                     case MacroType.ArmDisarm:
-                        macro.ValueInteger = macro.ValueInteger = m_ActionDropDown[i].Index;
+                        macro.ValueInteger = m_ActionDropDown[i].Index;
                         break;
                     default:
                         // no value by default
