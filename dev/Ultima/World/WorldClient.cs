@@ -637,6 +637,11 @@ namespace UltimaXNA.Ultima.World
         void ReceiveWarMode(WarModePacket p)
         {
             WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode = p.WarMode;
+            // Removes last attacker from being highlighted
+            if (!p.WarMode)
+            {
+                m_World.Interaction.LastWarModeTarget = Serial.Null;
+            }
         }
 
         void ReceiveUpdateMana(UpdateManaPacket p)

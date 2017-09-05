@@ -16,6 +16,7 @@ using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
 using System;
 using System.Linq;
+using UltimaXNA.Ultima.UI.WorldGumps;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities
@@ -282,6 +283,23 @@ namespace UltimaXNA.Ultima.World.Entities
                     i--;
                 }
             }
+        }
+
+        // ============================================================================================================
+        // Status Bar
+        // ============================================================================================================
+        private MobileHealthTrackerGump StatusBar = null;
+        public void AddStatusBar(MobileHealthTrackerGump statusBar)
+        {
+            StatusBar = statusBar;
+        }
+        public void RemoveStatusBar()
+        {
+            StatusBar = null;
+        }
+        public MobileHealthTrackerGump GetStatusBar()
+        {
+            return StatusBar;
         }
 
         // Update range
