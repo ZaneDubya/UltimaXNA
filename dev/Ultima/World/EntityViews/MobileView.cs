@@ -66,6 +66,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
+        private WorldModel m_World;
+
         // ============================================================================================================
         // ctor, pick
         // ============================================================================================================
@@ -76,6 +78,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             m_MobileLayers = new MobileViewLayer[(int)EquipLayer.LastUserValid];
             PickType = PickType.PickObjects;
 
+            m_World = Service.Get<WorldModel>();
             IsShadowCastingView = true;
         }
 
@@ -96,8 +99,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             CheckDefer(map, drawPosition);
             return DrawInternal(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
         }
-
-        void MobilePick(MouseOverList mouseOver, Vector3 drawPosition, Rectangle area, AAnimationFrame frame)
+        
+        bool IsMouseOverMobile(MouseOverList mouseOver, Vector3 drawPosition, Rectangle area, AAnimationFrame frame)
         {
             int x, y;
             if (DrawFlip)
@@ -113,7 +116,12 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 x = mouseOver.MousePosition.X - (int)drawPosition.X + area.X;
             }
             y = mouseOver.MousePosition.Y - ((int)drawPosition.Y - area.Y);
-            if (frame.IsPointInTexture(x, y))
+            return frame.IsPointInTexture(x, y);
+        }
+
+        void MobilePick(MouseOverList mouseOver, Vector3 drawPosition, Rectangle area, AAnimationFrame frame)
+        {
+            if (IsMouseOverMobile(mouseOver, drawPosition, area, frame))
             {
                 mouseOver.AddItem(Entity, drawPosition);
             }
@@ -183,7 +191,20 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     }
                     DrawTexture = frame.Texture;
                     DrawArea = new Rectangle(x, -y, DrawTexture.Width, DrawTexture.Height);
+
                     HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
+                    // Override Hue
+                    bool IsWarModeAndMouseOver = WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode && IsMouseOverMobile(mouseOver, drawPosition, DrawArea, frame);
+                    bool IsOverStatusBar = Entity.GetStatusBar() != null && Entity.GetStatusBar().IsMouseOverGump;
+                    bool IsLastWarModeTarget = m_World.Interaction.LastWarModeTarget == Entity.Serial;
+                    if (!Entity.IsClientEntity 
+                        && (IsWarModeAndMouseOver || IsOverStatusBar || IsLastWarModeTarget))
+                    {
+                        if (Entity is Mobile)
+                        {
+                            HueVector = Utility.GetHueVector((Entity as Mobile).NotorietyHue);
+                        }
+                    }
                     base.Draw(spriteBatch, drawPosition, mouseOver, map, roofHideFlag);
                     MobilePick(mouseOver, drawPosition, DrawArea, frame);
                 }

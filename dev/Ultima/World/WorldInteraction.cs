@@ -54,6 +54,15 @@ namespace UltimaXNA.Ultima.World {
                 m_Network.Send(new MobileQueryPacket(MobileQueryPacket.StatusType.BasicStatus, m_lastTarget));
             }
         }
+        private Serial m_lastWarModeTarget;
+        public Serial LastWarModeTarget
+        {
+            get { return m_lastWarModeTarget; }
+            set
+            {
+                m_lastWarModeTarget = value;
+            }
+        }
 
         /// <summary>
         /// For items, if server.expansion is less than AOS, sends single click packet.
@@ -84,6 +93,8 @@ namespace UltimaXNA.Ultima.World {
             else if (mobile.Notoriety == 0x1 || mobile.Notoriety == 0x3 || mobile.Notoriety == 0x4 || mobile.Notoriety == 0x5 || mobile.Notoriety == 0x6)
             {
                 m_Network.Send(new AttackRequestPacket(mobile.Serial));
+                // Set last war mode target for highlighting
+                LastWarModeTarget = mobile.Serial;
             }
             // CrimeQuery is enabled, ask before attacking others
             else if (Settings.UserInterface.CrimeQuery)
@@ -94,6 +105,8 @@ namespace UltimaXNA.Ultima.World {
             else
             {
                 m_Network.Send(new AttackRequestPacket(mobile.Serial));
+                // Set last war mode target for highlighting
+                LastWarModeTarget = mobile.Serial;
             }
         }
 

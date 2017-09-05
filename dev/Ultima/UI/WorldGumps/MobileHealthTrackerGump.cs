@@ -16,11 +16,12 @@ using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.World.EntityViews;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    class MobileHealthTrackerGump : Gump
+    public class MobileHealthTrackerGump : Gump
     {
         public Mobile Mobile
         {
@@ -64,6 +65,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 AddControl(m_Background = new GumpPic(this, 0, 0, 0x0804, 0));
                 m_Background.MouseDoubleClickEvent += Background_MouseDoubleClickEvent;
+                m_Background.MouseOverEvent += Background_MouseOverEvent;
+                m_Background.MouseOutEvent += Background_MouseOutEvent;
                 m_BarBGs = new GumpPic[1];
                 AddControl(m_BarBGs[0] = new GumpPic(this, 34, 38, 0x0805, 0));
                 m_Bars = new GumpPicWithWidth[1];
@@ -78,10 +81,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 m_BarBGs[i].HandlesMouseInput = false;
                 m_Bars[i].HandlesMouseInput = false;
             }
+
+            mobile.AddStatusBar(this);
         }
 
         public override void Dispose()
         {
+            Mobile.RemoveStatusBar();
+            m_Background.MouseOverEvent -= Background_MouseOverEvent;
+            m_Background.MouseOutEvent -= Background_MouseOutEvent;
             m_Background.MouseDoubleClickEvent -= Background_MouseDoubleClickEvent;
             base.Dispose();
         }
@@ -113,6 +121,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             base.Update(totalMS, frameMS);
+        }
+
+        // Mouse events for finding out if player is hovering over a mobiles status bar gump
+        public bool IsMouseOverGump { get; private set; }
+        private void Background_MouseOverEvent(AControl caller, int x, int y)
+        {
+            IsMouseOverGump = true;
+        }
+        private void Background_MouseOutEvent(AControl caller, int x, int y)
+        {
+            IsMouseOverGump = false;
         }
 
         private void Background_MouseDoubleClickEvent(AControl caller, int x, int y, MouseButton button)
